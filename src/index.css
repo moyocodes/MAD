@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syne:wght@700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --azure: #1980c2;
+    --azure-dark: #1468a0;
+    --dark: #181817;
+    --dark-soft: #2a2a28;
+    --white: #ffffff;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #181817;
+  }
+}
+
+@layer utilities {
+  .font-montserrat { font-family: 'Montserrat', sans-serif; }
+  .font-helvetica  { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes laptopBorderShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* form input placeholder color */
+input::placeholder, textarea::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+input:focus, textarea:focus {
+  outline: none;
+}
