@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-const AZ = "#1980c2";
-const DARK = "#181817";
-const CREAM = "#f5f1eb";
-const TB = "#F26522";
-const GRAY1 = "#f4f4f3";
-const GRAY2 = "#e8e8e6";
-const GRAY3 = "#b0b0ac";
-const GRAY4 = "#6b6b68";
-const BASE_FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const MONO_FONT = "'Montserrat', 'Helvetica Neue', Helvetica, sans-serif";
+// ─── THEME CONTEXT ────────────────────────────────────────────────────────────
+const ThemeCtx = React.createContext({ dark: false, toggle: () => {} });
+function useTheme() {
+  return React.useContext(ThemeCtx);
+}
 
+// ─── HOOKS ───────────────────────────────────────────────────────────────────
 function useScrollY() {
   const [y, setY] = useState(0);
   useEffect(() => {
@@ -37,101 +33,83 @@ function useInView(threshold = 0.15) {
   return [ref, vis];
 }
 
-// ─── NAV ────────────────────────────────────────────────────────────────────
+// ─── CHROME DOTS ──────────────────────────────────────────────────────────────
+const ChromeDots = ({ scale = 1 }) => (
+  <div className="flex items-center" style={{ gap: 4 * scale }}>
+    {["#ff5f57", "#febc2e", "#28ca41"].map((c) => (
+      <div
+        key={c}
+        style={{
+          width: 6 * scale,
+          height: 6 * scale,
+          borderRadius: "50%",
+          background: c,
+          flexShrink: 0,
+        }}
+      />
+    ))}
+  </div>
+);
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
 function Nav() {
   const y = useScrollY();
+  const { dark, toggle } = useTheme();
+  const scrolled = y > 20;
+
   return (
-    <div
-      style={{
-        padding: "10px 20px",
-        background: "transparent",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 300,
-        fontFamily: BASE_FONT,
-      }}
-    >
+    <div className="fixed left-0 right-0 top-2 z-[300] px-2 sm:top-3 sm:px-4">
       <nav
-        style={{
-          background:
-            y > 10 ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.72)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderRadius: 50,
-          padding: "0 2rem",
-          height: 52,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow:
-            y > 10 ? "0 4px 24px rgba(0,0,0,.10)" : "0 1px 8px rgba(0,0,0,.07)",
-          transition: "box-shadow .3s, background .3s",
-          border: "1px solid rgba(255,255,255,0.5)",
-        }}
+        className={`flex h-14 items-center justify-between rounded-2xl border border-azure-200 bg-azure-100 px-4 shadow-[0_10px_30px_rgba(24,24,23,.12)] backdrop-blur-xl transition-all duration-300 dark:border-white/[.08] dark:bg-dark-800 sm:h-[60px] sm:px-8 ${
+          scrolled
+            ? dark
+              ? "shadow-[0_1px_0_rgba(255,255,255,.06),0_14px_34px_rgba(0,0,0,.25)]"
+              : "shadow-[0_1px_0_rgba(0,0,0,.08),0_14px_34px_rgba(24,24,23,.16)]"
+            : dark
+              ? "shadow-[0_12px_30px_rgba(0,0,0,.22)]"
+              : "shadow-[0_10px_30px_rgba(24,24,23,.12)]"
+        }`}
       >
-        <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: ".06em" }}>
-          M<span style={{ color: AZ }}>A</span>D
-        </div>
-        <ul
-          className="mad-nav-ul"
-          style={{
-            display: "flex",
-            gap: "2rem",
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-          }}
+        <div
+          className={`text-sm font-black tracking-widest ${dark ? "text-white/90" : "text-dark-900"}`}
         >
+          <img src="ma.png" alt="ma logo" className="h-20 w-20 sm:h-32 sm:w-32" />
+        </div>
+        <ul className="mad-nav-ul flex gap-8 list-none m-0 p-0">
           {["Work", "Services", "About"].map((l) => (
             <li key={l}>
               <a
                 href={`#${l.toLowerCase()}`}
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: ".1em",
-                  textTransform: "uppercase",
-                  color: DARK,
-                  textDecoration: "none",
-                  opacity: 0.55,
-                  transition: "opacity .2s",
-                }}
-                onMouseEnter={(e) => (e.target.style.opacity = 1)}
-                onMouseLeave={(e) => (e.target.style.opacity = 0.55)}
+                className={`text-[10px] font-bold uppercase tracking-[.2em] no-underline opacity-70 transition-opacity duration-200 hover:opacity-100 ${
+                  dark ? "text-white/70" : "text-dark-900"
+                }`}
               >
                 {l}
               </a>
             </li>
           ))}
         </ul>
-        <div style={{ display: "flex", gap: "1.2rem", alignItems: "center" }}>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggle}
+            className={`relative h-5 w-9 cursor-pointer rounded-full border p-0 transition-colors duration-300 ${
+              dark ? "border-azure-500 bg-azure-500" : "border-dark-100 bg-dark-100"
+            }`}
+          >
+            <div
+              className="absolute w-3.5 h-3.5 bg-white rounded-full top-[3px] shadow-sm transition-all duration-300"
+              style={{ left: dark ? 18 : 2 }}
+            />
+          </button>
           <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: ".05em",
-              opacity: 0.55,
-              cursor: "pointer",
-            }}
+            className={`hidden cursor-pointer text-[10px] font-semibold tracking-wide sm:inline ${
+              dark ? "text-white/65" : "text-dark-900/65"
+            }`}
           >
             Contact
           </span>
           <button
-            style={{
-              background: AZ,
-              color: "#fff",
-              border: "none",
-              borderRadius: 50,
-              padding: "8px 20px",
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: ".12em",
-              textTransform: "uppercase",
-              cursor: "pointer",
-              fontFamily: BASE_FONT,
-            }}
+            className="hidden cursor-pointer rounded-full border-none bg-azure-500 px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-[0_2px_16px_rgba(25,128,194,.25)] transition-all duration-200 hover:bg-azure-600 sm:block"
           >
             Work With Us
           </button>
@@ -140,12 +118,8 @@ function Nav() {
     </div>
   );
 }
-// ─── HERO ────────────────────────────────────────────────────────────────────
-// Phase 0: Slide carousel (play/pause)
-// Phase 1: Split before/after slider
-// Phase 2: Page collapses into a floating "browser window" card,
-//          8 thumbnail cards cluster around it, CTA in center
 
+// ─── HERO ─────────────────────────────────────────────────────────────────────
 const HERO_SLIDES = [
   {
     left: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85&auto=format&fit=crop",
@@ -179,7 +153,6 @@ const HERO_SLIDES = [
   },
 ];
 
-// 8 thumbnail images that scatter around the collapsed screen
 const THUMB_IMGS = [
   "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&q=75&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&q=75&auto=format&fit=crop",
@@ -191,102 +164,81 @@ const THUMB_IMGS = [
   "https://images.unsplash.com/photo-1558655146-d09347e92766?w=300&q=75&auto=format&fit=crop",
 ];
 
-// Final clustered positions (as % from center, so 0=center)
-// Tight orbit around the central screen card
 const THUMB_FINAL = [
-  { x: -50, y: -30, w: 260, h: 182, r: -2.5 }, // top: far-left
-  { x: -20, y: -33, w: 274, h: 192, r: 1.5 }, // top: inner-left
-  { x: +20, y: -29, w: 256, h: 180, r: -1 }, // top: inner-right
-  { x: +50, y: -34, w: 266, h: 186, r: 2 }, // top: far-right
-  { x: -48, y: +30, w: 262, h: 184, r: 2.5 }, // bot: far-left
-  { x: -18, y: +33, w: 270, h: 190, r: -1.5 }, // bot: inner-left
-  { x: +18, y: +30, w: 258, h: 182, r: 1 }, // bot: inner-right
-  { x: +48, y: +34, w: 264, h: 186, r: -2 }, // bot: far-right
+  { x: -50, y: -30, w: 260, h: 182, r: -2.5 },
+  { x: -20, y: -33, w: 274, h: 192, r: 1.5 },
+  { x: +20, y: -29, w: 256, h: 180, r: -1 },
+  { x: +50, y: -34, w: 266, h: 186, r: 2 },
+  { x: -48, y: +30, w: 262, h: 184, r: 2.5 },
+  { x: -18, y: +33, w: 270, h: 190, r: -1.5 },
+  { x: +18, y: +30, w: 258, h: 182, r: 1 },
+  { x: +48, y: +34, w: 264, h: 186, r: -2 },
 ];
+
+function HeroLogoRail({ dark }) {
+  return (
+    <div
+      className="mad-hero-logo-rail absolute left-0 right-0 bottom-0 z-40 pointer-events-none"
+      style={{
+        padding: "10px 40px 14px",
+        background: dark
+          ? "linear-gradient(to top, rgba(14,14,13,.88), rgba(14,14,13,0))"
+          : "linear-gradient(to top, rgba(24,24,23,.88), rgba(24,24,23,0))",
+      }}
+    >
+      <div className="mx-auto flex max-w-5xl items-center justify-center gap-10 overflow-hidden">
+        <span className="shrink-0 text-[8px] font-bold uppercase tracking-[.25em] text-white/55">
+          Trusted by
+        </span>
+        {LOGOS.map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt={`Client logo ${i + 1}`}
+            className="h-6 max-w-[110px] object-contain opacity-85 transition-opacity duration-300 hover:opacity-100"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function PhoneNotif({ show, msg, sub }) {
   return (
     <div
+      className="absolute z-40 right-6 pointer-events-none"
       style={{
-        position: "absolute",
-        top: 80,
-        right: 28,
-        zIndex: 40,
+        top: 88,
         width: 230,
         background: "rgba(24,24,23,0.93)",
         backdropFilter: "blur(18px)",
-        borderRadius: 14,
-        padding: "11px 13px",
+        borderRadius: 12,
+        padding: 12,
         border: "1px solid rgba(255,255,255,.1)",
         transform: show
           ? "translateY(0) scale(1)"
           : "translateY(-56px) scale(.88)",
         opacity: show ? 1 : 0,
         transition:
-          "transform .5s cubic-bezier(.34,1.56,.64,1), opacity .35s ease",
-        pointerEvents: "none",
+          "transform .5s cubic-bezier(.22,1,.36,1), opacity .35s ease",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+      <div className="flex items-center gap-2">
         <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 7,
-            background: `linear-gradient(135deg,${AZ},#0c4d82)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
+          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+        
         >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#fff",
-              fontFamily: BASE_FONT,
-            }}
-          >
-            M
-          </span>
+          <img src="mawhit.png" alt="ma logo" className="w-16 h-16" />
         </div>
         <div>
-          <div
-            style={{
-              fontSize: 8.5,
-              fontWeight: 700,
-              color: "rgba(255,255,255,.4)",
-              letterSpacing: ".08em",
-              textTransform: "uppercase",
-              fontFamily: BASE_FONT,
-            }}
-          >
-            MAD
-          </div>
-          <div
-            style={{
-              fontSize: 10.5,
-              fontWeight: 600,
-              color: "#fff",
-              fontFamily: BASE_FONT,
-              lineHeight: 1.3,
-            }}
-          >
+          <div className="text-[8px] font-bold text-white/40 tracking-[.2em] uppercase"></div>
+          <div className="text-[11px] font-medium text-white/85 leading-snug">
             {msg}
           </div>
         </div>
       </div>
       {sub && (
-        <div
-          style={{
-            fontSize: 9,
-            color: "rgba(255,255,255,.4)",
-            marginTop: 5,
-            fontFamily: BASE_FONT,
-            lineHeight: 1.5,
-          }}
-        >
+        <div className="text-[8px] text-white/50 mt-1 leading-relaxed">
           {sub}
         </div>
       )}
@@ -294,21 +246,49 @@ function PhoneNotif({ show, msg, sub }) {
   );
 }
 
+function PantoneCard({ data, opacity, translateY }) {
+  return (
+    <div
+      className="absolute bg-white rounded-lg overflow-hidden"
+      style={{
+        transform: `translate(-50%, calc(-50% + ${translateY}px))`,
+        width: "100%",
+        opacity,
+        boxShadow: "0 24px 64px rgba(0,0,0,.32)",
+      }}
+    >
+      <img
+        src={data.cardImg}
+        alt=""
+        className="w-full h-44 object-cover block"
+      />
+      <div className="p-4">
+        <div className="text-base font-black tracking-tight text-[#181817] mb-3 leading-tight">
+          {data.card}
+        </div>
+        <div className="text-[7px] font-bold tracking-[.2em] uppercase text-neutral-400 mb-0.5">
+          Service crafted by
+        </div>
+        <div className="text-xs font-black tracking-wider uppercase text-[#181817]">
+          MAD™
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Hero() {
+  const { dark } = useTheme();
   const wrapRef = useRef(null);
   const [rawPct, setRawPct] = useState(0);
   const [phase, setPhase] = useState(0);
   const [pct, setPct] = useState(0);
-
-  // Slideshow
   const [slide, setSlide] = useState(0);
   const [prog, setProg] = useState(0);
   const [paused, setPaused] = useState(false);
   const slideRef = useRef({ slide: 0, prog: 0, paused: false });
   const rafRef = useRef(null);
   const lastTs = useRef(null);
-
-  // Notifications
   const [notif, setNotif] = useState(false);
   const [notifData, setNotifData] = useState({ msg: "", sub: "" });
   const prevPhase = useRef(-1);
@@ -319,7 +299,6 @@ function Hero() {
     { msg: "Meridian went live today", sub: "Marketing campaign active" },
   ];
 
-  // Slideshow RAF
   useEffect(() => {
     const DURATION = 5000;
     const step = (ts) => {
@@ -344,12 +323,6 @@ function Hero() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  const togglePause = () => {
-    slideRef.current.paused = !slideRef.current.paused;
-    setPaused((p) => !p);
-  };
-
-  // Scroll → phase
   useEffect(() => {
     const fn = () => {
       if (!wrapRef.current) return;
@@ -367,7 +340,6 @@ function Hero() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // Notifications
   useEffect(() => {
     if (phase === prevPhase.current) return;
     prevPhase.current = phase;
@@ -382,319 +354,112 @@ function Hero() {
 
   const s = HERO_SLIDES[slide];
   const ns = HERO_SLIDES[(slide + 1) % HERO_SLIDES.length];
-
-  // Phase helpers
   const phase1visible = Math.min(1, Math.max(0, (rawPct * 3 - 1) * 2.5));
-  const phase2visible = Math.min(1, Math.max(0, (rawPct * 3 - 2) * 2.5));
   const cardOut = Math.max(0, (pct - 0.7) / 0.3);
-
-  // ── COLLAPSE: browser window shrinks from full-screen to a card ──
-  // collapseT: 0 = full screen, 1 = fully collapsed card
-  const collapseT = phase2visible;
-  // Screen dimensions interpolation
-  const screenW = `${100 - collapseT * 48}%`; // 100% → 52%
-  const screenH = `${100 - collapseT * 40}%`; // 100% → 60%
-  const screenBR = collapseT * 8; // matches thumbnail card radius
-  const screenX = `${collapseT * 0}%`; // stays centered
-  // Shadow builds as it collapses
-  const screenShadow = `0 ${collapseT * 16}px ${collapseT * 40}px rgba(0,0,0,${collapseT * 0.14})`;
-  // Browser chrome bar opacity
-  const chromeOpacity = collapseT;
+  const collapseT = Math.min(1, Math.max(0, (rawPct * 3 - 2) * 2.5));
 
   return (
-    <div ref={wrapRef} style={{ height: "400vh", position: "relative" }}>
+    <div ref={wrapRef} className="relative h-[400vh]">
       <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
-          display: "flex",
-          fontFamily: BASE_FONT,
-          background: DARK,
-        }}
+        className="sticky top-0 flex h-screen overflow-hidden bg-azure-100 dark:bg-dark-900"
       >
-        {/* ── DARK BG that shows as screen collapses ── */}
         <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 0,
-            background: `radial-gradient(ellipse at 40% 50%, #ede8e2 0%, #e2ddd8 100%)`,
-            opacity: collapseT,
-          }}
+          className="absolute inset-0 z-0 bg-white/70 dark:bg-azure-500/20"
+          style={{ opacity: collapseT }}
         />
 
-        {/* ── THE COLLAPSING SCREEN (wraps left+right panels) ── */}
+        {/* Main screen */}
         <div
+          className="absolute z-20 overflow-hidden"
           style={{
-            position: "absolute",
-            // Center it, collapse inward symmetrically
             left: `${collapseT * 43}%`,
             right: `${collapseT * 43}%`,
             top: `${collapseT * 11}%`,
             bottom: `${collapseT * 72}%`,
-            zIndex: 20,
-            borderRadius: screenBR,
-            overflow: "hidden",
-            boxShadow: screenShadow,
-            transition: "none",
-            // Browser chrome border
+            borderRadius: collapseT * 8,
+            boxShadow: `0 ${collapseT * 16}px ${collapseT * 40}px rgba(0,0,0,${collapseT * 0.14})`,
             outline:
               collapseT > 0.05
                 ? `${collapseT * 1.5}px solid rgba(0,0,0,.08)`
                 : "none",
           }}
         >
-          {/* Minimal chrome bar — traffic lights only */}
+          {/* Macbook bar */}
           <div
+            className="absolute top-0 left-0 right-0 z-30 flex items-center overflow-hidden"
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
               height: `${collapseT * 18}px`,
               background: "rgba(22,22,24,0.96)",
-              zIndex: 30,
               opacity: collapseT,
-              display: "flex",
-              alignItems: "center",
               padding: `0 ${collapseT * 8}px`,
               gap: collapseT * 4,
-              overflow: "hidden",
             }}
           >
-            <div style={{ display: "flex", gap: collapseT * 4, flexShrink: 0 }}>
-              {["#ff5f57", "#ffbd2e", "#28ca41"].map((c) => (
-                <div
-                  key={c}
-                  style={{
-                    width: collapseT * 6,
-                    height: collapseT * 6,
-                    borderRadius: "50%",
-                    background: c,
-                  }}
-                />
-              ))}
-            </div>
+            <ChromeDots scale={collapseT} />
           </div>
-
-          {/* Content shifted down by chrome bar */}
           <div
-            style={{
-              position: "absolute",
-              top: `${collapseT * 18}px`,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: "flex",
-            }}
+            className="absolute left-0 right-0 bottom-0 flex"
+            style={{ top: `${collapseT * 18}px` }}
           >
-            {/* LEFT PANEL */}
-            <div
-              className="mad-hero-left"
-              style={{
-                position: "relative",
-                width: "42%",
-                flexShrink: 0,
-                overflow: "hidden",
-              }}
-            >
+            {/* Left panel */}
+            <div className="mad-hero-left relative w-[42%] flex-shrink-0 overflow-hidden">
               {HERO_SLIDES.map((sl, i) => (
                 <img
                   key={i}
                   src={sl.left}
                   alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
                     opacity:
                       i === slide
                         ? 1 - cardOut
                         : i === (slide + 1) % HERO_SLIDES.length
                           ? cardOut
                           : 0,
-                    transition: "none",
                   }}
                 />
               ))}
+              <div className="absolute inset-0 bg-black/25" />
               <div
+                className="absolute top-1/2 left-1/2 z-10"
                 style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(0,0,0,.26)",
-                }}
-              />
-
-              {/* Pantone card — fades out in phase 1+ */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
                   width: "min(260px,80%)",
-                  zIndex: 10,
                   opacity: Math.max(0, 1 - phase1visible * 2),
-                  transition: "none",
                 }}
               >
-                <div
-                  style={{
-                    position: "absolute",
-                    transform: `translate(-50%, calc(-50% + ${cardOut * -24}px))`,
-                    width: "100%",
-                    opacity: 1 - cardOut,
-                    background: "#fff",
-                    boxShadow: "0 24px 64px rgba(0,0,0,.32)",
-                  }}
-                >
-                  <img
-                    src={s.cardImg}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                  <div style={{ padding: "16px 18px 20px" }}>
-                    <div
-                      style={{
-                        fontSize: "clamp(14px,1.6vw,20px)",
-                        fontWeight: 800,
-                        letterSpacing: "-.02em",
-                        color: DARK,
-                        marginBottom: 12,
-                        lineHeight: 1.1,
-                      }}
-                    >
-                      {s.card}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 7.5,
-                        fontWeight: 700,
-                        letterSpacing: ".18em",
-                        textTransform: "uppercase",
-                        color: GRAY3,
-                        marginBottom: 3,
-                      }}
-                    >
-                      Service crafted by
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 900,
-                        letterSpacing: ".14em",
-                        textTransform: "uppercase",
-                        color: DARK,
-                      }}
-                    >
-                      MAD™
-                    </div>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    transform: `translate(-50%, calc(-50% + ${(1 - cardOut) * 24}px))`,
-                    width: "100%",
-                    opacity: cardOut,
-                    background: "#fff",
-                    boxShadow: "0 24px 64px rgba(0,0,0,.32)",
-                  }}
-                >
-                  <img
-                    src={ns.cardImg}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                  <div style={{ padding: "16px 18px 20px" }}>
-                    <div
-                      style={{
-                        fontSize: "clamp(14px,1.6vw,20px)",
-                        fontWeight: 800,
-                        letterSpacing: "-.02em",
-                        color: DARK,
-                        marginBottom: 12,
-                        lineHeight: 1.1,
-                      }}
-                    >
-                      {ns.card}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 7.5,
-                        fontWeight: 700,
-                        letterSpacing: ".18em",
-                        textTransform: "uppercase",
-                        color: GRAY3,
-                        marginBottom: 3,
-                      }}
-                    >
-                      Service crafted by
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 900,
-                        letterSpacing: ".14em",
-                        textTransform: "uppercase",
-                        color: DARK,
-                      }}
-                    >
-                      MAD™
-                    </div>
-                  </div>
-                </div>
+                <PantoneCard
+                  data={s}
+                  opacity={1 - cardOut}
+                  translateY={cardOut * -24}
+                />
+                <PantoneCard
+                  data={ns}
+                  opacity={cardOut}
+                  translateY={(1 - cardOut) * 24}
+                />
               </div>
-
-              {/* Slide index */}
               <div
-                style={{
-                  position: "absolute",
-                  bottom: 28,
-                  left: 28,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  opacity: Math.max(0, 1 - phase1visible * 2),
-                }}
+                className="absolute bottom-6 left-6 flex flex-col gap-2"
+                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
               >
                 {HERO_SLIDES.map((_, i) => (
-                  <div
-                    key={i}
-                    style={{ display: "flex", alignItems: "center", gap: 7 }}
-                  >
+                  <div key={i} className="flex items-center gap-2">
                     <div
+                      className="rounded-sm transition-all duration-300"
                       style={{
                         height: 1.5,
                         width: i === slide ? 22 : 10,
                         background:
                           i === slide ? "#fff" : "rgba(255,255,255,.3)",
-                        borderRadius: 1,
-                        transition: "width .4s ease",
                       }}
                     />
                     <span
+                      className="text-[8px] font-bold tracking-wider"
                       style={{
-                        fontSize: 8,
-                        fontWeight: 700,
                         color:
                           i === slide
                             ? "rgba(255,255,255,.8)"
                             : "rgba(255,255,255,.28)",
-                        letterSpacing: ".12em",
                       }}
                     >
                       0{i + 1}
@@ -703,137 +468,62 @@ function Hero() {
                 ))}
               </div>
             </div>
-
-            {/* RIGHT PANEL */}
-            <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+            {/* Right panel */}
+            <div className="relative flex-1 overflow-hidden">
               {HERO_SLIDES.map((sl, i) => (
                 <img
                   key={i}
                   src={sl.right}
                   alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
                     opacity:
                       i === slide
                         ? 1 - cardOut
                         : i === (slide + 1) % HERO_SLIDES.length
                           ? cardOut
                           : 0,
-                    transition: "none",
                   }}
                 />
               ))}
               <div
+                className="absolute inset-0"
                 style={{
-                  position: "absolute",
-                  inset: 0,
                   background:
                     "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.1) 50%, transparent 100%)",
                 }}
               />
-
               <PhoneNotif
                 show={notif}
                 msg={notifData.msg}
                 sub={notifData.sub}
               />
-
-              {/* Phase indicator */}
               <div
-                style={{
-                  position: "absolute",
-                  right: 28,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  alignItems: "flex-end",
-                  opacity: Math.max(0, 1 - phase1visible * 2),
-                }}
-              >
-                {HERO_SLIDES.map((_, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      height: i === slide ? 36 : 14,
-                      width: 2,
-                      background:
-                        i === slide ? "#fff" : "rgba(255,255,255,.22)",
-                      borderRadius: 1,
-                      transition: "height .4s cubic-bezier(.22,1,.36,1)",
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* Headline */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 52,
-                  right: 44,
-                  maxWidth: 480,
-                  textAlign: "right",
-                  opacity: Math.max(0, 1 - phase1visible * 2),
-                  transition: "none",
-                }}
+                className="absolute bottom-8 left-6 right-6 max-w-[480px] text-left sm:bottom-12 sm:left-auto sm:right-11 sm:text-right"
+                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
               >
                 <h1
+                  className="text-white mb-4"
                   style={{
-                    fontFamily: 'Georgia,"Times New Roman",serif',
+                    fontFamily: "Georgia, serif",
                     fontStyle: "italic",
                     fontWeight: 400,
-                    fontSize: "clamp(26px,3.6vw,52px)",
+                    fontSize: "clamp(24px,6vw,52px)",
                     lineHeight: 1.1,
-                    color: "#fff",
-                    letterSpacing: "-.01em",
-                    marginBottom: 18,
+                    letterSpacing: "-.02em",
                     whiteSpace: "pre-line",
                     textShadow: "0 2px 24px rgba(0,0,0,.35)",
                   }}
                 >
                   {s.h1}
                 </h1>
-                <p
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: "rgba(255,255,255,.6)",
-                    letterSpacing: ".04em",
-                    lineHeight: 1.7,
-                    marginBottom: 24,
-                    fontFamily: BASE_FONT,
-                  }}
-                >
+                <p className="mb-6 text-[11px] font-medium leading-relaxed tracking-wide text-white/60">
                   {s.sub}
                 </p>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 10,
-                    justifyContent: "flex-end",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div className="flex flex-wrap gap-2 sm:justify-end">
                   <button
-                    style={{
-                      background: "#fff",
-                      color: DARK,
-                      border: "none",
-                      borderRadius: 50,
-                      padding: "12px 26px",
-                      fontSize: 9.5,
-                      fontWeight: 700,
-                      letterSpacing: ".14em",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      fontFamily: BASE_FONT,
-                    }}
+                    className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase border-none cursor-pointer"
+                    style={{ background: "#fff", color: "#181817" }}
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.opacity = ".85")
                     }
@@ -841,409 +531,202 @@ function Hero() {
                   >
                     Work With Us
                   </button>
-                  <button
-                    style={{
-                      background: "transparent",
-                      color: "#fff",
-                      border: "1.5px solid rgba(255,255,255,.5)",
-                      borderRadius: 50,
-                      padding: "12px 26px",
-                      fontSize: 9.5,
-                      fontWeight: 700,
-                      letterSpacing: ".14em",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      fontFamily: BASE_FONT,
-                    }}
-                  >
+                  <button className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer bg-transparent text-white border border-white/50">
                     View Our Work
                   </button>
                 </div>
               </div>
-
-              {/* Progress + pause */}
               <div
-                style={{
-                  position: "absolute",
-                  bottom: 22,
-                  left: 0,
-                  right: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 14,
-                  zIndex: 10,
-                  opacity: Math.max(0, 1 - phase1visible * 2),
-                }}
+                className="absolute bottom-5 left-0 right-0 flex items-center justify-center gap-3 z-10"
+                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
               >
                 <div
+                  className="h-0.5 rounded-sm overflow-hidden"
                   style={{
                     width: "clamp(80px,10vw,140px)",
-                    height: 2,
                     background: "rgba(255,255,255,.22)",
-                    borderRadius: 1,
-                    overflow: "hidden",
                   }}
                 >
                   <div
+                    className="h-full"
                     style={{
-                      height: "100%",
                       width: `${prog}%`,
-                      background: "#fff",
-                      transition: "none",
+                      background: `linear-gradient(90deg, ${"#8cc3ef"}, #fff)`,
                     }}
                   />
                 </div>
                 <button
-                  onClick={togglePause}
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    border: "1.5px solid rgba(255,255,255,.55)",
-                    background: "rgba(0,0,0,.25)",
-                    backdropFilter: "blur(6px)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    color: "#fff",
-                    fontSize: 10,
-                    fontFamily: BASE_FONT,
+                  onClick={() => {
+                    slideRef.current.paused = !slideRef.current.paused;
+                    setPaused((p) => !p);
                   }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-white text-[9px] border border-white/55 bg-black/25"
+                  style={{ backdropFilter: "blur(6px)" }}
                 >
                   {paused ? "▶" : "⏸"}
                 </button>
-              </div>
-
-              {/* Scroll cue */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 24,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  opacity: Math.max(0, 1 - rawPct * 3 * 6),
-                  transition: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 8,
-                    fontWeight: 700,
-                    letterSpacing: ".22em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,.38)",
-                    fontFamily: BASE_FONT,
-                  }}
-                >
-                  Scroll
-                </span>
-                <div
-                  style={{
-                    width: 1.5,
-                    height: 28,
-                    background: "rgba(255,255,255,.22)",
-                    borderRadius: 1,
-                    overflow: "hidden",
-                    position: "relative",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "40%",
-                      background: "rgba(255,255,255,.7)",
-                      borderRadius: 1,
-                      animation: "scrollDot 1.6s ease-in-out infinite",
-                    }}
-                  />
-                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── PHASE 2: 8 thumbnail cards orbit the collapsed screen ── */}
+        {/* Thumbnail grid */}
         {THUMB_IMGS.map((src, i) => {
           const tf = THUMB_FINAL[i];
-          // Start position: scattered far from center (off-screen edges)
           const startX = tf.x * 3;
           const startY = tf.y * 3;
-          // Interpolate from start → final tight position
           const cx = startX + (tf.x - startX) * collapseT;
           const cy = startY + (tf.y - startY) * collapseT;
-          // Scale: tiny at 0, full at 1
           const sc = 0.1 + collapseT * 0.9;
           return (
             <div
               key={i}
+              className="pointer-events-none absolute z-[15] h-[186px] w-[266px] overflow-hidden"
               style={{
-                position: "absolute",
-                // Position relative to center of viewport
                 left: `calc(50% + ${cx}%)`,
                 top: `calc(50% + ${cy}%)`,
                 transform: `translate(-50%, -50%) rotate(${tf.r}deg) scale(${sc})`,
-                width: tf.w,
-                height: tf.h,
                 opacity: Math.max(0, collapseT * 1.3 - 0.1 - i * 0.01),
-                zIndex: 15,
                 borderRadius: 8,
-                overflow: "hidden",
                 boxShadow: `0 ${8 * collapseT}px ${24 * collapseT}px rgba(0,0,0,.16)`,
-                border: "1.5px solid rgba(0,0,0,.09)",
-                transition: "none",
-                pointerEvents: "none",
+                border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
               }}
             >
-              {/* Laptop chrome */}
               <div
+                className="absolute top-0 left-0 right-0 z-[5] flex items-center"
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
                   height: 12,
                   background: "#16161a",
-                  zIndex: 5,
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "0 7px",
+                  padding: "0 6px",
                   gap: 3.5,
-                  flexShrink: 0,
                 }}
               >
-                {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-                  <div
-                    key={c}
-                    style={{
-                      width: 5,
-                      height: 5,
-                      borderRadius: "50%",
-                      background: c,
-                      flexShrink: 0,
-                    }}
-                  />
-                ))}
+                <ChromeDots scale={0.83} />
               </div>
               <img
                 src={src}
                 alt=""
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: "100%",
-                  height: "calc(100% - 12px)",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: "rgba(0,0,0,.14)",
-                }}
+                className="absolute left-0 right-0 bottom-0 w-full object-cover block"
+                style={{ top: 12, height: "calc(100% - 12px)" }}
               />
             </div>
           );
         })}
 
-        {/* ── PHASE 2: CTA floats in the centre gap between the two card rows ── */}
+        {/* CTA overlay */}
         <div
+          className="absolute z-30 text-center"
           style={{
-            position: "absolute",
             top: "50%",
             left: "50%",
             transform: `translate(-50%, -50%) translateY(${(1 - collapseT) * 20}px)`,
-            zIndex: 30,
             pointerEvents: collapseT > 0.82 ? "all" : "none",
-            textAlign: "center",
             opacity: Math.max(0, collapseT * 3 - 2),
-            transition: "none",
             width: "min(560px, 80vw)",
           }}
         >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: ".28em",
-              textTransform: "uppercase",
-              color: "#9a9a96",
-              marginBottom: 12,
-              fontFamily: BASE_FONT,
-            }}
-          >
+          <p className="text-[8px] font-bold tracking-[.25em] uppercase text-neutral-400 mb-3">
             Making A Difference
-          </div>
+          </p>
           <h2
+            className="mb-6"
             style={{
-              fontFamily: "Georgia,serif",
+              fontFamily: "Georgia, serif",
               fontStyle: "italic",
               fontWeight: 400,
               fontSize: "clamp(28px,4.4vw,56px)",
               lineHeight: 1.1,
-              color: "#181817",
-              marginBottom: 24,
               letterSpacing: "-.02em",
+              color: dark ? "#f0ede8" : "#181817",
             }}
           >
             Ready to build
             <br />
             something real?
           </h2>
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="flex gap-3 justify-center flex-wrap">
             <button
-              style={{
-                background: "#1980c2",
-                color: "#fff",
-                border: "none",
-                borderRadius: 50,
-                padding: "13px 28px",
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: ".14em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                fontFamily: BASE_FONT,
-                boxShadow: "0 4px 20px rgba(25,128,194,.35)",
-              }}
+              className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
+              style={{ background: "#1980c2", boxShadow: `0 4px 24px ${"#1980c2"}50` }}
             >
               Start a Project →
             </button>
             <button
+              className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer border"
               style={{
-                background: "rgba(24,24,23,.06)",
-                color: "#181817",
-                border: "1px solid rgba(24,24,23,.12)",
-                borderRadius: 50,
-                padding: "13px 28px",
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: ".14em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                fontFamily: BASE_FONT,
+                background: dark
+                  ? "rgba(255,255,255,.08)"
+                  : "rgba(24,24,23,.06)",
+                color: dark ? "#f0ede8" : "#181817",
+                borderColor: dark
+                  ? "rgba(255,255,255,.15)"
+                  : "rgba(24,24,23,.12)",
               }}
             >
               View Our Work
             </button>
           </div>
         </div>
-
-        <style>{`
-          @keyframes scrollDot { 0%{transform:translateY(-100%)} 100%{transform:translateY(280%)} }
-        `}</style>
+        <TrustedBy inHero />
       </div>
     </div>
   );
 }
 
-// ─── TRUSTED BY ────────────────────────────────────────────────────────────
-const CLIENTS = [
-  "Nexora",
-  "Arclight",
-  "Verdant Co.",
-  "Stratum",
-  "Kova Group",
-  "Lumen Labs",
-  "Meridian",
-  "Obsidian",
+// ─── TRUSTED BY ───────────────────────────────────────────────────────────────
+const LOGOS = [
+  "/log1.png",
+  "/log2.png",
+  "/log3.png",
+  "/log4.png",
+  "/log5.png",
+  "/log6.png",
+  "/log7.png",
 ];
 
-function TrustedBy() {
+function TrustedBy({ inHero = false }) {
+  // duplicate for seamless loop
+  const loopLogos = [...LOGOS, ...LOGOS];
+
   return (
     <div
-      className="mad-trusted"
-      style={{
-        padding: "40px 48px 36px",
-        background: "#fff",
-        borderTop: `1px solid ${GRAY2}`,
-        borderBottom: `1px solid ${GRAY2}`,
-        fontFamily: BASE_FONT,
-      }}
+      className={`mad-trusted overflow-hidden border-y border-dark-100 bg-gradient-to-b from-dark-900 via-azure-100 to-white-soft dark:border-white/[.08] dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 ${
+        inHero
+          ? "absolute bottom-0 left-0 right-0 z-50 px-4 py-5 sm:py-7"
+          : "relative py-14"
+      }`}
     >
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: 8.5,
-          fontWeight: 700,
-          letterSpacing: ".3em",
-          textTransform: "uppercase",
-          color: GRAY3,
-          marginBottom: 24,
-        }}
+      <p
+        className={`text-center font-bold uppercase tracking-[.25em] text-white/70 dark:text-white/55 ${
+          inHero ? "mb-4 text-[8px] sm:mb-5 sm:text-[9px]" : "mb-9 text-[10px]"
+        }`}
       >
-        Trusted by growing businesses, institutions & mission-driven
-        organizations
-      </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        {CLIENTS.map((c, i) => (
-          <div key={c} style={{ display: "flex", alignItems: "center" }}>
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: ".14em",
-                textTransform: "uppercase",
-                color: DARK,
-                opacity: 0.24,
-                fontStyle: "italic",
-                padding: "8px 24px",
-                cursor: "default",
-                transition: "opacity .2s",
-              }}
-              onMouseEnter={(e) => (e.target.style.opacity = 0.65)}
-              onMouseLeave={(e) => (e.target.style.opacity = 0.24)}
-            >
-              {c}
-            </span>
-            {i < CLIENTS.length - 1 && (
-              <div
-                style={{
-                  width: 3,
-                  height: 3,
-                  borderRadius: "50%",
-                  background: GRAY2,
-                }}
-              />
-            )}
-          </div>
-        ))}
+        Trusted by growing businesses, institutions & mission-driven organizations
+      </p>
+
+      <div className="relative w-full overflow-hidden">
+        <div
+          className={`flex w-max animate-marquee ${
+            inHero ? "gap-10 px-8 sm:gap-14 sm:px-12" : "gap-20 px-14"
+          }`}
+        >
+          {loopLogos.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`Client logo ${i}`}
+              className={`object-contain opacity-90 transition duration-300 hover:opacity-100 ${
+                inHero ? "h-8 sm:h-10" : "h-12"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── WHAT WE DO ────────────────────────────────────────────────────────────
+// ─── WHAT WE DO ───────────────────────────────────────────────────────────────
 const SERVICES = [
   {
     tag: "01",
@@ -1297,36 +780,60 @@ function ProgressBar({ duration, running, onComplete }) {
   }, [running, duration]);
   return (
     <div
-      style={{ width: "100%", height: 2, background: GRAY2, borderRadius: 1 }}
+      className="w-full h-0.5 rounded-sm"
+      style={{ background: "rgba(0,0,0,.08)" }}
     >
       <div
-        style={{
-          height: "100%",
-          width: `${w}%`,
-          background: DARK,
-          borderRadius: 1,
-        }}
+        className="h-full rounded-sm"
+        style={{ width: `${w}%`, background: "#1980c2" }}
       />
     </div>
   );
 }
 
 function WhatWeDo() {
+  const { dark } = useTheme();
+  const wrapRef = useRef(null);
+  const idleTimerRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [viewportW, setViewportW] = useState(1200);
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [entering, setEntering] = useState(false);
   const DURATION = 5500;
+  const CARD_W = 340;
+  const TOTAL = FILM_FRAMES.length;
+
+  useEffect(() => {
+    const fn = () => {
+      if (!wrapRef.current) return;
+      clearTimeout(idleTimerRef.current);
+      setViewportW(window.innerWidth);
+      const rect = wrapRef.current.getBoundingClientRect();
+      const total = wrapRef.current.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const raw = Math.min(1, Math.max(0, scrolled / total));
+      setScrollProgress(raw);
+      if (raw > 0.58) {
+        idleTimerRef.current = setTimeout(() => {
+          setScrollProgress(0);
+          setCur(0);
+        }, 3200);
+      }
+    };
+    fn();
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => {
+      clearTimeout(idleTimerRef.current);
+      window.removeEventListener("scroll", fn);
+    };
+  }, []);
 
   const goTo = useCallback(
     (idx) => {
-      if (idx === cur) return;
-      setEntering(true);
-      setCur(idx);
-      setTimeout(() => setEntering(false), 700);
+      if (idx !== cur) setCur(idx);
     },
     [cur],
   );
-
   const next = useCallback(
     () => goTo((cur + 1) % SERVICES.length),
     [cur, goTo],
@@ -1336,321 +843,221 @@ function WhatWeDo() {
     [cur, goTo],
   );
   const svc = SERVICES[cur];
+  const reelT = Math.min(1, Math.max(0, (scrollProgress - 0.34) / 0.36));
+  const serviceT = 1 - Math.min(1, Math.max(0, (scrollProgress - 0.2) / 0.3));
+  const maxReelTravel = Math.max(0, TOTAL * CARD_W - viewportW + CARD_W * 0.35);
+  const translateX = reelT * maxReelTravel;
+  const activeIndex = Math.round(reelT * (TOTAL - 1));
 
   return (
     <section
+      ref={wrapRef}
       id="services"
-      style={{ background: GRAY1, fontFamily: BASE_FONT, padding: 4 }}
+      className={`relative transition-colors duration-300 ${dark ? "bg-[#252523]" : "bg-neutral-50"}`}
+      style={{ height: `${TOTAL * 52}vh` }}
     >
       <div
+        className="sticky top-0 h-screen overflow-hidden"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridTemplateRows: "360px 240px",
-          gap: 4,
+          background: dark
+            ? `linear-gradient(180deg, ${"#181817"} 0%, #0f0f0e 52%, #111110 100%)`
+            : "linear-gradient(180deg, #f8f8f7 0%, #f1eee9 44%, #e8edf0 100%)",
         }}
       >
         <div
+          className="absolute inset-x-0 top-0 h-24 pointer-events-none z-30"
           style={{
-            gridRow: "1 / 3",
-            position: "relative",
-            overflow: "hidden",
-            borderRadius: 6,
+            background: dark
+              ? "linear-gradient(to bottom, #0f0f0e, rgba(37,37,35,0))"
+              : "linear-gradient(to bottom, #0f0f0e, rgba(250,250,250,0))",
           }}
+        />
+        <div
+          className="absolute inset-0 z-10 grid p-[22px_4px_4px]"
+          style={{
+            gridTemplateColumns: "1fr 1fr",
+            gridTemplateRows: "360px 240px",
+            gap: 4,
+            opacity: serviceT,
+            transform: `scale(${0.94 + serviceT * 0.06}) translateY(${(1 - serviceT) * -28}px)`,
+            pointerEvents: serviceT > 0.2 ? "auto" : "none",
+            transition: "opacity .15s linear, transform .15s linear",
+          }}
+        >
+        {/* Left large image */}
+        <div
+          className="relative overflow-hidden rounded-sm"
+          style={{ gridRow: "1 / 3" }}
         >
           {SERVICES.map((s, i) => (
             <img
               key={i}
               src={s.wide}
               alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                opacity: i === cur ? 1 : 0,
-                transition: "opacity 1s cubic-bezier(.4,0,.2,1)",
-              }}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+              style={{ opacity: i === cur ? 1 : 0 }}
             />
           ))}
           <div
+            className="absolute inset-0"
             style={{
-              position: "absolute",
-              inset: 0,
               background:
                 "linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.1) 55%, transparent 100%)",
             }}
           />
-          <div
-            style={{
-              position: "absolute",
-              bottom: 32,
-              left: 0,
-              right: 0,
-              textAlign: "center",
-              padding: "0 28px",
-            }}
-          >
+          <div className="absolute bottom-8 left-0 right-0 text-center px-6">
             <p
+              className="text-white mb-4"
               style={{
                 fontFamily: "Georgia,serif",
                 fontStyle: "italic",
                 fontWeight: 400,
                 fontSize: "clamp(22px,2.8vw,34px)",
-                color: "#fff",
                 lineHeight: 1.15,
-                marginBottom: 16,
               }}
             >
               {svc.tagline}
             </p>
             <button
+              className="text-white rounded-full text-[7.5px] font-bold tracking-wider uppercase cursor-pointer px-5 py-2 border border-white/30"
               style={{
-                background: "rgba(255,255,255,.1)",
+                background: "rgba(255,255,255,.12)",
                 backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255,255,255,.3)",
-                color: "#fff",
-                borderRadius: 50,
-                padding: "9px 22px",
-                fontSize: 8.5,
-                fontWeight: 700,
-                letterSpacing: ".14em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                fontFamily: BASE_FONT,
               }}
             >
               Start a Project
             </button>
           </div>
-          <div style={{ position: "absolute", top: 20, left: 20 }}>
+          <div className="absolute top-5 left-5">
             <span
+              className="inline-flex items-center px-3 py-1 rounded-full text-[8px] font-bold tracking-[.28em] uppercase"
               style={{
-                fontSize: 7.5,
-                fontWeight: 700,
-                letterSpacing: ".2em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,.5)",
                 background: "rgba(0,0,0,.3)",
+                border: "1px solid rgba(255,255,255,.3)",
+                color: "rgba(255,255,255,.5)",
                 backdropFilter: "blur(6px)",
-                padding: "5px 10px",
-                borderRadius: 50,
               }}
             >
               {svc.tag} / 0{SERVICES.length}
             </span>
           </div>
         </div>
-        <div
-          style={{ position: "relative", overflow: "hidden", borderRadius: 6 }}
-        >
+
+        {/* Top right */}
+        <div className="relative overflow-hidden rounded-sm">
           {SERVICES.map((s, i) => (
             <img
               key={i}
               src={s.top}
               alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center 40%",
-                opacity: i === cur ? 1 : 0,
-                transition: "opacity 1s cubic-bezier(.4,0,.2,1)",
-              }}
+              className="absolute inset-0 w-full h-full object-cover object-[center_40%] transition-opacity duration-1000"
+              style={{ opacity: i === cur ? 1 : 0 }}
             />
           ))}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,.40)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex items-center gap-3">
               <span
+                className="text-white"
                 style={{
                   fontFamily: "Georgia,serif",
                   fontStyle: "italic",
-                  fontWeight: 400,
                   fontSize: "clamp(24px,3vw,38px)",
-                  color: "#fff",
                 }}
               >
                 MAD
               </span>
+              <span className="text-white/40 font-light text-xl">×</span>
               <span
-                style={{
-                  fontSize: 20,
-                  color: "rgba(255,255,255,.4)",
-                  fontWeight: 300,
-                }}
-              >
-                ×
-              </span>
-              <span
-                style={{
-                  fontFamily: BASE_FONT,
-                  fontWeight: 800,
-                  fontSize: "clamp(16px,2.2vw,26px)",
-                  color: "#fff",
-                  letterSpacing: ".12em",
-                  textTransform: "uppercase",
-                }}
+                className="text-white font-black tracking-wider uppercase"
+                style={{ fontSize: "clamp(16px,2.2vw,26px)" }}
               >
                 {svc.shortTag}
               </span>
             </div>
           </div>
-          <div
-            style={{
-              position: "absolute",
-              top: 18,
-              right: 18,
-              display: "flex",
-              gap: 5,
-            }}
-          >
+          <div className="absolute top-4 right-4 flex gap-1">
             {SERVICES.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
+                className="w-6 h-6 rounded-full cursor-pointer transition-all duration-300"
                 style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
                   border: `1.5px solid ${i === cur ? "#fff" : "rgba(255,255,255,.28)"}`,
                   background: i === cur ? "#fff" : "transparent",
-                  cursor: "pointer",
-                  transition: "all .3s",
                 }}
               />
             ))}
           </div>
         </div>
+
+        {/* Bottom right */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 4,
-            borderRadius: 6,
-            overflow: "hidden",
-          }}
+          className="grid rounded-sm overflow-hidden"
+          style={{ gridTemplateColumns: "1fr 1fr", gap: 4 }}
         >
           <div
+            className="relative overflow-hidden rounded-sm flex flex-col justify-between p-5"
             style={{
-              position: "relative",
-              overflow: "hidden",
-              borderRadius: 6,
+              background: dark
+                ? `linear-gradient(145deg, ${"#181817"}, #102535 58%, rgba(25,128,194,.72))`
+                : `linear-gradient(145deg, #ffffff, ${"#eef7fd"} 58%, rgba(242,101,34,.16))`,
+              border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
             }}
           >
-            {SERVICES.map((s, i) => (
-              <img
-                key={i}
-                src={s.accent}
-                alt=""
+            <div>
+              <p className="text-[7px] font-bold tracking-[.25em] uppercase text-neutral-400 mb-3">
+                Start a Project
+              </p>
+              <h3
+                className="leading-tight"
                 style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: i === cur ? 1 : 0,
-                  transition: "opacity 1s ease",
+                  fontFamily: "Georgia,serif",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  fontSize: "clamp(22px,2.4vw,32px)",
+                  color: dark ? "#f0ede8" : "#181817",
                 }}
-              />
-            ))}
-            <div
+              >
+                Work With MAD
+              </h3>
+            </div>
+            <button
+              className="self-start px-5 py-2.5 rounded-full text-[8px] font-bold tracking-widest uppercase text-white border-none cursor-pointer transition-all duration-200"
               style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(0,0,0,.12)",
-              }}
-            />
-          </div>
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 6,
-              padding: "22px 20px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <div
-              style={{
-                border: `2px solid ${DARK}`,
-                borderRadius: 3,
-                padding: "10px 12px",
-                marginBottom: 12,
+                background: dark ? "#1980c2" : "#181817",
+                boxShadow: dark
+                  ? `0 4px 20px ${"#1980c2"}35`
+                  : "0 4px 16px rgba(0,0,0,.18)",
               }}
             >
+              Let's Talk →
+            </button>
+          </div>
+          <div
+            className={`rounded-sm p-5 flex flex-col justify-between transition-colors duration-300 ${dark ? "bg-[#1e1e1c]" : "bg-white"}`}
+          >
+            <div
+              className={`border-2 rounded-sm p-3 mb-3 ${dark ? "border-white/90" : "border-[#181817]"}`}
+            >
               <div
-                style={{
-                  fontSize: "clamp(13px,1.4vw,17px)",
-                  fontWeight: 900,
-                  color: DARK,
-                  letterSpacing: "-.02em",
-                  lineHeight: 1.1,
-                }}
+                className={`font-black leading-tight tracking-tight ${dark ? "text-white/90" : "text-[#181817]"}`}
+                style={{ fontSize: "clamp(13px,1.4vw,17px)" }}
               >
                 {svc.label}
               </div>
             </div>
             <div>
-              <div
-                style={{
-                  fontSize: 7.5,
-                  fontWeight: 700,
-                  letterSpacing: ".18em",
-                  textTransform: "uppercase",
-                  color: GRAY3,
-                  marginBottom: 14,
-                }}
-              >
-                Service crafted by
-                <br />
-                <span style={{ fontSize: 9.5, fontWeight: 800, color: DARK }}>
-                  MAD™
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                  marginBottom: 12,
-                }}
-              >
+              <div className="flex flex-col gap-1 mb-3">
                 {SERVICES.map((s, i) => (
-                  <div
-                    key={i}
-                    style={{ display: "flex", alignItems: "center", gap: 7 }}
-                  >
+                  <div key={i} className="flex items-center gap-2">
                     <span
-                      style={{
-                        fontSize: 6.5,
-                        fontWeight: 700,
-                        color: i === cur ? GRAY4 : GRAY2,
-                        width: 13,
-                        flexShrink: 0,
-                      }}
+                      className="text-[6px] font-bold w-[13px] flex-shrink-0"
+                      style={{ color: i === cur ? "#4a4a48" : "#d0d0ce" }}
                     >
                       {s.tag}
                     </span>
-                    <div style={{ flex: 1 }}>
+                    <div className="flex-1">
                       {i === cur ? (
                         <ProgressBar
                           duration={DURATION}
@@ -1659,10 +1066,9 @@ function WhatWeDo() {
                         />
                       ) : (
                         <div
+                          className="h-[1.5px] rounded-sm"
                           style={{
-                            height: 1.5,
-                            background: i < cur ? GRAY3 : GRAY2,
-                            borderRadius: 1,
+                            background: i < cur ? "#b0b0ac" : "#e8e8e6",
                           }}
                         />
                       )}
@@ -1670,7 +1076,7 @@ function WhatWeDo() {
                   </div>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 5 }}>
+              <div className="flex gap-1">
                 {[
                   { fn: prev, d: "M14 6L8 12l6 6" },
                   { fn: next, d: "M10 6l6 6-6 6" },
@@ -1678,32 +1084,31 @@ function WhatWeDo() {
                   <button
                     key={i}
                     onClick={fn}
+                    className="w-[26px] h-[26px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-200"
                     style={{
-                      width: 26,
-                      height: 26,
-                      borderRadius: "50%",
-                      border: `1px solid ${GRAY2}`,
+                      border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
                       background: "transparent",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      transition: "all .2s",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = DARK;
+                      e.currentTarget.style.background = "#1980c2";
+                      e.currentTarget.style.borderColor = "#1980c2";
                       e.currentTarget.querySelector("path").style.stroke =
                         "#fff";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = "transparent";
-                      e.currentTarget.querySelector("path").style.stroke = DARK;
+                      e.currentTarget.style.borderColor = dark
+                        ? "rgba(255,255,255,.08)"
+                        : "#e8e8e6";
+                      e.currentTarget.querySelector("path").style.stroke = dark
+                        ? "rgba(240,237,232,.65)"
+                        : "#6b6b68";
                     }}
                   >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
                       <path
                         d={d}
-                        stroke={DARK}
+                        stroke={dark ? "rgba(240,237,232,.65)" : "#6b6b68"}
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -1713,15 +1118,11 @@ function WhatWeDo() {
                 ))}
                 <button
                   onClick={() => setPaused((p) => !p)}
+                  className="w-[26px] h-[26px] rounded-full text-[11px] cursor-pointer transition-all duration-200"
                   style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: "50%",
-                    border: `1px solid ${GRAY2}`,
+                    border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
                     background: "transparent",
-                    fontSize: 8,
-                    color: DARK,
-                    cursor: "pointer",
+                    color: dark ? "rgba(240,237,232,.65)" : "#6b6b68",
                   }}
                 >
                   {paused ? "▶" : "⏸"}
@@ -1730,1856 +1131,519 @@ function WhatWeDo() {
             </div>
           </div>
         </div>
+        </div>
+        <div
+          className="absolute inset-0 z-20 flex flex-col overflow-hidden"
+          style={{
+            opacity: reelT,
+            transform: `translateY(${(1 - reelT) * 42}px) scale(${0.96 + reelT * 0.04})`,
+            pointerEvents: reelT > 0.2 ? "auto" : "none",
+            transition: "opacity .15s linear, transform .15s linear",
+          }}
+        >
+          <div
+            className="absolute left-0 right-0 bottom-0 h-36 z-10 pointer-events-none"
+            style={{
+              background: dark
+                ? "linear-gradient(to top, #252523, rgba(37,37,35,0))"
+                : "linear-gradient(to top, #fafafa, rgba(250,250,250,0))",
+            }}
+          />
+          <div className="flex-shrink-0 px-10 pt-8 pb-4 flex justify-between z-20 relative">
+            <div>
+              <p className={`text-[8px] font-bold tracking-[.25em] uppercase mb-2 ${dark ? "text-white/35" : "text-dark-900/40"}`}>
+                Our Work Reel
+              </p>
+              <h2 className={`font-serif text-[clamp(28px,4vw,56px)] italic leading-none ${dark ? "text-white" : "text-dark-900"}`}>
+                Services in motion.
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              {FILM_FRAMES.map((f, i) => (
+                <div
+                  key={i}
+                  className="h-1.5 rounded-full transition-all duration-500"
+                  style={{
+                    width: i === activeIndex ? 26 : 7,
+                    background:
+                      i === activeIndex
+                        ? f.accent
+                        : dark
+                          ? "rgba(255,255,255,.18)"
+                          : "rgba(24,24,23,.16)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="relative flex-1 flex flex-col overflow-hidden">
+            <div
+              className="flex-shrink-0 flex items-center py-2"
+              style={{
+                background: dark ? "rgba(0,0,0,.6)" : "rgba(255,255,255,.72)",
+                borderTop: dark
+                  ? "2px solid rgba(255,255,255,.06)"
+                  : "2px solid rgba(0,0,0,.07)",
+                borderBottom: dark
+                  ? "2px solid rgba(255,255,255,.06)"
+                  : "2px solid rgba(0,0,0,.07)",
+              }}
+            >
+              <Sprockets count={16} dark={dark} />
+            </div>
+            <div
+              className="flex-1 relative overflow-hidden"
+              style={{ background: dark ? "black" : "#f6f3ee" }}
+            >
+              <div
+                className="absolute top-0 left-0 h-full flex"
+                style={{
+                  width: `${TOTAL * CARD_W}px`,
+                  transform: `translateX(-${translateX}px)`,
+                  transition: "transform 0.05s linear",
+                }}
+              >
+                {FILM_FRAMES.map((frame, i) => {
+                  const dist = Math.abs(i - activeIndex);
+                  return (
+                    <div
+                      key={frame.tag}
+                      className="relative flex-shrink-0 overflow-hidden"
+                      style={{
+                        width: CARD_W,
+                        height: "100%",
+                        filter:
+                          dist === 0
+                            ? "none"
+                            : dark
+                              ? `brightness(${Math.max(0.55, 1 - dist * 0.18)})`
+                              : `brightness(${Math.max(0.9, 1 - dist * 0.04)})`,
+                        transition: "filter .4s ease",
+                        borderLeft: dark
+                          ? "2px solid rgba(255,255,255,.04)"
+                          : "2px solid rgba(0,0,0,.06)",
+                        borderRight: dark
+                          ? "2px solid rgba(255,255,255,.04)"
+                          : "2px solid rgba(0,0,0,.06)",
+                      }}
+                    >
+                      <img
+                        src={frame.img}
+                        alt={frame.label}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          backgroundImage:
+                            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E\")",
+                          backgroundSize: "128px 128px",
+                          mixBlendMode: "overlay",
+                        }}
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background: dark
+                            ? "linear-gradient(to top, rgba(0,0,0,.28) 0%, rgba(0,0,0,.03) 52%, rgba(0,0,0,.14) 100%)"
+                            : "linear-gradient(to top, rgba(255,255,255,.08), rgba(255,255,255,0) 45%, rgba(255,255,255,.05))",
+                        }}
+                      />
+                      <div className="absolute top-0 left-0 right-0 flex justify-between px-1 pt-0.5">
+                        {Array.from({ length: 20 }).map((_, ti) => (
+                          <div
+                            key={ti}
+                            className={dark ? "w-px bg-white/10" : "w-px bg-black/10"}
+                            style={{ height: ti % 5 === 0 ? 8 : 4 }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                className="absolute inset-y-0 left-0 w-32 pointer-events-none z-10"
+                style={{
+                  background: dark
+                    ? "linear-gradient(to right, rgba(0,0,0,.68), transparent)"
+                    : "linear-gradient(to right, rgba(246,243,238,.86), transparent)",
+                }}
+              />
+              <div
+                className="absolute inset-y-0 right-0 w-32 pointer-events-none z-10"
+                style={{
+                  background: dark
+                    ? "linear-gradient(to left, rgba(0,0,0,.68), transparent)"
+                    : "linear-gradient(to left, rgba(246,243,238,.86), transparent)",
+                }}
+              />
+            </div>
+            <div
+              className="flex-shrink-0 flex items-center py-2"
+              style={{
+                background: dark ? "rgba(0,0,0,.6)" : "rgba(255,255,255,.72)",
+                borderTop: dark
+                  ? "2px solid rgba(255,255,255,.06)"
+                  : "2px solid rgba(0,0,0,.07)",
+                borderBottom: dark
+                  ? "2px solid rgba(255,255,255,.06)"
+                  : "2px solid rgba(0,0,0,.07)",
+              }}
+            >
+              <Sprockets count={16} dark={dark} />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-function ServiceCards() {
-  const [elapsed, setElapsed] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const lastTs = useRef(null);
-  const DURATION = 5200;
-  const NSTAGES = 3;
+// ─── FILM TAPE SERVICES ───────────────────────────────────────────────────────
+const FILM_FRAMES = [
+  {
+    tag: "01",
+    label: "Product & Digital",
+    tagline: "Built for performance.",
+    desc: "Websites, apps, and platforms engineered to scale with your ambitions.",
+    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=85&auto=format&fit=crop",
+    accent: "#1980c2",
+  },
+  {
+    tag: "02",
+    label: "Marketing & Growth",
+    tagline: "Reach the right people.",
+    desc: "Campaigns, content, and strategy that put your brand in front of audiences who convert.",
+    img: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&q=85&auto=format&fit=crop",
+    accent: "#5aa7e6",
+  },
+  {
+    tag: "03",
+    label: "Brand & Identity",
+    tagline: "Identity that speaks first.",
+    desc: "Visual systems, logos, and brand language that communicate before a word is read.",
+    img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&q=85&auto=format&fit=crop",
+    accent: "#7c3aed",
+  },
+  {
+    tag: "04",
+    label: "Strategy",
+    tagline: "Direction before action.",
+    desc: "Frameworks, roadmaps, and competitive analysis that keep you moving with intention.",
+    img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=85&auto=format&fit=crop",
+    accent: "#0ea5e9",
+  },
+  {
+    tag: "05",
+    label: "Content & Copy",
+    tagline: "Words that convert.",
+    desc: "Copy that sounds like you, sells like proven formulas, and earns trust every read.",
+    img: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=1200&q=85&auto=format&fit=crop",
+    accent: "#f59e0b",
+  },
+  {
+    tag: "06",
+    label: "Analytics & Data",
+    tagline: "Data that directs.",
+    desc: "Dashboards, tracking setups, and reporting that turn raw numbers into clear growth levers.",
+    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85&auto=format&fit=crop",
+    accent: "#22c55e",
+  },
+  {
+    tag: "07",
+    label: "Launch",
+    tagline: "Launch with momentum.",
+    desc: "Rollouts that make the first impression count.",
+    img: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1200&q=85&auto=format&fit=crop",
+    accent: "#ef4444",
+  },
+  {
+    tag: "08",
+    label: "Collaboration",
+    tagline: "Teams in motion.",
+    desc: "Shared systems for focused creative execution.",
+    img: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=85&auto=format&fit=crop",
+    accent: "#14b8a6",
+  },
+  {
+    tag: "09",
+    label: "Research",
+    tagline: "Insight before output.",
+    desc: "Audience research that sharpens every decision.",
+    img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=85&auto=format&fit=crop",
+    accent: "#a855f7",
+  },
+  {
+    tag: "10",
+    label: "Commerce",
+    tagline: "Built to convert.",
+    desc: "Digital storefronts and flows shaped around revenue.",
+    img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=85&auto=format&fit=crop",
+    accent: "#f97316",
+  },
+];
 
-  useEffect(() => {
-    if (paused) {
-      lastTs.current = null;
-      return;
-    }
-    const id = setInterval(() => {
-      const now = Date.now();
-      if (lastTs.current === null) lastTs.current = now;
-      const delta = now - lastTs.current;
-      lastTs.current = now;
-      setElapsed((e) => e + delta);
-    }, 40);
-    return () => clearInterval(id);
-  }, [paused]);
-
-  const cycle = elapsed % (DURATION * NSTAGES);
-  const stage = Math.min(NSTAGES - 1, Math.floor(cycle / DURATION));
-  const pct = ((cycle % DURATION) / DURATION) * 100;
-
-  const tag = (txt) => (
-    <p
-      style={{
-        fontFamily: MONO_FONT,
-        fontSize: 8,
-        fontWeight: 700,
-        letterSpacing: ".14em",
-        textTransform: "uppercase",
-        color: "rgba(0,0,0,0.3)",
-        padding: "12px 12px 4px",
-        margin: 0,
-      }}
-    >
-      {txt}
-    </p>
-  );
-
-  const Bar = ({ color }) => (
-    <div
-      style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 2,
-        background: "rgba(0,0,0,0.05)",
-      }}
-    >
-      <div style={{ height: "100%", background: color, width: `${pct}%` }} />
-    </div>
-  );
-
-  const Dots = ({ color }) => (
-    <div
-      style={{
-        position: "absolute",
-        bottom: 8,
-        left: "50%",
-        transform: "translateX(-50%)",
-        display: "flex",
-        gap: 4,
-        zIndex: 10,
-      }}
-    >
-      {[0, 1, 2].map((i) => (
+function Sprockets({ count = 14, dark }) {
+  return (
+    <div className="flex items-center justify-around w-full px-4">
+      {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
+          className="w-5 h-3.5 rounded-sm flex-shrink-0"
           style={{
-            width: 5,
-            height: 5,
-            borderRadius: "50%",
-            transition: "background .3s",
-            background: i === stage ? color : "rgba(0,0,0,0.12)",
+            background: dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.12)",
+            boxShadow: dark
+              ? "none"
+              : "inset 0 0 0 1px rgba(0,0,0,.08)",
           }}
         />
       ))}
     </div>
   );
+}
 
-  const cardWrap = (content, accent) => (
-    <div
-      style={{
-        borderRadius: 16,
-        height: 300,
-        position: "relative",
-        background: "#fff",
-        border: "0.5px solid rgba(0,0,0,0.09)",
-        overflow: "hidden",
-        boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-      }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      {content}
-      <Dots color={accent} />
-      <Bar color={accent} />
-    </div>
-  );
+function FilmTapeServices() {
+  const { dark } = useTheme();
+  const wrapRef = useRef(null);
+  const maxProgressRef = useRef(0);
+  const [progress, setProgress] = useState(0);
+  const CARD_W = 340;
+  const TOTAL = FILM_FRAMES.length;
 
-  // ── CARD A: Product & Digital ────────────────────────────────────────
-  const cardA = [
-    /* stage 0 */
-    <div
-      key="a0"
-      style={{ display: "flex", flexDirection: "column", height: "100%" }}
-    >
-      {tag("Product & Digital")}
-      <div
-        style={{
-          height: 108,
-          background: "linear-gradient(135deg,#e8f4fd,#d0e8f7)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-        }}
-      >
-        <p
-          style={{
-            fontFamily: MONO_FONT,
-            fontSize: 11,
-            fontWeight: 900,
-            color: AZ,
-            margin: 0,
-          }}
-        >
-          Digital Products
-        </p>
-        <div style={{ display: "flex", gap: 20 }}>
-          {[
-            ["98", "Perf"],
-            ["1.2s", "Load"],
-            ["4.9★", "Rating"],
-          ].map(([v, l]) => (
-            <div key={l} style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: 12,
-                  fontWeight: 900,
-                  color: AZ,
-                }}
-              >
-                {v}
-              </div>
-              <div
-                style={{ fontFamily: BASE_FONT, fontSize: 7, color: "#bbb" }}
-              >
-                {l}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 4,
-          padding: "8px 10px",
-        }}
-      >
-        {[
-          ["Design", "UX/UI web & mobile.", AZ],
-          ["Build", "Fast, scalable code.", "#0f4f7a"],
-          ["Scale", "Systems that grow.", "#3da0e4"],
-        ].map(([t, d, c]) => (
-          <div
-            key={t}
-            style={{
-              background: "#f0f7fd",
-              borderRadius: 5,
-              padding: 6,
-              border: "0.5px solid rgba(25,128,194,.15)",
-            }}
-          >
-            <div
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 2,
-                background: c,
-                marginBottom: 3,
-              }}
-            />
-            <div
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                color: DARK,
-              }}
-            >
-              {t}
-            </div>
-            <div
-              style={{
-                fontFamily: BASE_FONT,
-                fontSize: 6,
-                color: "#aaa",
-                lineHeight: 1.4,
-              }}
-            >
-              {d}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          padding: "0 12px 8px",
-          fontFamily: BASE_FONT,
-          fontSize: 9.5,
-          color: "#666",
-          lineHeight: 1.5,
-        }}
-      >
-        <strong
-          style={{
-            fontFamily: MONO_FONT,
-            fontSize: 11,
-            fontWeight: 800,
-            color: DARK,
-            display: "block",
-            marginBottom: 1,
-          }}
-        >
-          Websites & platforms.
-        </strong>
-        Products that help organisations work smarter.
-      </div>
-    </div>,
-    /* stage 1 */
-    <div
-      key="a1"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#f8f8f6",
-      }}
-    >
-      {tag("Product & Digital")}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-          padding: "0 10px 10px",
-          gap: 5,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            paddingBottom: 7,
-            borderBottom: "0.5px solid rgba(0,0,0,.07)",
-          }}
-        >
-          <div
-            style={{ width: 7, height: 7, background: AZ, borderRadius: "50%" }}
-          />
-          <span
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 8,
-              fontWeight: 700,
-              color: "#999",
-              letterSpacing: ".08em",
-            }}
-          >
-            MAD SITE BUILDER
-          </span>
-        </div>
-        {[
-          ["Hi! What kind of site are we building today?", "ai"],
-          ["E-commerce — streetwear, dark aesthetic.", "us"],
-          [
-            "Generating layout — dark hero, product grid, bold type. Ready!",
-            "ai",
-          ],
-        ].map(([msg, who]) => (
-          <div
-            key={msg}
-            style={{
-              padding: "7px 9px",
-              fontSize: 8.5,
-              lineHeight: 1.5,
-              alignSelf: who === "us" ? "flex-end" : "flex-start",
-              maxWidth: "92%",
-              background: who === "us" ? AZ : "#fff",
-              color: who === "us" ? "#fff" : "#555",
-              borderRadius:
-                who === "us" ? "10px 10px 2px 10px" : "10px 10px 10px 2px",
-              border: who === "us" ? "none" : "0.5px solid rgba(0,0,0,.08)",
-            }}
-          >
-            {msg}
-          </div>
-        ))}
-        <div
-          style={{
-            display: "flex",
-            gap: 5,
-            alignItems: "center",
-            background: "#fff",
-            borderRadius: 7,
-            padding: "5px 8px",
-            marginTop: 4,
-            border: "0.5px solid rgba(0,0,0,.1)",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: BASE_FONT,
-              fontSize: 8,
-              color: "#ccc",
-              flex: 1,
-            }}
-          >
-            Continue building…
-          </span>
-          <div
-            style={{
-              width: 16,
-              height: 16,
-              background: AZ,
-              borderRadius: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-              <path d="M1 7L7 4L1 1V7Z" fill="white" />
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>,
-    /* stage 2 */
-    <div
-      key="a2"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "8px 10px 5px",
-          borderBottom: "0.5px solid rgba(0,0,0,.06)",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: MONO_FONT,
-            fontSize: 9,
-            fontWeight: 900,
-            color: AZ,
-          }}
-        >
-          STRKT
-        </span>
-        <div style={{ display: "flex", gap: 6 }}>
-          {["Shop", "Lookbook", "About"].map((n) => (
-            <span
-              key={n}
-              style={{ fontFamily: BASE_FONT, fontSize: 7, color: "#bbb" }}
-            >
-              {n}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          height: 72,
-          background: "#e8f4fd",
-          margin: "6px 10px",
-          borderRadius: 5,
-          display: "flex",
-          alignItems: "center",
-          padding: "0 10px",
-          gap: 8,
-        }}
-      >
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 9,
-              fontWeight: 900,
-              color: DARK,
-            }}
-          >
-            Wear what you mean.
-          </div>
-          <div
-            style={{
-              fontFamily: BASE_FONT,
-              fontSize: 6.5,
-              color: "#aaa",
-              lineHeight: 1.4,
-            }}
-          >
-            Limited drops, every week.
-          </div>
-        </div>
-        <div
-          style={{
-            background: AZ,
-            color: "#fff",
-            fontFamily: MONO_FONT,
-            fontSize: 6.5,
-            fontWeight: 700,
-            padding: "3px 7px",
-            borderRadius: 3,
-          }}
-        >
-          Shop now
-        </div>
-        <div
-          style={{
-            width: 44,
-            height: 54,
-            background: "rgba(25,128,194,.1)",
-            borderRadius: 4,
-            flexShrink: 0,
-          }}
-        />
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 4,
-          padding: "6px 10px",
-        }}
-      >
-        {[
-          ["Cargo Tee", "$48"],
-          ["Wide Hoodie", "$90"],
-          ["Cap", "$32"],
-        ].map(([n, p]) => (
-          <div
-            key={n}
-            style={{
-              background: "#f8f8f6",
-              borderRadius: 4,
-              padding: 5,
-              border: "0.5px solid rgba(0,0,0,.06)",
-            }}
-          >
-            <div
-              style={{
-                height: 24,
-                background: "#dbeeff",
-                borderRadius: 2,
-                marginBottom: 2,
-              }}
-            />
-            <div
-              style={{
-                fontFamily: BASE_FONT,
-                fontSize: 6,
-                color: "#aaa",
-                marginBottom: 1,
-              }}
-            >
-              {n}
-            </div>
-            <div
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 800,
-                color: AZ,
-              }}
-            >
-              {p}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 10,
-          background: DARK,
-          color: "#fff",
-          fontFamily: MONO_FONT,
-          fontSize: 8,
-          fontWeight: 700,
-          padding: "4px 9px",
-          borderRadius: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: 4,
-        }}
-      >
-        <div
-          style={{ width: 5, height: 5, background: AZ, borderRadius: "50%" }}
-        />
-        Live in 2 weeks
-      </div>
-    </div>,
-  ];
+  useEffect(() => {
+    const fn = () => {
+      if (!wrapRef.current) return;
+      const rect = wrapRef.current.getBoundingClientRect();
+      const total = wrapRef.current.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const raw = Math.min(1, Math.max(0, scrolled / total));
+      maxProgressRef.current = Math.max(maxProgressRef.current, raw);
+      setProgress(maxProgressRef.current);
+    };
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
 
-  // ── CARD B: Marketing & Growth ────────────────────────────────────────
-  const cardB = [
-    /* stage 0 */
-    <div
-      key="b0"
-      style={{ display: "flex", flexDirection: "column", height: "100%" }}
-    >
-      {tag("Marketing & Growth")}
-      <div
-        style={{
-          margin: "0 10px",
-          borderRadius: 8,
-          overflow: "hidden",
-          border: "0.5px solid rgba(0,0,0,.08)",
-          flex: 1,
-        }}
-      >
-        <div
-          style={{
-            background: DARK,
-            padding: "7px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg,#f09433,#dc2743)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 8,
-              fontWeight: 900,
-              color: "#fff",
-              fontFamily: MONO_FONT,
-            }}
-          >
-            M
-          </div>
-          <span
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#fff",
-              flex: 1,
-            }}
-          >
-            madstudio
-          </span>
-          <span
-            style={{
-              background: AZ,
-              color: "#fff",
-              fontFamily: MONO_FONT,
-              fontSize: 7,
-              fontWeight: 700,
-              padding: "3px 7px",
-              borderRadius: 4,
-            }}
-          >
-            Promote
-          </span>
-        </div>
-        <div
-          style={{
-            height: 88,
-            background: `linear-gradient(135deg,${AZ},#0f4f7a)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 13,
-              fontWeight: 900,
-              color: "#fff",
-              textAlign: "center",
-              lineHeight: 1.15,
-              padding: 10,
-            }}
-          >
-            We don&apos;t just
-            <br />
-            run ads. We run
-            <br />
-            results.
-          </div>
-        </div>
-        <div
-          style={{
-            padding: "7px 10px",
-            fontFamily: BASE_FONT,
-            fontSize: 7.5,
-            color: "#666",
-            lineHeight: 1.5,
-            background: "#fff",
-          }}
-        >
-          New case study: 3× ROAS in 60 days for a D2C brand.
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 3,
-            flexWrap: "wrap",
-            padding: "0 10px 7px",
-            background: "#fff",
-          }}
-        >
-          {["#growth", "#performance", "#madstudio"].map((t) => (
-            <span
-              key={t}
-              style={{
-                background: "#e8f4fd",
-                color: AZ,
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                padding: "2px 6px",
-                borderRadius: 10,
-              }}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>,
-    /* stage 1 */
-    <div
-      key="b1"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      {tag("Marketing & Growth")}
-      <div
-        style={{
-          padding: 10,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          flex: 1,
-        }}
-      >
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}
-        >
-          {[
-            ["ROAS", "3.2×", "+18%"],
-            ["CAC", "$14.20", "−22%"],
-          ].map(([l, v, d]) => (
-            <div
-              key={l}
-              style={{
-                background: "#f5f5f3",
-                borderRadius: 8,
-                padding: "8px 10px",
-                border: "0.5px solid rgba(0,0,0,.07)",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: BASE_FONT,
-                  fontSize: 7,
-                  color: "#aaa",
-                  marginBottom: 2,
-                }}
-              >
-                {l}
-              </div>
-              <div
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: 17,
-                  fontWeight: 900,
-                  color: DARK,
-                }}
-              >
-                {v}
-              </div>
-              <div
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: 8,
-                  fontWeight: 700,
-                  color: "#22a05a",
-                }}
-              >
-                {d}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-          {[
-            ["Paid Social", 78],
-            ["Email", 61],
-            ["SEO", 45],
-            ["Referral", 32],
-          ].map(([n, v]) => (
-            <div
-              key={n}
-              style={{ display: "flex", alignItems: "center", gap: 7 }}
-            >
-              <span
-                style={{
-                  fontFamily: BASE_FONT,
-                  fontSize: 7.5,
-                  color: "#aaa",
-                  width: 56,
-                  flexShrink: 0,
-                }}
-              >
-                {n}
-              </span>
-              <div
-                style={{
-                  flex: 1,
-                  height: 4,
-                  background: "#eee",
-                  borderRadius: 2,
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    height: "100%",
-                    borderRadius: 2,
-                    background: AZ,
-                    width: `${v}%`,
-                  }}
-                />
-              </div>
-              <span
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: 7.5,
-                  fontWeight: 700,
-                  color: AZ,
-                  width: 22,
-                  textAlign: "right",
-                }}
-              >
-                {v}%
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>,
-    /* stage 2 */
-    <div
-      key="b2"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      <div
-        style={{
-          padding: "9px 10px",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          borderBottom: "0.5px solid #eee",
-        }}
-      >
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg,#f09433,#dc2743)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: MONO_FONT,
-            fontSize: 11,
-            fontWeight: 900,
-            color: "#fff",
-            flexShrink: 0,
-          }}
-        >
-          M
-        </div>
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#111",
-            }}
-          >
-            madstudio.hq
-          </div>
-          <div style={{ fontFamily: BASE_FONT, fontSize: 7.5, color: "#aaa" }}>
-            @madstudio
-          </div>
-        </div>
-        <button
-          style={{
-            background: AZ,
-            color: "#fff",
-            fontFamily: MONO_FONT,
-            fontSize: 7.5,
-            fontWeight: 700,
-            padding: "4px 10px",
-            borderRadius: 14,
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Follow
-        </button>
-      </div>
-      <div style={{ display: "flex", borderBottom: "0.5px solid #eee" }}>
-        {[
-          ["12.4K", "Posts"],
-          ["89K", "Followers"],
-          ["4.1K", "Following"],
-        ].map(([n, l]) => (
-          <div
-            key={l}
-            style={{
-              flex: 1,
-              padding: 6,
-              textAlign: "center",
-              borderRight: "0.5px solid #eee",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 11,
-                fontWeight: 900,
-                color: AZ,
-              }}
-            >
-              {n}
-            </div>
-            <div
-              style={{ fontFamily: BASE_FONT, fontSize: 6.5, color: "#bbb" }}
-            >
-              {l}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 2,
-          padding: 2,
-        }}
-      >
-        {[
-          [AZ, "#0f4f7a"],
-          ["#e8f4fd", "#d0e8f7"],
-          [DARK, "#2a2a28"],
-          ["#3da0e4", AZ],
-          ["#e8f4fd", AZ],
-          ["#0f4f7a", DARK],
-        ].map(([c1, c2], i) => (
-          <div
-            key={i}
-            style={{
-              height: 52,
-              background: `linear-gradient(135deg,${c1},${c2})`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 6,
-                fontWeight: 700,
-                color: "rgba(255,255,255,.7)",
-              }}
-            >
-              MAD
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>,
-  ];
-
-  // ── CARD C: Brand & Identity ───────────────────────────────────────────
-  const PURPLE = "#7c3aed";
-  const cardC = [
-    /* stage 0: logo construction */
-    <div
-      key="c0"
-      style={{ display: "flex", flexDirection: "column", height: "100%" }}
-    >
-      {tag("Brand & Identity")}
-      <div
-        style={{
-          margin: "0 12px",
-          background: "#f0f7fd",
-          borderRadius: 8,
-          height: 108,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          border: "0.5px solid rgba(25,128,194,.12)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              background: AZ,
-              borderRadius: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <polygon points="8,2 14,12 2,12" fill="white" opacity="0.9" />
-            </svg>
-          </div>
-          <span
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 18,
-              fontWeight: 900,
-              color: DARK,
-            }}
-          >
-            Brand<span style={{ color: AZ }}>Co</span>
-          </span>
-        </div>
-      </div>
-      <div style={{ display: "flex", gap: 5, padding: "8px 12px 4px" }}>
-        {[
-          ["Primary", AZ, "#fff"],
-          ["Dark", DARK, "#fff"],
-          ["Light", "#f0f0ee", DARK],
-        ].map(([l, bg, c]) => (
-          <div
-            key={l}
-            style={{
-              flex: 1,
-              borderRadius: 5,
-              height: 26,
-              background: bg,
-              color: c,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: MONO_FONT,
-              fontSize: 8.5,
-              fontWeight: 800,
-            }}
-          >
-            {l}
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 6,
-          alignItems: "center",
-          padding: "4px 12px",
-        }}
-      >
-        {[AZ, DARK, "#3da0e4", "#e8f4fd", "#0f4f7a"].map((c) => (
-          <div
-            key={c}
-            style={{ width: 18, height: 18, borderRadius: 4, background: c }}
-          />
-        ))}
-        <span style={{ fontFamily: "monospace", fontSize: 7.5, color: "#aaa" }}>
-          #1980c2
-        </span>
-      </div>
-      <div
-        style={{
-          padding: "4px 12px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-        }}
-      >
-        {[
-          ["H1", "Montserrat 900", 14],
-          ["Body", "Helvetica Neue", 11],
-          ["Label", "MONTSERRAT 700", 9],
-        ].map(([l, t, s]) => (
-          <div
-            key={l}
-            style={{ display: "flex", alignItems: "baseline", gap: 7 }}
-          >
-            <span
-              style={{
-                fontFamily: BASE_FONT,
-                fontSize: 7,
-                color: "#ccc",
-                width: 30,
-                flexShrink: 0,
-              }}
-            >
-              {l}
-            </span>
-            <span style={{ fontFamily: BASE_FONT, fontSize: s, color: DARK }}>
-              {t}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>,
-    /* stage 1: before / after */
-    <div
-      key="c1"
-      style={{ display: "flex", flexDirection: "column", height: "100%" }}
-    >
-      {tag("Brand & Identity")}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          flex: 1,
-          margin: "0 0 28px",
-        }}
-      >
-        <div
-          style={{
-            background: "#f0f0ee",
-            padding: 12,
-            display: "flex",
-            flexDirection: "column",
-            gap: 6,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 7,
-              fontWeight: 700,
-              letterSpacing: ".12em",
-              textTransform: "uppercase",
-              color: "#bbb",
-            }}
-          >
-            Before
-          </span>
-          <div
-            style={{
-              background: "#ddd",
-              borderRadius: 3,
-              padding: "4px 8px",
-              alignSelf: "flex-start",
-              fontFamily: BASE_FONT,
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#888",
-            }}
-          >
-            oldcorp
-          </div>
-          <div style={{ display: "flex", gap: 3 }}>
-            {["#aaa", "#bbb", "#ccc"].map((c) => (
-              <div
-                key={c}
-                style={{
-                  width: 15,
-                  height: 15,
-                  borderRadius: 3,
-                  background: c,
-                }}
-              />
-            ))}
-          </div>
-          <div
-            style={{
-              fontFamily: BASE_FONT,
-              fontSize: 10,
-              fontWeight: 400,
-              color: "#999",
-            }}
-          >
-            Arial, 400
-          </div>
-          <div
-            style={{
-              background: "#ddd",
-              borderRadius: 4,
-              flex: 1,
-              padding: 6,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              gap: 3,
-            }}
-          >
-            {[1, 0.6, 0.4].map((o, i) => (
-              <div
-                key={i}
-                style={{
-                  height: 3,
-                  borderRadius: 2,
-                  background: `rgba(0,0,0,${o * 0.1})`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-        <div
-          style={{
-            background: "#0f1a2c",
-            padding: 12,
-            display: "flex",
-            flexDirection: "column",
-            gap: 6,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 7,
-              fontWeight: 700,
-              letterSpacing: ".12em",
-              textTransform: "uppercase",
-              color: AZ,
-            }}
-          >
-            After
-          </span>
-          <div
-            style={{
-              background: DARK,
-              borderRadius: 5,
-              padding: "4px 8px",
-              alignSelf: "flex-start",
-              fontFamily: MONO_FONT,
-              fontSize: 10,
-              fontWeight: 900,
-              color: "#fff",
-            }}
-          >
-            NEWBRAND
-          </div>
-          <div style={{ display: "flex", gap: 3 }}>
-            {[AZ, DARK, "#3da0e4"].map((c) => (
-              <div
-                key={c}
-                style={{
-                  width: 15,
-                  height: 15,
-                  borderRadius: 3,
-                  background: c,
-                }}
-              />
-            ))}
-          </div>
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#fff",
-            }}
-          >
-            Montserrat 800
-          </div>
-          <div
-            style={{
-              background: "#1a2a3e",
-              borderRadius: 6,
-              flex: 1,
-              padding: 6,
-              border: "0.5px solid rgba(25,128,194,.2)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              gap: 3,
-            }}
-          >
-            {[1, 0.6, 0.4].map((o, i) => (
-              <div
-                key={i}
-                style={{
-                  height: 3,
-                  borderRadius: 2,
-                  background: `rgba(255,255,255,${o * 0.08})`,
-                }}
-              />
-            ))}
-            <div
-              style={{
-                height: 2,
-                borderRadius: 1,
-                background: AZ,
-                width: "38%",
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    </div>,
-    /* stage 2: component kit */
-    <div
-      key="c2"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      {tag("Brand & Identity")}
-      <div
-        style={{
-          padding: "6px 12px 4px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          flex: 1,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 8,
-              fontWeight: 700,
-              color: "#aaa",
-              letterSpacing: ".14em",
-              textTransform: "uppercase",
-              marginBottom: 5,
-            }}
-          >
-            Colour Palette
-          </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {[AZ, DARK, "#3da0e4", "#e8f4fd", "#f8f8f6"].map((c) => (
-              <div key={c}>
-                <div
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: 5,
-                    background: c,
-                    border: c === "#f8f8f6" ? "0.5px solid #eee" : "none",
-                  }}
-                />
-                <div
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: 6,
-                    color: "#bbb",
-                    textAlign: "center",
-                    marginTop: 2,
-                  }}
-                >
-                  {c}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ borderTop: "0.5px solid #eee", paddingTop: 7 }}>
-          <div
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 8,
-              fontWeight: 700,
-              color: "#aaa",
-              letterSpacing: ".14em",
-              textTransform: "uppercase",
-              marginBottom: 5,
-            }}
-          >
-            Components
-          </div>
-          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-            <button
-              style={{
-                background: AZ,
-                color: "#fff",
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                padding: "4px 8px",
-                borderRadius: 4,
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Primary
-            </button>
-            <button
-              style={{
-                background: "transparent",
-                color: AZ,
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                padding: "4px 8px",
-                borderRadius: 4,
-                border: `1px solid ${AZ}`,
-                cursor: "pointer",
-              }}
-            >
-              Outline
-            </button>
-            <button
-              style={{
-                background: "#f5f5f3",
-                color: DARK,
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                padding: "4px 8px",
-                borderRadius: 4,
-                border: "1px solid rgba(0,0,0,.1)",
-                cursor: "pointer",
-              }}
-            >
-              Ghost
-            </button>
-          </div>
-        </div>
-        <div
-          style={{
-            borderTop: "0.5px solid #eee",
-            paddingTop: 7,
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-          }}
-        >
-          {[
-            ["H1", "Montserrat Bold", 18, DARK],
-            ["Body", "Helvetica Neue", 13, "#666"],
-            ["Caption", "Montserrat 600", 10, "#aaa"],
-          ].map(([l, f, s, c]) => (
-            <div
-              key={l}
-              style={{ display: "flex", alignItems: "baseline", gap: 8 }}
-            >
-              <span
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: 7,
-                  color: "#ccc",
-                  width: 36,
-                  flexShrink: 0,
-                }}
-              >
-                {l}
-              </span>
-              <span style={{ fontFamily: BASE_FONT, fontSize: s, color: c }}>
-                {f}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          background: "#f0f0ee",
-          border: "0.5px solid rgba(0,0,0,.1)",
-          borderRadius: 4,
-          padding: "2px 7px",
-          display: "flex",
-          alignItems: "center",
-          gap: 4,
-        }}
-      >
-        <div
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: "50%",
-            background: "#a259ff",
-          }}
-        />
-        <span style={{ fontFamily: BASE_FONT, fontSize: 7.5, color: "#888" }}>
-          Figma
-        </span>
-      </div>
-    </div>,
-  ];
-
-  // ── CARD D: Strategy ───────────────────────────────────────────────────
-  const cardD = [
-    /* stage 0: steps */
-    <div
-      key="d0"
-      style={{ display: "flex", flexDirection: "column", height: "100%" }}
-    >
-      {tag("Strategy")}
-      <div
-        style={{
-          margin: "0 12px",
-          background: "#f8f4ff",
-          borderRadius: 8,
-          height: 90,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 5,
-          border: "0.5px solid rgba(100,60,200,.1)",
-        }}
-      >
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          {[
-            ["Discover", "#7c3aed"],
-            ["Define", "#6d28d9"],
-            ["Deliver", "#5b21b6"],
-          ].map(([l, c], i) => (
-            <React.Fragment key={l}>
-              {i > 0 && <span style={{ color: "#ccc", fontSize: 10 }}>→</span>}
-              <div
-                style={{
-                  width: 52,
-                  height: 28,
-                  borderRadius: 6,
-                  background: c,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: MONO_FONT,
-                  fontSize: 7,
-                  fontWeight: 800,
-                  color: "#fff",
-                }}
-              >
-                {l}
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          padding: "8px 12px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 5,
-          flex: 1,
-        }}
-      >
-        {[
-          ["01", "Map the current state", "Research"],
-          ["02", "Identify growth levers", "Strategy"],
-          ["03", "Build the roadmap", "Planning"],
-        ].map(([n, t, b]) => (
-          <div
-            key={n}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 7,
-              padding: "6px 8px",
-              background: "#f8f4ff",
-              borderRadius: 6,
-              border: "0.5px solid rgba(100,60,200,.1)",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 9,
-                fontWeight: 900,
-                color: PURPLE,
-                width: 14,
-              }}
-            >
-              {n}
-            </span>
-            <span
-              style={{
-                fontFamily: BASE_FONT,
-                fontSize: 8,
-                color: "#555",
-                flex: 1,
-              }}
-            >
-              {t}
-            </span>
-            <span
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 7,
-                fontWeight: 700,
-                color: PURPLE,
-                background: "#f0e8ff",
-                padding: "2px 6px",
-                borderRadius: 8,
-              }}
-            >
-              {b}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>,
-    /* stage 1: workshop checklist */
-    <div
-      key="d1"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      {tag("Strategy")}
-      <div
-        style={{
-          margin: "0 12px",
-          background: "#f0faf5",
-          borderRadius: 8,
-          height: 72,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-around",
-          border: "0.5px solid rgba(0,160,90,.1)",
-        }}
-      >
-        {[
-          ["🎯", "Goals"],
-          ["👥", "Users"],
-          ["📊", "Metrics"],
-          ["🗺️", "Roadmap"],
-        ].map(([e, l]) => (
-          <div
-            key={l}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 3,
-            }}
-          >
-            <span style={{ fontSize: 16 }}>{e}</span>
-            <span
-              style={{ fontFamily: MONO_FONT, fontSize: 6.5, color: "#aaa" }}
-            >
-              {l}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          padding: "8px 12px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 5,
-          flex: 1,
-        }}
-      >
-        {[
-          ["Define north star metric", true],
-          ["Audit existing assets", true],
-          ["Map competitor landscape", true],
-          ["Draft 90-day plan", false],
-          ["Align stakeholders", false],
-        ].map(([t, done]) => (
-          <div
-            key={t}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 8,
-              color: "#555",
-              fontFamily: BASE_FONT,
-            }}
-          >
-            <div
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 3,
-                flexShrink: 0,
-                background: done ? "#22a05a" : "#f5f5f3",
-                border: done ? "none" : "0.5px solid rgba(0,0,0,.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {done && (
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                  <path
-                    d="M1.5 4L3.5 6L6.5 2"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              )}
-            </div>
-            <span
-              style={{
-                textDecoration: done ? "line-through" : "none",
-                opacity: done ? 0.5 : 1,
-              }}
-            >
-              {t}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>,
-    /* stage 2: roadmap */
-    <div
-      key="d2"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        background: "#fff",
-      }}
-    >
-      {tag("Strategy")}
-      <div
-        style={{
-          padding: "8px 12px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          flex: 1,
-        }}
-      >
-        {[
-          [
-            "Q1",
-            [
-              [AZ, "Discovery", 45],
-              ["#3da0e4", "Design", 35],
-            ],
-          ],
-          [
-            "Q2",
-            [
-              ["#22a05a", "Build", 55],
-              ["#7c3aed", "Launch", 25],
-            ],
-          ],
-          ["Q3", [["#f59e0b", "Grow", 65]]],
-          ["Q4", [["#dc2626", "Scale", 80]]],
-        ].map(([q, segs]) => (
-          <div
-            key={q}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
-          >
-            <span
-              style={{
-                fontFamily: MONO_FONT,
-                fontSize: 8,
-                fontWeight: 700,
-                color: "#aaa",
-                width: 20,
-                flexShrink: 0,
-              }}
-            >
-              {q}
-            </span>
-            <div
-              style={{
-                flex: 1,
-                height: 18,
-                borderRadius: 4,
-                background: "#f5f5f3",
-                border: "0.5px solid rgba(0,0,0,.07)",
-                overflow: "hidden",
-                display: "flex",
-              }}
-            >
-              {segs.map(([c, l, w]) => (
-                <div
-                  key={l}
-                  style={{
-                    width: `${w}%`,
-                    height: "100%",
-                    background: c,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: MONO_FONT,
-                    fontSize: 6.5,
-                    fontWeight: 700,
-                    color: "#fff",
-                  }}
-                >
-                  {l}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-        <div
-          style={{
-            marginTop: 8,
-            padding: "8px 10px",
-            background: "#f8f4ff",
-            borderRadius: 6,
-            border: "0.5px solid rgba(100,60,200,.1)",
-          }}
-        >
-          <p
-            style={{
-              fontFamily: MONO_FONT,
-              fontSize: 8,
-              fontWeight: 700,
-              color: PURPLE,
-              margin: "0 0 2px",
-            }}
-          >
-            On track
-          </p>
-          <p
-            style={{
-              fontFamily: BASE_FONT,
-              fontSize: 9,
-              color: "#555",
-              margin: 0,
-              lineHeight: 1.4,
-            }}
-          >
-            Q1–Q2 complete. Launch milestone on schedule for Q2 close.
-          </p>
-        </div>
-      </div>
-    </div>,
-  ];
+  const translateX = progress * (TOTAL - 1) * CARD_W;
+  const activeIndex = Math.round(progress * (TOTAL - 1));
 
   return (
-    <section
-      id="services"
-      style={{
-        background: "#f8f8f6",
-        fontFamily: BASE_FONT,
-        padding: "56px 64px 48px",
-      }}
+    <div
+      ref={wrapRef}
+      id="services-tape"
+      style={{ height: `${TOTAL * 52}vh` }}
     >
-      <p
-        style={{
-          fontFamily: MONO_FONT,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: ".2em",
-          color: AZ,
-          textTransform: "uppercase",
-          marginBottom: 10,
-        }}
-      >
-        Services, Continued
-      </p>
-      <h2
-        style={{
-          fontFamily: MONO_FONT,
-          fontSize: 28,
-          fontWeight: 900,
-          color: DARK,
-          marginBottom: 32,
-          margin: "0 0 32px",
-        }}
-      >
-        What we do for you
-      </h2>
       <div
+        className="sticky top-0 h-screen overflow-hidden flex flex-col"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: 18,
+          background: dark
+            ? `linear-gradient(180deg, ${"#181817"} 0%, #0f0f0e 52%, #111110 100%)`
+            : "linear-gradient(180deg, #f8f8f7 0%, #f1eee9 44%, #e8edf0 100%)",
         }}
       >
-        {cardWrap(cardA[stage], AZ)}
-        {cardWrap(cardB[stage], AZ)}
-        {cardWrap(cardC[stage], "#a259ff")}
-        {cardWrap(cardD[stage], PURPLE)}
+        <div
+          className="absolute left-0 right-0 top-0 h-32 z-10 pointer-events-none"
+          style={{
+            background: dark
+              ? `linear-gradient(to bottom, ${"#181817"}, rgba(24,24,23,0))`
+              : "linear-gradient(to bottom, #f8f8f7, rgba(248,248,247,0))",
+          }}
+        />
+        <div
+          className="absolute left-0 right-0 bottom-0 h-36 z-10 pointer-events-none"
+          style={{
+            background: dark
+              ? "linear-gradient(to top, #252523, rgba(37,37,35,0))"
+              : "linear-gradient(to top, #fafafa, rgba(250,250,250,0))",
+          }}
+        />
+        <div className="flex-shrink-0 px-10 pt-8 pb-4 flex justify-end z-20 relative">
+          <div className="flex items-center gap-2">
+            {FILM_FRAMES.map((f, i) => (
+              <div
+                key={i}
+                className="h-1.5 rounded-full transition-all duration-500"
+                style={{
+                  width: i === activeIndex ? 26 : 7,
+                  background:
+                    i === activeIndex
+                      ? f.accent
+                      : dark
+                        ? "rgba(255,255,255,.18)"
+                        : "rgba(24,24,23,.16)",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Film strip body */}
+        <div className="relative flex-1 flex flex-col overflow-hidden">
+          {/* Top sprocket bar */}
+          <div
+            className="flex-shrink-0 flex items-center py-2"
+            style={{
+              background: dark ? "rgba(0,0,0,.6)" : "rgba(255,255,255,.72)",
+              borderTop: dark
+                ? "2px solid rgba(255,255,255,.06)"
+                : "2px solid rgba(0,0,0,.07)",
+              borderBottom: dark
+                ? "2px solid rgba(255,255,255,.06)"
+                : "2px solid rgba(0,0,0,.07)",
+            }}
+          >
+            <Sprockets count={16} dark={dark} />
+          </div>
+
+          {/* Frames container */}
+          <div
+            className="flex-1 relative overflow-hidden"
+            style={{ background: dark ? "black" : "#f6f3ee" }}
+          >
+            {/* Film frame strip */}
+            <div
+              className="absolute top-0 left-0 h-full flex"
+              style={{
+                width: `${TOTAL * CARD_W}px`,
+                transform: `translateX(-${translateX}px)`,
+                transition: "transform 0.05s linear",
+              }}
+            >
+              {FILM_FRAMES.map((frame, i) => {
+                const dist = Math.abs(i - activeIndex);
+                return (
+                  <div
+                    key={frame.tag}
+                    className="relative flex-shrink-0 overflow-hidden"
+                    style={{
+                      width: CARD_W,
+                      height: "100%",
+                      filter:
+                        dist === 0
+                          ? "none"
+                          : dark
+                            ? `brightness(${Math.max(0.55, 1 - dist * 0.18)})`
+                            : `brightness(${Math.max(0.9, 1 - dist * 0.04)})`,
+                      transition: "filter .4s ease",
+                      borderLeft: dark
+                        ? "2px solid rgba(255,255,255,.04)"
+                        : "2px solid rgba(0,0,0,.06)",
+                      borderRight: dark
+                        ? "2px solid rgba(255,255,255,.04)"
+                        : "2px solid rgba(0,0,0,.06)",
+                    }}
+                  >
+                    <img
+                      src={frame.img}
+                      alt={frame.label}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {/* Grain overlay */}
+                    <div
+                      className="absolute inset-0 opacity-30"
+                      style={{
+                        backgroundImage:
+                          "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E\")",
+                        backgroundSize: "128px 128px",
+                        mixBlendMode: "overlay",
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: dark
+                          ? "linear-gradient(to top, rgba(0,0,0,.28) 0%, rgba(0,0,0,.03) 52%, rgba(0,0,0,.14) 100%)"
+                          : "linear-gradient(to top, rgba(255,255,255,.08), rgba(255,255,255,0) 45%, rgba(255,255,255,.05))",
+                      }}
+                    />
+                    {/* Tick marks */}
+                    <div className="absolute top-0 left-0 right-0 flex justify-between px-1 pt-0.5">
+                      {Array.from({ length: 20 }).map((_, ti) => (
+                        <div
+                          key={ti}
+                          className={dark ? "w-px bg-white/10" : "w-px bg-black/10"}
+                          style={{ height: ti % 5 === 0 ? 8 : 4 }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Vignette edges */}
+            <div
+              className="absolute inset-y-0 left-0 w-32 pointer-events-none z-10"
+              style={{
+                background: dark
+                  ? "linear-gradient(to right, rgba(0,0,0,.68), transparent)"
+                  : "linear-gradient(to right, rgba(246,243,238,.86), transparent)",
+              }}
+            />
+            <div
+              className="absolute inset-y-0 right-0 w-32 pointer-events-none z-10"
+              style={{
+                background: dark
+                  ? "linear-gradient(to left, rgba(0,0,0,.68), transparent)"
+                  : "linear-gradient(to left, rgba(246,243,238,.86), transparent)",
+              }}
+            />
+          </div>
+
+          {/* Bottom sprocket bar */}
+          <div
+            className="flex-shrink-0 flex items-center py-2"
+            style={{
+              background: dark ? "rgba(0,0,0,.6)" : "rgba(255,255,255,.72)",
+              borderTop: dark
+                ? "2px solid rgba(255,255,255,.06)"
+                : "2px solid rgba(0,0,0,.07)",
+              borderBottom: dark
+                ? "2px solid rgba(255,255,255,.06)"
+                : "2px solid rgba(0,0,0,.07)",
+            }}
+          >
+            <Sprockets count={16} dark={dark} />
+          </div>
+        </div>
+
+        {/* Bottom scroll cue */}
+        <div className="flex-shrink-0 flex items-center justify-center gap-4 py-4">
+          <div
+            className="h-0.5 rounded-sm overflow-hidden"
+            style={{
+              width: 200,
+              background: dark ? "rgba(255,255,255,.1)" : "rgba(24,24,23,.12)",
+            }}
+          >
+            <div
+              className="h-full rounded-sm transition-all"
+              style={{
+                width: `${progress * 100}%`,
+                background: `linear-gradient(90deg, ${FILM_FRAMES[activeIndex]?.accent || "#1980c2"}, rgba(255,255,255,.5))`,
+              }}
+            />
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
 function Dashboard({ scale = 1 }) {
   const s = (v) => `${Math.round(v * scale)}px`;
   const bars = [40, 65, 45, 80, 55, 90, 70];
   const months = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
   const stats = [
-    ["Invoices Sent", "24", "+4 this month", TB],
+    ["Invoices Sent", "24", "+4 this month", "#F26522"],
     ["Pending", "$12,480", "6 outstanding", "#ea580c"],
     ["Collected", "$38,920", "+22% vs last mo.", "#16a34a"],
   ];
   const inv = [
     ["Vertex Corp", "INV-041", "$3,200", "Paid", "#16a34a", "#f0fdf4"],
-    ["GreenPath Ltd", "INV-040", "$1,850", "Pending", TB, "#fff3ee"],
+    ["GreenPath Ltd", "INV-040", "$1,850", "Pending", "#F26522", "#fff3ee"],
     ["Nova Studio", "INV-039", "$5,400", "Paid", "#16a34a", "#f0fdf4"],
   ];
   return (
@@ -3618,7 +1682,7 @@ function Dashboard({ scale = 1 }) {
             style={{
               width: s(9),
               height: s(9),
-              background: TB,
+              background: "#F26522",
               borderRadius: s(2),
               flexShrink: 0,
             }}
@@ -3631,7 +1695,7 @@ function Dashboard({ scale = 1 }) {
               color: "#0f172a",
             }}
           >
-            Tru<span style={{ color: TB }}>Billing</span>
+            Tru<span style={{ color: "#F26522" }}>Billing</span>
           </span>
         </div>
         {["Dashboard", "Invoices", "Payments", "Clients", "Reports"].map(
@@ -3642,9 +1706,9 @@ function Dashboard({ scale = 1 }) {
                 padding: `${s(6)} ${s(12)}`,
                 fontSize: s(7.5),
                 fontWeight: 600,
-                color: i === 0 ? TB : "#9ca3af",
-                background: i === 0 ? "rgba(242,101,34,.08)" : "transparent",
-                borderLeft: `2px solid ${i === 0 ? TB : "transparent"}`,
+                color: i === 0 ? "#F26522" : "#9ca3af",
+                background: i === 0 ? `${"#F26522"}14` : "transparent",
+                borderLeft: `2px solid ${i === 0 ? "#F26522" : "transparent"}`,
               }}
             >
               {item}
@@ -3679,7 +1743,7 @@ function Dashboard({ scale = 1 }) {
           </div>
           <div
             style={{
-              background: TB,
+              background: "#F26522",
               color: "#fff",
               fontSize: s(6),
               fontWeight: 700,
@@ -3770,7 +1834,7 @@ function Dashboard({ scale = 1 }) {
                 style={{
                   flex: 1,
                   height: `${h}%`,
-                  background: i === 5 ? TB : "rgba(242,101,34,.15)",
+                  background: i === 5 ? "#F26522" : `${"#F26522"}26`,
                   borderRadius: `${s(2)} ${s(2)} 0 0`,
                 }}
               />
@@ -3789,7 +1853,7 @@ function Dashboard({ scale = 1 }) {
                 style={{
                   fontSize: s(5),
                   fontWeight: 600,
-                  color: i === 5 ? TB : "#d1d5db",
+                  color: i === 5 ? "#F26522" : "#d1d5db",
                 }}
               >
                 {m}
@@ -3816,7 +1880,7 @@ function Dashboard({ scale = 1 }) {
             <span style={{ fontSize: s(7), fontWeight: 700, color: "#0f172a" }}>
               Recent Invoices
             </span>
-            <span style={{ fontSize: s(6), fontWeight: 600, color: TB }}>
+            <span style={{ fontSize: s(6), fontWeight: 600, color: "#F26522" }}>
               View all
             </span>
           </div>
@@ -3868,7 +1932,6 @@ function Dashboard({ scale = 1 }) {
   );
 }
 
-// ─── TRUBILLING PHONE ────────────────────────────────────────────────────────
 function TruBillingPhone({ showNotif, notifMsg }) {
   return (
     <div
@@ -3915,23 +1978,22 @@ function TruBillingPhone({ showNotif, notifMsg }) {
             zIndex: 20,
             background: "rgba(15,15,15,0.92)",
             borderRadius: 10,
-            padding: "7px 8px",
+            padding: "5px 8px",
             transform: showNotif
               ? "translateY(0) scale(1)"
               : "translateY(-50px) scale(.85)",
             opacity: showNotif ? 1 : 0,
-            transition:
-              "transform .5s cubic-bezier(.34,1.56,.64,1), opacity .3s ease",
+            transition: `transform .5s cubic-bezier(.22,1,.36,1), opacity .3s ease`,
             pointerEvents: "none",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <div
               style={{
                 width: 14,
                 height: 14,
                 borderRadius: 4,
-                background: TB,
+                background: "#F26522",
                 flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
@@ -3943,23 +2005,10 @@ function TruBillingPhone({ showNotif, notifMsg }) {
               </span>
             </div>
             <div>
-              <div
-                style={{
-                  fontSize: 7,
-                  fontWeight: 700,
-                  color: "#fff",
-                  fontFamily: BASE_FONT,
-                }}
-              >
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#fff" }}>
                 TruBilling
               </div>
-              <div
-                style={{
-                  fontSize: 6.5,
-                  color: "rgba(255,255,255,.6)",
-                  fontFamily: BASE_FONT,
-                }}
-              >
+              <div style={{ fontSize: 6, color: "rgba(255,255,255,.6)" }}>
                 {notifMsg}
               </div>
             </div>
@@ -3975,22 +2024,22 @@ function TruBillingPhone({ showNotif, notifMsg }) {
             borderBottom: "1px solid #f1f5f9",
           }}
         >
-          <span style={{ fontSize: 10, fontWeight: 900, color: "#0f172a" }}>
-            Tru<span style={{ color: TB }}>Billing</span>
+          <span style={{ fontSize: 11, fontWeight: 900, color: "#0f172a" }}>
+            Tru<span style={{ color: "#F26522" }}>Billing</span>
           </span>
           <div
             style={{
               width: 22,
               height: 22,
               borderRadius: "50%",
-              background: "rgba(242,101,34,.1)",
-              border: "1px solid rgba(242,101,34,.25)",
+              background: `${"#F26522"}1a`,
+              border: `1px solid ${"#F26522"}40`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 8,
               fontWeight: 700,
-              color: TB,
+              color: "#F26522",
             }}
           >
             JD
@@ -4006,7 +2055,7 @@ function TruBillingPhone({ showNotif, notifMsg }) {
             gap: 6,
           }}
         >
-          <div style={{ borderRadius: 8, padding: 10, background: TB }}>
+          <div style={{ borderRadius: 8, padding: 10, background: "#F26522" }}>
             <div
               style={{
                 fontSize: 7,
@@ -4037,7 +2086,7 @@ function TruBillingPhone({ showNotif, notifMsg }) {
             </div>
           </div>
           {[
-            ["Invoices Sent", "24", TB],
+            ["Invoices Sent", "24", "#F26522"],
             ["Pending", "6", "#ea580c"],
           ].map(([l, v, c]) => (
             <div
@@ -4048,71 +2097,25 @@ function TruBillingPhone({ showNotif, notifMsg }) {
                 justifyContent: "space-between",
                 background: "#fff",
                 border: "1px solid #f1f5f9",
-                borderRadius: 6,
+                borderRadius: 4,
                 padding: "6px 8px",
               }}
             >
               <span style={{ fontSize: 8, fontWeight: 600, color: "#64748b" }}>
                 {l}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 900, color: c }}>
+              <span style={{ fontSize: 12, fontWeight: 900, color: c }}>
                 {v}
               </span>
             </div>
           ))}
-          <div
-            style={{
-              flex: 1,
-              background: "#fff",
-              border: "1px solid #f1f5f9",
-              borderRadius: 6,
-              padding: 7,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 7.5,
-                fontWeight: 700,
-                color: "#0f172a",
-                marginBottom: 5,
-              }}
-            >
-              Recent
-            </div>
-            {[
-              ["Vertex Corp", "$3,200", "#16a34a"],
-              ["GreenPath", "$1,850", TB],
-              ["Nova Studio", "$5,400", "#16a34a"],
-            ].map(([c, a, col], i) => (
-              <div
-                key={c}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "4px 0",
-                  borderBottom: i < 2 ? "1px solid #f8fafc" : "none",
-                }}
-              >
-                <span
-                  style={{ fontSize: 7, fontWeight: 600, color: "#334155" }}
-                >
-                  {c}
-                </span>
-                <span style={{ fontSize: 7, fontWeight: 700, color: col }}>
-                  {a}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── EXPERIENCE — sticky scroll, cards animate in with outcome stats ─────────
+// ─── EXPERIENCE (TRUBILLING CASE STUDY) ──────────────────────────────────────
 const EXP_STEPS = [
   {
     tag: "The Need",
@@ -4120,27 +2123,27 @@ const EXP_STEPS = [
     icon: "⚡",
     color: "#e53e3e",
     bg: "#fff5f5",
+    darkBg: "#2a1515",
     points: [
       "Unstructured billing across teams",
       "No real-time financial visibility",
       "Fragmented manual tools",
       "No confidence in financial data",
     ],
-    outcome: null,
   },
   {
     tag: "Our Approach",
     num: "02",
     icon: "🧭",
-    color: AZ,
-    bg: "#ebf5fb",
+    color: "#1980c2",
+    bg: "#eef7fd",
+    darkBg: "#0e2235",
     points: [
       "System design, not just software",
       "Simplified financial workflows",
       "Clean, intuitive UX at every step",
       "Business value + tech in balance",
     ],
-    outcome: null,
   },
   {
     tag: "The Solution",
@@ -4148,20 +2151,21 @@ const EXP_STEPS = [
     icon: "✦",
     color: "#38a169",
     bg: "#f0fff4",
+    darkBg: "#0e2218",
     points: [
       "Create & manage invoices with ease",
       "Track payments in real time",
       "Organized, clear financial records",
       "Reduced friction across operations",
     ],
-    outcome: null,
   },
   {
     tag: "Outcome",
     num: "04",
     icon: "◆",
-    color: TB,
+    color: "#F26522",
     bg: "#fff8f3",
+    darkBg: "#2a1a0e",
     points: [
       "Structured billing from day one",
       "Improved financial clarity",
@@ -4177,18 +2181,13 @@ const EXP_STEPS = [
   },
 ];
 
-// Animated stat number on scroll reveal
 function AnimatedStat({ value, label, color, delay, visible }) {
   const [displayed, setDisplayed] = useState("0");
   const rafRef = useRef(null);
   const startRef = useRef(null);
   const DURATION = 900;
-
   useEffect(() => {
     if (!visible) return;
-    const isNum = /^[\d.]+$/.test(
-      value.replace("%", "").replace("×", "").replace("∞", ""),
-    );
     if (value === "∞") {
       setDisplayed("∞");
       return;
@@ -4216,226 +2215,30 @@ function AnimatedStat({ value, label, color, delay, visible }) {
 
   return (
     <div
+      className="text-center transition-all duration-500"
       style={{
-        textAlign: "center",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(16px)",
-        transition: `opacity .5s ${delay}ms, transform .5s ${delay}ms cubic-bezier(.22,1,.36,1)`,
+        transitionDelay: `${delay}ms`,
       }}
     >
       <div
-        style={{
-          fontSize: 38,
-          fontWeight: 900,
-          letterSpacing: "-.03em",
-          color,
-          lineHeight: 1,
-          fontFamily: BASE_FONT,
-        }}
+        className="text-[38px] font-black leading-none tracking-tight"
+        style={{ color }}
       >
         {displayed}
       </div>
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: 700,
-          letterSpacing: ".18em",
-          textTransform: "uppercase",
-          color: GRAY3,
-          marginTop: 6,
-          fontFamily: BASE_FONT,
-        }}
-      >
+      <p className="text-[8px] font-bold tracking-[.25em] uppercase text-neutral-400 mt-1">
         {label}
-      </div>
-    </div>
-  );
-}
-
-function StepCard({ card, visible }) {
-  const [statsVisible, setStatsVisible] = useState(false);
-  useEffect(() => {
-    if (visible && card.outcome) {
-      const t = setTimeout(() => setStatsVisible(true), 300);
-      return () => clearTimeout(t);
-    } else {
-      setStatsVisible(false);
-    }
-  }, [visible, card.outcome]);
-
-  return (
-    <div
-      style={{
-        width: "100%",
-        background: "#fff",
-        borderRadius: 16,
-        border: `1px solid ${GRAY2}`,
-        overflow: "hidden",
-        boxShadow: "0 8px 40px rgba(0,0,0,.05)",
-      }}
-    >
-      <div
-        style={{
-          background: card.bg,
-          borderBottom: `1px solid ${card.color}20`,
-          padding: "22px 28px 18px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
-              background: "#fff",
-              border: `1.5px solid ${card.color}28`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 16,
-              flexShrink: 0,
-            }}
-          >
-            {card.icon}
-          </div>
-          <div>
-            <div
-              style={{
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: ".2em",
-                textTransform: "uppercase",
-                color: card.color,
-                marginBottom: 2,
-                fontFamily: BASE_FONT,
-              }}
-            >
-              {card.num} / 04
-            </div>
-            <div
-              style={{
-                fontSize: 22,
-                fontWeight: 900,
-                color: DARK,
-                letterSpacing: "-.02em",
-                lineHeight: 1,
-                fontFamily: BASE_FONT,
-              }}
-            >
-              {card.tag}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        style={{
-          padding: "20px 28px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 13,
-        }}
-      >
-        {card.points.map((p, i) => (
-          <div
-            key={p}
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 12,
-              opacity: visible ? 1 : 0,
-              transform: visible ? "none" : "translateX(-10px)",
-              transition: `opacity .45s ${i * 80}ms, transform .45s ${i * 80}ms cubic-bezier(.22,1,.36,1)`,
-            }}
-          >
-            <div
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: 6,
-                background: `${card.color}12`,
-                border: `1px solid ${card.color}22`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                marginTop: 1,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 800,
-                  color: card.color,
-                  fontFamily: BASE_FONT,
-                }}
-              >
-                {i + 1}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: 13.5,
-                lineHeight: 1.6,
-                color: GRAY4,
-                fontFamily: BASE_FONT,
-              }}
-            >
-              {p}
-            </span>
-          </div>
-        ))}
-      </div>
-      {/* Outcome stats — animate in on last card */}
-      {card.outcome && (
-        <div style={{ padding: "0 28px 28px" }}>
-          <div style={{ height: 1, background: GRAY2, marginBottom: 22 }} />
-          <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}
-          >
-            {card.outcome.map(([val, lbl], i) => (
-              <AnimatedStat
-                key={lbl}
-                value={val}
-                label={lbl}
-                color={i % 2 === 0 ? TB : AZ}
-                delay={i * 120}
-                visible={statsVisible}
-              />
-            ))}
-          </div>
-          <div
-            style={{ marginTop: 24, display: "flex", justifyContent: "center" }}
-          >
-            <a
-              href="https://trubillingsystems.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                padding: "9px 20px",
-                borderRadius: 2,
-                border: `1.5px solid ${AZ}`,
-                color: AZ,
-                textDecoration: "none",
-                fontFamily: BASE_FONT,
-              }}
-            >
-              View live product ↗
-            </a>
-          </div>
-        </div>
-      )}
+      </p>
     </div>
   );
 }
 
 function Experience() {
+  const { dark } = useTheme();
   const wrapRef = useRef(null);
   const [step, setStep] = useState(0);
-  const [stepPct, setStepPct] = useState(0);
   const [totalPct, setTotalPct] = useState(0);
   const [phoneNotif, setPhoneNotif] = useState(false);
   const [phoneNotifMsg, setPhoneNotifMsg] = useState("");
@@ -4458,9 +2261,7 @@ function Experience() {
       setTotalPct(raw);
       const phaseF = raw * EXP_STEPS.length;
       const s = Math.min(EXP_STEPS.length - 1, Math.floor(phaseF));
-      const within = phaseF - s;
       setStep(s);
-      setStepPct(within);
     };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
@@ -4478,96 +2279,46 @@ function Experience() {
     }, 400);
   }, [step]);
 
-  const cur = EXP_STEPS[step];
-  const next = EXP_STEPS[Math.min(EXP_STEPS.length - 1, step + 1)];
-  const fadeOut = Math.max(0, (stepPct - 0.65) / 0.35);
+  const bgColor = dark
+    ? `radial-gradient(circle at 18% 18%, ${"#eef7fd"} 0%, rgba(238,247,253,0) 34%), radial-gradient(circle at 82% 72%, rgba(242,101,34,.22) 0%, rgba(242,101,34,0) 36%), linear-gradient(135deg, #fffaf3 0%, ${"#f5f1eb"} 48%, #e7f2f9 100%)`
+    : `radial-gradient(circle at 16% 18%, rgba(25,128,194,.34) 0%, rgba(25,128,194,0) 36%), radial-gradient(circle at 84% 70%, rgba(242,101,34,.26) 0%, rgba(242,101,34,0) 34%), linear-gradient(135deg, #0b0b0a 0%, ${"#181817"} 45%, #102535 100%)`;
 
   return (
     <div
       ref={wrapRef}
       id="work"
-      style={{ height: "500vh", position: "relative", fontFamily: BASE_FONT }}
+      style={{ height: "500vh", position: "relative" }}
     >
       <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
-          background: "#fafaf9",
-          display: "flex",
-          flexDirection: "column",
-        }}
+        className="sticky top-0 h-screen overflow-hidden flex flex-col transition-colors duration-300"
+        style={{ background: bgColor }}
       >
-        {/* Header */}
-        <div style={{ padding: "28px 60px 0", flexShrink: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-            }}
-          >
+        <div className="px-10 pt-6 flex-shrink-0">
+          <div className="flex items-end justify-between">
             <div>
               <p
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: ".28em",
-                  textTransform: "uppercase",
-                  color: GRAY3,
-                  marginBottom: 8,
-                  fontFamily: BASE_FONT,
-                }}
+                className={`text-[8px] font-bold tracking-[.25em] uppercase mb-2 ${dark ? "text-[#181817]/50" : "text-white/30"}`}
               >
                 Case Study · Product Development
               </p>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  marginBottom: 4,
-                }}
-              >
+              <div className="flex items-center gap-3 mb-1">
                 <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 9,
-                    background: TB,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    background: "#F26522",
+                    boxShadow: `0 4px 16px ${"#F26522"}40`,
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 900,
-                      color: "#fff",
-                      fontFamily: BASE_FONT,
-                      letterSpacing: ".02em",
-                    }}
-                  >
-                    TB
-                  </span>
+                  <span className="text-[11px] font-black text-white">TB</span>
                 </div>
                 <h2
-                  style={{
-                    fontSize: "clamp(22px,2.8vw,36px)",
-                    fontWeight: 900,
-                    color: DARK,
-                    lineHeight: 1,
-                    letterSpacing: "-.03em",
-                    fontFamily: BASE_FONT,
-                  }}
+                  className={`font-black leading-none tracking-tight m-0 ${dark ? "text-[#181817]" : "text-white"}`}
+                  style={{ fontSize: "clamp(22px,2.8vw,36px)" }}
                 >
                   TruBilling{" "}
                   <span
                     style={{
-                      color: AZ,
+                      color: "#1980c2",
                       fontWeight: 400,
                       fontStyle: "italic",
                       fontFamily: "Georgia,serif",
@@ -4578,42 +2329,48 @@ function Experience() {
                 </h2>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 6, paddingBottom: 6 }}>
+            <div className="flex gap-1.5 pb-1.5">
               {EXP_STEPS.map((s, i) => (
                 <div
                   key={i}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "6px 12px 6px 8px",
-                    borderRadius: 50,
-                    background: i === step ? "#fff" : "transparent",
-                    border: `1.5px solid ${i === step ? s.color + "40" : GRAY2}`,
-                    boxShadow:
-                      i === step ? `0 2px 12px rgba(0,0,0,.06)` : "none",
-                    transition: "all .4s cubic-bezier(.22,1,.36,1)",
-                    cursor: "default",
+                    background:
+                      i === step
+                        ? dark
+                          ? `${s.color}20`
+                          : s.bg
+                        : "transparent",
+                    borderColor:
+                      i === step
+                        ? `${s.color}40`
+                        : dark
+                          ? "rgba(0,0,0,.15)"
+                          : "rgba(255,255,255,.1)",
                   }}
                 >
                   <div
+                    className="w-[7px] h-[7px] rounded-full flex-shrink-0 transition-all duration-300"
                     style={{
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      background: i === step ? s.color : GRAY2,
-                      flexShrink: 0,
-                      transition: "background .4s",
+                      background:
+                        i === step
+                          ? s.color
+                          : dark
+                            ? "rgba(0,0,0,.2)"
+                            : "rgba(255,255,255,.2)",
                     }}
                   />
                   <span
+                    className="text-[8px] font-black tracking-wide"
                     style={{
-                      fontSize: 8,
-                      fontWeight: 800,
-                      color: i === step ? DARK : GRAY3,
-                      letterSpacing: ".06em",
-                      fontFamily: BASE_FONT,
-                      transition: "color .4s",
+                      color:
+                        i === step
+                          ? dark
+                            ? "#181817"
+                            : "#fff"
+                          : dark
+                            ? "rgba(0,0,0,.3)"
+                            : "rgba(255,255,255,.3)",
                     }}
                   >
                     {s.tag}
@@ -4623,51 +2380,25 @@ function Experience() {
             </div>
           </div>
           <div
-            style={{
-              marginTop: 14,
-              height: 2,
-              background: GRAY2,
-              borderRadius: 1,
-              overflow: "hidden",
-            }}
+            className={`mt-3 h-0.5 rounded-sm overflow-hidden ${dark ? "bg-black/10" : "bg-white/10"}`}
           >
             <div
+              className="h-full rounded-sm"
               style={{
-                height: "100%",
                 width: `${totalPct * 100}%`,
-                background: AZ,
-                borderRadius: 1,
+                background: `linear-gradient(90deg, ${"#1980c2"}, ${"#8cc3ef"})`,
                 transition: "width .05s linear",
               }}
             />
           </div>
         </div>
 
-        {/* Main: full-width devices with floating cards */}
-        <div
-          style={{
-            flex: 1,
-            position: "relative",
-            padding: "20px 60px 36px",
-            minHeight: 0,
-          }}
-        >
-          {/* Devices — full width background */}
-          <div
-            className="mad-exp-devices"
-            style={{ position: "absolute", inset: "20px 60px 36px", zIndex: 1 }}
-          >
-            {/* Laptop */}
+        <div className="flex-1 relative px-10 pb-8 pt-5 min-h-0">
+          {/* Device mockups background */}
+          <div className="mad-exp-devices absolute inset-0 px-10 pb-8 pt-5 z-[1]">
             <div
-              style={{
-                position: "absolute",
-                top: 16,
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: "62%",
-                zIndex: 5,
-                filter: "drop-shadow(0 20px 48px rgba(0,0,0,.38))",
-              }}
+              className="absolute top-4 left-1/2 -translate-x-1/2 w-[62%] z-[5]"
+              style={{ filter: "drop-shadow(0 20px 48px rgba(0,0,0,.38))" }}
             >
               <div
                 style={{
@@ -4700,17 +2431,12 @@ function Experience() {
               <div
                 style={{
                   height: 10,
-                  border: "1px solid rgba(0,0,0,.06)",
-                  borderTop: "none",
-                  borderRadius: "0 0 2px 2px",
                   background: "linear-gradient(to bottom,#bdc9d3,#adb9c3)",
                 }}
               />
               <div
                 style={{
                   height: 18,
-                  border: "1px solid rgba(0,0,0,.06)",
-                  borderTop: "none",
                   borderRadius: "0 0 10px 10px",
                   background: "linear-gradient(to bottom,#b5c1cb,#a5b1bb)",
                   display: "flex",
@@ -4723,21 +2449,14 @@ function Experience() {
                     width: 64,
                     height: 8,
                     borderRadius: 3,
-                    border: "1px solid rgba(0,0,0,.06)",
                     background: "#c0ccd5",
                   }}
                 />
               </div>
             </div>
-            {/* Tablet — bottom left */}
             <div
-              style={{
-                position: "absolute",
-                bottom: 10,
-                left: "5%",
-                zIndex: 6,
-                filter: "drop-shadow(0 18px 40px rgba(0,0,0,.38))",
-              }}
+              className="absolute bottom-2 left-[5%] z-[6]"
+              style={{ filter: "drop-shadow(0 18px 40px rgba(0,0,0,.38))" }}
             >
               <div
                 style={{
@@ -4778,92 +2497,33 @@ function Experience() {
                 </div>
               </div>
             </div>
-            {/* Phone — bottom right */}
             <div
-              style={{
-                position: "absolute",
-                bottom: 10,
-                right: "6%",
-                zIndex: 6,
-                filter: "drop-shadow(0 18px 40px rgba(0,0,0,.38))",
-              }}
+              className="absolute bottom-2 right-[6%] z-[6]"
+              style={{ filter: "drop-shadow(0 18px 40px rgba(0,0,0,.38))" }}
             >
               <TruBillingPhone
                 showNotif={phoneNotif}
                 notifMsg={phoneNotifMsg}
               />
             </div>
-            {/* Dim overlay so cards pop */}
             <div
+              className="absolute inset-0 z-[8] rounded-xl"
               style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(249,249,248,0.45)",
-                zIndex: 8,
-                borderRadius: 12,
+                background: dark
+                  ? "rgba(245,241,235,0.45)"
+                  : "rgba(20,20,19,0.5)",
               }}
             />
-            {/* TruBilling link */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: -28,
-                left: 0,
-                right: 0,
-                display: "flex",
-                justifyContent: "center",
-                zIndex: 20,
-              }}
-            >
-              <a
-                href="https://trubillingsystems.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "6px 14px",
-                  borderRadius: 50,
-                  textDecoration: "none",
-                  fontSize: 9,
-                  fontWeight: 600,
-                  letterSpacing: ".12em",
-                  color: AZ,
-                  background: `rgba(25,128,194,.07)`,
-                  border: `.5px solid rgba(25,128,194,.22)`,
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: AZ,
-                    display: "inline-block",
-                  }}
-                />
-                trubillingsystems.com ↗
-              </a>
-            </div>
           </div>
 
-          {/* Step cards — float over devices, positioned per step */}
-          <div
-            style={{
-              position: "relative",
-              zIndex: 10,
-              height: "100%",
-              pointerEvents: "none",
-            }}
-          >
+          {/* Step cards */}
+          <div className="relative z-10 h-full pointer-events-none">
             {EXP_STEPS.map((card, i) => {
-              // Each card floats to a different corner/position
               const positions = [
-                { top: "8%", left: "4%", width: "42%" }, // Need — top left
-                { top: "8%", right: "4%", width: "42%" }, // Approach — top right
-                { bottom: "12%", left: "4%", width: "42%" }, // Solution — bottom left
-                { bottom: "12%", right: "4%", width: "40%" }, // Outcome — bottom right
+                { top: "8%", left: "2%", width: "40%" },
+                { top: "8%", right: "2%", width: "40%" },
+                { bottom: "10%", left: "2%", width: "40%" },
+                { bottom: "10%", right: "2%", width: "38%" },
               ];
               const pos = positions[i];
               const isActive = i === step;
@@ -4871,87 +2531,89 @@ function Experience() {
               return (
                 <div
                   key={i}
+                  className="absolute pointer-events-auto transition-all duration-500"
                   style={{
-                    position: "absolute",
                     ...pos,
-                    pointerEvents: "all",
                     opacity: isActive ? 1 : isPast ? 0.38 : 0.18,
                     transform: isActive
                       ? "scale(1) translateY(0)"
                       : isPast
                         ? "scale(0.96) translateY(4px)"
                         : "scale(0.92) translateY(12px)",
-                    transition:
-                      "opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1)",
-                    filter: isActive ? "none" : "grayscale(0.4)",
                   }}
                 >
                   <div
+                    className="overflow-hidden transition-all duration-500"
                     style={{
-                      background: isActive ? "#fff" : "rgba(255,255,255,0.88)",
                       borderRadius: 14,
-                      border: isActive
-                        ? `1.5px solid ${card.color}28`
-                        : `1px solid ${GRAY2}`,
+                      border: `1.5px solid ${isActive ? card.color + "30" : dark ? "rgba(0,0,0,.1)" : "rgba(255,255,255,.1)"}`,
+                      background: isActive
+                        ? dark
+                          ? card.bg
+                          : "#1e1e1c"
+                        : dark
+                          ? "rgba(245,241,235,.5)"
+                          : "rgba(255,255,255,.05)",
                       boxShadow: isActive
                         ? `0 16px 48px rgba(0,0,0,.14), 0 0 0 1px ${card.color}18`
-                        : "0 4px 16px rgba(0,0,0,.06)",
-                      overflow: "hidden",
-                      backdropFilter: "blur(12px)",
-                      transition: "box-shadow .6s ease, border .6s ease",
+                        : "none",
                     }}
                   >
-                    {/* Card header */}
                     <div
+                      className="flex items-center gap-2.5 px-4 py-3 border-b"
                       style={{
-                        background: isActive ? card.bg : GRAY1,
-                        borderBottom: `1px solid ${isActive ? card.color + "18" : GRAY2}`,
-                        padding: "12px 16px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        transition: "background .5s ease",
+                        background: isActive
+                          ? dark
+                            ? card.bg
+                            : `${card.color}15`
+                          : "transparent",
+                        borderColor: isActive
+                          ? `${card.color}18`
+                          : dark
+                            ? "rgba(0,0,0,.08)"
+                            : "rgba(255,255,255,.08)",
                       }}
                     >
                       <div
+                        className="w-[30px] h-[30px] rounded-xl flex items-center justify-center text-sm flex-shrink-0 border"
                         style={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: 8,
-                          background: isActive ? "#fff" : GRAY1,
-                          border: `1.5px solid ${isActive ? card.color + "28" : GRAY2}`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 14,
-                          flexShrink: 0,
+                          background: isActive
+                            ? dark
+                              ? "#fff"
+                              : `${card.color}20`
+                            : "transparent",
+                          borderColor: isActive
+                            ? `${card.color}28`
+                            : dark
+                              ? "rgba(0,0,0,.1)"
+                              : "rgba(255,255,255,.1)",
                         }}
                       >
                         {card.icon}
                       </div>
                       <div>
-                        <div
+                        <p
+                          className="text-[8px] font-bold tracking-[.2em] uppercase mb-0.5"
                           style={{
-                            fontSize: 7.5,
-                            fontWeight: 700,
-                            letterSpacing: ".18em",
-                            textTransform: "uppercase",
-                            color: isActive ? card.color : GRAY3,
-                            marginBottom: 1,
-                            fontFamily: BASE_FONT,
-                            transition: "color .5s",
+                            color: isActive
+                              ? card.color
+                              : dark
+                                ? "rgba(0,0,0,.35)"
+                                : "rgba(255,255,255,.3)",
                           }}
                         >
                           {card.num} / 04
-                        </div>
+                        </p>
                         <div
+                          className="text-[15px] font-black tracking-tight leading-none"
                           style={{
-                            fontSize: 15,
-                            fontWeight: 900,
-                            color: DARK,
-                            letterSpacing: "-.02em",
-                            lineHeight: 1,
-                            fontFamily: BASE_FONT,
+                            color: dark
+                              ? isActive
+                                ? "#181817"
+                                : "rgba(0,0,0,.4)"
+                              : isActive
+                                ? "#fff"
+                                : "rgba(255,255,255,.3)",
                           }}
                         >
                           {card.tag}
@@ -4959,86 +2621,75 @@ function Experience() {
                       </div>
                       {isActive && (
                         <div
+                          className="ml-auto w-2 h-2 rounded-full"
                           style={{
-                            marginLeft: "auto",
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
                             background: card.color,
                             boxShadow: `0 0 0 3px ${card.color}28`,
-                            animation: "pulse 2s infinite",
+                            animation: "pulseGlow 2s infinite",
                           }}
                         />
                       )}
                     </div>
-                    {/* Points */}
-                    <div
-                      style={{
-                        padding: "12px 16px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 8,
-                      }}
-                    >
+                    <div className="px-4 py-3 flex flex-col gap-2">
                       {card.points.map((p, pi) => (
                         <div
                           key={p}
+                          className="flex items-start gap-2 transition-all duration-300"
                           style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: 8,
                             opacity: isActive ? 1 : 0.6,
                             transform: isActive ? "none" : "translateX(-4px)",
-                            transition: `opacity .45s ${pi * 70}ms, transform .45s ${pi * 70}ms cubic-bezier(.22,1,.36,1)`,
+                            transitionDelay: `${pi * 70}ms`,
                           }}
                         >
                           <div
+                            className="w-4 h-4 rounded-sm flex items-center justify-center flex-shrink-0 mt-0.5 border"
                             style={{
-                              width: 16,
-                              height: 16,
-                              borderRadius: 4,
-                              background: isActive ? `${card.color}12` : GRAY1,
-                              border: `1px solid ${isActive ? card.color + "22" : GRAY2}`,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                              marginTop: 1,
+                              background: isActive
+                                ? `${card.color}15`
+                                : "transparent",
+                              borderColor: isActive
+                                ? `${card.color}22`
+                                : dark
+                                  ? "rgba(0,0,0,.1)"
+                                  : "rgba(255,255,255,.1)",
                             }}
                           >
                             <span
+                              className="text-[8px] font-black"
                               style={{
-                                fontSize: 8,
-                                fontWeight: 800,
-                                color: isActive ? card.color : GRAY3,
-                                fontFamily: BASE_FONT,
+                                color: isActive
+                                  ? card.color
+                                  : dark
+                                    ? "rgba(0,0,0,.3)"
+                                    : "rgba(255,255,255,.3)",
                               }}
                             >
                               {pi + 1}
                             </span>
                           </div>
                           <span
+                            className="text-[11px] leading-relaxed"
                             style={{
-                              fontSize: 11,
-                              lineHeight: 1.55,
-                              color: isActive ? GRAY4 : GRAY3,
-                              fontFamily: BASE_FONT,
+                              color: dark
+                                ? isActive
+                                  ? "#4a4a48"
+                                  : "rgba(0,0,0,.3)"
+                                : isActive
+                                  ? "rgba(255,255,255,.65)"
+                                  : "rgba(255,255,255,.25)",
                             }}
                           >
                             {p}
                           </span>
                         </div>
                       ))}
-                      {/* Outcome stats inline */}
                       {card.outcome && isActive && (
                         <div
+                          className="mt-2 pt-2 grid grid-cols-2 gap-2 border-t"
                           style={{
-                            marginTop: 8,
-                            paddingTop: 10,
-                            borderTop: `1px solid ${GRAY2}`,
-                            display: "grid",
-                            gridTemplateColumns: "1fr 1fr",
-                            gap: 10,
+                            borderColor: dark
+                              ? "rgba(0,0,0,.08)"
+                              : "rgba(255,255,255,.1)",
                           }}
                         >
                           {card.outcome.map(([val, lbl], si) => (
@@ -5046,7 +2697,7 @@ function Experience() {
                               key={lbl}
                               value={val}
                               label={lbl}
-                              color={si % 2 === 0 ? TB : AZ}
+                              color={si % 2 === 0 ? "#F26522" : "#1980c2"}
                               delay={si * 100}
                               visible={isActive}
                             />
@@ -5060,45 +2711,99 @@ function Experience() {
             })}
           </div>
         </div>
-
-        {/* Scroll nudge */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 18,
-            left: "50%",
-            transform: "translateX(-50%)",
-            opacity: step < 3 ? 0.4 : 0,
-            transition: "opacity .5s",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            pointerEvents: "none",
-          }}
-        >
-          <span
-            style={{
-              fontSize: 7.5,
-              fontWeight: 700,
-              letterSpacing: ".2em",
-              textTransform: "uppercase",
-              color: GRAY3,
-              fontFamily: BASE_FONT,
-            }}
-          >
-            Scroll to read through
-          </span>
-        </div>
       </div>
     </div>
   );
 }
 
-// ─── MAD AI PHONE ────────────────────────────────────────────────────────────
-const SYSTEM_PROMPT = `You are the MAD AI assistant — a sharp, strategic, and direct digital assistant for MAD (Making A Difference), a product, marketing, and design firm.
-MAD's services: Product & Digital Solutions, Marketing & Communication, Brand & Design Systems.
-Keep replies SHORT — 2-4 sentences max. Be direct. End with a focused question or sharp observation. If someone seems like a potential client, gently guide toward booking a call.`;
+// ─── CTA ─────────────────────────────────────────────────────────────────────
+function BeyondProjects() {
+  const { dark } = useTheme();
+  const [ref, vis] = useInView(0.05);
+
+  return (
+    <section
+      ref={ref}
+      className={`transition-colors duration-300 ${dark ? "bg-[#141413]" : "bg-[#f5f1eb]"}`}
+      style={{
+        background: dark
+          ? `linear-gradient(180deg, #141413 0%, #1e1e1c 100%)`
+          : `linear-gradient(180deg, #f5f1eb 0%, #fff 100%)`,
+      }}
+    >
+      <div
+        className="px-20 py-24 text-center transition-all duration-700"
+        style={{
+          opacity: vis ? 1 : 0,
+          transform: vis ? "none" : "translateY(24px)",
+        }}
+      >
+        <p className="text-[8px] font-bold tracking-[.25em] uppercase text-neutral-400 mb-3">
+          Start a Project
+        </p>
+        <h2
+          className="mb-5"
+          style={{
+            fontFamily: "Georgia,serif",
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: "clamp(26px,3.2vw,42px)",
+            lineHeight: 1.1,
+            letterSpacing: "-.02em",
+            color: dark ? "#f0ede8" : "#181817",
+          }}
+        >
+          Work With MAD
+        </h2>
+        <p
+          className={`text-sm leading-relaxed max-w-md mx-auto mb-8 ${dark ? "text-white/50" : "text-neutral-500"}`}
+        >
+          Strategy, design, and delivery — all under one roof.
+        </p>
+        <div className="flex gap-3 justify-center flex-wrap">
+          <button
+            className="px-8 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase text-white border-none cursor-pointer transition-all duration-200"
+            style={{
+              background: dark ? "#1980c2" : "#181817",
+              boxShadow: dark
+                ? `0 4px 20px ${"#1980c2"}40`
+                : "0 4px 16px rgba(0,0,0,.25)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#1980c2";
+              e.currentTarget.style.boxShadow = `0 6px 28px ${"#1980c2"}50`;
+              e.currentTarget.style.transform = "scale(1.04)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = dark ? "#1980c2" : "#181817";
+              e.currentTarget.style.boxShadow = dark
+                ? `0 4px 20px ${"#1980c2"}40`
+                : "0 4px 16px rgba(0,0,0,.25)";
+              e.currentTarget.style.transform = "none";
+            }}
+          >
+            Let's Talk →
+          </button>
+          <button
+            className="px-8 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer border transition-all duration-200"
+            style={{
+              background: "transparent",
+              color: dark ? "#f0ede8" : "#181817",
+              borderColor: dark
+                ? "rgba(255,255,255,.15)"
+                : "rgba(24,24,23,.12)",
+            }}
+          >
+            View Our Work
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── MAD AI PHONE ─────────────────────────────────────────────────────────────
+const SYSTEM_PROMPT = `You are the MAD AI assistant — a sharp, strategic, and direct digital assistant for MAD (Making A Difference), a product, marketing, and design firm. MAD's services: Product & Digital Solutions, Marketing & Communication, Brand & Design Systems. Keep replies SHORT — 2-4 sentences max. Be direct. End with a focused question or sharp observation. If someone seems like a potential client, gently guide toward booking a call.`;
 
 function MADPhone() {
   const [msgs, setMsgs] = useState([
@@ -5151,17 +2856,13 @@ function MADPhone() {
 
   return (
     <div
+      className="w-[260px] flex-shrink-0"
       style={{
-        width: 240,
-        flexShrink: 0,
         background: "#080808",
         borderRadius: 40,
         padding: 10,
         boxShadow:
-          "0 0 0 1px rgba(255,255,255,.07), 0 60px 120px rgba(0,0,0,.8)",
-        transform: "rotate(-3deg)",
-        zIndex: 3,
-        fontFamily: BASE_FONT,
+          "0 0 0 1px rgba(255,255,255,.07), 0 60px 120px rgba(0,0,0,.6)",
       }}
     >
       <div
@@ -5194,24 +2895,18 @@ function MADPhone() {
           background: "#101010",
           borderRadius: 32,
           overflow: "hidden",
-          height: 480,
+          height: 520,
           display: "flex",
           flexDirection: "column",
         }}
       >
+        {/* Status bar */}
         <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "6px 14px 4px",
-            fontSize: 9,
-            fontWeight: 700,
-            color: "rgba(255,255,255,.7)",
-          }}
+          className="flex justify-between items-center px-4 py-1.5 text-[9px] font-bold"
+          style={{ color: "rgba(255,255,255,.7)" }}
         >
           <span>9:41</span>
-          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+          <div className="flex gap-1 items-center">
             <svg
               width="10"
               height="10"
@@ -5222,144 +2917,59 @@ function MADPhone() {
               <rect x="3" y="2" width="2" height="8" rx=".5" />
               <rect x="6" y="0" width="2" height="10" rx=".5" />
             </svg>
-            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-              <rect
-                x="0"
-                y="1"
-                width="11"
-                height="8"
-                rx="1.5"
-                stroke="rgba(255,255,255,.6)"
-                strokeWidth=".8"
-              />
-              <rect
-                x="1"
-                y="2.5"
-                width="7"
-                height="5"
-                rx=".5"
-                fill="rgba(255,255,255,.7)"
-              />
-              <rect
-                x="11.5"
-                y="3"
-                width="2"
-                height="4"
-                rx=".5"
-                fill="rgba(255,255,255,.35)"
-              />
-            </svg>
           </div>
         </div>
+        {/* Chat header */}
         <div
-          style={{
-            background: "#151515",
-            padding: "8px 14px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
+          className="flex items-center gap-2.5 px-4 py-2.5"
+          style={{ background: "#151515" }}
         >
           <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: `linear-gradient(135deg,${AZ},#0c4d82)`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
+            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: `linear-gradient(135deg,${"#1980c2"},#0c4d82)` }}
           >
-            <span style={{ fontSize: 10, fontWeight: 800, color: "#fff" }}>
-              M
-            </span>
+            <span className="text-[10px] font-black text-white">M</span>
           </div>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#fff" }}>
-              MAD AI
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-                marginTop: 2,
-              }}
-            >
-              <div
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  animation: "pulse 2s infinite",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 7,
-                  color: "rgba(255,255,255,.38)",
-                  fontWeight: 500,
-                }}
-              >
+            <div className="text-[11px] font-bold text-white">MAD AI</div>
+            <div className="flex items-center gap-1 mt-0.5">
+              <div className="w-[5px] h-[5px] rounded-full bg-green-500" />
+              <span className="text-[7px] text-white/38 font-medium">
                 Online · Strategic Partner
               </span>
             </div>
           </div>
         </div>
+        {/* Messages */}
         <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "12px 10px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            scrollbarWidth: "none",
-          }}
+          className="flex-1 overflow-y-auto p-3 flex flex-col gap-2"
+          style={{ scrollbarWidth: "none" }}
         >
           {msgs.map((m, i) => (
             <div
               key={i}
-              style={{
-                display: "flex",
-                justifyContent: m.role === "user" ? "flex-end" : "flex-start",
-              }}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
               {m.role === "assistant" && (
                 <div
+                  className="w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 mr-1.5 self-end"
                   style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                    background: `linear-gradient(135deg,${AZ},#0c4d82)`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    marginRight: 6,
-                    alignSelf: "flex-end",
+                    background: `linear-gradient(135deg,${"#1980c2"},#0c4d82)`,
                   }}
                 >
-                  <span style={{ fontSize: 7, fontWeight: 800, color: "#fff" }}>
-                    M
-                  </span>
+                  <span className="text-[6px] font-black text-white">M</span>
                 </div>
               )}
               <div
+                className="max-w-[78%] text-white leading-relaxed"
                 style={{
-                  maxWidth: "78%",
-                  background: m.role === "user" ? AZ : "#1e1e1e",
-                  color: "#fff",
+                  background: m.role === "user" ? "#1980c2" : "#1e1e1e",
                   borderRadius:
                     m.role === "user"
                       ? "14px 14px 4px 14px"
                       : "14px 14px 14px 4px",
                   padding: "7px 10px",
-                  fontSize: 9.5,
-                  lineHeight: 1.6,
+                  fontSize: 11,
                 }}
               >
                 {m.text}
@@ -5367,42 +2977,26 @@ function MADPhone() {
             </div>
           ))}
           {loading && (
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
+            <div className="flex items-end gap-1.5">
               <div
+                className="w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0"
                 style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 6,
-                  background: `linear-gradient(135deg,${AZ},#0c4d82)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
+                  background: `linear-gradient(135deg,${"#1980c2"},#0c4d82)`,
                 }}
               >
-                <span style={{ fontSize: 7, fontWeight: 800, color: "#fff" }}>
-                  M
-                </span>
+                <span className="text-[6px] font-black text-white">M</span>
               </div>
               <div
-                style={{
-                  background: "#1e1e1e",
-                  borderRadius: "14px 14px 14px 4px",
-                  padding: "8px 12px",
-                  display: "flex",
-                  gap: 4,
-                  alignItems: "center",
-                }}
+                className="rounded-[14px_14px_14px_4px] flex gap-1 items-center px-3 py-2"
+                style={{ background: "#1e1e1e" }}
               >
                 {[0, 0.2, 0.4].map((d, i) => (
                   <div
                     key={i}
+                    className="w-[5px] h-[5px] rounded-full"
                     style={{
-                      width: 5,
-                      height: 5,
-                      borderRadius: "50%",
-                      background: AZ,
-                      animation: `pulse 1.2s ${d}s infinite`,
+                      background: "#1980c2",
+                      animation: `dotPulse 1.2s ${d}s infinite`,
                     }}
                   />
                 ))}
@@ -5411,45 +3005,29 @@ function MADPhone() {
           )}
           <div ref={bottomRef} />
         </div>
-        <div style={{ padding: "8px 10px 12px", background: "#151515" }}>
+        {/* Input */}
+        <div className="px-3 pb-4 pt-2" style={{ background: "#151515" }}>
           <div
-            style={{
-              display: "flex",
-              gap: 6,
-              alignItems: "center",
-              background: "#222",
-              borderRadius: 20,
-              padding: "6px 6px 6px 12px",
-            }}
+            className="flex items-center gap-1.5 rounded-full px-3 py-1.5"
+            style={{ background: "#222" }}
           >
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
               placeholder="Ask MAD anything..."
-              style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "#fff",
-                fontSize: 9,
-                fontFamily: BASE_FONT,
-              }}
+              className="flex-1 bg-transparent border-none outline-none text-white text-[10px]"
+              style={{ fontFamily: "inherit" }}
             />
             <button
               onClick={send}
               disabled={loading}
+              className="w-[26px] h-[26px] rounded-full flex items-center justify-center border-none cursor-pointer flex-shrink-0"
               style={{
-                width: 26,
-                height: 26,
-                borderRadius: "50%",
-                background: loading ? "#333" : AZ,
-                border: "none",
-                cursor: loading ? "default" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                background: loading
+                  ? "#333"
+                  : `linear-gradient(135deg, ${"#1980c2"}, ${"#5aa7e6"})`,
+                boxShadow: loading ? "none" : `0 2px 12px ${"#1980c2"}60`,
               }}
             >
               <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
@@ -5457,513 +3035,94 @@ function MADPhone() {
               </svg>
             </button>
           </div>
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: 7,
-              color: "rgba(255,255,255,.18)",
-              marginTop: 6,
-              letterSpacing: ".05em",
-            }}
-          >
+          <p className="text-center text-[7px] text-white/18 mt-1.5">
             Powered by MAD Intelligence
-          </div>
+          </p>
         </div>
       </div>
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
     </div>
   );
 }
 
-// ─── BEYOND PROJECTS ─────────────────────────────────────────────────────────
-function BeyondProjects() {
-  const [ref, vis] = useInView(0.05);
-  const SERVICE_OPTS = [
-    { bg: AZ, label: "Product & Digital", abbr: "PD", sub: "MAD Service" },
-    { bg: AZ, label: "Marketing & Comms", abbr: "MC", sub: "MAD Service" },
-    { bg: DARK, label: "Brand & Design", abbr: "BD", sub: "MAD Service" },
-    { bg: GRAY4, label: "Email Us", abbr: "EM", sub: "Direct Contact" },
-    { bg: AZ, label: "Schedule a Call", abbr: "SC", sub: "Book a Meeting" },
-  ];
-  const platBtn = {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textAlign: "left",
-    background: "#fff",
-    border: `1.5px solid ${GRAY2}`,
-    borderRadius: 10,
-    padding: "10px 14px",
-    cursor: "pointer",
-    fontFamily: BASE_FONT,
-    transition: "border-color .18s, box-shadow .18s, transform .18s",
-    width: "100%",
-  };
-
-  return (
-    <section ref={ref} style={{ fontFamily: BASE_FONT, overflow: "hidden" }}>
-      <div style={{ position: "relative", height: 240 }}>
-        <div style={{ position: "absolute", inset: 0, display: "flex" }}>
-          <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-            <img
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=85&auto=format&fit=crop"
-              alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center 30%",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(10,8,4,.52)",
-              }}
-            />
-          </div>
-          <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-            <img
-              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&auto=format&fit=crop"
-              alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center 40%",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(180,110,70,.28)",
-              }}
-            />
-          </div>
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 140,
-            background: "linear-gradient(to bottom, transparent, #fff)",
-            pointerEvents: "none",
-            zIndex: 2,
-          }}
-        />
-      </div>
-      <div
-        style={{
-          background: "#fff",
-          position: "relative",
-          padding: "0 60px 72px",
-        }}
-      >
-        <div
-          className="mad-bp-phone"
-          style={{
-            position: "absolute",
-            top: -160,
-            left: 80,
-            zIndex: 20,
-            opacity: vis ? 1 : 0,
-            transition: "opacity .9s .1s",
-          }}
-        >
-          <MADPhone />
-        </div>
-        <div
-          className="mad-bp-content"
-          style={{
-            paddingLeft: 280,
-            paddingTop: 30,
-            opacity: vis ? 1 : 0,
-            transform: vis ? "none" : "translateY(28px)",
-            transition: "opacity .7s .2s, transform .7s .2s",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 8.5,
-              fontWeight: 700,
-              letterSpacing: ".26em",
-              textTransform: "uppercase",
-              color: GRAY3,
-              textAlign: "center",
-              marginBottom: 14,
-            }}
-          >
-            Start a Project
-          </div>
-          <h2
-            style={{
-              fontFamily: 'Georgia,"Times New Roman",serif',
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: "clamp(26px,3.2vw,42px)",
-              color: DARK,
-              textAlign: "center",
-              lineHeight: 1.14,
-              letterSpacing: "-.01em",
-              marginBottom: 18,
-            }}
-          >
-            Work With MAD
-          </h2>
-          <p
-            style={{
-              fontSize: 13,
-              lineHeight: 1.85,
-              color: GRAY4,
-              textAlign: "center",
-              maxWidth: 480,
-              margin: "0 auto 24px",
-            }}
-          >
-            Strategy, design, and delivery — all under one roof.
-          </p>
-          <div
-            style={{
-              textAlign: "center",
-              fontFamily: "Georgia,serif",
-              fontStyle: "italic",
-              fontSize: 13,
-              color: GRAY3,
-              marginBottom: 16,
-            }}
-          >
-            What we can do for you:
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 10,
-              marginBottom: 10,
-            }}
-          >
-            {SERVICE_OPTS.slice(0, 3).map(({ bg, label, abbr, sub }) => (
-              <button
-                key={label}
-                style={platBtn}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = DARK;
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 14px rgba(0,0,0,.06)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = GRAY2;
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "none";
-                }}
-              >
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: bg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    color: "#fff",
-                    fontSize: 8.5,
-                    fontWeight: 700,
-                  }}
-                >
-                  {abbr}
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: 8,
-                      color: GRAY3,
-                      textTransform: "uppercase",
-                      letterSpacing: ".05em",
-                      marginBottom: 1,
-                    }}
-                  >
-                    {sub}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      color: DARK,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {label}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 10,
-              maxWidth: "66%",
-              margin: "0 auto 32px",
-            }}
-          >
-            {SERVICE_OPTS.slice(3).map(({ bg, label, abbr, sub }) => (
-              <button
-                key={label}
-                style={platBtn}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = DARK;
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 14px rgba(0,0,0,.06)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = GRAY2;
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "none";
-                }}
-              >
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: bg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    color: "#fff",
-                    fontSize: 8.5,
-                    fontWeight: 700,
-                  }}
-                >
-                  {abbr}
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: 8,
-                      color: GRAY3,
-                      textTransform: "uppercase",
-                      letterSpacing: ".05em",
-                      marginBottom: 1,
-                    }}
-                  >
-                    {sub}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      color: DARK,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {label}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <button
-              style={{
-                background: DARK,
-                color: "#fff",
-                border: "none",
-                borderRadius: 50,
-                padding: "13px 36px",
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                fontFamily: BASE_FONT,
-                transition: "background .2s, transform .2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = AZ;
-                e.currentTarget.style.transform = "scale(1.03)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = DARK;
-                e.currentTarget.style.transform = "none";
-              }}
-            >
-              Let's Talk →
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── CONTACT ─────────────────────────────────────────────────────────────────
+// ─── CONTACT (with MADPhone on right) ─────────────────────────────────────────
 function Contact() {
+  const { dark } = useTheme();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
-  const inp = {
+  const [ref, vis] = useInView(0.05);
+
+  const inputStyle = {
     width: "100%",
     background: "transparent",
     border: "none",
-    borderBottom: `1.5px solid ${GRAY2}`,
-    color: DARK,
+    borderBottom: `1.5px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
+    color: dark ? "#f0ede8" : "#181817",
     fontSize: 14,
-    fontFamily: BASE_FONT,
+    fontFamily: "inherit",
     padding: "12px 0",
     outline: "none",
   };
 
   return (
     <section
-      style={{
-        background: "#fff",
-        color: DARK,
-        fontFamily: BASE_FONT,
-        position: "relative",
-        zIndex: 10,
-      }}
+      className={`transition-colors duration-300 relative z-10 ${dark ? "bg-[#1e1e1c]" : "bg-white"}`}
     >
       <div
-        className="mad-contact-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          minHeight: 580,
-        }}
+        ref={ref}
+        className="mad-contact-grid grid"
+        style={{ gridTemplateColumns: "1fr 1fr", minHeight: 620 }}
       >
+        {/* Left: form */}
         <div
-          style={{
-            padding: "80px 60px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            borderRight: `1px solid ${GRAY2}`,
-          }}
+          className={`p-10 flex flex-col justify-center border-r transition-colors duration-300 ${dark ? "border-white/[.08]" : "border-[#e8e8e6]"}`}
         >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: ".28em",
-              textTransform: "uppercase",
-              color: GRAY3,
-              marginBottom: 20,
-            }}
-          >
+          <p className="text-[8px] font-bold tracking-[.25em] uppercase text-neutral-400 mb-5">
             Get In Touch
-          </div>
+          </p>
           <h2
+            className="mb-5 leading-tight"
             style={{
               fontSize: 34,
               fontWeight: 800,
-              lineHeight: 1.1,
-              letterSpacing: "-.025em",
-              marginBottom: 20,
+              letterSpacing: "-.02em",
+              color: dark ? "#f0ede8" : "#181817",
             }}
           >
             Not sure what
             <br />
             comes next?
             <br />
-            <em style={{ fontStyle: "normal", color: AZ }}>Talk to MAD.</em>
+            <em style={{ fontStyle: "normal", color: "#1980c2" }}>Talk to MAD.</em>
           </h2>
           <p
-            style={{
-              fontSize: 14,
-              lineHeight: 1.85,
-              color: GRAY4,
-              marginBottom: 12,
-              maxWidth: 380,
-            }}
+            className={`text-sm leading-relaxed mb-10 max-w-[380px] ${dark ? "text-white/50" : "text-neutral-500"}`}
           >
             Whether you have a clear brief or just an idea, we'll help you shape
             it into something structured and actionable.
           </p>
-          <div
-            style={{
-              marginTop: 48,
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-            }}
-          >
-            {[
-              ["Email", "hello@madagency.co"],
-              ["WhatsApp", "+1 (800) MAD-GROW"],
-              ["Based in", "Global · Remote-first"],
-            ].map(([l, v]) => (
-              <div
-                key={l}
-                style={{ display: "flex", gap: 16, alignItems: "baseline" }}
-              >
-                <span
-                  style={{
-                    fontSize: 8.5,
-                    fontWeight: 700,
-                    letterSpacing: ".18em",
-                    textTransform: "uppercase",
-                    color: GRAY3,
-                    width: 70,
-                    flexShrink: 0,
-                  }}
-                >
-                  {l}
-                </span>
-                <span style={{ fontSize: 13, color: DARK }}>{v}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
-          style={{
-            padding: "80px 60px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
+
           {sent ? (
             <div>
-              <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
-              <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 10 }}>
+              <div className="text-4xl mb-4">✓</div>
+              <div
+                className={`text-xl font-bold mb-2.5 ${dark ? "text-white/90" : "text-[#181817]"}`}
+              >
                 Got it.
               </div>
-              <p style={{ fontSize: 14, color: GRAY4, lineHeight: 1.8 }}>
+              <p
+                className={`text-sm leading-relaxed ${dark ? "text-white/50" : "text-neutral-500"}`}
+              >
                 We'll be in touch shortly.
               </p>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            <div className="flex flex-col gap-6">
               {[
                 ["name", "Your Name", "text"],
                 ["email", "Email Address", "email"],
               ].map(([k, l, t]) => (
                 <div key={k}>
-                  <label
-                    style={{
-                      fontSize: 8.5,
-                      fontWeight: 700,
-                      letterSpacing: ".2em",
-                      textTransform: "uppercase",
-                      color: GRAY3,
-                      display: "block",
-                      marginBottom: 4,
-                    }}
-                  >
+                  <label className="text-[7px] font-bold tracking-[.2em] uppercase text-neutral-400 block mb-1">
                     {l}
                   </label>
                   <input
@@ -5972,24 +3131,18 @@ function Contact() {
                     onChange={(e) =>
                       setForm((x) => ({ ...x, [k]: e.target.value }))
                     }
-                    style={inp}
-                    onFocus={(e) => (e.target.style.borderBottomColor = AZ)}
-                    onBlur={(e) => (e.target.style.borderBottomColor = GRAY2)}
+                    style={inputStyle}
+                    onFocus={(e) => (e.target.style.borderBottomColor = "#1980c2")}
+                    onBlur={(e) =>
+                      (e.target.style.borderBottomColor = dark
+                        ? "rgba(255,255,255,.08)"
+                        : "#e8e8e6")
+                    }
                   />
                 </div>
               ))}
               <div>
-                <label
-                  style={{
-                    fontSize: 8.5,
-                    fontWeight: 700,
-                    letterSpacing: ".2em",
-                    textTransform: "uppercase",
-                    color: GRAY3,
-                    display: "block",
-                    marginBottom: 4,
-                  }}
-                >
+                <label className="text-[7px] font-bold tracking-[.2em] uppercase text-neutral-400 block mb-1">
                   What are you working on?
                 </label>
                 <textarea
@@ -5998,36 +3151,30 @@ function Contact() {
                     setForm((x) => ({ ...x, message: e.target.value }))
                   }
                   rows={4}
-                  style={{ ...inp, resize: "none" }}
-                  onFocus={(e) => (e.target.style.borderBottomColor = AZ)}
-                  onBlur={(e) => (e.target.style.borderBottomColor = GRAY2)}
+                  style={{ ...inputStyle, resize: "none" }}
+                  onFocus={(e) => (e.target.style.borderBottomColor = "#1980c2")}
+                  onBlur={(e) =>
+                    (e.target.style.borderBottomColor = dark
+                      ? "rgba(255,255,255,.08)"
+                      : "#e8e8e6")
+                  }
                 />
               </div>
               <button
                 onClick={() => {
                   if (form.name && form.email) setSent(true);
                 }}
+                className="self-start px-8 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase text-white border-none cursor-pointer transition-all duration-200"
                 style={{
-                  background: AZ,
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 50,
-                  padding: "14px 32px",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: ".12em",
-                  textTransform: "uppercase",
-                  cursor: "pointer",
-                  fontFamily: BASE_FONT,
-                  alignSelf: "flex-start",
-                  transition: "background .2s, transform .2s",
+                  background: "#1980c2",
+                  boxShadow: `0 4px 20px ${"#1980c2"}35`,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#1565a0";
-                  e.currentTarget.style.transform = "scale(1.03)";
+                  e.currentTarget.style.background = "#1468a0";
+                  e.currentTarget.style.transform = "scale(1.04)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = AZ;
+                  e.currentTarget.style.background = "#1980c2";
                   e.currentTarget.style.transform = "none";
                 }}
               >
@@ -6035,42 +3182,68 @@ function Contact() {
               </button>
             </div>
           )}
+
+          {/* Contact info */}
+          <div className="mt-12 flex flex-col gap-4">
+            {[
+              ["Email", "hello@madagency.co"],
+              ["WhatsApp", "+1 (800) MAD-GROW"],
+              ["Based in", "Global · Remote-first"],
+            ].map(([l, v]) => (
+              <div key={l} className="flex gap-4 items-baseline">
+                <span className="text-[7px] font-bold tracking-[.2em] uppercase text-neutral-400 w-[70px] flex-shrink-0">
+                  {l}
+                </span>
+                <span
+                  className={`text-[13px] ${dark ? "text-white/90" : "text-[#181817]"}`}
+                >
+                  {v}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: MADPhone */}
+        <div
+          className="flex items-center justify-center relative overflow-hidden"
+          style={{ background: dark ? "#181817" : "#0e0e0d" }}
+        >
+          {/* Subtle background gradient */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse at 50% 60%, ${"#1980c2"}15 0%, transparent 70%)`,
+            }}
+          />
+          <div
+            className="transition-all duration-700"
+            style={{
+              opacity: vis ? 1 : 0,
+              transform: vis ? "none" : "translateY(32px) scale(0.95)",
+            }}
+          >
+            <MADPhone />
+          </div>
         </div>
       </div>
+
       <div
-        style={{
-          borderTop: `1px solid ${GRAY2}`,
-          padding: "24px 60px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        className={`border-t px-10 py-6 flex justify-between items-center transition-colors duration-300 ${dark ? "border-white/[.08]" : "border-[#e8e8e6]"}`}
       >
         <div
-          style={{
-            fontSize: 16,
-            fontWeight: 800,
-            letterSpacing: ".06em",
-            color: DARK,
-          }}
+          className={`text-sm font-black tracking-wide ${dark ? "text-white/90" : "text-[#181817]"}`}
         >
-          M<span style={{ color: AZ }}>A</span>D
+          M<span style={{ color: "#1980c2" }}>A</span>D
         </div>
-        <div style={{ fontSize: 10, color: GRAY3, letterSpacing: ".06em" }}>
+        <div className="text-[8px] tracking-wide text-neutral-400">
           © 2025 MAD — Making A Difference. All rights reserved.
         </div>
-        <div style={{ display: "flex", gap: 20 }}>
+        <div className="flex gap-5">
           {["Privacy", "Terms", "LinkedIn"].map((l) => (
             <span
               key={l}
-              style={{
-                fontSize: 10,
-                color: GRAY3,
-                cursor: "pointer",
-                transition: "color .2s",
-              }}
-              onMouseEnter={(e) => (e.target.style.color = DARK)}
-              onMouseLeave={(e) => (e.target.style.color = GRAY3)}
+              className="text-[8px] text-neutral-400 cursor-pointer hover:text-neutral-700 transition-colors duration-200"
             >
               {l}
             </span>
@@ -6083,35 +3256,76 @@ function Contact() {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function MADLanding() {
+  const [dark, setDark] = useState(false);
+  const toggle = useCallback(() => setDark((d) => !d), []);
+
+  useEffect(() => {
+    const key = "mad:homes:scroll";
+    const originalRestoration = window.history.scrollRestoration;
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const saved = sessionStorage.getItem(key);
+    const savedY = saved ? Number(saved) : 0;
+    const restoreY = Number.isFinite(savedY) && savedY > 0 ? savedY : 0;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => window.scrollTo(0, restoreY));
+    });
+
+    let ticking = false;
+    const remember = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        sessionStorage.setItem(key, String(window.scrollY));
+        ticking = false;
+      });
+    };
+
+    window.addEventListener("scroll", remember, { passive: true });
+    window.addEventListener("pagehide", remember);
+
+    return () => {
+      window.removeEventListener("scroll", remember);
+      window.removeEventListener("pagehide", remember);
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = originalRestoration;
+      }
+    };
+  }, []);
+
   return (
-    <div style={{ fontFamily: BASE_FONT, background: CREAM }}>
-      <style>{`
-        @media (max-width: 767px) {
-          .mad-hero-left { width: 100% !important; height: 44vw !important; min-height: 200px !important; }
-          .mad-exp-grid { grid-template-columns: 1fr !important; }
-          .mad-exp-devices { display: none !important; }
-          .mad-bp-phone { left: 50% !important; transform: translateX(-50%) scale(0.78) !important; transform-origin: top center !important; }
-          .mad-bp-content { padding-left: 20px !important; padding-right: 20px !important; padding-top: 280px !important; }
-          .mad-contact-grid { grid-template-columns: 1fr !important; }
-          .mad-contact-grid > div:first-child { border-right: none !important; border-bottom: 1px solid rgba(24,24,23,.08) !important; padding: 48px 24px !important; }
-          .mad-contact-grid > div:last-child { padding: 40px 24px 64px !important; }
-          .mad-nav-ul { display: none !important; }
-          .mad-trusted { padding: 28px 20px !important; }
-        }
-        @media (max-width: 480px) {
-          .mad-bp-phone { left: 50% !important; transform: translateX(-50%) scale(0.68) !important; }
-          .mad-bp-content { padding-top: 250px !important; }
-        }
-        input::placeholder, textarea::placeholder { color: rgba(24,24,23,0.28) !important; }
-      `}</style>
-      <Nav />
-      <Hero />
-      <TrustedBy />
-      <WhatWeDo />
-      <Experience />
-      <ServiceCards />
-      <BeyondProjects />
-      <Contact />
-    </div>
+    <ThemeCtx.Provider value={{ dark, toggle }}>
+      <div className={dark ? "dark" : ""}>
+        <div
+          className="font-sans transition-colors duration-300"
+          style={{ background: dark ? "#141413" : "#f5f1eb" }}
+        >
+          <style>{`
+            @keyframes pulseGlow { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+            @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+            @media (max-width: 767px) {
+              .mad-hero-left { width: 100% !important; height: 44vw !important; min-height: 200px !important; }
+              .mad-exp-devices { display: none !important; }
+              .mad-contact-grid { grid-template-columns: 1fr !important; }
+              .mad-contact-grid > div:first-child { border-right: none !important; padding: 40px 24px !important; }
+              .mad-contact-grid > div:last-child { padding: 40px 24px 64px !important; min-height: 500px !important; }
+              .mad-nav-ul { display: none !important; }
+              .mad-trusted { padding: 28px 20px !important; }
+            }
+            input::placeholder, textarea::placeholder { color: rgba(24,24,23,0.28) !important; }
+            * { box-sizing: border-box; }
+          `}</style>
+          <Nav />
+          <div className="h-[60px]" />
+          <Hero />
+          <WhatWeDo />
+          <Experience />
+          <Contact />
+        </div>
+      </div>
+    </ThemeCtx.Provider>
   );
 }
