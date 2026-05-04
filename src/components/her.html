@@ -1,0 +1,3382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAD Studio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --blue: #1980c2;
+        --dark: #181817;
+        --light: #f5f5f3;
+      }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: #fff;
+        overflow: hidden;
+      }
+      #wrapper {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+      #track {
+        display: flex;
+        height: 100%;
+        will-change: transform;
+        transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+      .panel {
+        flex: 0 0 100vw;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+      }
+
+      /* HERO PANEL */
+      #hero {
+        background: #fff;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 80px 60px;
+      }
+      .hero-eye {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--blue);
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+      .hero-h {
+        font-size: 52px;
+        font-weight: 900;
+        line-height: 1.05;
+        color: var(--dark);
+        max-width: 640px;
+        margin-bottom: 22px;
+      }
+      .hero-h span {
+        color: var(--blue);
+      }
+      .hero-sub {
+        font-size: 15px;
+        color: #777;
+        max-width: 500px;
+        line-height: 1.8;
+        margin-bottom: 16px;
+      }
+      .hero-core {
+        font-size: 13px;
+        color: #aaa;
+        max-width: 460px;
+        line-height: 1.75;
+        border-left: 3px solid var(--blue);
+        padding-left: 16px;
+        font-weight: 500;
+        margin-bottom: 48px;
+      }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--blue);
+        color: #fff;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 16px 32px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+      }
+      .hero-cta:hover {
+        background: #1570aa;
+        transform: translateY(-1px);
+      }
+      .hero-scroll-hint {
+        position: absolute;
+        bottom: 32px;
+        left: 80px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: #bbb;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .hint-arrow {
+        width: 32px;
+        height: 2px;
+        background: #ddd;
+        position: relative;
+      }
+      .hint-arrow::after {
+        content: "";
+        position: absolute;
+        right: -4px;
+        top: -3px;
+        width: 0;
+        height: 0;
+        border: 4px solid transparent;
+        border-left: 7px solid #ddd;
+      }
+
+      /* CARDS PANEL */
+      #cards-panel {
+        background: #f8f8f6;
+        flex-direction: column;
+        padding: 56px 64px 40px;
+        overflow: hidden;
+      }
+      .cards-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--blue);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .cards-title {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--dark);
+        margin-bottom: 32px;
+      }
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        flex: 1;
+        align-content: start;
+      }
+
+      /* CARD */
+      .acard {
+        border-radius: 16px;
+        height: 300px;
+        position: relative;
+        background: #fff;
+        border: 0.5px solid rgba(0, 0, 0, 0.09);
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+      }
+      .cs {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.65s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .cs.on {
+        opacity: 1;
+      }
+      .pdots {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 4px;
+        z-index: 10;
+      }
+      .pd {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.12);
+        transition: background 0.3s;
+      }
+      .pd.on {
+        background: var(--blue);
+      }
+      .pbar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .pfill {
+        height: 100%;
+        background: var(--blue);
+        width: 0%;
+        transition: width linear;
+      }
+      .tag {
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.3);
+        padding: 12px 12px 4px;
+      }
+
+      /* ---- CARD A: PRODUCT ---- */
+      .ca-hero-img {
+        width: 100%;
+        height: 110px;
+        background: linear-gradient(135deg, #e8f4fd, #d0e8f7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .ca-hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 4px;
+        padding: 8px 10px;
+      }
+      .ca-tile {
+        background: #f0f7fd;
+        border-radius: 5px;
+        padding: 6px;
+        border: 0.5px solid rgba(25, 128, 194, 0.15);
+      }
+      .ca-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        background: var(--blue);
+        margin-bottom: 3px;
+      }
+      .ca-tt {
+        font-size: 6.5px;
+        font-weight: 700;
+        color: var(--dark);
+      }
+      .ca-td {
+        font-size: 6px;
+        color: #aaa;
+        line-height: 1.4;
+      }
+      .ca-stat {
+        flex: 1;
+        text-align: center;
+      }
+      .ca-num {
+        font-size: 10px;
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .ca-lbl {
+        font-size: 6px;
+        color: #bbb;
+      }
+      .ca-cap {
+        padding: 8px 12px;
+        font-size: 9.5px;
+        color: #666;
+        line-height: 1.5;
+      }
+      .ca-cap strong {
+        color: var(--dark);
+        font-size: 11px;
+        font-weight: 800;
+        display: block;
+        margin-bottom: 1px;
+      }
+
+      /* CARD A stage 2: chat */
+      .chat-stage {
+        background: #f8f8f6;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 10px;
+        gap: 5px;
+      }
+      .ch-hd {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-bottom: 7px;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.07);
+      }
+      .ch-dot {
+        width: 7px;
+        height: 7px;
+        background: var(--blue);
+        border-radius: 50%;
+      }
+      .ch-lbl {
+        font-size: 8px;
+        font-weight: 700;
+        color: #999;
+        letter-spacing: 0.08em;
+      }
+      .bubble {
+        padding: 7px 9px;
+        border-radius: 10px;
+        font-size: 8.5px;
+        line-height: 1.5;
+        max-width: 92%;
+      }
+      .bai {
+        background: #fff;
+        color: #555;
+        align-self: flex-start;
+        border-radius: 10px 10px 10px 2px;
+        border: 0.5px solid rgba(0, 0, 0, 0.08);
+      }
+      .bus {
+        background: var(--blue);
+        color: #fff;
+        align-self: flex-end;
+        border-radius: 10px 10px 2px 10px;
+      }
+      .typing {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 7px 9px;
+        background: #fff;
+        border-radius: 10px 10px 10px 2px;
+        align-self: flex-start;
+        border: 0.5px solid rgba(0, 0, 0, 0.08);
+      }
+      .typing span {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #ccc;
+        animation: blink 1.2s infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes blink {
+        0%,
+        80%,
+        100% {
+          opacity: 0.3;
+        }
+        40% {
+          opacity: 1;
+        }
+      }
+      .ch-in {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        background: #fff;
+        border-radius: 7px;
+        padding: 5px 8px;
+        margin-top: 4px;
+        border: 0.5px solid rgba(0, 0, 0, 0.1);
+      }
+      .ch-ph {
+        font-size: 8px;
+        color: #ccc;
+        flex: 1;
+      }
+      .ch-send {
+        width: 16px;
+        height: 16px;
+        background: var(--blue);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* CARD A stage 3: ecom */
+      .ecom-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px 5px;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+      }
+      .ec-brand {
+        font-size: 9px;
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .ec-nav {
+        display: flex;
+        gap: 6px;
+      }
+      .ec-nav span {
+        font-size: 7px;
+        color: #bbb;
+      }
+      .ec-hero-l {
+        height: 72px;
+        background: #e8f4fd;
+        margin: 0 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        gap: 8px;
+      }
+      .ech-h {
+        font-size: 9px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .ech-p {
+        font-size: 6.5px;
+        color: #aaa;
+        line-height: 1.4;
+      }
+      .ech-btn {
+        background: var(--blue);
+        color: #fff;
+        font-size: 6.5px;
+        font-weight: 700;
+        padding: 3px 7px;
+        border-radius: 3px;
+      }
+      .ech-img {
+        width: 44px;
+        height: 54px;
+        background: rgba(25, 128, 194, 0.1);
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .ec-prods {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 4px;
+        padding: 6px 10px;
+      }
+      .ec-prod {
+        background: #f8f8f6;
+        border-radius: 4px;
+        padding: 5px;
+        border: 0.5px solid rgba(0, 0, 0, 0.06);
+      }
+      .ec-pimg {
+        height: 24px;
+        background: #e8f4fd;
+        border-radius: 2px;
+        margin-bottom: 2px;
+      }
+      .ec-pname {
+        font-size: 6px;
+        color: #aaa;
+        margin-bottom: 1px;
+      }
+      .ec-pprice {
+        font-size: 7px;
+        font-weight: 800;
+        color: var(--blue);
+      }
+      .done-pill {
+        position: absolute;
+        bottom: 20px;
+        right: 10px;
+        background: var(--dark);
+        color: #fff;
+        font-size: 8px;
+        font-weight: 700;
+        padding: 4px 9px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .dp-dot {
+        width: 5px;
+        height: 5px;
+        background: var(--blue);
+        border-radius: 50%;
+      }
+
+      /* ---- CARD B: MARKETING ---- */
+      .ig-mock {
+        margin: 0 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 0.5px solid rgba(0, 0, 0, 0.08);
+        flex: 1;
+      }
+      .ig-top-l {
+        background: var(--dark);
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ig-av {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f09433, #dc2743);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: 900;
+        color: #fff;
+      }
+      .ig-nm {
+        font-size: 9px;
+        font-weight: 700;
+        color: #fff;
+        flex: 1;
+      }
+      .ig-pbtn {
+        background: var(--blue);
+        color: #fff;
+        font-size: 7px;
+        font-weight: 700;
+        padding: 3px 7px;
+        border-radius: 4px;
+      }
+      .ig-img-l {
+        height: 90px;
+        background: linear-gradient(135deg, var(--blue), #0f4f7a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .ig-post-txt {
+        font-size: 14px;
+        font-weight: 900;
+        color: #fff;
+        text-align: center;
+        line-height: 1.15;
+        padding: 10px;
+      }
+      .ig-cap-l {
+        padding: 7px 10px;
+        font-size: 7.5px;
+        color: #666;
+        line-height: 1.5;
+        background: #fff;
+      }
+      .ig-tags {
+        display: flex;
+        gap: 3px;
+        flex-wrap: wrap;
+        padding: 0 10px 7px;
+        background: #fff;
+      }
+      .ig-tag {
+        background: #e8f4fd;
+        color: var(--blue);
+        font-size: 7px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 10px;
+      }
+      .mkt-dash {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: #fff;
+        flex: 1;
+      }
+      .mkt-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .mkt-card {
+        background: #f5f5f3;
+        border-radius: 8px;
+        padding: 8px 10px;
+        border: 0.5px solid rgba(0, 0, 0, 0.07);
+      }
+      .mkt-lbl {
+        font-size: 7px;
+        color: #aaa;
+        margin-bottom: 2px;
+      }
+      .mkt-val {
+        font-size: 17px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .mkt-delta {
+        font-size: 8px;
+        font-weight: 700;
+        color: #22a05a;
+      }
+      .ch-bar-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .ch-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .ch-nm {
+        font-size: 7.5px;
+        color: #aaa;
+        width: 44px;
+        flex-shrink: 0;
+      }
+      .ch-track {
+        flex: 1;
+        height: 4px;
+        background: #eee;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .ch-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--blue);
+      }
+      .ch-pct {
+        font-size: 7.5px;
+        font-weight: 700;
+        color: var(--blue);
+        width: 22px;
+        text-align: right;
+      }
+      .ig-profile-l {
+        padding: 9px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 0.5px solid #eee;
+        background: #fff;
+      }
+      .igp-av {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f09433, #dc2743);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 900;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .igp-name {
+        font-size: 10px;
+        font-weight: 800;
+        color: #111;
+      }
+      .igp-handle {
+        font-size: 7.5px;
+        color: #aaa;
+      }
+      .igp-follow {
+        background: var(--blue);
+        color: #fff;
+        font-size: 7.5px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .ig-stats-row {
+        display: flex;
+        border-bottom: 0.5px solid #eee;
+        background: #fff;
+      }
+      .igs-item {
+        flex: 1;
+        padding: 6px;
+        text-align: center;
+        border-right: 0.5px solid #eee;
+      }
+      .igs-item:last-child {
+        border-right: none;
+      }
+      .igs-num {
+        font-size: 11px;
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .igs-lbl {
+        font-size: 6.5px;
+        color: #bbb;
+      }
+      .ig-grid-l {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2px;
+        padding: 2px;
+        background: #fff;
+      }
+      .ig-gc {
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 7px;
+        font-weight: 700;
+        position: relative;
+        overflow: hidden;
+      }
+      .igc-overlay {
+        position: absolute;
+        bottom: 3px;
+        left: 4px;
+        font-size: 6.5px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      /* ---- CARD C: BRAND ---- */
+      .brand-canvas {
+        margin: 0 12px;
+        background: #f0f7fd;
+        border-radius: 8px;
+        height: 110px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0.5px solid rgba(25, 128, 194, 0.12);
+      }
+      .lc-mark {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .lc-hex {
+        width: 32px;
+        height: 32px;
+        background: var(--blue);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lc-word {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .lc-word span {
+        color: var(--blue);
+      }
+      .logo-vars {
+        display: flex;
+        gap: 5px;
+        padding: 8px 12px 4px;
+      }
+      .lv {
+        flex: 1;
+        border-radius: 5px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8.5px;
+        font-weight: 800;
+      }
+      .lv1 {
+        background: var(--blue);
+        color: #fff;
+      }
+      .lv2 {
+        background: var(--dark);
+        color: #fff;
+      }
+      .lv3 {
+        background: #f0f0ee;
+        color: var(--dark);
+        border: 0.5px solid rgba(0, 0, 0, 0.1);
+      }
+      .brand-hex {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        padding: 0 12px;
+      }
+      .bh-sw {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+      }
+      .bh-code {
+        font-size: 7.5px;
+        color: #aaa;
+        font-family: monospace;
+      }
+      .pal-sect {
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+        background: #fff;
+      }
+      .pal-hd {
+        font-size: 8px;
+        font-weight: 700;
+        color: #aaa;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .swatches {
+        display: flex;
+        gap: 4px;
+      }
+      .sw {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+      }
+      .sw-lbl {
+        font-size: 6px;
+        color: #bbb;
+        text-align: center;
+        margin-top: 2px;
+      }
+      .type-sect {
+        padding-top: 7px;
+        border-top: 0.5px solid #eee;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ts-row {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+      }
+      .ts-lbl {
+        font-size: 7px;
+        color: #ccc;
+        width: 30px;
+        flex-shrink: 0;
+      }
+      .comp-sect {
+        padding-top: 7px;
+        border-top: 0.5px solid #eee;
+        display: flex;
+        gap: 5px;
+      }
+      .cbtn {
+        font-size: 7px;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: "Montserrat", sans-serif;
+        border: 1px solid transparent;
+      }
+      .figma-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #f0f0ee;
+        border: 0.5px solid rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 2px 7px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 7.5px;
+        color: #888;
+      }
+      .fb-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #a259ff;
+      }
+      .ba-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+      }
+      .ba-side {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .ba-before-side {
+        background: #f0f0ee;
+      }
+      .ba-after-side {
+        background: #0f1a2c;
+      }
+      .ba-tag {
+        font-size: 7px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #bbb;
+      }
+      .ba-tag-new {
+        color: var(--blue);
+      }
+      .ba-logo-old {
+        font-size: 10px;
+        font-weight: 700;
+        color: #888;
+        background: #ddd;
+        padding: 4px 8px;
+        border-radius: 3px;
+        align-self: flex-start;
+      }
+      .ba-logo-new {
+        font-size: 10px;
+        font-weight: 900;
+        color: #fff;
+        background: #181817;
+        padding: 4px 8px;
+        border-radius: 5px;
+        align-self: flex-start;
+      }
+      .ba-cols {
+        display: flex;
+        gap: 3px;
+      }
+      .bcs {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+      }
+      .ba-type-old {
+        font-size: 10px;
+        font-weight: 400;
+        color: #999;
+      }
+      .ba-type-new {
+        font-size: 10px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .ba-block-old {
+        background: #ddd;
+        border-radius: 4px;
+        flex: 1;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 3px;
+      }
+      .ba-block-new {
+        background: #1a2a3e;
+        border-radius: 6px;
+        flex: 1;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 3px;
+        border: 0.5px solid rgba(25, 128, 194, 0.2);
+      }
+      .bbl {
+        height: 3px;
+        border-radius: 2px;
+      }
+      .bbl-old {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .bbl-new {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .bbl-acc {
+        height: 2px;
+        background: var(--blue);
+        border-radius: 1px;
+        width: 38%;
+      }
+      .ba-foot {
+        font-size: 7px;
+        font-weight: 600;
+        margin-top: auto;
+      }
+      .ba-foot-old {
+        color: #bbb;
+      }
+      .ba-foot-new {
+        color: var(--blue);
+      }
+
+      /* ---- CARD D: STRATEGY ---- */
+      .strat-hero {
+        margin: 0 12px;
+        background: #f8f4ff;
+        border-radius: 8px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border: 0.5px solid rgba(100, 60, 200, 0.1);
+      }
+      .strat-steps {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .strat-step {
+        width: 36px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 7.5px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .strat-arrow {
+        font-size: 10px;
+        color: #ccc;
+      }
+      .strat-list {
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .strat-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 8px;
+        background: #f8f4ff;
+        border-radius: 6px;
+        border: 0.5px solid rgba(100, 60, 200, 0.1);
+      }
+      .strat-num {
+        font-size: 9px;
+        font-weight: 900;
+        color: #7c3aed;
+        width: 14px;
+      }
+      .strat-txt {
+        font-size: 8px;
+        color: #555;
+        flex: 1;
+      }
+      .strat-badge {
+        font-size: 7px;
+        font-weight: 700;
+        color: #7c3aed;
+        background: #f0e8ff;
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+      .ws-img {
+        margin: 0 12px;
+        background: #f0faf5;
+        border-radius: 8px;
+        height: 95px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        border: 0.5px solid rgba(0, 160, 90, 0.1);
+      }
+      .ws-list {
+        padding: 7px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .ws-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 8px;
+        color: #555;
+      }
+      .ws-chk {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .rdmap {
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      .rdmap-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .rdmap-q {
+        font-size: 8px;
+        font-weight: 700;
+        color: #aaa;
+        width: 20px;
+        flex-shrink: 0;
+      }
+      .rdmap-track {
+        flex: 1;
+        height: 18px;
+        border-radius: 4px;
+        background: #f5f5f3;
+        border: 0.5px solid rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        display: flex;
+      }
+      .rdmap-seg {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6.5px;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      /* ---- CARD E: UX RESEARCH ---- */
+      .ux-img {
+        margin: 0 12px;
+        background: #fff8f0;
+        border-radius: 8px;
+        height: 95px;
+        border: 0.5px solid rgba(220, 100, 0, 0.1);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        overflow: hidden;
+      }
+      .ux-q {
+        padding: 7px 9px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-right: 0.5px solid rgba(220, 100, 0, 0.08);
+      }
+      .ux-q-label {
+        font-size: 7px;
+        font-weight: 700;
+        color: #c47a1b;
+        margin-bottom: 2px;
+      }
+      .ux-opt {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 7px;
+        color: #888;
+      }
+      .ux-radio {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 1.5px solid #ddd;
+      }
+      .ux-radio.sel {
+        border-color: #e67e22;
+        background: #e67e22;
+      }
+      .ux-heat {
+        padding: 7px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+      }
+      .ux-cell {
+        border-radius: 2px;
+        height: 14px;
+      }
+      .ux-stats-list {
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .ux-stat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .ux-s-label {
+        font-size: 8px;
+        color: #aaa;
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .ux-bar {
+        flex: 1;
+        height: 5px;
+        background: #fee;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .ux-bar-fill {
+        height: 100%;
+        background: #e67e22;
+        border-radius: 2px;
+      }
+      .ux-pct {
+        font-size: 8px;
+        font-weight: 700;
+        color: #e67e22;
+        width: 24px;
+        text-align: right;
+      }
+      .persona-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding: 0 12px;
+        flex: 1;
+      }
+      .persona {
+        background: #fff8f0;
+        border-radius: 7px;
+        padding: 7px;
+        border: 0.5px solid rgba(230, 126, 34, 0.12);
+      }
+      .p-av {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 3px;
+      }
+      .p-name {
+        font-size: 8.5px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .p-role {
+        font-size: 7px;
+        color: #aaa;
+        margin-bottom: 4px;
+      }
+      .p-tag {
+        display: inline-block;
+        background: #fde8c8;
+        color: #c47a1b;
+        font-size: 6.5px;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 4px;
+        margin-bottom: 3px;
+      }
+      .p-pain {
+        font-size: 7px;
+        color: #888;
+        line-height: 1.4;
+      }
+      .ut-tasks {
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .ut-task {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 7px;
+        border-radius: 5px;
+        border: 0.5px solid rgba(0, 0, 0, 0.07);
+      }
+      .ut-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        flex-shrink: 0;
+      }
+      .ut-txt {
+        font-size: 7.5px;
+        color: #555;
+        flex: 1;
+      }
+      .ut-score {
+        font-size: 8px;
+        font-weight: 800;
+      }
+
+      /* ---- CARD F: CONTENT ---- */
+      .content-mock {
+        margin: 0 12px;
+        background: #f5f3ff;
+        border-radius: 8px;
+        height: 95px;
+        border: 0.5px solid rgba(100, 60, 200, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .cm-top {
+        background: #6d28d9;
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .cm-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+      }
+      .cm-title-bar {
+        flex: 1;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        margin: 0 4px;
+      }
+      .cm-body {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding: 7px;
+      }
+      .cm-block {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 5px;
+      }
+      .cm-line {
+        height: 3px;
+        border-radius: 2px;
+        background: rgba(109, 40, 217, 0.12);
+      }
+      .cm-line-a {
+        background: rgba(109, 40, 217, 0.3);
+      }
+      .content-types {
+        display: flex;
+        gap: 5px;
+        padding: 7px 12px;
+        flex-wrap: wrap;
+      }
+      .ct-pill {
+        font-size: 7px;
+        font-weight: 700;
+        padding: 3px 7px;
+        border-radius: 10px;
+      }
+      .content-list {
+        padding: 0 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .cl-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 7px;
+        background: #f9f8ff;
+        border-radius: 5px;
+        border: 0.5px solid rgba(109, 40, 217, 0.1);
+      }
+      .cl-type {
+        font-size: 6.5px;
+        font-weight: 700;
+        color: #6d28d9;
+        background: #ede9fe;
+        padding: 1px 5px;
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+      .cl-title {
+        font-size: 7.5px;
+        color: #555;
+        flex: 1;
+      }
+      .cl-status {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+      .ed-mock {
+        margin: 0 12px;
+        background: #fff;
+        border-radius: 8px;
+        border: 0.5px solid rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        flex: 1;
+      }
+      .ed-header {
+        background: #6d28d9;
+        padding: 7px 10px;
+        font-size: 9px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .ed-art {
+        padding: 7px 9px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ed-headline {
+        font-size: 9.5px;
+        font-weight: 900;
+        color: var(--dark);
+        line-height: 1.3;
+      }
+      .ed-meta {
+        font-size: 7px;
+        color: #aaa;
+      }
+      .ed-img {
+        height: 38px;
+        background: #ede9fe;
+        border-radius: 3px;
+        margin-bottom: 3px;
+      }
+      .ed-body-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .ed-line {
+        height: 3px;
+        border-radius: 2px;
+        background: #f0f0ee;
+      }
+      .ed-line-a {
+        background: #d4c8f7;
+      }
+      .ca-wrap {
+        padding: 9px 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .ca-top-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+      }
+      .ca-m {
+        background: #f5f5f3;
+        border-radius: 5px;
+        padding: 5px 7px;
+        text-align: center;
+      }
+      .ca-m-val {
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .ca-m-lbl {
+        font-size: 6.5px;
+        color: #bbb;
+      }
+      .ca-channels {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .ca-ch {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ca-ch-name {
+        font-size: 8px;
+        color: #aaa;
+        width: 50px;
+      }
+      .ca-ch-bar {
+        flex: 1;
+        height: 4px;
+        background: #eee;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .ca-ch-fill {
+        height: 100%;
+        border-radius: 2px;
+      }
+      .ca-ch-val {
+        font-size: 8px;
+        font-weight: 700;
+        width: 28px;
+        text-align: right;
+      }
+
+      /* ---- CARD G: DATA & ANALYTICS ---- */
+      .data-hero {
+        margin: 0 12px;
+        background: #f0fff8;
+        border-radius: 8px;
+        height: 95px;
+        border: 0.5px solid rgba(0, 160, 90, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 12px;
+      }
+      .data-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 60px;
+      }
+      .data-bar-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .data-bar {
+        width: 10px;
+        border-radius: 2px 2px 0 0;
+      }
+      .data-bar-lbl {
+        font-size: 5.5px;
+        color: #aaa;
+      }
+      .data-kpis {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .data-kpi {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .data-kpi-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .data-kpi-lbl {
+        font-size: 7.5px;
+        color: #555;
+        flex: 1;
+      }
+      .data-kpi-val {
+        font-size: 9px;
+        font-weight: 800;
+        color: #22a05a;
+      }
+      .data-dash {
+        padding: 7px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+      }
+      .data-row {
+        display: flex;
+        gap: 6px;
+      }
+      .data-mc {
+        flex: 1;
+        background: #f0fff8;
+        border-radius: 6px;
+        padding: 6px 8px;
+        border: 0.5px solid rgba(0, 160, 90, 0.1);
+      }
+      .data-mc-l {
+        font-size: 7px;
+        color: #aaa;
+      }
+      .data-mc-v {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .data-mc-d {
+        font-size: 7px;
+        color: #22a05a;
+        font-weight: 700;
+      }
+      .pipe-vis {
+        margin: 0 12px;
+        background: #f5fff8;
+        border-radius: 8px;
+        height: 80px;
+        border: 0.5px solid rgba(0, 160, 90, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px;
+      }
+      .pipe-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+      }
+      .pipe-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+      .pipe-lbl {
+        font-size: 6.5px;
+        color: #aaa;
+        text-align: center;
+      }
+      .pipe-line {
+        flex: 1;
+        height: 2px;
+        background: #bbf7d0;
+        border-radius: 1px;
+        margin: 0 2px;
+        margin-bottom: 10px;
+      }
+      .data-insights {
+        padding: 7px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+      .di {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 4px 7px;
+        background: #f0fff8;
+        border-radius: 5px;
+        border: 0.5px solid rgba(0, 160, 90, 0.1);
+      }
+      .di-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22a05a;
+        margin-top: 1px;
+        flex-shrink: 0;
+      }
+      .di-txt {
+        font-size: 7.5px;
+        color: #555;
+        line-height: 1.4;
+      }
+      .report-preview {
+        padding: 9px 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .rp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .rp-title {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .rp-date {
+        font-size: 7.5px;
+        color: #aaa;
+      }
+      .rp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+      .rp-mc {
+        background: #f0fff8;
+        border-radius: 5px;
+        padding: 6px 8px;
+        border: 0.5px solid rgba(0, 160, 90, 0.1);
+      }
+      .rp-mc-l {
+        font-size: 6.5px;
+        color: #aaa;
+      }
+      .rp-mc-v {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--dark);
+      }
+      .rp-mc-d {
+        font-size: 7px;
+        color: #22a05a;
+        font-weight: 700;
+      }
+      .rp-bar-section {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .rp-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .rp-bar-lbl {
+        font-size: 7.5px;
+        color: #aaa;
+        width: 40px;
+      }
+      .rp-track {
+        flex: 1;
+        height: 4px;
+        background: #eee;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .rp-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: #22a05a;
+      }
+      .rp-pct {
+        font-size: 7.5px;
+        font-weight: 700;
+        color: #22a05a;
+        width: 24px;
+        text-align: right;
+      }
+
+      /* CTA PANEL */
+      #cta-panel {
+        background: var(--blue);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px;
+        gap: 24px;
+        text-align: center;
+      }
+      .cta-eye {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+      }
+      .cta-h {
+        font-size: 52px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.05;
+        max-width: 600px;
+      }
+      .cta-sub {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 440px;
+        line-height: 1.7;
+      }
+      .cta-btns {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .cta-primary {
+        background: #fff;
+        color: var(--blue);
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        padding: 16px 36px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      .cta-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+      .cta-secondary {
+        background: transparent;
+        color: #fff;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 16px 36px;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: border-color 0.2s;
+      }
+      .cta-secondary:hover {
+        border-color: #fff;
+      }
+      .cta-quote {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.45);
+        font-style: italic;
+        max-width: 460px;
+        line-height: 1.75;
+        margin-top: 12px;
+      }
+
+      /* NAV */
+      #progress-track {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(0, 0, 0, 0.08);
+        z-index: 100;
+      }
+      #progress-fill {
+        height: 100%;
+        background: var(--blue);
+        transition: width 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+      #panel-dots {
+        position: fixed;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        z-index: 100;
+      }
+      .panel-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.15);
+        transition:
+          background 0.3s,
+          width 0.3s,
+          border-radius 0.3s;
+        cursor: pointer;
+        border: none;
+      }
+      .panel-dot.on {
+        background: var(--blue);
+        width: 18px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="track">
+        <!-- PANEL 0: HERO -->
+        <div class="panel" id="hero" style="position: relative">
+          <div class="hero-eye">Who We Are</div>
+          <h1 class="hero-h">
+            We help businesses become<br /><span
+              >better than they were yesterday.</span
+            >
+          </h1>
+          <p class="hero-sub">
+            MAD is a product, marketing, and design firm focused on
+            collaborating with the brightest minds in business to create smarter
+            systems, stronger brands, and better digital experiences.
+          </p>
+          <p class="hero-core">
+            We create the conditions for growth by helping organizations balance
+            business (value), design (usability) and technology (feasibility).
+          </p>
+          <button class="hero-cta" onclick="goTo(1)">
+            Explore what we do &rarr;
+          </button>
+          <div class="hero-scroll-hint">
+            <div class="hint-arrow"></div>
+            Scroll to explore
+          </div>
+        </div>
+
+        <!-- PANEL 1: CARDS -->
+        <div class="panel" id="cards-panel">
+          <div class="cards-eyebrow">Our Services</div>
+          <div class="cards-title">What we do for you</div>
+          <div class="cards-grid">
+            <!-- CARD A: PRODUCT & DIGITAL -->
+            <div class="acard" id="cA">
+              <div class="cs on" id="cA1">
+                <div class="tag">Product &amp; Digital</div>
+                <div class="ca-hero-img">
+                  <img
+                    src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&q=80"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                      opacity: 0.35;
+                      position: absolute;
+                    "
+                    onerror="this.style.display = 'none'"
+                  />
+                  <div
+                    style="
+                      position: absolute;
+                      inset: 0;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      flex-direction: column;
+                      gap: 6px;
+                    "
+                  >
+                    <div
+                      style="
+                        font-size: 11px;
+                        font-weight: 900;
+                        color: var(--blue);
+                      "
+                    >
+                      Digital Products
+                    </div>
+                    <div style="display: flex; gap: 14px">
+                      <div class="ca-stat">
+                        <div class="ca-num">98</div>
+                        <div class="ca-lbl">Perf</div>
+                      </div>
+                      <div class="ca-stat">
+                        <div class="ca-num">1.2s</div>
+                        <div class="ca-lbl">Load</div>
+                      </div>
+                      <div class="ca-stat">
+                        <div class="ca-num">4.9★</div>
+                        <div class="ca-lbl">Rating</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ca-hero-grid">
+                  <div class="ca-tile">
+                    <div class="ca-icon"></div>
+                    <div class="ca-tt">Design</div>
+                    <div class="ca-td">UX/UI web &amp; mobile.</div>
+                  </div>
+                  <div class="ca-tile">
+                    <div class="ca-icon" style="background: #0f4f7a"></div>
+                    <div class="ca-tt">Build</div>
+                    <div class="ca-td">Fast, scalable code.</div>
+                  </div>
+                  <div class="ca-tile">
+                    <div class="ca-icon" style="background: #3da0e4"></div>
+                    <div class="ca-tt">Scale</div>
+                    <div class="ca-td">Systems that grow.</div>
+                  </div>
+                </div>
+                <div class="ca-cap">
+                  <strong>Websites &amp; platforms.</strong>Digital products
+                  that help organizations work smarter.
+                </div>
+              </div>
+              <div class="cs" id="cA2">
+                <div class="tag">Product &amp; Digital</div>
+                <div class="chat-stage" style="flex: 1; padding-top: 0">
+                  <div class="ch-hd">
+                    <div class="ch-dot"></div>
+                    <span class="ch-lbl">MAD SITE BUILDER</span>
+                  </div>
+                  <div class="bubble bai">
+                    Hi! What kind of site are we building today?
+                  </div>
+                  <div class="bubble bus">
+                    E-commerce — streetwear, dark aesthetic.
+                  </div>
+                  <div class="typing" id="typingA">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <div class="bubble bai" id="replyA" style="display: none">
+                    Generating layout — dark hero, product grid, bold type.
+                    Ready to preview!
+                  </div>
+                  <div class="ch-in">
+                    <span class="ch-ph">Continue building…</span>
+                    <div class="ch-send">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                        <path d="M1 7L7 4L1 1V7Z" fill="white" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cA3">
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    background: #fff;
+                  "
+                >
+                  <div class="ecom-bar">
+                    <span class="ec-brand">STRKT</span>
+                    <div class="ec-nav">
+                      <span>Shop</span><span>Lookbook</span><span>About</span>
+                    </div>
+                  </div>
+                  <div class="ec-hero-l" style="margin: 6px 10px">
+                    <div style="flex: 1">
+                      <div class="ech-h">Wear what you mean.</div>
+                      <div class="ech-p">Limited drops, every week.</div>
+                    </div>
+                    <div class="ech-btn">Shop now</div>
+                    <div class="ech-img"></div>
+                  </div>
+                  <div class="ec-prods">
+                    <div class="ec-prod">
+                      <div class="ec-pimg" style="background: #dbeeff"></div>
+                      <div class="ec-pname">Cargo Tee</div>
+                      <div class="ec-pprice">$48</div>
+                    </div>
+                    <div class="ec-prod">
+                      <div class="ec-pimg" style="background: #dbeeff"></div>
+                      <div class="ec-pname">Wide Hoodie</div>
+                      <div class="ec-pprice">$90</div>
+                    </div>
+                    <div class="ec-prod">
+                      <div class="ec-pimg" style="background: #dbeeff"></div>
+                      <div class="ec-pname">Track Pant</div>
+                      <div class="ec-pprice">$72</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="done-pill">
+                  <div class="dp-dot"></div>
+                  Done!
+                </div>
+              </div>
+              <div class="pdots" id="dA">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pA"></div></div>
+            </div>
+
+            <!-- CARD B: MARKETING -->
+            <div class="acard" id="cB">
+              <div class="cs on" id="cB1">
+                <div class="tag" style="color: #999">Marketing &amp; Comms</div>
+                <div class="ig-mock">
+                  <div class="ig-top-l">
+                    <div class="ig-av">M</div>
+                    <span class="ig-nm">@mad.studio</span>
+                    <div class="ig-pbtn">Post now</div>
+                  </div>
+                  <div class="ig-img-l">
+                    <img
+                      src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&q=80"
+                      style="
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        opacity: 0.2;
+                        position: absolute;
+                      "
+                      onerror="this.style.display = 'none'"
+                    />
+                    <div class="ig-post-txt">Your brand,<br />everywhere.</div>
+                  </div>
+                  <div class="ig-cap-l">
+                    Campaigns that connect — content built to reach the right
+                    people.
+                  </div>
+                  <div class="ig-tags">
+                    <div class="ig-tag">#branding</div>
+                    <div class="ig-tag">#marketing</div>
+                    <div class="ig-tag">#growth</div>
+                  </div>
+                </div>
+                <div class="ca-cap" style="padding-top: 6px">
+                  <strong>Social &amp; content.</strong>Reach the right people
+                  at the right time.
+                </div>
+              </div>
+              <div class="cs" id="cB2">
+                <div class="tag" style="color: #999">Marketing &amp; Comms</div>
+                <div class="mkt-dash">
+                  <div class="mkt-row">
+                    <div class="mkt-card">
+                      <div class="mkt-lbl">Total Reach</div>
+                      <div class="mkt-val">248K</div>
+                      <div class="mkt-delta">↑ +38% vs Q1</div>
+                    </div>
+                    <div class="mkt-card">
+                      <div class="mkt-lbl">Conversions</div>
+                      <div class="mkt-val">3.2K</div>
+                      <div class="mkt-delta">↑ +52% vs Q1</div>
+                    </div>
+                  </div>
+                  <div class="ch-bar-rows">
+                    <div class="ch-bar-row">
+                      <span class="ch-nm">Instagram</span>
+                      <div class="ch-track">
+                        <div class="ch-fill" style="width: 80%"></div>
+                      </div>
+                      <span class="ch-pct">80%</span>
+                    </div>
+                    <div class="ch-bar-row">
+                      <span class="ch-nm">LinkedIn</span>
+                      <div class="ch-track">
+                        <div class="ch-fill" style="width: 62%"></div>
+                      </div>
+                      <span class="ch-pct">62%</span>
+                    </div>
+                    <div class="ch-bar-row">
+                      <span class="ch-nm">Email</span>
+                      <div class="ch-track">
+                        <div class="ch-fill" style="width: 44%"></div>
+                      </div>
+                      <span class="ch-pct">44%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cB3">
+                <div class="tag" style="color: #999">Marketing &amp; Comms</div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    background: #fff;
+                  "
+                >
+                  <div class="ig-profile-l">
+                    <div class="igp-av">M</div>
+                    <div style="flex: 1">
+                      <div class="igp-name">MAD Studio</div>
+                      <div class="igp-handle">@mad.studio</div>
+                    </div>
+                    <button class="igp-follow">Follow</button>
+                  </div>
+                  <div class="ig-stats-row">
+                    <div class="igs-item">
+                      <div class="igs-num">48</div>
+                      <div class="igs-lbl">Posts</div>
+                    </div>
+                    <div class="igs-item">
+                      <div class="igs-num">24.8K</div>
+                      <div class="igs-lbl">Followers</div>
+                    </div>
+                    <div class="igs-item">
+                      <div class="igs-num">4.2%</div>
+                      <div class="igs-lbl">Eng.</div>
+                    </div>
+                  </div>
+                  <div class="ig-grid-l">
+                    <div class="ig-gc" style="background: var(--blue)">
+                      <span class="igc-overlay">Brand</span>
+                    </div>
+                    <div class="ig-gc" style="background: #181817">
+                      <span class="igc-overlay">Launch</span>
+                    </div>
+                    <div class="ig-gc" style="background: #3da0e4">
+                      <span class="igc-overlay">Web</span>
+                    </div>
+                    <div class="ig-gc" style="background: #f0f0ee">
+                      <span
+                        style="
+                          font-size: 11px;
+                          font-weight: 900;
+                          color: #181817;
+                        "
+                        >MAD</span
+                      >
+                    </div>
+                    <div class="ig-gc" style="background: #0f4f7a">
+                      <span class="igc-overlay">Identity</span>
+                    </div>
+                    <div class="ig-gc" style="background: #e8e8e4">
+                      <span
+                        style="font-size: 7px; font-weight: 700; color: #aaa"
+                        >Campaign</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dB">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pB"></div></div>
+            </div>
+
+            <!-- CARD C: BRAND & DESIGN -->
+            <div class="acard" id="cC">
+              <div class="cs on" id="cC1">
+                <div class="tag">Brand &amp; Design</div>
+                <div class="brand-canvas">
+                  <div class="lc-mark">
+                    <div class="lc-hex">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <polygon
+                          points="11,1 21,7 21,15 11,21 1,15 1,7"
+                          fill="white"
+                          opacity="0.9"
+                        />
+                      </svg>
+                    </div>
+                    <span class="lc-word">M<span>AD</span></span>
+                  </div>
+                  <div style="font-size: 7px; color: #aaa; font-weight: 600">
+                    Building identity systems.
+                  </div>
+                </div>
+                <div class="logo-vars">
+                  <div class="lv lv1">MAD</div>
+                  <div class="lv lv2">MAD</div>
+                  <div class="lv lv3">MAD</div>
+                </div>
+                <div class="brand-hex">
+                  <div class="bh-sw" style="background: #1980c2"></div>
+                  <span class="bh-code">#1980c2</span>
+                  <div
+                    class="bh-sw"
+                    style="background: #181817; margin-left: 8px"
+                  ></div>
+                  <span class="bh-code">#181817</span>
+                </div>
+                <div class="ca-cap">
+                  <strong>Identity systems.</strong>Clarity, consistency, and
+                  credibility at every touchpoint.
+                </div>
+              </div>
+              <div class="cs" id="cC2">
+                <div class="tag">Brand &amp; Design</div>
+                <div class="pal-sect">
+                  <div class="pal-hd">Brand Palette</div>
+                  <div class="swatches">
+                    <div>
+                      <div class="sw" style="background: #1980c2"></div>
+                      <div class="sw-lbl">Azure</div>
+                    </div>
+                    <div>
+                      <div class="sw" style="background: #181817"></div>
+                      <div class="sw-lbl">Onyx</div>
+                    </div>
+                    <div>
+                      <div
+                        class="sw"
+                        style="background: #fff; border: 0.5px solid #eee"
+                      ></div>
+                      <div class="sw-lbl">White</div>
+                    </div>
+                    <div>
+                      <div class="sw" style="background: #0f4f7a"></div>
+                      <div class="sw-lbl">Deep</div>
+                    </div>
+                    <div>
+                      <div class="sw" style="background: #3da0e4"></div>
+                      <div class="sw-lbl">Light</div>
+                    </div>
+                    <div>
+                      <div class="sw" style="background: #444441"></div>
+                      <div class="sw-lbl">Mid</div>
+                    </div>
+                  </div>
+                  <div class="type-sect">
+                    <div class="ts-row">
+                      <span class="ts-lbl">H1</span
+                      ><span
+                        style="
+                          font-size: 15px;
+                          font-weight: 900;
+                          color: var(--dark);
+                        "
+                        >Headline Bold</span
+                      >
+                    </div>
+                    <div class="ts-row">
+                      <span class="ts-lbl">Body</span
+                      ><span style="font-size: 9px; color: #aaa"
+                        >Body regular, readable.</span
+                      >
+                    </div>
+                  </div>
+                  <div class="comp-sect">
+                    <div
+                      class="cbtn"
+                      style="
+                        background: #1980c2;
+                        color: #fff;
+                        border-color: #1980c2;
+                      "
+                    >
+                      Primary
+                    </div>
+                    <div
+                      class="cbtn"
+                      style="color: #1980c2; border-color: #1980c2"
+                    >
+                      Outline
+                    </div>
+                    <div
+                      class="cbtn"
+                      style="
+                        background: #f0f0ee;
+                        color: var(--dark);
+                        border-color: #ddd;
+                      "
+                    >
+                      Light
+                    </div>
+                  </div>
+                </div>
+                <div class="figma-badge">
+                  <div class="fb-dot"></div>
+                  Figma DS
+                </div>
+              </div>
+              <div class="cs" id="cC3">
+                <div class="ba-wrap">
+                  <div class="ba-side ba-before-side">
+                    <div class="ba-tag">Before</div>
+                    <div class="ba-logo-old">Brand Co.</div>
+                    <div class="ba-cols">
+                      <div class="bcs" style="background: #ccc"></div>
+                      <div class="bcs" style="background: #888"></div>
+                    </div>
+                    <div class="ba-type-old">Generic.</div>
+                    <div class="ba-block-old" style="flex: 1">
+                      <div class="bbl bbl-old" style="width: 80%"></div>
+                      <div class="bbl bbl-old" style="width: 60%"></div>
+                    </div>
+                    <div class="ba-foot ba-foot-old">Forgettable</div>
+                  </div>
+                  <div class="ba-side ba-after-side">
+                    <div class="ba-tag ba-tag-new">After</div>
+                    <div class="ba-logo-new">MAD</div>
+                    <div class="ba-cols">
+                      <div class="bcs" style="background: #1980c2"></div>
+                      <div
+                        class="bcs"
+                        style="
+                          background: #fff;
+                          border: 0.5px solid rgba(255, 255, 255, 0.2);
+                        "
+                      ></div>
+                    </div>
+                    <div class="ba-type-new">Distinctive.</div>
+                    <div class="ba-block-new" style="flex: 1">
+                      <div class="bbl bbl-new" style="width: 85%"></div>
+                      <div class="bbl-acc"></div>
+                    </div>
+                    <div class="ba-foot ba-foot-new">Credible &amp; clear</div>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dC">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pC"></div></div>
+            </div>
+
+            <!-- CARD D: STRATEGY -->
+            <div class="acard" id="cD">
+              <div class="cs on" id="cD1">
+                <div class="tag" style="color: #7c3aed">
+                  Strategy &amp; Growth
+                </div>
+                <div class="strat-hero">
+                  <div class="strat-steps">
+                    <div class="strat-step" style="background: #7c3aed">
+                      Audit
+                    </div>
+                    <div class="strat-arrow">→</div>
+                    <div class="strat-step" style="background: #9d4edd">
+                      Plan
+                    </div>
+                    <div class="strat-arrow">→</div>
+                    <div class="strat-step" style="background: #c77dff">
+                      Execute
+                    </div>
+                    <div class="strat-arrow">→</div>
+                    <div
+                      class="strat-step"
+                      style="background: #e0aaff; color: #7c3aed"
+                    >
+                      Scale
+                    </div>
+                  </div>
+                  <div style="font-size: 7px; color: #aaa; font-weight: 600">
+                    Growth framework we use with every client.
+                  </div>
+                </div>
+                <div class="strat-list">
+                  <div class="strat-item">
+                    <span class="strat-num">01</span
+                    ><span class="strat-txt"
+                      >Market &amp; competitive analysis</span
+                    ><span class="strat-badge">Research</span>
+                  </div>
+                  <div class="strat-item">
+                    <span class="strat-num">02</span
+                    ><span class="strat-txt"
+                      >Positioning &amp; messaging strategy</span
+                    ><span class="strat-badge">Strategy</span>
+                  </div>
+                  <div class="strat-item">
+                    <span class="strat-num">03</span
+                    ><span class="strat-txt">Go-to-market roadmap</span
+                    ><span class="strat-badge">Plan</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cD2">
+                <div class="tag" style="color: #7c3aed">
+                  Strategy &amp; Growth
+                </div>
+                <div class="ws-img">
+                  <div style="display: flex; gap: 5px; align-items: center">
+                    <div
+                      style="
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        background: #7c3aed;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 10px;
+                        font-weight: 800;
+                        color: #fff;
+                      "
+                    >
+                      W
+                    </div>
+                    <div
+                      style="
+                        font-size: 8px;
+                        font-weight: 800;
+                        color: #7c3aed;
+                        max-width: 80px;
+                        line-height: 1.3;
+                      "
+                    >
+                      Strategy Workshop
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px">
+                    <div style="font-size: 7px; color: #aaa">
+                      Participants: 8
+                    </div>
+                    <div style="font-size: 7px; color: #aaa">
+                      Duration: 2 days
+                    </div>
+                    <div
+                      style="font-size: 7.5px; font-weight: 700; color: #7c3aed"
+                    >
+                      In progress...
+                    </div>
+                  </div>
+                </div>
+                <div class="ws-list">
+                  <div class="ws-item">
+                    <div class="ws-chk" style="background: #7c3aed">
+                      <svg width="8" height="8" viewBox="0 0 8 8">
+                        <path
+                          d="M1 4L3 6L7 2"
+                          stroke="white"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span>Vision &amp; mission alignment</span>
+                  </div>
+                  <div class="ws-item">
+                    <div class="ws-chk" style="background: #7c3aed">
+                      <svg width="8" height="8" viewBox="0 0 8 8">
+                        <path
+                          d="M1 4L3 6L7 2"
+                          stroke="white"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span>ICP &amp; persona definition</span>
+                  </div>
+                  <div class="ws-item">
+                    <div class="ws-chk" style="background: #ddd"></div>
+                    <span style="color: #aaa">Competitive differentiation</span>
+                  </div>
+                  <div class="ws-item">
+                    <div class="ws-chk" style="background: #ddd"></div>
+                    <span style="color: #aaa">OKR &amp; metrics setup</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cD3">
+                <div class="tag" style="color: #7c3aed">
+                  Strategy &amp; Growth
+                </div>
+                <div class="rdmap">
+                  <div
+                    style="
+                      font-size: 9px;
+                      font-weight: 800;
+                      color: var(--dark);
+                      margin-bottom: 4px;
+                    "
+                  >
+                    12-Month Roadmap
+                  </div>
+                  <div class="rdmap-row">
+                    <span class="rdmap-q">Q1</span>
+                    <div class="rdmap-track">
+                      <div
+                        class="rdmap-seg"
+                        style="width: 50%; background: #7c3aed"
+                      >
+                        Brand Audit
+                      </div>
+                      <div
+                        class="rdmap-seg"
+                        style="width: 50%; background: #9d4edd"
+                      >
+                        Strategy
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rdmap-row">
+                    <span class="rdmap-q">Q2</span>
+                    <div class="rdmap-track">
+                      <div
+                        class="rdmap-seg"
+                        style="width: 70%; background: #e0aaff; color: #7c3aed"
+                      >
+                        Launch
+                      </div>
+                      <div
+                        class="rdmap-seg"
+                        style="width: 30%; background: #f3e8ff; color: #7c3aed"
+                      >
+                        Optimize
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rdmap-row">
+                    <span class="rdmap-q">Q3</span>
+                    <div class="rdmap-track">
+                      <div
+                        class="rdmap-seg"
+                        style="width: 100%; background: #c77dff"
+                      >
+                        Scale &amp; Grow
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rdmap-row">
+                    <span class="rdmap-q">Q4</span>
+                    <div class="rdmap-track">
+                      <div
+                        class="rdmap-seg"
+                        style="width: 60%; background: #9d4edd"
+                      >
+                        Expand
+                      </div>
+                      <div
+                        class="rdmap-seg"
+                        style="width: 40%; background: #7c3aed"
+                      >
+                        Review
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dD">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pD"></div></div>
+            </div>
+
+            <!-- CARD E: UX RESEARCH -->
+            <div class="acard" id="cE">
+              <div class="cs on" id="cE1">
+                <div class="tag" style="color: #c47a1b">UX Research</div>
+                <div class="ux-img">
+                  <div class="ux-q">
+                    <div class="ux-q-label">User Survey</div>
+                    <div class="ux-opt">
+                      <div class="ux-radio sel"></div>
+                      <span>Easy to use</span>
+                    </div>
+                    <div class="ux-opt">
+                      <div class="ux-radio"></div>
+                      <span>Somewhat easy</span>
+                    </div>
+                    <div class="ux-opt">
+                      <div class="ux-radio"></div>
+                      <span>Difficult</span>
+                    </div>
+                    <div
+                      style="
+                        margin-top: 4px;
+                        font-size: 7px;
+                        color: #c47a1b;
+                        font-weight: 700;
+                      "
+                    >
+                      n=247 responses
+                    </div>
+                  </div>
+                  <div class="ux-heat">
+                    <div class="ux-cell" style="background: #fde8c8"></div>
+                    <div class="ux-cell" style="background: #f9c07a"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                    <div class="ux-cell" style="background: #c47a1b"></div>
+                    <div class="ux-cell" style="background: #f9c07a"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                    <div class="ux-cell" style="background: #c47a1b"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                    <div class="ux-cell" style="background: #fde8c8"></div>
+                    <div class="ux-cell" style="background: #fde8c8"></div>
+                    <div class="ux-cell" style="background: #f9c07a"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                    <div class="ux-cell" style="background: #c47a1b"></div>
+                    <div class="ux-cell" style="background: #c47a1b"></div>
+                    <div class="ux-cell" style="background: #e67e22"></div>
+                  </div>
+                </div>
+                <div class="ux-stats-list">
+                  <div class="ux-stat">
+                    <span class="ux-s-label">Task completion</span>
+                    <div class="ux-bar">
+                      <div class="ux-bar-fill" style="width: 89%"></div>
+                    </div>
+                    <span class="ux-pct">89%</span>
+                  </div>
+                  <div class="ux-stat">
+                    <span class="ux-s-label">Satisfaction</span>
+                    <div class="ux-bar">
+                      <div class="ux-bar-fill" style="width: 76%"></div>
+                    </div>
+                    <span class="ux-pct">76%</span>
+                  </div>
+                  <div class="ux-stat">
+                    <span class="ux-s-label">Net Promoter</span>
+                    <div class="ux-bar">
+                      <div class="ux-bar-fill" style="width: 68%"></div>
+                    </div>
+                    <span class="ux-pct">68%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cE2">
+                <div class="tag" style="color: #c47a1b">UX Research</div>
+                <div
+                  style="
+                    font-size: 8.5px;
+                    font-weight: 700;
+                    color: var(--dark);
+                    padding: 4px 12px 4px;
+                  "
+                >
+                  User Personas
+                </div>
+                <div class="persona-grid">
+                  <div class="persona">
+                    <div class="p-av" style="background: #e67e22">AK</div>
+                    <div class="p-name">Amara K.</div>
+                    <div class="p-role">Startup Founder, 34</div>
+                    <div class="p-tag">Tech-Savvy</div>
+                    <div class="p-pain">
+                      Needs fast, scalable digital tools.
+                    </div>
+                  </div>
+                  <div class="persona">
+                    <div class="p-av" style="background: #c47a1b">JO</div>
+                    <div class="p-name">James O.</div>
+                    <div class="p-role">CMO, 41</div>
+                    <div class="p-tag">Brand-Led</div>
+                    <div class="p-pain">
+                      Wants consistent brand across every channel.
+                    </div>
+                  </div>
+                  <div class="persona">
+                    <div
+                      class="p-av"
+                      style="background: #f9c07a; color: #c47a1b"
+                    >
+                      SE
+                    </div>
+                    <div class="p-name">Sofia E.</div>
+                    <div class="p-role">Product Manager, 28</div>
+                    <div class="p-tag">Data-Driven</div>
+                    <div class="p-pain">
+                      Relies on metrics to justify design decisions.
+                    </div>
+                  </div>
+                  <div class="persona">
+                    <div
+                      class="p-av"
+                      style="background: #fde8c8; color: #c47a1b"
+                    >
+                      TN
+                    </div>
+                    <div class="p-name">Tunde N.</div>
+                    <div class="p-role">CEO, 50</div>
+                    <div class="p-tag">Growth</div>
+                    <div class="p-pain">
+                      Wants to grow without losing culture.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cE3">
+                <div class="tag" style="color: #c47a1b">UX Research</div>
+                <div
+                  style="
+                    font-size: 8.5px;
+                    font-weight: 700;
+                    color: var(--dark);
+                    padding: 4px 12px 4px;
+                  "
+                >
+                  Usability Test Results
+                </div>
+                <div class="ut-tasks">
+                  <div
+                    class="ut-task"
+                    style="
+                      background: #f0fff8;
+                      border-color: rgba(0, 160, 90, 0.12);
+                    "
+                  >
+                    <div class="ut-icon" style="background: #d1fae5">✓</div>
+                    <span class="ut-txt">Find &amp; complete checkout</span
+                    ><span class="ut-score" style="color: #22a05a">92%</span>
+                  </div>
+                  <div
+                    class="ut-task"
+                    style="
+                      background: #f0fff8;
+                      border-color: rgba(0, 160, 90, 0.12);
+                    "
+                  >
+                    <div class="ut-icon" style="background: #d1fae5">✓</div>
+                    <span class="ut-txt">Navigate to contact page</span
+                    ><span class="ut-score" style="color: #22a05a">88%</span>
+                  </div>
+                  <div
+                    class="ut-task"
+                    style="
+                      background: #fff8f0;
+                      border-color: rgba(230, 126, 34, 0.15);
+                    "
+                  >
+                    <div class="ut-icon" style="background: #fde8c8">!</div>
+                    <span class="ut-txt">Locate pricing info</span
+                    ><span class="ut-score" style="color: #e67e22">61%</span>
+                  </div>
+                  <div
+                    class="ut-task"
+                    style="
+                      background: #fff8f0;
+                      border-color: rgba(230, 126, 34, 0.15);
+                    "
+                  >
+                    <div class="ut-icon" style="background: #fde8c8">!</div>
+                    <span class="ut-txt">Return to previous step</span
+                    ><span class="ut-score" style="color: #e67e22">54%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dE">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pE"></div></div>
+            </div>
+
+            <!-- CARD F: CONTENT -->
+            <div class="acard" id="cF">
+              <div class="cs on" id="cF1">
+                <div class="tag" style="color: #6d28d9">Content &amp; Copy</div>
+                <div class="content-mock">
+                  <div class="cm-top">
+                    <div class="cm-dot"></div>
+                    <div class="cm-dot"></div>
+                    <div class="cm-title-bar"></div>
+                  </div>
+                  <div class="cm-body">
+                    <div class="cm-block">
+                      <div class="cm-line cm-line-a" style="width: 80%"></div>
+                      <div class="cm-line" style="width: 100%"></div>
+                      <div class="cm-line" style="width: 90%"></div>
+                      <div class="cm-line" style="width: 70%"></div>
+                    </div>
+                    <div class="cm-block">
+                      <div class="cm-line cm-line-a" style="width: 70%"></div>
+                      <div class="cm-line" style="width: 100%"></div>
+                      <div class="cm-line" style="width: 85%"></div>
+                      <div class="cm-line" style="width: 60%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="content-types">
+                  <div
+                    class="ct-pill"
+                    style="background: #ede9fe; color: #6d28d9"
+                  >
+                    Blog
+                  </div>
+                  <div
+                    class="ct-pill"
+                    style="background: #f3e8ff; color: #7c3aed"
+                  >
+                    Copy
+                  </div>
+                  <div
+                    class="ct-pill"
+                    style="background: #ede9fe; color: #6d28d9"
+                  >
+                    Email
+                  </div>
+                  <div
+                    class="ct-pill"
+                    style="background: #f3e8ff; color: #7c3aed"
+                  >
+                    Scripts
+                  </div>
+                  <div
+                    class="ct-pill"
+                    style="background: #ede9fe; color: #6d28d9"
+                  >
+                    SEO
+                  </div>
+                </div>
+                <div class="content-list">
+                  <div class="cl-item">
+                    <div class="cl-type">Blog</div>
+                    <span class="cl-title"
+                      >5 Ways to Build Brand Authority</span
+                    >
+                    <div class="cl-status" style="background: #22a05a"></div>
+                  </div>
+                  <div class="cl-item">
+                    <div class="cl-type">Copy</div>
+                    <span class="cl-title">Homepage hero rewrite</span>
+                    <div class="cl-status" style="background: #e67e22"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cF2">
+                <div class="tag" style="color: #6d28d9">Content &amp; Copy</div>
+                <div class="ed-mock">
+                  <div class="ed-header">MAD Content Studio</div>
+                  <div class="ed-art">
+                    <div class="ed-meta">
+                      Brand Strategy · 5 min read · by MAD
+                    </div>
+                    <div class="ed-headline">
+                      How clarity of voice turns visitors into loyal customers
+                    </div>
+                    <div class="ed-img"></div>
+                    <div class="ed-body-lines">
+                      <div class="ed-line" style="width: 100%"></div>
+                      <div class="ed-line" style="width: 92%"></div>
+                      <div class="ed-line ed-line-a" style="width: 85%"></div>
+                      <div class="ed-line" style="width: 78%"></div>
+                      <div class="ed-line" style="width: 95%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ca-cap" style="padding-top: 6px">
+                  <strong>Editorial excellence.</strong>Content that builds
+                  trust and drives action.
+                </div>
+              </div>
+              <div class="cs" id="cF3">
+                <div class="tag" style="color: #6d28d9">Content &amp; Copy</div>
+                <div class="ca-wrap">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                  >
+                    <span
+                      style="
+                        font-size: 10px;
+                        font-weight: 800;
+                        color: var(--dark);
+                      "
+                      >Content Performance</span
+                    ><span style="font-size: 7.5px; color: #aaa"
+                      >This quarter</span
+                    >
+                  </div>
+                  <div class="ca-top-row">
+                    <div class="ca-m">
+                      <div class="ca-m-val">38K</div>
+                      <div class="ca-m-lbl">Organic visits</div>
+                    </div>
+                    <div class="ca-m">
+                      <div class="ca-m-val">4.8m</div>
+                      <div class="ca-m-lbl">Read time</div>
+                    </div>
+                    <div class="ca-m">
+                      <div class="ca-m-val">12%</div>
+                      <div class="ca-m-lbl">Conv. rate</div>
+                    </div>
+                  </div>
+                  <div class="ca-channels">
+                    <div class="ca-ch">
+                      <span class="ca-ch-name">Blog</span>
+                      <div class="ca-ch-bar">
+                        <div
+                          class="ca-ch-fill"
+                          style="width: 75%; background: #6d28d9"
+                        ></div>
+                      </div>
+                      <span class="ca-ch-val" style="color: #6d28d9">75%</span>
+                    </div>
+                    <div class="ca-ch">
+                      <span class="ca-ch-name">Email</span>
+                      <div class="ca-ch-bar">
+                        <div
+                          class="ca-ch-fill"
+                          style="width: 58%; background: #6d28d9"
+                        ></div>
+                      </div>
+                      <span class="ca-ch-val" style="color: #6d28d9">58%</span>
+                    </div>
+                    <div class="ca-ch">
+                      <span class="ca-ch-name">Social</span>
+                      <div class="ca-ch-bar">
+                        <div
+                          class="ca-ch-fill"
+                          style="width: 41%; background: #6d28d9"
+                        ></div>
+                      </div>
+                      <span class="ca-ch-val" style="color: #6d28d9">41%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dF">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pF"></div></div>
+            </div>
+
+            <!-- CARD G: DATA & ANALYTICS -->
+            <div class="acard" id="cG">
+              <div class="cs on" id="cG1">
+                <div class="tag" style="color: #22a05a">
+                  Data &amp; Analytics
+                </div>
+                <div class="data-hero">
+                  <div class="data-chart">
+                    <div class="data-bar-wrap">
+                      <div
+                        class="data-bar"
+                        style="height: 28px; background: #bbf7d0"
+                      ></div>
+                      <div class="data-bar-lbl">Q1</div>
+                    </div>
+                    <div class="data-bar-wrap">
+                      <div
+                        class="data-bar"
+                        style="height: 38px; background: #86efac"
+                      ></div>
+                      <div class="data-bar-lbl">Q2</div>
+                    </div>
+                    <div class="data-bar-wrap">
+                      <div
+                        class="data-bar"
+                        style="height: 32px; background: #4ade80"
+                      ></div>
+                      <div class="data-bar-lbl">Q3</div>
+                    </div>
+                    <div class="data-bar-wrap">
+                      <div
+                        class="data-bar"
+                        style="height: 52px; background: #22a05a"
+                      ></div>
+                      <div class="data-bar-lbl">Q4</div>
+                    </div>
+                    <div class="data-bar-wrap">
+                      <div
+                        class="data-bar"
+                        style="height: 58px; background: #15803d"
+                      ></div>
+                      <div class="data-bar-lbl">Q5</div>
+                    </div>
+                  </div>
+                  <div class="data-kpis">
+                    <div class="data-kpi">
+                      <div
+                        class="data-kpi-dot"
+                        style="background: #22a05a"
+                      ></div>
+                      <span class="data-kpi-lbl">Revenue Growth</span
+                      ><span class="data-kpi-val">+42%</span>
+                    </div>
+                    <div class="data-kpi">
+                      <div
+                        class="data-kpi-dot"
+                        style="background: #4ade80"
+                      ></div>
+                      <span class="data-kpi-lbl">User Retention</span
+                      ><span class="data-kpi-val">87%</span>
+                    </div>
+                    <div class="data-kpi">
+                      <div
+                        class="data-kpi-dot"
+                        style="background: #86efac"
+                      ></div>
+                      <span class="data-kpi-lbl">Churn Reduced</span
+                      ><span class="data-kpi-val">-18%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="data-dash">
+                  <div class="data-row">
+                    <div class="data-mc">
+                      <div class="data-mc-l">Monthly Visits</div>
+                      <div class="data-mc-v">128K</div>
+                      <div class="data-mc-d">↑ +31%</div>
+                    </div>
+                    <div class="data-mc">
+                      <div class="data-mc-l">Avg. Session</div>
+                      <div class="data-mc-v">3m 42s</div>
+                      <div class="data-mc-d">↑ +12%</div>
+                    </div>
+                    <div class="data-mc">
+                      <div class="data-mc-l">Bounce Rate</div>
+                      <div class="data-mc-v">28%</div>
+                      <div class="data-mc-d">↓ -9%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cG2">
+                <div class="tag" style="color: #22a05a">
+                  Data &amp; Analytics
+                </div>
+                <div class="pipe-vis">
+                  <div class="pipe-step">
+                    <div class="pipe-icon" style="background: #d1fae5">📥</div>
+                    <div class="pipe-lbl">Collect</div>
+                  </div>
+                  <div class="pipe-line"></div>
+                  <div class="pipe-step">
+                    <div class="pipe-icon" style="background: #bbf7d0">⚙️</div>
+                    <div class="pipe-lbl">Process</div>
+                  </div>
+                  <div class="pipe-line"></div>
+                  <div class="pipe-step">
+                    <div class="pipe-icon" style="background: #86efac">📊</div>
+                    <div class="pipe-lbl">Visualize</div>
+                  </div>
+                  <div class="pipe-line"></div>
+                  <div class="pipe-step">
+                    <div class="pipe-icon" style="background: #4ade80">💡</div>
+                    <div class="pipe-lbl">Insight</div>
+                  </div>
+                </div>
+                <div class="data-insights">
+                  <div class="di">
+                    <div class="di-dot"></div>
+                    <div class="di-txt">
+                      Checkout drop-off reduced 23% after funnel redesign
+                    </div>
+                  </div>
+                  <div class="di">
+                    <div class="di-dot"></div>
+                    <div class="di-txt">
+                      Mobile traffic grew 48% — drove mobile-first redesign
+                    </div>
+                  </div>
+                  <div class="di">
+                    <div class="di-dot"></div>
+                    <div class="di-txt">
+                      Email open rates improved 31% with A/B tested subject
+                      lines
+                    </div>
+                  </div>
+                  <div class="di">
+                    <div class="di-dot"></div>
+                    <div class="di-txt">
+                      Top acquisition channel shifted to organic search
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cs" id="cG3">
+                <div class="tag" style="color: #22a05a">
+                  Data &amp; Analytics
+                </div>
+                <div class="report-preview">
+                  <div class="rp-header">
+                    <span class="rp-title">Q4 Analytics Report</span
+                    ><span class="rp-date">Dec 2024</span>
+                  </div>
+                  <div class="rp-grid">
+                    <div class="rp-mc">
+                      <div class="rp-mc-l">Total Revenue</div>
+                      <div class="rp-mc-v">$2.4M</div>
+                      <div class="rp-mc-d">↑ +38%</div>
+                    </div>
+                    <div class="rp-mc">
+                      <div class="rp-mc-l">New Customers</div>
+                      <div class="rp-mc-v">1.8K</div>
+                      <div class="rp-mc-d">↑ +22%</div>
+                    </div>
+                  </div>
+                  <div class="rp-bar-section">
+                    <div class="rp-bar-row">
+                      <span class="rp-bar-lbl">Organic</span>
+                      <div class="rp-track">
+                        <div class="rp-fill" style="width: 78%"></div>
+                      </div>
+                      <span class="rp-pct">78%</span>
+                    </div>
+                    <div class="rp-bar-row">
+                      <span class="rp-bar-lbl">Paid</span>
+                      <div class="rp-track">
+                        <div class="rp-fill" style="width: 52%"></div>
+                      </div>
+                      <span class="rp-pct">52%</span>
+                    </div>
+                    <div class="rp-bar-row">
+                      <span class="rp-bar-lbl">Referral</span>
+                      <div class="rp-track">
+                        <div class="rp-fill" style="width: 34%"></div>
+                      </div>
+                      <span class="rp-pct">34%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pdots" id="dG">
+                <div class="pd on"></div>
+                <div class="pd"></div>
+                <div class="pd"></div>
+              </div>
+              <div class="pbar"><div class="pfill" id="pG"></div></div>
+            </div>
+          </div>
+          <!-- /cards-grid -->
+        </div>
+        <!-- /cards-panel -->
+
+        <!-- PANEL 2: CTA -->
+        <div class="panel" id="cta-panel">
+          <div class="cta-eye">Let's Work Together</div>
+          <h2 class="cta-h">Ready to become better?</h2>
+          <p class="cta-sub">
+            Partner with MAD to build smarter systems, a stronger brand, and
+            better digital experiences that last.
+          </p>
+          <div class="cta-btns">
+            <button class="cta-primary">Start a project today</button>
+            <button class="cta-secondary">See our work</button>
+          </div>
+          <p class="cta-quote">
+            "We don't just deliver projects — we create systems that help
+            organizations grow stronger, operate better, and perform over time."
+          </p>
+        </div>
+      </div>
+      <!-- /track -->
+
+      <div id="progress-track"><div id="progress-fill"></div></div>
+      <div id="panel-dots">
+        <button class="panel-dot on" onclick="goTo(0)"></button>
+        <button class="panel-dot" onclick="goTo(1)"></button>
+        <button class="panel-dot" onclick="goTo(2)"></button>
+      </div>
+    </div>
+    <!-- /wrapper -->
+
+    <script>
+      const PANELS = 3;
+      let cur = 0;
+      let scrollAccum = 0;
+      const SCROLL_THRESHOLD = 120;
+
+      function goTo(idx) {
+        cur = Math.max(0, Math.min(PANELS - 1, idx));
+        document.getElementById("track").style.transform =
+          "translateX(-" + cur * 100 + "vw)";
+        const pct = (cur / (PANELS - 1)) * 100;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.querySelectorAll(".panel-dot").forEach(function (d, i) {
+          d.classList.toggle("on", i === cur);
+        });
+        scrollAccum = 0;
+      }
+
+      window.addEventListener(
+        "wheel",
+        function (e) {
+          e.preventDefault();
+          scrollAccum += e.deltaY;
+          if (scrollAccum > SCROLL_THRESHOLD && cur < PANELS - 1) {
+            goTo(cur + 1);
+            scrollAccum = 0;
+          } else if (scrollAccum < -SCROLL_THRESHOLD && cur > 0) {
+            goTo(cur - 1);
+            scrollAccum = 0;
+          }
+        },
+        { passive: false },
+      );
+
+      var touchY = 0;
+      window.addEventListener(
+        "touchstart",
+        function (e) {
+          touchY = e.touches[0].clientY;
+        },
+        { passive: true },
+      );
+      window.addEventListener(
+        "touchend",
+        function (e) {
+          var dy = touchY - e.changedTouches[0].clientY;
+          if (Math.abs(dy) > 40) {
+            goTo(cur + (dy > 0 ? 1 : -1));
+          }
+        },
+        { passive: true },
+      );
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "ArrowRight") goTo(cur + 1);
+        if (e.key === "ArrowUp" || e.key === "ArrowLeft") goTo(cur - 1);
+      });
+
+      var HOLD = 3000,
+        TRANS = 650;
+      [
+        {
+          stages: ["cA1", "cA2", "cA3"],
+          dots: "dA",
+          fill: "pA",
+          typing: "typingA",
+          reply: "replyA",
+        },
+        { stages: ["cB1", "cB2", "cB3"], dots: "dB", fill: "pB" },
+        { stages: ["cC1", "cC2", "cC3"], dots: "dC", fill: "pC" },
+        { stages: ["cD1", "cD2", "cD3"], dots: "dD", fill: "pD" },
+        { stages: ["cE1", "cE2", "cE3"], dots: "dE", fill: "pE" },
+        { stages: ["cF1", "cF2", "cF3"], dots: "dF", fill: "pF" },
+        { stages: ["cG1", "cG2", "cG3"], dots: "dG", fill: "pG" },
+      ].forEach(function (cfg, ci) {
+        var cardCur = 0;
+        var els = cfg.stages.map(function (id) {
+          return document.getElementById(id);
+        });
+        var dotEls = document.querySelectorAll("#" + cfg.dots + " .pd");
+        var fillEl = document.getElementById(cfg.fill);
+        var typingEl = cfg.typing ? document.getElementById(cfg.typing) : null;
+        var replyEl = cfg.reply ? document.getElementById(cfg.reply) : null;
+
+        function tick() {
+          fillEl.style.transition = "none";
+          fillEl.style.width = "0%";
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              fillEl.style.transition = "width " + HOLD + "ms linear";
+              fillEl.style.width = "100%";
+              setTimeout(function () {
+                var next = (cardCur + 1) % els.length;
+                els[cardCur].classList.remove("on");
+                dotEls[cardCur].classList.remove("on");
+                cardCur = next;
+                els[cardCur].classList.add("on");
+                dotEls[cardCur].classList.add("on");
+                if (typingEl && replyEl && cardCur === 1) {
+                  typingEl.style.display = "flex";
+                  replyEl.style.display = "none";
+                  setTimeout(function () {
+                    typingEl.style.display = "none";
+                    replyEl.style.display = "flex";
+                  }, 1400);
+                }
+                setTimeout(tick, TRANS);
+              }, HOLD);
+            });
+          });
+        }
+
+        setTimeout(tick, ci * 800);
+      });
+
+      goTo(0);
+    </script>
+  </body>
+</html>
