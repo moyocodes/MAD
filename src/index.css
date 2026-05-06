@@ -1,14 +1,4 @@
-@import '@fontsource/montserrat/400.css';
-@import '@fontsource/montserrat/500.css';
-@import '@fontsource/montserrat/600.css';
-@import '@fontsource/montserrat/700.css';
-@import '@fontsource/montserrat/800.css';
-@import '@fontsource/montserrat/900.css';
-@import '@fontsource/montserrat/800-italic.css';
-@import '@fontsource/cormorant-garamond/300.css';
-@import '@fontsource/cormorant-garamond/400.css';
-@import '@fontsource/cormorant-garamond/300-italic.css';
-@import '@fontsource/cormorant-garamond/400-italic.css';
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -30,33 +20,50 @@
   }
 
   body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background: #ffffff;
     color: #181817;
   }
 }
 
 @layer utilities {
-  .font-montserrat { font-family: 'Montserrat', sans-serif; }
-  .font-helvetica  { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .font-montserrat {
+    font-family: "Montserrat", sans-serif;
+  }
+  .font-helvetica {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
 }
 
 @keyframes laptopBorderShift {
-  0%   { background-position: 0%   50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0%   50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* form input placeholder color */
-input::placeholder, textarea::placeholder {
-  color: rgba(255,255,255,0.2);
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.2);
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   outline: none;
 }

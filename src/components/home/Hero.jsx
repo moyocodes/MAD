@@ -365,8 +365,8 @@ export default function Hero() {
                 <h1
                   className="text-white mb-4"
                   style={{
-                    fontFamily: "Georgia, serif",
-                    fontStyle: "italic",
+                    
+                    
                     fontWeight: 400,
                     fontSize: "clamp(24px,6vw,52px)",
                     lineHeight: 1.1,
@@ -497,8 +497,8 @@ export default function Hero() {
           <h2
             className="mb-6"
             style={{
-              fontFamily: "Georgia, serif",
-              fontStyle: "italic",
+              
+              
               fontWeight: 400,
               fontSize: "clamp(28px,4.4vw,56px)",
               lineHeight: 1.1,

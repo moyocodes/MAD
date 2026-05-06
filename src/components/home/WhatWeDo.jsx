@@ -2,39 +2,23 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../../context/ThemeContext";
 
-// ─── FONTS ───────────────────────────────────────────────────────────────────
-// <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+// ─── TOKENS ───────────────────────────────────────────────────────────────────
+const AZURE = "#1980c2";
+const AZURE_DARK = "#0f4f7a";
+const AZURE_LIGHT = "#3da0e4";
+const INK = "#181817";
 
-const F = {
-  serif: "'DM Serif Display', Georgia, serif",
-  syne: "'Syne', 'Helvetica Neue', sans-serif",
-  mono: "'JetBrains Mono', 'Courier New', monospace",
+const N = {
+  50: "#f5f5f5",
+  100: "#e0e0e0",
+  200: "#c2c2c2",
+  300: "#a3a3a3",
+  600: "#4d4d4d",
+  800: "#2a2a28",
+  900: "#181817",
 };
 
-// ─── LOCAL IMAGES ─────────────────────────────────────────────────────────────
-const IMG = {
-  i1: "/flier/image.png",
-  i2: "/flier/image2.png",
-  i3: "/flier/image3.png",
-  i4: "/flier/image4.png",
-  i5: "/flier/image5.png",
-  i6: "/flier/image6.png",
-  i7: "/flier/image7.png",
-  i8: "/flier/image8.png",
-  i9: "/flier/image9.png",
-};
-
-// ─── BRAND PALETTE ───────────────────────────────────────────────────────────
-const AZURE = {
-  200: "#b3d8f5",
-  300: "#8cc3ef",
-  400: "#5aa7e6",
-  500: "#1980c2",
-  600: "#1468a0",
-};
-const TANG = "#F26522";
-
-// ─── SERVICES (Hero section) ─────────────────────────────────────────────────
+// ─── SERVICES (for HeroView) ──────────────────────────────────────────────────
 const SERVICES = [
   {
     tag: "01",
@@ -73,7 +57,33 @@ const SECTION_COPY = {
   cta: "Work With Us Today",
 };
 
-const HOLD = 2800;
+// ─── STAGE TIMINGS ────────────────────────────────────────────────────────────
+const S1_DUR = 3200;
+const S2_DUR = 2000;
+const S3_DUR = 6000;
+const S4_DUR = 120000;
+const LOADING_DUR = S1_DUR + S2_DUR + S3_DUR;
+const TOTAL_DUR = LOADING_DUR + S4_DUR;
+const LOOP_PAUSE = 900;
+
+// ─── BLINK KEYFRAMES ──────────────────────────────────────────────────────────
+const BLINK_CSS = `
+@keyframes _madBlink{0%,100%{opacity:.18}50%{opacity:.85}}
+._mb{animation:_madBlink 1.1s ease-in-out infinite}
+._mb:nth-child(2){animation-delay:.22s}
+._mb:nth-child(3){animation-delay:.44s}
+`;
+function injectBlink() {
+  if (
+    typeof document === "undefined" ||
+    document.getElementById("_mad-blink-lm")
+  )
+    return;
+  const s = document.createElement("style");
+  s.id = "_mad-blink-lm";
+  s.textContent = BLINK_CSS;
+  document.head.appendChild(s);
+}
 
 // ════════════════════════════════════════════════════════════════
 // HERO PROGRESS BAR
@@ -113,20 +123,19 @@ function HeroProgressBar({ duration, running, onComplete }) {
       <div
         ref={fillRef}
         className="h-full rounded w-0"
-        style={{ background: AZURE[500] }}
+        style={{ background: AZURE }}
       />
     </div>
   );
 }
 
 // ════════════════════════════════════════════════════════════════
-// HERO SECTION (View 1) — heading/subheading ABOVE the image grid
+// HERO VIEW — preserved exactly from original
 // ════════════════════════════════════════════════════════════════
-function HeroView({ dark }) {
+function HeroView() {
   const [heroCur, setHeroCur] = useState(0);
   const [paused, setPaused] = useState(false);
   const HERO_DURATION = 5500;
-
   const heroNext = useCallback(
     () => setHeroCur((c) => (c + 1) % SERVICES.length),
     [],
@@ -142,41 +151,30 @@ function HeroView({ dark }) {
       className="flex flex-col h-full overflow-hidden"
       style={{ padding: "0 4px 4px" }}
     >
-      {/* ── HEADING ABOVE GRID ── */}
       <div className="px-6 pt-20 pb-5 shrink-0">
         <p
-          className="text-[9px] font-bold tracking-[0.28em] uppercase mb-2 m-0"
-          style={{
-            color: dark ? "rgba(255,255,255,.35)" : "rgba(10,22,40,.45)",
-            fontFamily: F.mono,
-          }}
+          className="text-[9px] font-bold tracking-[0.28em] uppercase mb-2 m-0 font-mono"
+          style={{ color: "rgba(10,22,40,.45)" }}
         >
           {SECTION_COPY.eyebrow}
         </p>
         <h2
-          className="leading-none m-0 mb-3"
+          className="leading-none m-0 mb-3 font-display"
           style={{
-            fontFamily: F.serif,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: "clamp(24px, 3vw, 42px)",
-            color: dark ? "#f0ede8" : "#0a1628",
+            fontSize: "clamp(24px,3vw,42px)",
+            color: "#0a1628",
           }}
         >
           {SECTION_COPY.header}
         </h2>
         <p
-          className="text-xs leading-relaxed m-0 max-w-2xl"
-          style={{
-            color: dark ? "rgba(255,255,255,.5)" : "rgba(10,22,40,.58)",
-            fontFamily: F.syne,
-          }}
+          className="text-xs leading-relaxed m-0 max-w-2xl font-sans"
+          style={{ color: "rgba(10,22,40,.58)" }}
         >
           {SECTION_COPY.supporting}
         </p>
       </div>
 
-      {/* ── IMAGE GRID ── */}
       <div
         className="flex-1 min-h-0"
         style={{
@@ -187,7 +185,7 @@ function HeroView({ dark }) {
           padding: "0 4px 4px",
         }}
       >
-        {/* Large left image */}
+        {/* Large left */}
         <div
           className="relative overflow-hidden rounded-sm"
           style={{ gridRow: "1/3" }}
@@ -210,11 +208,10 @@ function HeroView({ dark }) {
           />
           <div className="absolute bottom-6 left-0 right-0 px-5">
             <button
-              className="text-white rounded-full font-bold tracking-wider uppercase cursor-pointer px-5 py-2 border border-white/30 text-[9px]"
+              className="text-white font-sans rounded-full font-bold tracking-wider uppercase cursor-pointer px-5 py-2 border border-white/30 text-[9px]"
               style={{
                 background: "rgba(255,255,255,.12)",
                 backdropFilter: "blur(8px)",
-                fontFamily: F.syne,
               }}
             >
               {SECTION_COPY.cta}
@@ -222,13 +219,12 @@ function HeroView({ dark }) {
           </div>
           <div className="absolute top-4 left-4">
             <span
-              className="inline-flex items-center px-2.5 py-1 rounded-full font-bold uppercase text-[7px] tracking-[0.28em]"
+              className="inline-flex font-mono items-center px-2.5 py-1 rounded-full font-bold uppercase text-[7px] tracking-[0.28em]"
               style={{
                 background: "rgba(0,0,0,.3)",
                 border: "1px solid rgba(255,255,255,.3)",
                 color: "rgba(255,255,255,.5)",
                 backdropFilter: "blur(6px)",
-                fontFamily: F.mono,
               }}
             >
               {svc.tag} / 0{SERVICES.length}
@@ -253,16 +249,13 @@ function HeroView({ dark }) {
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex items-center gap-3">
-              <span
-                className="text-white text-2xl md:text-3xl"
-                style={{ fontFamily: F.serif, fontStyle: "italic" }}
-              >
+              <span className="text-white text-2xl md:text-3xl font-display font-bold tracking-[-0.04em]">
                 MAD
               </span>
               <span className="text-white/40 font-light text-xl">×</span>
               <span
-                className="text-white font-black tracking-wider uppercase text-lg md:text-xl"
-                style={{ fontFamily: F.syne }}
+                className="text-white font-black tracking-wider uppercase text-lg md:text-xl font-sans"
+                style={{}}
               >
                 {svc.shortTag}
               </span>
@@ -283,111 +276,73 @@ function HeroView({ dark }) {
           </div>
         </div>
 
-        {/* Bottom right cards */}
+        {/* Bottom right */}
         <div
           className="grid rounded-sm overflow-hidden"
           style={{ gridTemplateColumns: "1fr 1fr", gap: 4 }}
         >
-          {/* Core value card */}
           <div
             className="relative overflow-hidden rounded-sm flex flex-col justify-between p-4"
             style={{
-              background: dark
-                ? "linear-gradient(145deg,#181817,#102535 58%,rgba(25,128,194,.72))"
-                : "linear-gradient(145deg,#ffffff,#dbeeff 80%,#b3d8f5)",
-              border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#b3cbf0"}`,
+              background: "linear-gradient(145deg,#ffffff,#dbeeff 80%,#b3d8f5)",
+              border: `1px solid #b3cbf0`,
             }}
           >
             <div>
               <p
-                className="text-[6px] tracking-[0.25em] uppercase mb-2 m-0"
-                style={{
-                  color: dark ? "#888" : AZURE[500],
-                  fontFamily: F.mono,
-                }}
+                className="text-[6px] tracking-[0.25em] uppercase mb-2 m-0 font-mono"
+                style={{ color: AZURE }}
               >
                 Core Value
               </p>
               <h3
                 className="leading-tight mb-2 text-base"
                 style={{
-                  fontFamily: F.serif,
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  color: dark ? "#f0ede8" : "#0a1e40",
+                  color: "#0a1e40",
                 }}
               >
                 Growth needs balance.
               </h3>
               <p
-                className="text-[8px] leading-relaxed m-0"
-                style={{
-                  color: dark ? "rgba(240,237,232,.58)" : "rgba(10,30,64,.62)",
-                  fontFamily: F.syne,
-                }}
+                className="text-[8px] leading-relaxed m-0 font-sans"
+                style={{ color: "rgba(10,30,64,.62)" }}
               >
                 {SECTION_COPY.core}
               </p>
             </div>
             <button
-              className="self-start mt-2 px-4 py-1.5 rounded-full text-[7px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
-              style={{ background: AZURE[500], fontFamily: F.syne }}
+              className="self-start mt-2 px-4 py-1.5  font-sans rounded-full text-[7px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
+              style={{ background: AZURE }}
             >
               {SECTION_COPY.cta} →
             </button>
           </div>
 
-          {/* Service info card */}
           <div
             className="rounded-sm p-3 flex flex-col justify-between"
-            style={{
-              background: dark ? "#1e1e1c" : "#ffffff",
-              border: `1px solid ${dark ? "rgba(255,255,255,.06)" : "#d4dff0"}`,
-            }}
+            style={{ background: "#ffffff", border: `1px solid #d4dff0` }}
           >
             <div>
               <div
                 className="rounded-sm p-2 mb-2"
-                style={{
-                  border: `2px solid ${dark ? "rgba(255,255,255,.9)" : "#0a1e40"}`,
-                }}
+                style={{ border: `2px solid #0a1e40` }}
               >
                 <div
-                  className="font-black leading-tight tracking-tight text-xs"
-                  style={{
-                    color: dark ? "rgba(255,255,255,.9)" : "#0a1e40",
-                    fontFamily: F.syne,
-                  }}
+                  className="font-black leading-tight tracking-tight text-xs font-sans"
+                  style={{ color: "#0a1e40" }}
                 >
                   {svc.label}
                 </div>
               </div>
-              <p
-                className="text-[8px] leading-relaxed mb-2"
-                style={{
-                  color: dark ? "rgba(255,255,255,.46)" : "rgba(10,30,64,.58)",
-                  fontFamily: F.syne,
-                }}
-              >
-                {svc.description}
-              </p>
             </div>
             <div>
               <div className="flex flex-col gap-1.5 mb-2">
                 {SERVICES.map((s, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <span
-                      className="text-[5px] font-bold w-3 shrink-0"
+                      className="text-[5px] font-bold w-3 shrink-0 font-mono"
                       style={{
-                        color:
-                          i === heroCur
-                            ? dark
-                              ? AZURE[300]
-                              : AZURE[500]
-                            : dark
-                              ? "#d0d0ce"
-                              : "#a0b4d0",
-                        fontFamily: F.mono,
+                        color: i === heroCur ? AZURE : "#a0b4d0",
                       }}
                     >
                       {s.tag}
@@ -403,14 +358,7 @@ function HeroView({ dark }) {
                         <div
                           className="h-px rounded"
                           style={{
-                            background:
-                              i < heroCur
-                                ? dark
-                                  ? "#b0b0ac"
-                                  : "#7090b8"
-                                : dark
-                                  ? "#e8e8e6"
-                                  : "#d4dff0",
+                            background: i < heroCur ? "#7090b8" : "#d4dff0",
                           }}
                         />
                       )}
@@ -427,14 +375,12 @@ function HeroView({ dark }) {
                     key={i}
                     onClick={fn}
                     className="w-6 h-6 rounded-full cursor-pointer flex items-center justify-center bg-transparent"
-                    style={{
-                      border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#c0cedf"}`,
-                    }}
+                    style={{ border: `1px solid #c0cedf` }}
                   >
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
                       <path
                         d={d}
-                        stroke={dark ? "rgba(240,237,232,.65)" : "#4a6080"}
+                        stroke="#4a6080"
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -445,10 +391,7 @@ function HeroView({ dark }) {
                 <button
                   onClick={() => setPaused((p) => !p)}
                   className="w-6 h-6 rounded-full cursor-pointer flex items-center justify-center bg-transparent text-[10px]"
-                  style={{
-                    border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#c0cedf"}`,
-                    color: dark ? "rgba(240,237,232,.65)" : "#4a6080",
-                  }}
+                  style={{ border: `1px solid #c0cedf`, color: "#4a6080" }}
                 >
                   {paused ? "▶" : "⏸"}
                 </button>
@@ -462,270 +405,92 @@ function HeroView({ dark }) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// SERVICES IN MOTION — JSX port of the HTML carousel
+// SHARED ATOMS (light-mode)
 // ════════════════════════════════════════════════════════════════
 
-const SIM_CARDS = [
-  {
-    color: "#1e1240",
-    textColor: "#c4b8f0",
-    label: "Product & Digital",
-    sub: "Websites, apps, and digital platforms built to perform and scale.",
-    stages: [
-      {
-        type: "browser",
-        url: "luxe-studio.co",
-        title: "LUXE STUDIO",
-        sub: "SS 2025 Collection",
-      },
-      {
-        type: "tweet",
-        img: IMG.i4,
-        text: "Our SS25 collection is live. Every piece designed to outlast the season.",
-        handle: "@luxestudio",
-        likes: "2.4K",
-      },
-    ],
-  },
-  {
-    color: "#0d2b18",
-    textColor: "#86d4a4",
-    label: "Marketing & Comms",
-    sub: "Campaigns and content systems that connect brands with the right audience.",
-    stages: [
-      { type: "ig", handle: "luxe.studio", followers: "48.2K", posts: "184" },
-      {
-        type: "tweet",
-        img: IMG.i2,
-        text: "Great brands don't shout. They show up — consistently, clearly, with intention.",
-        handle: "@madagency",
-        likes: "5.1K",
-      },
-    ],
-  },
-  {
-    color: "#1a1a2e",
-    textColor: "#a8b4e8",
-    label: "Brand & Identity",
-    sub: "Logo, type, colour, and brand systems that bring clarity to every touchpoint.",
-    stages: [{ type: "brand" }, { type: "palette" }],
-  },
-  {
-    color: "#2a1200",
-    textColor: "#e8a870",
-    label: "E-Commerce",
-    sub: "Shopify and Next.js stores optimised to convert from day one.",
-    stages: [
-      {
-        type: "browser",
-        url: "sole-store.co",
-        title: "SOLE.",
-        sub: "Spring Drop 2025",
-      },
-      {
-        type: "tweet",
-        img: IMG.i8,
-        text: "Spring Drop is here. Free shipping on all orders this week.",
-        handle: "@solestore",
-        likes: "3.7K",
-      },
-    ],
-  },
-  {
-    color: "#0a2828",
-    textColor: "#7ad4d4",
-    label: "Campaign Analytics",
-    sub: "Live dashboards, KPI benchmarks, and weekly insight reports.",
-    stages: [
-      { type: "dashboard" },
-      {
-        type: "tweet",
-        img: IMG.i6,
-        text: "6.4× ROAS. 84K reach. $4.20 CPA. That's what a well-structured campaign looks like.",
-        handle: "@madagency",
-        likes: "4.2K",
-      },
-    ],
-  },
-  {
-    color: "#280a1e",
-    textColor: "#e89fd4",
-    label: "Illustration",
-    sub: "Editorial illustration, comics, and icon systems for campaigns.",
-    stages: [{ type: "comic" }, { type: "chat" }],
-  },
-];
-
-// ── Stage sub-components ─────────────────────────────────────────
-
-function SimBrowserStage({ stage }) {
+function Chip({ label }) {
   return (
     <div
+      className="absolute top-0 left-0 right-0 z-30 px-4 pt-3.5 pb-8"
       style={{
-        background: "#f8f6ff",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
-        fontFamily: F.syne,
+        background:
+          "linear-gradient(to bottom,rgba(245,245,245,0.97) 0%,transparent 100%)",
       }}
     >
-      {/* Browser chrome */}
-      <div
+      <span
+        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono"
         style={{
-          background: "#e8e8e8",
-          padding: "6px 10px",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
+          fontSize: 9,
+          letterSpacing: ".18em",
+          textTransform: "uppercase",
+          color: N[600],
+          border: `1px solid ${N[100]}`,
+          background: "rgba(255,255,255,0.88)",
+          backdropFilter: "blur(8px)",
         }}
       >
-        <div style={{ display: "flex", gap: 4 }}>
-          {["#ff5f57", "#febc2e", "#28c840"].map((c, i) => (
-            <div
-              key={i}
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: c,
-              }}
-            />
-          ))}
-        </div>
-        <div
-          style={{
-            flex: 1,
-            background: "#fff",
-            borderRadius: 4,
-            padding: "2px 8px",
-            fontFamily: F.mono,
-            fontSize: 8,
-            color: "#666",
-            textAlign: "center",
-          }}
-        >
-          {stage.url}
-        </div>
-      </div>
-      {/* Hero banner */}
-      <div
-        style={{
-          background: "#111",
-          height: 90,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <img
-          src={IMG.i1}
-          alt=""
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.5,
-            position: "absolute",
-            inset: 0,
-          }}
+        <span
+          className="inline-block rounded-full"
+          style={{ width: 5, height: 5, background: AZURE }}
         />
-        <div style={{ position: "relative", zIndex: 1, padding: "12px 14px" }}>
-          <div
-            style={{
-              fontSize: 7,
-              color: "rgba(255,255,255,.5)",
-              letterSpacing: ".2em",
-              textTransform: "uppercase",
-              marginBottom: 4,
-              fontFamily: F.mono,
-            }}
-          >
-            New Arrivals
-          </div>
-          <div
-            style={{
-              fontSize: 18,
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 1,
-            }}
-          >
-            {stage.title}
-          </div>
-          <div
-            style={{
-              fontSize: 9,
-              color: "rgba(255,255,255,.55)",
-              marginTop: 2,
-            }}
-          >
-            {stage.sub}
-          </div>
-        </div>
-      </div>
-      {/* Product grid */}
-      <div
-        style={{
-          padding: 10,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 6,
-        }}
-      >
-        {[
-          { img: IMG.i8, name: "Silk Blazer", price: "$420" },
-          { img: IMG.i9, name: "Trench Coat", price: "$510" },
-          { img: IMG.i1, name: "Mini Dress", price: "$280" },
-        ].map((item, i) => (
-          <div
-            key={i}
-            style={{
-              background: "#f0f0f0",
-              borderRadius: 8,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{ height: 55, background: "#e0e0e0", overflow: "hidden" }}
-            >
-              <img
-                src={item.img}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
-            <div style={{ padding: "5px 6px" }}>
-              <div style={{ fontSize: 7, color: "#666" }}>{item.name}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, color: "#111" }}>
-                {item.price}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+        {label}
+      </span>
     </div>
   );
 }
 
-function SimTweetStage({ stage }) {
+function DeliveredBadge({ eyebrow, title }) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="absolute left-4 right-4"
       style={{
-        position: "relative",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
+        bottom: 22,
+        background: "rgba(255,255,255,0.13)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: "1px solid rgba(255,255,255,0.28)",
+        borderRadius: 14,
+        padding: "13px 16px",
       }}
     >
-      <img
-        src={stage.img}
-        alt=""
+      <div
+        className="font-mono"
+        style={{
+          fontSize: 9,
+          color: "rgba(255,255,255,.52)",
+
+          letterSpacing: ".18em",
+          textTransform: "uppercase",
+          marginBottom: 4,
+        }}
+      >
+        {eyebrow}
+      </div>
+      <div className="font-sans" style={{ fontSize: 15, color: "#fff" }}>
+        {title}
+      </div>
+    </motion.div>
+  );
+}
+
+function CoverImage({ src, alt, children }) {
+  return (
+    <>
+      <motion.img
+        src={src}
+        alt={alt}
+        initial={{ opacity: 0, scale: 1.06 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: "absolute",
           inset: 0,
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          filter: "brightness(.42)",
         }}
       />
       <div
@@ -733,1413 +498,1953 @@ function SimTweetStage({ stage }) {
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%)",
+            "linear-gradient(to top,rgba(0,0,0,.76) 0%,rgba(0,0,0,.1) 52%,transparent 100%)",
         }}
       />
-      <div style={{ position: "absolute", bottom: 16, left: 14, right: 14 }}>
+      {children}
+    </>
+  );
+}
+
+function WFBrowser({ children }) {
+  return (
+    <div
+      className="absolute top-7 left-4 right-4 bottom-0 overflow-hidden rounded-t-xl"
+      style={{ background: "#f8f8f6", border: "1px solid rgba(0,0,0,.12)" }}
+    >
+      <div
+        className="h-7 flex items-center px-2.5 gap-1.5"
+        style={{
+          background: "#e8e8e6",
+          borderBottom: "1px solid rgba(0,0,0,.08)",
+        }}
+      >
+        {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+          <div
+            key={c}
+            className="w-2 h-2 rounded-full"
+            style={{ background: c }}
+          />
+        ))}
         <div
-          style={{
-            background: "rgba(0,0,0,.45)",
-            backdropFilter: "blur(20px)",
-            border: "1px solid rgba(255,255,255,.1)",
-            borderRadius: 14,
-            padding: 14,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              marginBottom: 10,
-            }}
-          >
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,.18)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 10,
-                fontWeight: 800,
-                color: "#fff",
-                fontFamily: F.syne,
-              }}
-            >
-              {stage.handle.charAt(1).toUpperCase()}
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: "#fff",
-                  fontFamily: F.syne,
-                  lineHeight: 1,
-                }}
-              >
-                {stage.handle.replace("@", "").toUpperCase()}
-              </div>
-              <div
-                style={{
-                  fontSize: 8,
-                  color: "rgba(255,255,255,.38)",
-                  fontFamily: F.mono,
-                }}
-              >
-                {stage.handle}
-              </div>
-            </div>
-            <svg
-              style={{ marginLeft: "auto" }}
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="rgba(255,255,255,.3)"
-            >
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.26 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
-            </svg>
-          </div>
-          <p
-            style={{
-              fontSize: 11,
-              color: "rgba(255,255,255,.88)",
-              lineHeight: 1.55,
-              margin: "0 0 10px",
-              fontFamily: F.syne,
-            }}
-          >
-            {stage.text}
-          </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              borderTop: "1px solid rgba(255,255,255,.08)",
-              paddingTop: 8,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 8,
-                color: "rgba(255,255,255,.28)",
-                fontFamily: F.mono,
-              }}
-            >
-              9:41 AM · 2025
-            </span>
-            <span
-              style={{
-                fontSize: 8,
-                color: "rgba(255,255,255,.38)",
-                fontFamily: F.mono,
-              }}
-            >
-              ♥ {stage.likes}
-            </span>
-          </div>
-        </div>
+          className="flex-1 h-3.5 rounded mx-2"
+          style={{ background: "#d8d8d6" }}
+        />
       </div>
+      {children}
     </div>
   );
 }
 
-function SimIgStage() {
-  const gridImgs = [IMG.i1, IMG.i2, IMG.i3, IMG.i4, IMG.i5, IMG.i6];
+function Shimmer({ delay = 0, className = "" }) {
+  return (
+    <div
+      className={`relative overflow-hidden ${className}`}
+      style={{ background: "linear-gradient(135deg,#dbeeff,#c0d8f0)" }}
+    >
+      <motion.div
+        className="absolute inset-0"
+        animate={{ x: ["-100%", "100%"] }}
+        transition={{ duration: 1.8, repeat: Infinity, delay, ease: "linear" }}
+        style={{
+          background:
+            "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)",
+        }}
+      />
+    </div>
+  );
+}
+
+function RequestBubble({ text }) {
   return (
     <div
       style={{
-        background: "#fff",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
+        position: "absolute",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
-        fontFamily: F.syne,
+        alignItems: "flex-end",
+        justifyContent: "flex-end",
+        padding: "54px 20px 24px",
+        gap: 7,
       }}
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          position: "absolute",
+          inset: 0,
+          opacity: 0.035,
+          backgroundImage:
+            "linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)",
+          backgroundSize: "32px 32px",
+          pointerEvents: "none",
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0, x: -8, rotate: -2 }}
+        animate={{ opacity: 1, x: 0, rotate: -2 }}
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          top: 60,
+          left: 18,
+          width: 118,
+          height: 76,
+          borderRadius: 10,
+          background: "#fff",
+          border: `1px solid ${N[100]}`,
+          boxShadow: "0 4px 18px rgba(0,0,0,.07)",
           padding: "10px 12px",
-          borderBottom: "1px solid #eee",
+          overflow: "hidden",
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#000" }}>
-          luxe.studio
-        </span>
-        <span style={{ fontSize: 16 }}>≡</span>
-      </div>
-      <div style={{ padding: "10px 12px" }}>
+        {[28, 14, 20, 10].map((w, i) => (
+          <div
+            key={i}
+            style={{
+              height: 5,
+              width: `${w}%`,
+              borderRadius: 2,
+              background: i === 0 ? N[200] : N[100],
+              marginBottom: 5,
+            }}
+          />
+        ))}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 12, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="font-sans"
+        style={{
+          background: "rgba(26,26,24,.93)",
+          border: "1px solid rgba(255,255,255,.1)",
+          borderRadius: "18px 18px 4px 18px",
+          padding: "15px 17px",
+          maxWidth: 255,
+          fontSize: 13,
+          lineHeight: 1.65,
+          color: "#f0ede8",
+          boxShadow: "0 2px 20px rgba(0,0,0,.1)",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        {text}
+      </motion.div>
+      <span
+        className="font-mono"
+        style={{
+          fontSize: 9.5,
+
+          color: "rgba(255,255,255,.35)",
+          letterSpacing: ".05em",
+        }}
+      >
+        you · just now
+      </span>
+    </div>
+  );
+}
+
+function ProcessingStage({ icon, label, chipLabel }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 16,
+        background: "#f5f5f3",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.035,
+          backgroundImage:
+            "linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)",
+          backgroundSize: "28px 28px",
+          pointerEvents: "none",
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0, x: 16, rotate: 3 }}
+        animate={{ opacity: 1, x: 0, rotate: 3 }}
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          top: 56,
+          right: 16,
+          width: 94,
+          borderRadius: 10,
+          background: "#fff",
+          border: `1px solid ${N[100]}`,
+          padding: "9px 11px",
+          boxShadow: "0 3px 14px rgba(0,0,0,.06)",
+        }}
+      >
         <div
+          className="font-mono"
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: 8,
+            fontSize: 7,
+            color: N[300],
+
+            letterSpacing: ".15em",
+            textTransform: "uppercase",
+            marginBottom: 7,
           }}
         >
+          Status
+        </div>
+        {["Layout", "Assets", "Copy"].map((l, i) => (
           <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              marginBottom: 4,
+            }}
+          >
+            <div
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: i === 0 ? AZURE : i === 1 ? N[200] : N[100],
+              }}
+            />
+            <span className="font-sans" style={{ fontSize: 8, color: N[300] }}>
+              {l}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+      <motion.div
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          width: 54,
+          height: 54,
+          borderRadius: "50%",
+          background: N[100],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 24,
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        {icon}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.35 }}
+        style={{ textAlign: "center", position: "relative", zIndex: 2 }}
+      >
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 10.5,
+            color: N[300],
+
+            letterSpacing: ".12em",
+            textTransform: "uppercase",
+            marginBottom: 12,
+          }}
+        >
+          {label}
+        </div>
+        <div style={{ display: "flex", gap: 7, justifyContent: "center" }}>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="_mb"
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: AZURE,
+                opacity: 0.6,
+                animationDelay: `${i * 0.22}s`,
+              }}
+            />
+          ))}
+        </div>
+      </motion.div>
+      <Chip label={chipLabel} />
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// PER-CARD STAGE CONTENT
+// ════════════════════════════════════════════════════════════════
+
+// ── CARD 1 — Product & Digital ────────────────────────────────────
+function C1S1() {
+  return (
+    <div className="absolute inset-0">
+      <WFBrowser>
+        <div className="p-1.5">
+          <Shimmer delay={0} className="h-28 rounded-md relative">
+            <div className="absolute inset-0 flex flex-col justify-center p-3.5">
+              <div
+                className="h-2.5 rounded w-3/5 mb-1.5"
+                style={{ background: AZURE, opacity: 0.7 }}
+              />
+              <div
+                className="h-1.5 rounded w-2/5 mb-2.5"
+                style={{ background: "rgba(25,128,194,.4)" }}
+              />
+              <div
+                className="h-5 w-16 rounded"
+                style={{ background: AZURE, opacity: 0.8 }}
+              />
+            </div>
+          </Shimmer>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5 px-2">
+          {[0, 0.4, 0.8].map((d, i) => (
+            <div
+              key={i}
+              className="rounded-md overflow-hidden"
+              style={{ background: "#fff", border: `0.5px solid ${N[100]}` }}
+            >
+              <Shimmer delay={d} className="h-11" />
+              <div className="p-1.5">
+                <div
+                  className="h-1.5 rounded mb-1"
+                  style={{ background: N[100], width: "80%" }}
+                />
+                <div
+                  className="h-1.5 rounded w-2/5"
+                  style={{ background: AZURE, opacity: 0.6 }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </WFBrowser>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="Product & Digital" />
+      <RequestBubble text="Build us a clean e-commerce storefront with a hero carousel and product grid." />
+    </div>
+  );
+}
+function C1S3() {
+  return (
+    <div
+      className="absolute inset-0 flex flex-col"
+      style={{ background: "#fff" }}
+    >
+      <div
+        className="h-8 flex items-center px-2.5 justify-between"
+        style={{ borderBottom: `0.5px solid #e8e8e6` }}
+      >
+        <span className="font-sans" style={{ fontSize: 11, color: INK }}>
+          STRKT
+        </span>
+        <div className="flex gap-2">
+          {["Shop", "Drops", "About"].map((n) => (
+            <span
+              key={n}
+              className="font-sans"
+              style={{ fontSize: 7.5, color: "#aaa" }}
+            >
+              {n}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div
+        className="flex items-center px-3.5 gap-2.5 relative overflow-hidden"
+        style={{
+          height: 112,
+          background: "linear-gradient(135deg,#0f1a2c,#1a3050)",
+        }}
+      >
+        <div
+          className="absolute"
+          style={{
+            top: -20,
+            right: -20,
+            width: 112,
+            height: 112,
+            background:
+              "radial-gradient(circle,rgba(25,128,194,.3),transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div className="flex-1">
+          <div
+            className="font-sans"
+            style={{
+              fontSize: 12,
+
+              color: "#fff",
+              lineHeight: 1.2,
+              marginBottom: 4,
+            }}
+          >
+            Wear what
+            <br />
+            you mean.
+          </div>
+          <div
+            style={{
+              fontSize: 8,
+              color: "rgba(255,255,255,.5)",
+              marginBottom: 8,
+            }}
+          >
+            Limited drops, weekly.
+          </div>
+          <div
+            style={{
+              display: "inline-block",
+              fontSize: 7,
+
+              padding: "4px 10px",
+              borderRadius: 4,
+              background: AZURE,
+              color: "#fff",
+            }}
+          >
+            Shop now →
+          </div>
+        </div>
+        <div
+          className="rounded-md flex-shrink-0"
+          style={{
+            width: 56,
+            height: 80,
+            background: "rgba(255,255,255,.1)",
+            border: "1px solid rgba(255,255,255,.15)",
+          }}
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-1.5 p-2">
+        {[
+          ["Cargo Tee", "$48", "👕", "#0f2a4a,#1a3a5c"],
+          ["Wide Hoodie", "$90", "🧥", "#1a2030,#253040"],
+          ["Track Pant", "$72", "👖", "#0a1520,#152030"],
+        ].map(([nm, pr, ic, gr]) => (
+          <div
+            key={nm}
+            className="rounded-md overflow-hidden"
+            style={{ background: "#f8f8f6", border: `0.5px solid #e8e8e6` }}
+          >
+            <div
+              className="flex items-center justify-center text-lg"
+              style={{
+                height: 52,
+                background: `linear-gradient(135deg,${gr})`,
+              }}
+            >
+              {ic}
+            </div>
+            <div className="p-1.5">
+              <div style={{ fontSize: 7, color: "#aaa" }}>{nm}</div>
+              <div style={{ fontSize: 9, color: AZURE }}>{pr}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div
+        className="flex gap-6 justify-center"
+        style={{
+          paddingTop: 6,
+          paddingBottom: 6,
+          borderTop: "0.5px solid #f0f0f0",
+        }}
+      >
+        {[
+          ["98", "Perf"],
+          ["1.2s", "Load"],
+          ["4.9★", "Rating"],
+        ].map(([v, l]) => (
+          <div key={l} className="text-center">
+            <div style={{ fontSize: 13, color: AZURE }}>{v}</div>
+            <div style={{ fontSize: 7, color: "#aaa" }}>{l}</div>
+          </div>
+        ))}
+      </div>
+      <div
+        className="absolute flex items-center gap-1.5 rounded-full"
+        style={{
+          bottom: 18,
+          right: 14,
+          padding: "5px 12px",
+          background: INK,
+          color: "#fff",
+          fontSize: 8.5,
+        }}
+      >
+        <div
+          className="rounded-full"
+          style={{ width: 6, height: 6, background: AZURE }}
+        />
+        Live &amp; converting
+      </div>
+      <Chip label="Product & Digital" />
+    </div>
+  );
+}
+function C1S4() {
+  return (
+    <CoverImage src="/flier/image6.png" alt="Product & Digital">
+      <Chip label="Product & Digital" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
+
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            Product &amp; Digital
+          </div>
+          <div
+            lassName="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
+}
+
+// ── CARD 2 — Marketing & Comms ────────────────────────────────────
+function C2S1() {
+  return (
+    <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{ background: "#fff" }}>
+        <div
+          className="flex items-center px-3.5 gap-2"
+          style={{ height: 44, borderBottom: "0.5px solid #dbdbdb" }}
+        >
+          <span
+            style={{
+              fontFamily: "Georgia,serif",
+              fontSize: 15,
+
+              color: "#262626",
+              flex: 1,
+            }}
+          >
+            Instagram
+          </span>
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 3,
+                background: "#dbdbdb",
+              }}
+            />
+          ))}
+        </div>
+        <div
+          className="flex items-center px-3.5 py-3 gap-2.5"
+          style={{ borderBottom: "0.5px solid #f0f0f0" }}
+        >
+          <div
+            className="flex-shrink-0 flex items-center justify-center text-sm font-black text-white rounded-full"
             style={{
               width: 44,
               height: 44,
-              borderRadius: "50%",
-              background: "linear-gradient(45deg,#f09433,#dc2743,#bc1888)",
-              padding: 2,
-              flexShrink: 0,
+              background:
+                "linear-gradient(135deg,#f09433,#e65e25,#dc2743,#cc2366,#bc1888)",
             }}
           >
-            <img
-              src={IMG.i1}
-              alt=""
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "2px solid #fff",
-              }}
-            />
+            M
           </div>
-          <div style={{ display: "flex", gap: 14 }}>
-            {[
-              ["184", "posts"],
-              ["48.2K", "followers"],
-              ["312", "following"],
-            ].map(([v, l], i) => (
-              <div key={i} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#000" }}>
-                  {v}
-                </div>
-                <div style={{ fontSize: 8, color: "#666" }}>{l}</div>
-              </div>
-            ))}
+          <div className="flex-1">
+            <div style={{ fontSize: 11, color: "#262626" }}>mad.studio</div>
+            <div style={{ fontSize: 9.5, color: "#8e8e8e" }}>
+              @mad.studio · Creative Agency
+            </div>
           </div>
-        </div>
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            color: "#000",
-            marginBottom: 2,
-          }}
-        >
-          LUXE STUDIO
-        </div>
-        <div
-          style={{
-            fontSize: 8,
-            color: "#444",
-            lineHeight: 1.4,
-            marginBottom: 8,
-          }}
-        >
-          Premium editorial fashion. SS25 collection live now.
-        </div>
-        <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
           <div
             style={{
-              flex: 1,
-              textAlign: "center",
-              padding: 5,
-              borderRadius: 8,
-              background: AZURE[500],
               fontSize: 9,
-              fontWeight: 700,
+
+              padding: "5px 14px",
+              borderRadius: 6,
+              background: AZURE,
               color: "#fff",
             }}
           >
             Follow
           </div>
-          <div
-            style={{
-              flex: 1,
-              textAlign: "center",
-              padding: 5,
-              borderRadius: 8,
-              background: "#f0f0f0",
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#000",
-            }}
-          >
-            Message
-          </div>
         </div>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: 1.5,
-          flex: 1,
-        }}
-      >
-        {gridImgs.map((src, i) => (
-          <div
-            key={i}
-            style={{ aspectRatio: "1", overflow: "hidden", background: "#eee" }}
-          >
-            <img
-              src={src}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SimBrandStage() {
-  return (
-    <div
-      style={{
-        background: "#0d1117",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
-        padding: 20,
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        fontFamily: F.syne,
-      }}
-    >
-      <div
-        style={{
-          fontSize: 7,
-          color: "rgba(255,255,255,.25)",
-          letterSpacing: ".2em",
-          textTransform: "uppercase",
-          fontFamily: F.mono,
-        }}
-      >
-        Brand Identity System
-      </div>
-      <div
-        style={{
-          background: "rgba(255,255,255,.04)",
-          border: "1px solid rgba(255,255,255,.07)",
-          borderRadius: 10,
-          height: 80,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 12,
-        }}
-      >
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            background: "rgba(255,255,255,.08)",
-            border: "1px solid rgba(255,255,255,.15)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 22 22" fill="none">
-            <polygon
-              points="11,1 21,7 21,15 11,21 1,15 1,7"
-              fill="rgba(255,255,255,.9)"
-            />
-          </svg>
+        <div className="flex" style={{ borderBottom: "0.5px solid #f0f0f0" }}>
+          {[
+            ["48", "posts"],
+            ["24.8K", "followers"],
+            ["4.2%", "eng."],
+          ].map(([n, l]) => (
+            <div key={l} className="flex-1 text-center py-2">
+              <div style={{ fontSize: 12, color: "#262626" }}>{n}</div>
+              <div style={{ fontSize: 8, color: "#8e8e8e" }}>{l}</div>
+            </div>
+          ))}
         </div>
-        <div>
-          <div
-            style={{
-              fontSize: 22,
-              fontWeight: 800,
-              color: "#fff",
-              letterSpacing: ".05em",
-            }}
-          >
-            MAD
-          </div>
-          <div
-            style={{
-              fontSize: 6,
-              color: "rgba(255,255,255,.28)",
-              letterSpacing: ".35em",
-              fontFamily: F.mono,
-            }}
-          >
-            AGENCY
-          </div>
-        </div>
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
-        {[
-          ["#0d1117", "#fff", "1px solid rgba(255,255,255,.15)"],
-          ["#fff", "#111", "none"],
-          [
-            "rgba(255,255,255,.08)",
-            "rgba(255,255,255,.7)",
-            "1px solid rgba(255,255,255,.15)",
-          ],
-        ].map(([bg, c, b], i) => (
-          <div
-            key={i}
-            style={{
-              flex: 1,
-              height: 28,
-              borderRadius: 6,
-              background: bg,
-              border: b,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 10,
-              fontWeight: 800,
-              color: c,
-            }}
-          >
-            MAD
-          </div>
-        ))}
-      </div>
-      <div>
-        <div
-          style={{
-            fontSize: 7,
-            color: "rgba(255,255,255,.25)",
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            marginBottom: 8,
-            fontFamily: F.mono,
-          }}
-        >
-          Typefaces
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'DM Serif Display',serif",
-                fontStyle: "italic",
-                fontSize: 18,
-                color: "#fff",
-                fontWeight: 400,
-              }}
-            >
-              DM Serif Display
-            </span>
-            <span
-              style={{
-                fontSize: 7,
-                color: "rgba(255,255,255,.25)",
-                fontFamily: F.mono,
-              }}
-            >
-              Headlines
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: "rgba(255,255,255,.8)",
-              }}
-            >
-              Syne Bold
-            </span>
-            <span
-              style={{
-                fontSize: 7,
-                color: "rgba(255,255,255,.25)",
-                fontFamily: F.mono,
-              }}
-            >
-              UI / Body
-            </span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: F.mono,
-                fontSize: 9,
-                color: "rgba(255,255,255,.45)",
-              }}
-            >
-              JetBrains Mono
-            </span>
-            <span
-              style={{
-                fontSize: 7,
-                color: "rgba(255,255,255,.25)",
-                fontFamily: F.mono,
-              }}
-            >
-              Captions
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SimPaletteStage() {
-  const swatches = [
-    ["#0a0a0a", "Ink"],
-    ["#2d2d2d", "Dark"],
-    ["#6b6b6b", "Mid"],
-    ["#b4b4b4", "Light"],
-    ["#f5f5f5", "Paper"],
-  ];
-  return (
-    <div
-      style={{
-        background: "#fafafa",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
-        padding: 20,
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        border: "1px solid rgba(0,0,0,.06)",
-        fontFamily: F.syne,
-      }}
-    >
-      <div
-        style={{
-          fontSize: 7,
-          color: "#888",
-          letterSpacing: ".2em",
-          textTransform: "uppercase",
-          fontFamily: F.mono,
-        }}
-      >
-        Colour Palette
-      </div>
-      <div style={{ display: "flex", gap: 8, flex: 1, alignItems: "center" }}>
-        {swatches.map(([hex, lbl]) => (
-          <div
-            key={hex}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-              alignItems: "center",
-            }}
-          >
+        <div className="grid grid-cols-3 gap-0.5 p-0.5">
+          {[
+            [AZURE, "Brand"],
+            [INK, "Launch"],
+            [AZURE_LIGHT, "Web"],
+            ["#f0f0ee", "MAD"],
+            [AZURE_DARK, "Identity"],
+            ["#e8e8e4", "Campaign"],
+          ].map(([bg, lbl], i) => (
             <div
-              style={{
-                width: "100%",
-                flex: 1,
-                minHeight: 60,
-                borderRadius: 10,
-                background: hex,
-                border: hex === "#f5f5f5" ? "1px solid #ddd" : "none",
-              }}
-            />
-            <span style={{ fontSize: 7, color: "#888", fontFamily: F.mono }}>
-              {lbl}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div style={{ borderTop: "1px solid rgba(0,0,0,.06)", paddingTop: 12 }}>
-        <div
-          style={{
-            fontSize: 7,
-            color: "#888",
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            marginBottom: 8,
-            fontFamily: F.mono,
-          }}
-        >
-          Usage
-        </div>
-        {[
-          ["Primary", "#0a0a0a", "#fff"],
-          ["Surface", "#fafafa", "#0a0a0a"],
-          ["Muted", "#f0f0f0", "#666"],
-        ].map(([nm, bg, c], i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "5px 8px",
-              borderRadius: 6,
-              background: bg,
-              border: bg === "#fafafa" ? "1px solid #e8e8e8" : "none",
-              marginBottom: 4,
-            }}
-          >
-            <span style={{ fontSize: 9, color: c }}>{nm}</span>
-            <span
-              style={{
-                fontSize: 7,
-                color: c === "#fff" ? "rgba(255,255,255,.5)" : "#aaa",
-                fontFamily: F.mono,
-              }}
+              key={i}
+              className="aspect-square flex items-center justify-center text-[8px] font-extrabold"
+              style={{ background: bg, color: "#fff" }}
             >
-              {bg}
-            </span>
-          </div>
-        ))}
+              {lbl}
+            </div>
+          ))}
+        </div>
       </div>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="Marketing & Comms" />
+      <RequestBubble text="Create a social media content calendar for our spring product launch." />
     </div>
   );
 }
-
-function SimDashStage() {
+function C2S3() {
   return (
     <div
-      style={{
-        background: "#0e0e0c",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
-        padding: 14,
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        fontFamily: F.syne,
-      }}
+      className="absolute inset-0 flex flex-col"
+      style={{ background: "#fff" }}
     >
       <div
+        className="flex items-center px-3"
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          height: 40,
+          borderBottom: "0.5px solid #dbdbdb",
+          background: "#fafafa",
         }}
       >
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>
-            Campaign Dashboard
-          </div>
+        <span
+          style={{
+            fontFamily: "Georgia,serif",
+            fontSize: 14,
+
+            color: "#262626",
+            flex: 1,
+          }}
+        >
+          Instagram
+        </span>
+      </div>
+      <div style={{ borderBottom: "0.5px solid #f0f0f0" }}>
+        <div className="flex items-center px-3 py-2 gap-2">
           <div
+            className="rounded-full flex-shrink-0"
             style={{
-              fontSize: 7,
-              color: "rgba(255,255,255,.3)",
-              fontFamily: F.mono,
-            }}
-          >
-            Q4 2025 · Live
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <div
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,.5)",
+              width: 26,
+              height: 26,
+              background: "linear-gradient(135deg,#f09433,#dc2743)",
             }}
           />
-          <span
+          <span style={{ fontSize: 10, color: "#262626", flex: 1 }}>
+            mad.studio
+          </span>
+        </div>
+        <div
+          className="flex items-center justify-center relative overflow-hidden"
+          style={{
+            height: 160,
+            background: `linear-gradient(135deg,${AZURE},${AZURE_DARK})`,
+          }}
+        >
+          <div
+            className="font-sans"
             style={{
-              fontSize: 7,
-              color: "rgba(255,255,255,.45)",
-              fontFamily: F.mono,
+              fontSize: 18,
+
+              color: "#fff",
+              textAlign: "center",
+              lineHeight: 1.1,
+              padding: "0 10px",
+
+              position: "relative",
+              zIndex: 1,
             }}
           >
-            LIVE
+            Your brand,
+            <br />
+            everywhere.
+          </div>
+        </div>
+        <div
+          className="px-3 py-1.5"
+          style={{ fontSize: 8.5, color: "#262626", lineHeight: 1.5 }}
+        >
+          <strong>mad.studio</strong> Campaigns that connect — content built to
+          reach the right people at the right time.
+        </div>
+        <div className="px-3 pb-2 flex gap-1 flex-wrap">
+          {["#branding", "#marketing", "#springdrop", "#growth"].map((t) => (
+            <span key={t} style={{ fontSize: 8, color: AZURE }}>
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="flex gap-2 p-3">
+        {[
+          ["Total Reach", "248K", "+38%"],
+          ["Conv.", "3.2K", "+52%"],
+        ].map(([l, v, d]) => (
+          <div
+            key={l}
+            className="flex-1 rounded-md p-2"
+            style={{ background: N[50] }}
+          >
+            <div style={{ fontSize: 7, color: "#aaa" }}>{l}</div>
+            <div style={{ fontSize: 14, color: INK }}>{v}</div>
+            <div style={{ fontSize: 8, color: "#22a05a" }}>↑ {d}</div>
+          </div>
+        ))}
+      </div>
+      <div
+        className="absolute flex items-center gap-1.5 rounded-full"
+        style={{
+          bottom: 16,
+          right: 12,
+          padding: "5px 12px",
+          background: "rgba(0,0,0,.75)",
+          backdropFilter: "blur(8px)",
+          color: "#fff",
+          fontSize: 8,
+        }}
+      >
+        <div
+          className="rounded-full"
+          style={{ width: 6, height: 6, background: AZURE }}
+        />
+        Campaign live
+      </div>
+      <Chip label="Marketing & Comms" />
+    </div>
+  );
+}
+function C2S4() {
+  return (
+    <CoverImage src="/flier/image4.png" alt="Marketing & Comms">
+      <Chip label="Marketing & Comms" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
+
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            Marketing &amp; Comms
+          </div>
+          <div
+            className="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
+}
+
+// ── CARD 3 — Brand & Identity ─────────────────────────────────────
+function C3S1() {
+  return (
+    <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{ background: "#f8f7f5" }}>
+        <div
+          className="flex items-center px-3 gap-2"
+          style={{
+            height: 36,
+            background: "#fff",
+            borderBottom: `0.5px solid ${N[100]}`,
+          }}
+        >
+          <span style={{ fontSize: 11, color: INK }}>
+            M<span style={{ color: AZURE }}>A</span>D Brand Studio
           </span>
+        </div>
+        <div
+          className="flex"
+          style={{
+            height: 28,
+            background: "#fff",
+            borderBottom: `1px solid ${N[100]}`,
+          }}
+        >
+          {["Colours", "Typography", "Components"].map((t, i) => (
+            <div
+              key={t}
+              className="flex items-center px-3"
+              style={{
+                fontSize: 8,
+
+                color: i === 0 ? AZURE : "#aaa",
+                borderBottom:
+                  i === 0 ? `2px solid ${AZURE}` : "2px solid transparent",
+              }}
+            >
+              {t}
+            </div>
+          ))}
+        </div>
+        <div className="p-2.5">
+          <div
+            className="flex rounded-lg overflow-hidden mb-2"
+            style={{ height: 64, boxShadow: "0 2px 8px rgba(0,0,0,.1)" }}
+          >
+            {[
+              [AZURE, "Azure", "rgba(255,255,255,.7)"],
+              [INK, "Onyx", "rgba(255,255,255,.7)"],
+              ["#fff", "White", "#aaa"],
+              [AZURE_DARK, "Deep", "rgba(255,255,255,.7)"],
+              [AZURE_LIGHT, "Sky", "rgba(255,255,255,.7)"],
+            ].map(([bg, l, c]) => (
+              <div
+                key={l}
+                className="flex-1 flex items-end justify-center pb-1.5"
+                style={{ background: bg }}
+              >
+                <span style={{ fontSize: 6, color: c }}>{l}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div
+        className="absolute inset-0"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: 6,
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="Brand & Identity" />
+      <RequestBubble text="Design a bold brand identity system with logo, type, and a colour palette." />
+    </div>
+  );
+}
+function C3S3() {
+  return (
+    <div className="absolute inset-0 flex flex-col">
+      <div
+        className="flex flex-col items-center justify-center gap-2.5 relative overflow-hidden"
+        style={{
+          height: "55%",
+          background:
+            "linear-gradient(160deg,#0a1628,#0f2a4a 60%,rgba(25,128,194,.5) 100%)",
         }}
       >
-        {[
-          ["84K", "Reach", "+32%"],
-          ["3.2K", "Conv.", "+18%"],
-          ["$4.20", "CPA", "-12%"],
-          ["6.4×", "ROAS", "+8%"],
-        ].map(([v, l, d], i) => (
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: -30,
+            right: -30,
+            width: 160,
+            height: 160,
+            background:
+              "radial-gradient(circle,rgba(25,128,194,.25),transparent 65%)",
+          }}
+        />
+        <div className="flex items-center gap-2.5 relative z-10">
           <div
-            key={i}
+            className="rounded-xl flex items-center justify-center"
+            style={{ width: 40, height: 40, background: AZURE }}
+          >
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <polygon
+                points="11,1 21,7 21,15 11,21 1,15 1,7"
+                fill="white"
+                opacity=".9"
+              />
+            </svg>
+          </div>
+          <span
+            className="font-sans"
+            style={{
+              fontSize: 28,
+
+              color: "#fff",
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+            }}
+          >
+            M<span style={{ color: AZURE_LIGHT }}>AD</span>
+          </span>
+        </div>
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 9,
+            letterSpacing: ".2em",
+            textTransform: "uppercase",
+
+            color: "rgba(255,255,255,.4)",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          Identity System · 2025
+        </div>
+        <div
+          className="flex rounded-lg overflow-hidden relative z-10"
+          style={{ width: 200 }}
+        >
+          {[
+            [AZURE, "#fff", "MAD"],
+            ["#fff", INK, "MAD"],
+            [INK, "#fff", "MAD"],
+          ].map(([bg, color, lbl], i) => (
+            <div
+              key={i}
+              className="flex-1 flex items-center justify-center py-1.5 font-sans"
+              style={{
+                background: bg,
+                color,
+
+                fontSize: 10,
+              }}
+            >
+              {lbl}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div
+        className="flex-1 flex flex-col gap-2 p-3"
+        style={{ background: "#fff" }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1">
+            {[AZURE, INK, "#fff", AZURE_DARK, AZURE_LIGHT].map((c, i) => (
+              <div
+                key={i}
+                className="rounded-md"
+                style={{
+                  width: 20,
+                  height: 20,
+                  background: c,
+                  boxShadow: "0 1px 4px rgba(0,0,0,.12)",
+                  border: c === "#fff" ? `0.5px solid ${N[100]}` : "none",
+                }}
+              />
+            ))}
+          </div>
+          <div style={{ marginLeft: 8 }}>
+            <div style={{ fontSize: 8, color: INK }}>Azure Blue</div>
+            <div className="font-mono" style={{ fontSize: 7, color: "#aaa" }}>
+              #1980c2 · Primary
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="absolute flex items-center gap-1.5 rounded-full z-10"
+        style={{
+          bottom: 16,
+          right: 12,
+          padding: "5px 12px",
+          background: INK,
+          color: "#fff",
+          fontSize: 8,
+        }}
+      >
+        <div
+          className="rounded-full"
+          style={{ width: 6, height: 6, background: AZURE }}
+        />
+        Brand system complete
+      </div>
+      <Chip label="Brand & Identity" />
+    </div>
+  );
+}
+function C3S4() {
+  return (
+    <CoverImage src="/flier/image10.png" alt="Brand & Identity">
+      <Chip label="Brand & Identity" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
+
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            Brand &amp; Identity
+          </div>
+          <div
+            className="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
+}
+
+// ── CARD 4 — E-Commerce ───────────────────────────────────────────
+function C4S1() {
+  return (
+    <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{ background: "#f8f8f6" }}>
+        <WFBrowser>
+          <div />
+        </WFBrowser>
+      </div>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="E-Commerce" />
+      <RequestBubble text="Set up a Shopify store with custom checkout and Spring drop landing pages." />
+    </div>
+  );
+}
+function C4S3() {
+  return (
+    <div className="absolute inset-0 relative overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{ background: `linear-gradient(135deg,${AZURE_DARK},${AZURE})` }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.18) 52%,rgba(0,0,0,.05) 100%)",
+        }}
+      />
+      <DeliveredBadge eyebrow="Delivered" title="Store live · converting" />
+      <Chip label="E-Commerce" />
+    </div>
+  );
+}
+function C4S4() {
+  return (
+    <CoverImage src="/flier/image6.png" alt="E-Commerce">
+      <Chip label="E-Commerce" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
+
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            E-Commerce
+          </div>
+          <div
+            className="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
+}
+
+// ── CARD 5 — Campaign Analytics ───────────────────────────────────
+function C5S1() {
+  return (
+    <div className="absolute inset-0" style={{ background: "#0d1117" }}>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="Campaign Analytics" />
+      <RequestBubble text="Build a real-time dashboard showing ROAS, reach, CPA, and conversions." />
+    </div>
+  );
+}
+function C5S3() {
+  return (
+    <div
+      className="absolute inset-0 flex flex-col p-3.5"
+      style={{ background: "#0d1117" }}
+    >
+      <div className="flex justify-between items-center mb-3 font-sans">
+        <span
+          style={{
+            fontSize: 12,
+
+            color: "#fff",
+          }}
+        >
+          Live Dashboard
+        </span>
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 8,
+            color: "rgba(255,255,255,.3)",
+          }}
+        >
+          Real-time · May 2025
+        </span>
+      </div>
+      <div className="grid grid-cols-3 gap-1.5 mb-2.5">
+        {[
+          ["ROAS", "6.4×", "↑ Strong"],
+          ["Reach", "248K", "↑ +38%"],
+          ["Conv.", "3.2K", "↑ +52%"],
+        ].map(([l, v, d]) => (
+          <div
+            key={l}
+            className="rounded-lg p-2"
             style={{
               background: "rgba(255,255,255,.04)",
-              border: "1px solid rgba(255,255,255,.06)",
-              borderRadius: 8,
-              padding: 8,
-              textAlign: "center",
+              border: "0.5px solid rgba(255,255,255,.07)",
             }}
           >
             <div
               style={{
-                fontSize: 14,
-                fontWeight: 800,
-                color: "#fff",
-                lineHeight: 1,
-              }}
-            >
-              {v}
-            </div>
-            <div
-              style={{
                 fontSize: 7,
-                color: "rgba(255,255,255,.3)",
-                margin: "2px 0",
+                color: "rgba(255,255,255,.35)",
+                marginBottom: 2,
               }}
             >
               {l}
             </div>
             <div
               style={{
-                fontSize: 8,
-                fontWeight: 700,
-                color: "rgba(255,255,255,.65)",
-                fontFamily: F.mono,
+                fontSize: 15,
+
+                color: "#fff",
+                lineHeight: 1,
               }}
             >
-              {d}
+              {v}
             </div>
+            <div style={{ fontSize: 8, color: "#22a05a" }}>{d}</div>
           </div>
         ))}
       </div>
-      <svg
-        viewBox="0 0 260 70"
-        style={{ width: "100%", flex: 1, minHeight: 60 }}
-      >
-        <defs>
-          <linearGradient id="simGr" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(255,255,255,.2)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </linearGradient>
-        </defs>
-        {[0, 65, 130, 195, 260].map((x, i) => (
-          <line
-            key={i}
-            x1={x}
-            y1="0"
-            x2={x}
-            y2="70"
-            stroke="rgba(255,255,255,.05)"
-            strokeWidth=".5"
-          />
-        ))}
-        <polyline
-          points="0,60 35,48 70,35 105,40 140,20 175,12 210,7 260,3"
-          fill="none"
-          stroke="rgba(255,255,255,.65)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <polyline
-          points="0,60 35,48 70,35 105,40 140,20 175,12 210,7 260,3 260,70 0,70"
-          fill="url(#simGr)"
-        />
-      </svg>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {[
-          ["Instagram", 88],
-          ["LinkedIn", 64],
-          ["Email", 76],
-          ["Paid", 52],
-        ].map(([nm, pct], i) => (
-          <div
-            key={i}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
-          >
-            <span
-              style={{
-                fontSize: 7,
-                width: 48,
-                color: "rgba(255,255,255,.38)",
-                flexShrink: 0,
-                fontFamily: F.mono,
-              }}
-            >
-              {nm}
-            </span>
-            <div
-              style={{
-                flex: 1,
-                height: 3,
-                borderRadius: 2,
-                background: "rgba(255,255,255,.07)",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  borderRadius: 2,
-                  background: "rgba(255,255,255,.55)",
-                  width: `${pct}%`,
-                }}
-              />
-            </div>
-            <span
-              style={{
-                fontSize: 7,
-                color: "rgba(255,255,255,.45)",
-                fontFamily: F.mono,
-              }}
-            >
-              {pct}%
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SimComicStage() {
-  const panels = [
-    { img: IMG.i1, bubble: "Idea!", label: "Chapter 1" },
-    { img: IMG.i2, bubble: "POW!", label: "Rise" },
-    { img: IMG.i3, bubble: "Plot!", label: "Strategy" },
-    { img: IMG.i4, bubble: "WIN!", label: "Launch" },
-  ];
-  return (
-    <div
-      style={{
-        flex: 1,
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gridTemplateRows: "1fr 1fr",
-        gap: 3,
-        borderRadius: 12,
-        overflow: "hidden",
-      }}
-    >
-      {panels.map((p, i) => (
-        <div key={i} style={{ position: "relative", overflow: "hidden" }}>
-          <img
-            src={p.img}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: "brightness(.5)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,.35)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              top: 6,
-              right: 6,
-              background: "#fff",
-              color: "#111",
-              fontSize: 9,
-              fontWeight: 800,
-              padding: "2px 7px",
-              borderRadius: "6px 6px 0 6px",
-              fontFamily: F.syne,
-            }}
-          >
-            {p.bubble}
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: 6,
-              left: 7,
-              fontSize: 11,
-              fontWeight: 700,
-              color: "#fff",
-              fontStyle: "italic",
-              fontFamily: "'DM Serif Display',serif",
-            }}
-          >
-            {p.label}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function SimChatStage() {
-  const msgs = [
-    { from: "client", text: "4-panel comic for our product launch." },
-    {
-      from: "studio",
-      text: "Bold outlines, halftone dots, speech bubbles. Style ref?",
-    },
-    { from: "client", text: "Roy Lichtenstein meets streetwear." },
-    { from: "studio", text: "PNG @ 300dpi + PDF. Figma source included ✓" },
-  ];
-  return (
-    <div
-      style={{
-        background: "#08090c",
-        flex: 1,
-        borderRadius: 12,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: F.syne,
-      }}
-    >
       <div
+        className="rounded-lg flex items-center justify-between p-2.5"
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "10px 12px",
-          borderBottom: "1px solid rgba(255,255,255,.07)",
+          background: `rgba(25,128,194,.15)`,
+          border: `0.5px solid rgba(25,128,194,.3)`,
         }}
       >
         <div
+          className="font-mono"
           style={{
-            width: 26,
-            height: 26,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,.75)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             fontSize: 9,
-            fontWeight: 800,
-            color: "#000",
+            color: "rgba(255,255,255,.5)",
+
+            letterSpacing: ".1em",
+            textTransform: "uppercase",
           }}
         >
-          M
-        </div>
-        <div>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#fff" }}>
-            MAD Studio
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <div
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: "#22c55e",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 7,
-                color: "rgba(255,255,255,.3)",
-                fontFamily: F.mono,
-              }}
-            >
-              online
-            </span>
-          </div>
-        </div>
-      </div>
-      <div
-        style={{
-          flex: 1,
-          padding: "10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 7,
-          justifyContent: "flex-end",
-        }}
-      >
-        {msgs.map((m, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.07, duration: 0.2 }}
-            style={{
-              display: "flex",
-              justifyContent: m.from === "client" ? "flex-end" : "flex-start",
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "78%",
-                padding: "8px 11px",
-                fontSize: 9,
-                lineHeight: 1.5,
-                borderRadius:
-                  m.from === "client"
-                    ? "11px 11px 2px 11px"
-                    : "11px 11px 11px 2px",
-                background:
-                  m.from === "client"
-                    ? "rgba(255,255,255,.75)"
-                    : "rgba(255,255,255,.08)",
-                color: m.from === "client" ? "#111" : "rgba(255,255,255,.78)",
-              }}
-            >
-              {m.text}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 7,
-          alignItems: "center",
-          padding: "8px 10px",
-          borderTop: "1px solid rgba(255,255,255,.07)",
-        }}
-      >
-        <div
-          style={{
-            flex: 1,
-            borderRadius: 100,
-            padding: "6px 10px",
-            background: "rgba(255,255,255,.07)",
-            fontSize: 7,
-            color: "rgba(255,255,255,.18)",
-            fontFamily: F.mono,
-          }}
-        >
-          Message...
+          ROAS · Campaign total
         </div>
         <div
+          className="font-sans"
           style={{
-            width: 26,
-            height: 26,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,.75)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            fontSize: 22,
+
+            color: AZURE,
           }}
         >
-          <svg width="9" height="9" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M2 7h10M7 2l5 5-5 5"
-              stroke="#111"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            />
-          </svg>
+          6.4×
         </div>
       </div>
+      <Chip label="Campaign Analytics" />
     </div>
   );
 }
+function C5S4() {
+  return (
+    <CoverImage src="/flier/image5.png" alt="Campaign Analytics">
+      <Chip label="Campaign Analytics" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
 
-function renderSimStage(stage) {
-  switch (stage.type) {
-    case "browser":
-      return <SimBrowserStage stage={stage} />;
-    case "tweet":
-      return <SimTweetStage stage={stage} />;
-    case "ig":
-      return <SimIgStage />;
-    case "brand":
-      return <SimBrandStage />;
-    case "palette":
-      return <SimPaletteStage />;
-    case "dashboard":
-      return <SimDashStage />;
-    case "comic":
-      return <SimComicStage />;
-    case "chat":
-      return <SimChatStage />;
-    default:
-      return null;
-  }
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            Campaign Analytics
+          </div>
+          <div
+            className="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
 }
 
-const SIM_HOLD = 2800;
+// ── CARD 6 — Illustration ─────────────────────────────────────────
+function C6S1() {
+  return (
+    <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{ background: "#1a1a18" }} />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom,rgba(15,15,14,.25) 0%,rgba(15,15,14,.6) 60%,rgba(15,15,14,.85) 100%)",
+        }}
+      />
+      <Chip label="Illustration" />
+      <RequestBubble text="Create a 4-panel editorial comic for our product launch announcement." />
+    </div>
+  );
+}
+function C6S3() {
+  return (
+    <div
+      className="absolute inset-0 relative overflow-hidden"
+      style={{ background: "#1a1a18" }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.18) 52%,rgba(0,0,0,.05) 100%)",
+        }}
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="grid grid-cols-2 gap-1.5 p-6" style={{ width: "88%" }}>
+          {["✏️", "🎨", "🖼️", "✨"].map((icon, i) => (
+            <div
+              key={i}
+              className="aspect-square rounded-xl flex items-center justify-center text-2xl"
+              style={{
+                background: "rgba(255,255,255,.06)",
+                border: "0.5px solid rgba(255,255,255,.1)",
+              }}
+            >
+              {icon}
+            </div>
+          ))}
+        </div>
+      </div>
+      <DeliveredBadge eyebrow="Delivered" title="Illustration pack ready" />
+      <Chip label="Illustration" />
+    </div>
+  );
+}
+function C6S4() {
+  return (
+    <CoverImage src="/flier/image8.png" alt="Illustration">
+      <Chip label="Illustration" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7, duration: 0.9 }}
+        className="absolute flex items-end justify-between"
+        style={{ bottom: 22, left: 18, right: 18 }}
+      >
+        <div>
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.38)",
 
-// ── Single Card ───────────────────────────────────────────────────
-function SimCard({ card, isActive, offset, onActivate }) {
-  const [cur, setCur] = useState(0);
-  const total = card.stages.length;
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              marginBottom: 3,
+            }}
+          >
+            Illustration
+          </div>
+          <div
+            className="font-display font-bold tracking-[-0.04em]"
+            style={{
+              fontSize: 22,
+
+              color: "rgba(255,255,255,.88)",
+
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
+        </div>
+        <div
+          className="rounded-full"
+          style={{ width: 8, height: 8, background: AZURE, marginBottom: 4 }}
+        />
+      </motion.div>
+    </CoverImage>
+  );
+}
+
+// ─── CARD CONFIG ──────────────────────────────────────────────────────────────
+const CARD_CONFIGS = [
+  {
+    id: "c1",
+    title: "Product & Digital",
+    sub: "Websites, apps, and digital platforms built to perform and scale.",
+    icon: "🖥️",
+    procLabel: "Generating layout & components",
+    chipLabel: "Product & Digital",
+    S1: C1S1,
+    S3: C1S3,
+    S4: C1S4,
+  },
+  {
+    id: "c2",
+    title: "Marketing & Comms",
+    sub: "Campaigns and content systems that connect brands with the right audience.",
+    icon: "📣",
+    procLabel: "Planning campaign structure",
+    chipLabel: "Marketing & Comms",
+    S1: C2S1,
+    S3: C2S3,
+    S4: C2S4,
+  },
+  {
+    id: "c3",
+    title: "Brand & Identity",
+    sub: "Logo, type, colour, and brand systems that bring clarity to every touchpoint.",
+    icon: "🎨",
+    procLabel: "Building identity system",
+    chipLabel: "Brand & Identity",
+    S1: C3S1,
+    S3: C3S3,
+    S4: C3S4,
+  },
+  {
+    id: "c4",
+    title: "E-Commerce",
+    sub: "Shopify and Next.js stores optimised to convert from day one.",
+    icon: "🛍️",
+    procLabel: "Configuring store & flows",
+    chipLabel: "E-Commerce",
+    S1: C4S1,
+    S3: C4S3,
+    S4: C4S4,
+  },
+  {
+    id: "c5",
+    title: "Campaign Analytics",
+    sub: "Live dashboards, KPI benchmarks, and weekly insight reports.",
+    icon: "📊",
+    procLabel: "Wiring up live data feeds",
+    chipLabel: "Campaign Analytics",
+    S1: C5S1,
+    S3: C5S3,
+    S4: C5S4,
+  },
+  {
+    id: "c6",
+    title: "Illustration",
+    sub: "Editorial illustration, comics, and icon systems for campaigns and brand.",
+    icon: "✏️",
+    procLabel: "Rendering illustrations",
+    chipLabel: "Illustration",
+    S1: C6S1,
+    S3: C6S3,
+    S4: C6S4,
+  },
+];
+
+// ════════════════════════════════════════════════════════════════
+// SERVICE CARD — 4-stage rAF cycle
+// ════════════════════════════════════════════════════════════════
+function ServiceCard({ config, startDelay, isActive }) {
+  const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
+  const rafRef = useRef(null);
   const timerRef = useRef(null);
 
-  const advance = useCallback(() => setCur((c) => (c + 1) % total), [total]);
+  const runCycle = useCallback(() => {
+    const pf = fillRef.current;
+    if (pf) {
+      pf.style.transition = "none";
+      pf.style.width = "0%";
+    }
+    setStage(0);
+    let startTs = null;
+
+    const tick = (ts) => {
+      if (!startTs) startTs = ts;
+      const el = ts - startTs;
+      const pct = Math.min(100, (el / LOADING_DUR) * 100);
+      if (pf) pf.style.width = `${pct}%`;
+
+      if (el < S1_DUR) setStage(0);
+      else if (el < S1_DUR + S2_DUR) setStage(1);
+      else if (el < LOADING_DUR) setStage(2);
+      else setStage(3);
+
+      if (el < TOTAL_DUR) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        timerRef.current = setTimeout(runCycle, LOOP_PAUSE);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
 
   useEffect(() => {
-    const el = fillRef.current;
-    if (!el) return;
-    const dur = card.stages[cur]?.holdMs ?? SIM_HOLD;
-    el.style.transition = "none";
-    el.style.width = "0%";
-    const rAF = requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        el.style.transition = `width ${dur}ms linear`;
-        el.style.width = "100%";
-        timerRef.current = setTimeout(advance, dur);
-      }),
-    );
+    injectBlink();
+    const t = setTimeout(runCycle, startDelay);
     return () => {
-      cancelAnimationFrame(rAF);
+      clearTimeout(t);
       clearTimeout(timerRef.current);
+      cancelAnimationFrame(rafRef.current);
     };
-  }, [cur, card.stages, advance]);
+  }, [runCycle, startDelay]);
 
-  const abs = Math.abs(offset);
-  const sign = offset < 0 ? -1 : offset > 0 ? 1 : 0;
-  const SPREAD = 340;
-  const DEPTH = 220;
-  const ROTY = 38;
-  const SCALE = Math.pow(0.78, abs);
-  const x = sign * Math.min(abs, 2) * SPREAD * (1 - abs * 0.1);
-  const z = -(abs * DEPTH);
-  const ry = -sign * Math.min(abs, 2) * ROTY;
-  const opacity = abs <= 2 ? Math.max(0.2, 1 - abs * 0.38) : 0;
+  const { S1, S3, S4, icon, procLabel, chipLabel, title, sub } = config;
 
   return (
     <div
-      onClick={() => !isActive && onActivate()}
-      style={{
-        position: "absolute",
-        width: "clamp(260px,26vw,320px)",
-        height: "clamp(380px,55vh,440px)",
-        left: "50%",
-        top: "50%",
-        marginLeft: "calc(clamp(260px,26vw,320px) / -2)",
-        marginTop: "calc(clamp(380px,55vh,440px) / -2)",
-        borderRadius: 18,
-        overflow: "hidden",
-        transform: `translateX(${x}px) translateZ(${z}px) rotateY(${ry}deg) scale(${SCALE})`,
-        opacity,
-        zIndex: 10 - abs,
-        pointerEvents: abs <= 2 ? "auto" : "none",
-        transition:
-          "transform .65s cubic-bezier(.23,1,.32,1), opacity .65s ease",
-        boxShadow: isActive
-          ? "0 4px 24px rgba(0,0,0,.14), 0 20px 60px rgba(0,0,0,.22)"
-          : "0 2px 8px rgba(0,0,0,.1), 0 8px 32px rgba(0,0,0,.12)",
-        cursor: isActive ? "default" : "pointer",
-        willChange: "transform, opacity",
-        backfaceVisibility: "hidden",
-      }}
+      className="flex-shrink-0 flex flex-col gap-3.5 relative"
+      style={{ width: 340, paddingBottom: 10, paddingRight: 10 }}
     >
-      {/* Card background */}
-      <div style={{ position: "absolute", inset: 0, background: card.color }} />
-
-      {/* Stages */}
-      {card.stages.map((stage, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            inset: 0,
-            padding: "54px 14px 18px",
-            display: "flex",
-            flexDirection: "column",
-            opacity: i === cur ? 1 : 0,
-            transition: "opacity .4s ease",
-            pointerEvents: i === cur ? "auto" : "none",
-          }}
-        >
-          {renderSimStage(stage)}
-        </div>
-      ))}
-
-      {/* Top bar */}
+      {/* Depth stack — light-mode surfaces */}
       <div
+        className="absolute rounded-[22px]"
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
+          top: 12,
+          left: 12,
           right: 0,
-          zIndex: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "12px 14px 28px",
-          background:
-            "linear-gradient(to bottom,rgba(0,0,0,.45) 0%,transparent 100%)",
+          height: 490,
+          background: "rgba(0,0,0,0.04)",
+          zIndex: 0,
+        }}
+      />
+      <div
+        className="absolute rounded-[22px]"
+        style={{
+          top: 6,
+          left: 6,
+          right: -6,
+          height: 490,
+          background: "rgba(0,0,0,0.03)",
+          border: `1px solid ${N[100]}`,
+          zIndex: 1,
+        }}
+      />
+
+      {/* Main card */}
+      <div
+        className="relative overflow-hidden"
+        style={{
+          width: "100%",
+          height: 490,
+          borderRadius: 22,
+          zIndex: 2,
+          background: "#f5f5f3",
+          border: `1px solid ${N[100]}`,
+          boxShadow: isActive
+            ? "0 16px 48px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.06)"
+            : "0 4px 16px rgba(0,0,0,.07)",
+          transition: "box-shadow .5s ease",
         }}
       >
-        <span
-          style={{
-            display: "inline-block",
-            padding: "5px 12px",
-            borderRadius: 100,
-            border: "1px solid rgba(255,255,255,.25)",
-            background: "rgba(255,255,255,.12)",
-            backdropFilter: "blur(8px)",
-            fontFamily: F.mono,
-            fontSize: 9,
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,.8)",
-          }}
-        >
-          {card.label}
-        </span>
-        {total > 1 && (
-          <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            {card.stages.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCur(i);
-                }}
-                style={{
-                  height: 5,
-                  width: i === cur ? 16 : 5,
-                  borderRadius: 3,
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  background:
-                    i === cur
-                      ? "rgba(255,255,255,.9)"
-                      : "rgba(255,255,255,.35)",
-                  transition: "all .3s ease",
-                }}
+        <AnimatePresence mode="wait">
+          {stage === 0 && (
+            <motion.div
+              key="s1"
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <S1 />
+            </motion.div>
+          )}
+          {stage === 1 && (
+            <motion.div
+              key="s2"
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <ProcessingStage
+                icon={icon}
+                label={procLabel}
+                chipLabel={chipLabel}
               />
-            ))}
+            </motion.div>
+          )}
+          {stage === 2 && (
+            <motion.div
+              key="s3"
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <S3 />
+            </motion.div>
+          )}
+          {stage === 3 && (
+            <motion.div
+              key="s4"
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <S4 />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Play button */}
+        <div
+          className="absolute z-40 pointer-events-none"
+          style={{ top: 58, right: 16 }}
+        >
+          <div
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: 44,
+              height: 44,
+              background: "rgba(255,255,255,.18)",
+              backdropFilter: "blur(18px)",
+              border: "1px solid rgba(255,255,255,.3)",
+              boxShadow:
+                "0 10px 30px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25)",
+            }}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="white"
+              style={{ marginLeft: 2 }}
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
           </div>
-        )}
+        </div>
+
+        {/* Stage dots */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex gap-1.5 z-30"
+          style={{ bottom: 16 }}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <motion.div
+              key={i}
+              animate={{
+                width: i === stage ? 14 : 5,
+                background:
+                  i === stage
+                    ? "rgba(255,255,255,.85)"
+                    : "rgba(255,255,255,.22)",
+              }}
+              transition={{ duration: 0.3 }}
+              style={{ height: 6, borderRadius: 3 }}
+            />
+          ))}
+        </div>
+
+        {/* Progress bar */}
+        <div
+          className="absolute bottom-0 left-0 right-0 z-30"
+          style={{ height: 3, background: "rgba(0,0,0,.06)" }}
+        >
+          <div
+            ref={fillRef}
+            style={{
+              height: "100%",
+              width: "0%",
+              background: AZURE,
+              opacity: 0.75,
+              transition: "none",
+            }}
+          />
+        </div>
       </div>
 
-      {/* Progress bar */}
+      {/* Meta label */}
       <div
+        className="px-1"
         style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 3,
-          background: "rgba(255,255,255,.15)",
+          opacity: isActive ? 1 : 0.45,
+          transform: isActive ? "translateY(0)" : "translateY(4px)",
+          transition: "opacity .45s ease,transform .45s ease",
         }}
       >
         <div
-          ref={fillRef}
+          lassName="font-display font-bold tracking-[-0.04em]"
           style={{
-            height: "100%",
-            width: "0%",
-            background: "rgba(255,255,255,.7)",
-            transition: "none",
+            fontSize: 19,
+            color: "#0f172a",
+            lineHeight: 1.1,
+            marginBottom: 4,
           }}
-        />
+        >
+          {title}
+        </div>
+        <div
+          className="font-sans"
+          style={{
+            fontSize: 11.5,
+            color: "rgba(15,23,42,.55)",
+            lineHeight: 1.65,
+          }}
+        >
+          {sub}
+        </div>
       </div>
     </div>
   );
 }
 
-// ── Services In Motion View ───────────────────────────────────────
-function ServicesInMotion({ dark }) {
-  const [active, setActive] = useState(0);
+// ════════════════════════════════════════════════════════════════
+// SERVICES IN MOTION — light mode, scroll-driven strip
+// ════════════════════════════════════════════════════════════════
+function ServicesInMotion({ scrollProgress }) {
+  const CARD_W = 340;
+  const CARD_GAP = 24;
+  const VISIBLE = 3.2;
+  const STEP = CARD_W + CARD_GAP;
 
-  const goTo = (i) => setActive(Math.max(0, Math.min(i, SIM_CARDS.length - 1)));
+  const simProgress = Math.min(1, Math.max(0, (scrollProgress - 0.52) / 0.48));
+  const maxScroll = (CARD_CONFIGS.length - VISIBLE) * STEP;
+  const translateX = -(simProgress * maxScroll);
+  const activeIndex = Math.round(
+    simProgress / (1 / (CARD_CONFIGS.length - Math.floor(VISIBLE))),
+  );
+
+  const [active, setActive] = useState(0);
+  const wheelAcc = useRef(0);
+
+  const maxOff = (CARD_CONFIGS.length - VISIBLE) * STEP;
+  const manualOffset = Math.min(active * STEP, maxOff);
+  const finalTranslateX = translateX !== 0 ? translateX : -manualOffset;
+  const finalActive = translateX !== 0 ? activeIndex : active;
+
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    wheelAcc.current += e.deltaY;
+    if (wheelAcc.current > 80) {
+      setActive((a) => Math.min(CARD_CONFIGS.length - 1, a + 1));
+      wheelAcc.current = 0;
+    } else if (wheelAcc.current < -80) {
+      setActive((a) => Math.max(0, a - 1));
+      wheelAcc.current = 0;
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Header */}
-      <div className="px-10 pt-16 pb-4 flex items-end justify-between shrink-0">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      {/* Header — light mode text */}
+      <div
+        style={{
+          padding: "90px 48px 40px",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexShrink: 0,
+        }}
+      >
         <div>
           <p
-            className="text-[9px] font-bold tracking-[0.25em] uppercase mb-2 m-0"
+            className="font-mono"
             style={{
-              color: dark ? "rgba(255,255,255,.3)" : "rgba(10,22,40,.42)",
-              fontFamily: F.mono,
+              margin: "0 0 8px",
+
+              fontSize: 10,
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              color: "rgba(15,23,42,.42)",
             }}
           >
-            Services in motion &nbsp;·&nbsp; {active + 1} / {SIM_CARDS.length}
+            Services in motion &nbsp;·&nbsp; scroll to explore
           </p>
           <h2
-            className="leading-none m-0"
+            className="font-display font-bold tracking-[-0.04em]"
             style={{
-              fontFamily: F.serif,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: "clamp(24px,3vw,38px)",
-              color: dark ? "#f0ede8" : "#0f0f0f",
+              margin: 0,
+
+              fontSize: "clamp(28px,3vw,38px)",
+              color: "#020617",
+              lineHeight: 1.05,
             }}
           >
             Systems for growth.
           </h2>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => goTo(active - 1)}
-            className="flex items-center justify-center cursor-pointer bg-transparent"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              border: "1px solid rgba(0,0,0,.15)",
-            }}
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={dark ? "#ccc" : "#333"}
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M14 6L8 12l6 6" />
-            </svg>
-          </button>
-          <button
-            onClick={() => goTo(active + 1)}
-            className="flex items-center justify-center cursor-pointer bg-transparent"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              border: "1px solid rgba(0,0,0,.15)",
-            }}
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={dark ? "#ccc" : "#333"}
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M10 6l6 6-6 6" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* 3D scene */}
-      <div
-        className="relative flex-1"
-        style={{
-          perspective: "1400px",
-          perspectiveOrigin: "50% 38%",
-          overflow: "visible",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            transformStyle: "preserve-3d",
-          }}
-        >
-          {SIM_CARDS.map((card, i) => (
-            <SimCard
-              key={card.label}
-              card={card}
-              isActive={i === active}
-              offset={i - active}
-              onActivate={() => setActive(i)}
-            />
-          ))}
-        </div>
-
-        {/* Dot nav */}
-        <div
-          className="absolute z-30 flex gap-2"
-          style={{ bottom: 16, left: "50%", transform: "translateX(-50%)" }}
-        >
-          {SIM_CARDS.map((_, i) => (
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            {
+              d: "M14 6L8 12l6 6",
+              fn: () => setActive((a) => Math.max(0, a - 1)),
+            },
+            {
+              d: "M10 6l6 6-6 6",
+              fn: () =>
+                setActive((a) => Math.min(CARD_CONFIGS.length - 1, a + 1)),
+            },
+          ].map(({ d, fn }, i) => (
             <button
               key={i}
-              onClick={() => goTo(i)}
+              onClick={fn}
               style={{
-                width: i === active ? 20 : 6,
-                height: 6,
-                borderRadius: 3,
-                border: "none",
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "transparent",
+                border: "1px solid rgba(15,23,42,.14)",
                 cursor: "pointer",
-                background:
-                  i === active
-                    ? dark
-                      ? "rgba(255,255,255,.75)"
-                      : "rgba(10,22,40,.65)"
-                    : dark
-                      ? "rgba(255,255,255,.2)"
-                      : "rgba(10,22,40,.18)",
-                transition: "all .35s cubic-bezier(.23,1,.32,1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(15,23,42,.5)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d={d} />
+              </svg>
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Below-card label */}
-      <div className="flex justify-center pb-6 pt-3 shrink-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
+      {/* Strip */}
+      <div
+        style={{ flex: 1, overflow: "hidden", paddingLeft: 48 }}
+        onWheel={handleWheel}
+      >
+        <motion.div
+          style={{
+            display: "flex",
+            gap: CARD_GAP,
+            height: "100%",
+            alignItems: "flex-start",
+            paddingTop: 6,
+            paddingBottom: 4,
+          }}
+          animate={{ x: finalTranslateX }}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+        >
+          {CARD_CONFIGS.map((cfg, i) => (
+            <ServiceCard
+              key={cfg.id}
+              config={cfg}
+              isActive={i === finalActive}
+              startDelay={i * 650}
+            />
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Progress dots — light mode */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: 20,
+          paddingTop: 10,
+          gap: 8,
+          flexShrink: 0,
+        }}
+      >
+        {CARD_CONFIGS.map((_, i) => (
+          <motion.button
+            key={i}
+            onClick={() => setActive(i)}
+            animate={{
+              width: i === finalActive ? 18 : 6,
+              background:
+                i === finalActive ? "rgba(15,23,42,.55)" : "rgba(15,23,42,.18)",
+            }}
             transition={{ duration: 0.3 }}
-            className="text-center"
-          >
-            <div
-              style={{
-                fontFamily: F.serif,
-                fontStyle: "italic",
-                fontSize: 20,
-                color: dark ? "#f0ede8" : "#0f0f0f",
-                marginBottom: 5,
-                fontWeight: 400,
-                lineHeight: 1.1,
-              }}
-            >
-              {SIM_CARDS[active].label}
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: dark ? "rgba(255,255,255,.45)" : "#888",
-                lineHeight: 1.65,
-                fontFamily: F.syne,
-                maxWidth: 300,
-              }}
-            >
-              {SIM_CARDS[active].sub}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            style={{
+              height: 6,
+              borderRadius: 3,
+              border: "none",
+              cursor: "pointer",
+            }}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
 // ════════════════════════════════════════════════════════════════
-// MAIN EXPORT — two sticky views bound by scroll
+// MAIN EXPORT
 // ════════════════════════════════════════════════════════════════
 export default function WhatWeDo() {
-  const { dark } = useTheme();
   const wrapRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -2148,15 +2453,14 @@ export default function WhatWeDo() {
       if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
-      const scrolled = Math.max(0, -rect.top);
-      setScrollProgress(Math.min(1, Math.max(0, scrolled / total)));
+      setScrollProgress(Math.min(1, Math.max(0, -rect.top / total)));
     };
     fn();
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // View 1: Hero — visible from 0 → 0.45, fades out 0.38 → 0.48
+  // Hero fades out and scales down as user scrolls
   const heroOpacity = Math.min(
     1,
     Math.max(0, 1 - (scrollProgress - 0.38) / 0.1),
@@ -2165,15 +2469,13 @@ export default function WhatWeDo() {
   const heroY = (1 - heroOpacity) * -40;
   const heroVisible = heroOpacity > 0.01;
 
-  // View 2: Services in Motion — fades in 0.42 → 0.52
+  // ServicesInMotion fades up as Hero fades out
   const simOpacity = Math.min(1, Math.max(0, (scrollProgress - 0.42) / 0.1));
   const simY = (1 - simOpacity) * 50;
   const simVisible = simOpacity > 0.01;
 
-  const sectionBg = dark ? "#181817" : "#d9ecfa";
-  const stickyBg = dark
-    ? "linear-gradient(180deg,#181817 0%,#111110 100%)"
-    : "linear-gradient(180deg,#d9ecfa 0%,#c4dbf2 100%)";
+  // Background stays light (eef7fd) throughout — no dark mode shift
+  const bgColor = "#eef7fd";
 
   return (
     <section
@@ -2182,16 +2484,13 @@ export default function WhatWeDo() {
       className="relative"
       style={{ height: "420vh" }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Top vignette */}
+      <div
+        className="sticky top-0 h-screen overflow-hidden"
+        style={{ background: bgColor }}
+      >
+        {/* Subtle grain */}
         <div
-          className="absolute inset-x-0 top-0 pointer-events-none z-30"
-          style={{ height: 100 }}
-        />
-
-        {/* Grain texture */}
-        <div
-          className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
+          className="absolute inset-0 pointer-events-none z-0 opacity-[0.02]"
           style={{
             backgroundImage:
               "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
@@ -2200,7 +2499,7 @@ export default function WhatWeDo() {
           }}
         />
 
-        {/* ── VIEW 1: HERO GRID ── */}
+        {/* VIEW 1: HERO — always light mode */}
         {heroVisible && (
           <div
             className="absolute inset-0 z-10"
@@ -2211,11 +2510,11 @@ export default function WhatWeDo() {
               pointerEvents: heroOpacity > 0.2 ? "auto" : "none",
             }}
           >
-            <HeroView dark={dark} />
+            <HeroView />
           </div>
         )}
 
-        {/* ── VIEW 2: SERVICES IN MOTION ── */}
+        {/* VIEW 2: SERVICES IN MOTION — light mode */}
         {simVisible && (
           <div
             className="absolute inset-0 z-20"
@@ -2226,11 +2525,11 @@ export default function WhatWeDo() {
               pointerEvents: simOpacity > 0.2 ? "auto" : "none",
             }}
           >
-            <ServicesInMotion dark={dark} />
+            <ServicesInMotion scrollProgress={scrollProgress} />
           </div>
         )}
 
-        {/* ── SCROLL CUE (end of section) ── */}
+        {/* Scroll cue */}
         <AnimatePresence>
           {scrollProgress > 0.93 && (
             <motion.div
@@ -2240,8 +2539,8 @@ export default function WhatWeDo() {
               className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2"
             >
               <span
-                className="text-[8px] tracking-widest uppercase"
-                style={{ color: "rgba(255,255,255,.32)", fontFamily: F.mono }}
+                className="text-[8px] tracking-widest uppercase font-mono"
+                style={{ color: "rgba(15,23,42,.32)" }}
               >
                 Continue scrolling
               </span>
@@ -2252,7 +2551,7 @@ export default function WhatWeDo() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M12 5v14M5 12l7 7 7-7"
-                    stroke="rgba(255,255,255,.28)"
+                    stroke="rgba(15,23,42,.28)"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"

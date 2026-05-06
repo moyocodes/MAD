@@ -1,0 +1,1432 @@
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../../context/ThemeContext";
+
+// ─── FONTS ────────────────────────────────────────────────────────────────────
+const F = {
+  serif: "'DM Serif Display', Georgia, serif",
+  syne: "'Syne', 'Helvetica Neue', sans-serif",
+  mono: "'JetBrains Mono', 'Courier New', monospace",
+};
+
+// ─── LOCAL IMAGES ─────────────────────────────────────────────────────────────
+const IMG = {
+  i1: "/flier/image.png",
+  i2: "/flier/image2.png",
+  i3: "/flier/image3.png",
+  i4: "/flier/image4.png",
+  i5: "/flier/image5.png",
+  i6: "/flier/image6.png",
+  i7: "/flier/image7.png",
+  i8: "/flier/image8.png",
+  i9: "/flier/image9.png",
+};
+
+// ─── BRAND ────────────────────────────────────────────────────────────────────
+const AZURE = { 300: "#8cc3ef", 500: "#1980c2", 600: "#1468a0" };
+const TANG = "#F26522";
+
+// ─── NEUTRAL palette (from tailwind config) ───────────────────────────────────
+const N = {
+  // dark scale
+  50: "#f5f5f5",
+  100: "#e0e0e0",
+  200: "#c2c2c2",
+  300: "#a3a3a3",
+  400: "#858585",
+  500: "#666666",
+  600: "#4d4d4d",
+  700: "#333333",
+  800: "#2a2a28",
+  900: "#181817",
+  // white
+  white: "#ffffff",
+};
+
+// ─── BG interpolation: azure-50 → dark-900 ───────────────────────────────────
+function lerpBg(t) {
+  const a = [238, 247, 253]; // #eef7fd
+  const b = [24, 24, 23]; // #181817
+  return `rgb(${Math.round(a[0] + (b[0] - a[0]) * t)},${Math.round(a[1] + (b[1] - a[1]) * t)},${Math.round(a[2] + (b[2] - a[2]) * t)})`;
+}
+function lerpColor(fromHex, toHex, t) {
+  const p = (h) => [
+    parseInt(h.slice(1, 3), 16),
+    parseInt(h.slice(3, 5), 16),
+    parseInt(h.slice(5, 7), 16),
+  ];
+  const a = p(fromHex),
+    b = p(toHex);
+  return `rgb(${Math.round(a[0] + (b[0] - a[0]) * t)},${Math.round(a[1] + (b[1] - a[1]) * t)},${Math.round(a[2] + (b[2] - a[2]) * t)})`;
+}
+
+// ─── SERVICES (Hero) ──────────────────────────────────────────────────────────
+const SERVICES = [
+  {
+    tag: "01",
+    shortTag: "Product",
+    label: "Product & Digital Solutions",
+    tagline: "Built for performance.",
+    wide: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=85&auto=format&fit=crop",
+    top: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    tag: "02",
+    shortTag: "Marketing",
+    label: "Marketing & Communication",
+    tagline: "Reach the right people.",
+    wide: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1400&q=85&auto=format&fit=crop",
+    top: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    tag: "03",
+    shortTag: "Brand",
+    label: "Brand & Design Systems",
+    tagline: "Identity that speaks first.",
+    wide: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1400&q=85&auto=format&fit=crop",
+    top: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=900&q=85&auto=format&fit=crop",
+  },
+];
+
+const SECTION_COPY = {
+  eyebrow: "What We Do",
+  header: "We help businesses become better than they were yesterday.",
+  supporting:
+    "MAD is a product, marketing, and design firm focused on collaborating with the brightest minds in business to create smarter systems, stronger brands, and better digital experiences.",
+  core: "We create the conditions for growth by helping organizations balance business (value), design (usability) and technology (feasibility).",
+  closing:
+    "We don't just deliver projects, we create systems that help organizations grow stronger, operate better, and perform over time.",
+  cta: "Work With Us Today",
+};
+
+// ════════════════════════════════════════════════════════════════
+// HERO PROGRESS BAR
+// ════════════════════════════════════════════════════════════════
+function HeroProgressBar({ duration, running, onComplete }) {
+  const fillRef = useRef(null);
+  const rafRef = useRef(null);
+  useEffect(() => {
+    const el = fillRef.current;
+    if (!el) return;
+    el.style.transition = "none";
+    el.style.width = "0%";
+    if (!running) return;
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min(((ts - start) / duration) * 100, 100);
+      el.style.width = `${p}%`;
+      if (p < 100) rafRef.current = requestAnimationFrame(step);
+      else onComplete();
+    };
+    const id = requestAnimationFrame(() => {
+      el.style.transition = `width ${duration}ms linear`;
+      rafRef.current = requestAnimationFrame(step);
+    });
+    return () => {
+      cancelAnimationFrame(id);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [running, duration, onComplete]);
+
+  return (
+    <div
+      className="w-full h-px rounded"
+      style={{ background: "rgba(0,0,0,.1)" }}
+    >
+      <div
+        ref={fillRef}
+        className="h-full rounded w-0"
+        style={{ background: AZURE[500] }}
+      />
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// HERO VIEW
+// ════════════════════════════════════════════════════════════════
+function HeroView({ dark }) {
+  const [heroCur, setHeroCur] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const HERO_DURATION = 5500;
+  const heroNext = useCallback(
+    () => setHeroCur((c) => (c + 1) % SERVICES.length),
+    [],
+  );
+  const heroPrev = useCallback(
+    () => setHeroCur((c) => (c - 1 + SERVICES.length) % SERVICES.length),
+    [],
+  );
+  const svc = SERVICES[heroCur];
+
+  return (
+    <div
+      className="flex flex-col h-full overflow-hidden"
+      style={{ padding: "0 4px 4px" }}
+    >
+      {/* Heading */}
+      <div className="px-6 pt-20 pb-5 shrink-0">
+        <p
+          className="text-[9px] font-bold tracking-[0.28em] uppercase mb-2 m-0"
+          style={{
+            color: dark ? "rgba(255,255,255,.35)" : "rgba(10,22,40,.45)",
+            fontFamily: F.mono,
+          }}
+        >
+          {SECTION_COPY.eyebrow}
+        </p>
+        <h2
+          className="leading-none m-0 mb-3"
+          style={{
+            fontFamily: F.serif,
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: "clamp(24px,3vw,42px)",
+            color: dark ? "#f0ede8" : "#0a1628",
+          }}
+        >
+          {SECTION_COPY.header}
+        </h2>
+        <p
+          className="text-xs leading-relaxed m-0 max-w-2xl"
+          style={{
+            color: dark ? "rgba(255,255,255,.5)" : "rgba(10,22,40,.58)",
+            fontFamily: F.syne,
+          }}
+        >
+          {SECTION_COPY.supporting}
+        </p>
+      </div>
+
+      {/* Grid */}
+      <div
+        className="flex-1 min-h-0"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "1fr 0.67fr",
+          gap: 4,
+          padding: "0 4px 4px",
+        }}
+      >
+        {/* Large left */}
+        <div
+          className="relative overflow-hidden rounded-sm"
+          style={{ gridRow: "1/3" }}
+        >
+          {SERVICES.map((s, i) => (
+            <img
+              key={i}
+              src={s.wide}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+              style={{ opacity: i === heroCur ? 1 : 0 }}
+            />
+          ))}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.38) 52%,rgba(0,0,0,.08) 100%)",
+            }}
+          />
+          <div className="absolute bottom-6 left-0 right-0 px-5">
+            <button
+              className="text-white rounded-full font-bold tracking-wider uppercase cursor-pointer px-5 py-2 border border-white/30 text-[9px]"
+              style={{
+                background: "rgba(255,255,255,.12)",
+                backdropFilter: "blur(8px)",
+                fontFamily: F.syne,
+              }}
+            >
+              {SECTION_COPY.cta}
+            </button>
+          </div>
+          <div className="absolute top-4 left-4">
+            <span
+              className="inline-flex items-center px-2.5 py-1 rounded-full font-bold uppercase text-[7px] tracking-[0.28em]"
+              style={{
+                background: "rgba(0,0,0,.3)",
+                border: "1px solid rgba(255,255,255,.3)",
+                color: "rgba(255,255,255,.5)",
+                backdropFilter: "blur(6px)",
+                fontFamily: F.mono,
+              }}
+            >
+              {svc.tag} / 0{SERVICES.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Top right */}
+        <div className="relative overflow-hidden rounded-sm">
+          {SERVICES.map((s, i) => (
+            <img
+              key={i}
+              src={s.top}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+              style={{
+                opacity: i === heroCur ? 1 : 0,
+                objectPosition: "center 40%",
+              }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex items-center gap-3">
+              <span
+                className="text-white text-2xl md:text-3xl"
+                style={{ fontFamily: F.serif, fontStyle: "italic" }}
+              >
+                MAD
+              </span>
+              <span className="text-white/40 font-light text-xl">×</span>
+              <span
+                className="text-white font-black tracking-wider uppercase text-lg md:text-xl"
+                style={{ fontFamily: F.syne }}
+              >
+                {svc.shortTag}
+              </span>
+            </div>
+          </div>
+          <div className="absolute top-3 right-3 flex gap-1.5">
+            {SERVICES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setHeroCur(i)}
+                className="rounded-full cursor-pointer transition-all duration-300 w-5 h-5"
+                style={{
+                  border: `1.5px solid ${i === heroCur ? "#fff" : "rgba(255,255,255,.28)"}`,
+                  background: i === heroCur ? "#fff" : "transparent",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom right */}
+        <div
+          className="grid rounded-sm overflow-hidden"
+          style={{ gridTemplateColumns: "1fr 1fr", gap: 4 }}
+        >
+          {/* Core value */}
+          <div
+            className="relative overflow-hidden rounded-sm flex flex-col justify-between p-4"
+            style={{
+              background: dark
+                ? "linear-gradient(145deg,#181817,#102535 58%,rgba(25,128,194,.72))"
+                : "linear-gradient(145deg,#ffffff,#dbeeff 80%,#b3d8f5)",
+              border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#b3cbf0"}`,
+            }}
+          >
+            <div>
+              <p
+                className="text-[6px] tracking-[0.25em] uppercase mb-2 m-0"
+                style={{
+                  color: dark ? "#888" : AZURE[500],
+                  fontFamily: F.mono,
+                }}
+              >
+                Core Value
+              </p>
+              <h3
+                className="leading-tight mb-2 text-base"
+                style={{
+                  fontFamily: F.serif,
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  color: dark ? "#f0ede8" : "#0a1e40",
+                }}
+              >
+                Growth needs balance.
+              </h3>
+              <p
+                className="text-[8px] leading-relaxed m-0"
+                style={{
+                  color: dark ? "rgba(240,237,232,.58)" : "rgba(10,30,64,.62)",
+                  fontFamily: F.syne,
+                }}
+              >
+                {SECTION_COPY.core}
+              </p>
+            </div>
+            <button
+              className="self-start mt-2 px-4 py-1.5 rounded-full text-[7px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
+              style={{ background: AZURE[500], fontFamily: F.syne }}
+            >
+              {SECTION_COPY.cta} →
+            </button>
+          </div>
+
+          {/* Service info */}
+          <div
+            className="rounded-sm p-3 flex flex-col justify-between"
+            style={{
+              background: dark ? "#1e1e1c" : "#ffffff",
+              border: `1px solid ${dark ? "rgba(255,255,255,.06)" : "#d4dff0"}`,
+            }}
+          >
+            <div>
+              <div
+                className="rounded-sm p-2 mb-2"
+                style={{
+                  border: `2px solid ${dark ? "rgba(255,255,255,.9)" : "#0a1e40"}`,
+                }}
+              >
+                <div
+                  className="font-black leading-tight tracking-tight text-xs"
+                  style={{
+                    color: dark ? "rgba(255,255,255,.9)" : "#0a1e40",
+                    fontFamily: F.syne,
+                  }}
+                >
+                  {svc.label}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="flex flex-col gap-1.5 mb-2">
+                {SERVICES.map((s, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span
+                      className="text-[5px] font-bold w-3 shrink-0"
+                      style={{
+                        color:
+                          i === heroCur
+                            ? dark
+                              ? AZURE[300]
+                              : AZURE[500]
+                            : dark
+                              ? "#d0d0ce"
+                              : "#a0b4d0",
+                        fontFamily: F.mono,
+                      }}
+                    >
+                      {s.tag}
+                    </span>
+                    <div className="flex-1">
+                      {i === heroCur ? (
+                        <HeroProgressBar
+                          duration={HERO_DURATION}
+                          running={!paused}
+                          onComplete={heroNext}
+                        />
+                      ) : (
+                        <div
+                          className="h-px rounded"
+                          style={{
+                            background:
+                              i < heroCur
+                                ? dark
+                                  ? "#b0b0ac"
+                                  : "#7090b8"
+                                : dark
+                                  ? "#e8e8e6"
+                                  : "#d4dff0",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-1.5">
+                {[
+                  { fn: heroPrev, d: "M14 6L8 12l6 6" },
+                  { fn: heroNext, d: "M10 6l6 6-6 6" },
+                ].map(({ fn, d }, i) => (
+                  <button
+                    key={i}
+                    onClick={fn}
+                    className="w-6 h-6 rounded-full cursor-pointer flex items-center justify-center bg-transparent"
+                    style={{
+                      border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#c0cedf"}`,
+                    }}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d={d}
+                        stroke={dark ? "rgba(240,237,232,.65)" : "#4a6080"}
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                ))}
+                <button
+                  onClick={() => setPaused((p) => !p)}
+                  className="w-6 h-6 rounded-full cursor-pointer flex items-center justify-center bg-transparent text-[10px]"
+                  style={{
+                    border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#c0cedf"}`,
+                    color: dark ? "rgba(240,237,232,.65)" : "#4a6080",
+                  }}
+                >
+                  {paused ? "▶" : "⏸"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// SERVICES IN MOTION — neutral card reel
+// ════════════════════════════════════════════════════════════════
+
+const S1_DUR = 900;
+const S2_DUR = 1300;
+const S3_DUR = 3600;
+const TOTAL_DUR = S1_DUR + S2_DUR + S3_DUR;
+const LOOP_PAUSE = 700;
+
+const SIM_CARDS = [
+  {
+    label: "Product & Digital",
+    sub: "Websites, apps, and digital platforms built to perform and scale.",
+    request:
+      "Build us a clean e-commerce storefront with a hero carousel and product grid.",
+    procLabel: "Generating layout & components",
+    procIcon: "🖥️",
+    resultLabel: "E-commerce storefront",
+    img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    label: "Marketing & Comms",
+    sub: "Campaigns and content systems that connect brands with the right audience.",
+    request:
+      "Create a social media content calendar for our spring product launch.",
+    procLabel: "Planning campaign structure",
+    procIcon: "📣",
+    resultLabel: "Campaign calendar ready",
+    img: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    label: "Brand & Identity",
+    sub: "Logo, type, colour, and brand systems that bring clarity to every touchpoint.",
+    request:
+      "Design a bold brand identity system with logo, type, and a colour palette.",
+    procLabel: "Building identity system",
+    procIcon: "🎨",
+    resultLabel: "Brand system complete",
+    img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1400&q=85&auto=format&fit=crop",
+  },
+  {
+    label: "E-Commerce",
+    sub: "Shopify and Next.js stores optimised to convert from day one.",
+    request:
+      "Set up a Shopify store with custom checkout and Spring drop landing pages.",
+    procLabel: "Configuring store & flows",
+    procIcon: "🛍️",
+    resultLabel: "Store live and converting",
+    img: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    label: "Campaign Analytics",
+    sub: "Live dashboards, KPI benchmarks, and weekly insight reports.",
+    request:
+      "Build a real-time dashboard showing ROAS, reach, CPA, and conversions.",
+    procLabel: "Wiring up live data feeds",
+    procIcon: "📊",
+    resultLabel: "Dashboard live · 6.4× ROAS",
+    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=85&auto=format&fit=crop",
+  },
+  {
+    label: "Illustration",
+    sub: "Editorial illustration, comics, and icon systems for campaigns and brand.",
+    request:
+      "Create a 4-panel editorial comic for our product launch announcement.",
+    procLabel: "Rendering illustrations",
+    procIcon: "✏️",
+    resultLabel: "Illustration pack delivered",
+    img: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=900&q=85&auto=format&fit=crop",
+  },
+];
+
+// ── Dot blink ─────────────────────────────────────────────────────────────────
+const BLINK_CSS = `
+@keyframes _madBlink { 0%,100%{opacity:.18} 50%{opacity:.8} }
+._mad-dot{animation:_madBlink 1.1s ease-in-out infinite}
+._mad-dot:nth-child(2){animation-delay:.22s}
+._mad-dot:nth-child(3){animation-delay:.44s}
+`;
+function injectBlink() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById("_mad-blink")) return;
+  const s = document.createElement("style");
+  s.id = "_mad-blink";
+  s.textContent = BLINK_CSS;
+  document.head.appendChild(s);
+}
+
+// ── Stage 1 — Request bubble ──────────────────────────────────────────────────
+function Stage1({ card }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        justifyContent: "center",
+        height: "100%",
+        padding: "54px 22px 24px",
+      }}
+    >
+      {/* Subtle background grid lines to give depth */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.04,
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,1) 1px,transparent 1px)",
+          backgroundSize: "32px 32px",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Floating mini "wireframe" preview card — overlapping depth element */}
+      <motion.div
+        initial={{ opacity: 0, x: -10, rotate: -2 }}
+        animate={{ opacity: 1, x: 0, rotate: -2 }}
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          top: 60,
+          left: 18,
+          width: 120,
+          height: 78,
+          borderRadius: 10,
+          background: "#ffffff",
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 4px 18px rgba(0,0,0,.08)",
+          padding: "10px 12px",
+          overflow: "hidden",
+        }}
+      >
+        {/* Mini wireframe lines */}
+        {[28, 14, 20, 10].map((w, i) => (
+          <div
+            key={i}
+            style={{
+              height: 5,
+              width: `${w + Math.sin(i) * 8}%`,
+              borderRadius: 2,
+              background: i === 0 ? "#c2c2c2" : "#e0e0e0",
+              marginBottom: 5,
+            }}
+          />
+        ))}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 8,
+            left: 12,
+            right: 12,
+            height: 14,
+            borderRadius: 4,
+            background: "#f5f5f5",
+            border: "1px solid #e0e0e0",
+          }}
+        />
+      </motion.div>
+
+      {/* Request bubble */}
+      <motion.div
+        initial={{ opacity: 0, y: 12, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          background: "rgba(255,255,255,.95)",
+          border: "1px solid #e0e0e0",
+          borderRadius: "18px 18px 4px 18px",
+          padding: "15px 17px",
+          maxWidth: 260,
+          fontSize: 13,
+          lineHeight: 1.65,
+          color: N[900],
+          fontFamily: F.syne,
+          boxShadow: "0 2px 16px rgba(0,0,0,.08)",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        {card.request}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        style={{
+          marginTop: 7,
+          fontSize: 10,
+          color: N[400],
+          fontFamily: F.mono,
+          letterSpacing: ".05em",
+        }}
+      >
+        you · just now
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Stage 2 — Processing ──────────────────────────────────────────────────────
+function Stage2({ card }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        padding: "54px 22px 24px",
+        gap: 16,
+        position: "relative",
+      }}
+    >
+      {/* Overlapping data panel — depth effect */}
+      <motion.div
+        initial={{ opacity: 0, x: 20, rotate: 3 }}
+        animate={{ opacity: 1, x: 0, rotate: 3 }}
+        transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          top: 56,
+          right: 16,
+          width: 90,
+          borderRadius: 8,
+          background: "#ffffff",
+          border: "1px solid #e0e0e0",
+          padding: "8px 10px",
+          boxShadow: "0 3px 14px rgba(0,0,0,.07)",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 7,
+            color: N[400],
+            fontFamily: F.mono,
+            letterSpacing: ".15em",
+            textTransform: "uppercase",
+            marginBottom: 6,
+          }}
+        >
+          Status
+        </div>
+        {["Layout", "Assets", "Copy"].map((l, i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              marginBottom: 4,
+            }}
+          >
+            <div
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background:
+                  i === 0 ? AZURE[500] : i === 1 ? "#a3a3a3" : "#e0e0e0",
+              }}
+            />
+            <span style={{ fontSize: 8, color: N[600], fontFamily: F.syne }}>
+              {l}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          width: 54,
+          height: 54,
+          borderRadius: "50%",
+          background: N[100],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 24,
+        }}
+      >
+        {card.procIcon}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.35 }}
+        style={{ textAlign: "center" }}
+      >
+        <div
+          style={{
+            fontSize: 11,
+            color: N[500],
+            fontFamily: F.mono,
+            letterSpacing: ".12em",
+            textTransform: "uppercase",
+            marginBottom: 10,
+          }}
+        >
+          {card.procLabel}
+        </div>
+        <div style={{ display: "flex", gap: 7, justifyContent: "center" }}>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="_mad-dot"
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: AZURE[500],
+                opacity: 0.6,
+                animationDelay: `${i * 0.22}s`,
+              }}
+            />
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Stage 3 — Full image ──────────────────────────────────────────────────────
+function Stage3({ card }) {
+  return (
+    <>
+      <motion.img
+        src={card.img}
+        alt={card.label}
+        initial={{ opacity: 0, scale: 1.06 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.12) 55%,transparent 100%)",
+        }}
+      />
+
+      {/* Delivered badge */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          left: 18,
+          right: 18,
+          background: "rgba(255,255,255,.12)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          border: "1px solid rgba(255,255,255,.28)",
+          borderRadius: 14,
+          padding: "13px 16px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9,
+            color: "rgba(255,255,255,.55)",
+            fontFamily: F.mono,
+            letterSpacing: ".18em",
+            textTransform: "uppercase",
+            marginBottom: 4,
+          }}
+        >
+          Delivered
+        </div>
+        <div
+          style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: "#fff",
+            fontFamily: F.syne,
+          }}
+        >
+          {card.resultLabel}
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+// ── SimCard — neutral with depth stack ────────────────────────────────────────
+function SimCard({ card, isActive }) {
+  const [stage, setStage] = useState(2); // start from RESULT
+  const fillRef = useRef(null);
+  const rafRef = useRef(null);
+  const startTsRef = useRef(null);
+
+  const runCycle = useCallback(() => {
+    const pf = fillRef.current;
+    if (!pf) return;
+    pf.style.transition = "none";
+    pf.style.width = "0%";
+    setStage(0);
+    startTsRef.current = null;
+    const tick = (ts) => {
+      if (!startTsRef.current) startTsRef.current = ts;
+      const elapsed = ts - startTsRef.current;
+      pf.style.width = `${Math.min(100, (elapsed / TOTAL_DUR) * 100)}%`;
+      if (elapsed >= S1_DUR + S2_DUR)
+        setStage(0); // request last
+      else if (elapsed >= S1_DUR)
+        setStage(1); // processing middle
+      else setStage(2); // result first
+      if (elapsed < TOTAL_DUR) rafRef.current = requestAnimationFrame(tick);
+      else setTimeout(runCycle, LOOP_PAUSE);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  useEffect(() => {
+    injectBlink();
+    runCycle();
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [runCycle]);
+
+  return (
+    <div
+      style={{
+        width: 360,
+        minWidth: 360,
+        flexShrink: 0,
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+      }}
+    >
+      {/* ── Depth stack wrapper ── */}
+      <div
+        style={{ position: "relative", paddingBottom: 10, paddingRight: 10 }}
+      >
+        {/* Card 3 — deepest shadow card */}
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            right: 0,
+            bottom: 0,
+            height: 440,
+            borderRadius: 22,
+            background: N[200],
+            zIndex: 0,
+          }}
+        />
+        {/* Card 2 — mid card */}
+        <div
+          style={{
+            position: "absolute",
+            top: 6,
+            left: 6,
+            right: -6,
+            bottom: -6,
+            height: 440,
+            borderRadius: 22,
+            background: N[100],
+            border: "1px solid #e0e0e0",
+            zIndex: 1,
+          }}
+        />
+
+        {/* ── Main card ── */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            width: "100%",
+            height: 440,
+            borderRadius: 22,
+            overflow: "hidden",
+            background: N[50],
+            border: "1px solid #e0e0e0",
+            boxShadow: isActive
+              ? "0 12px 40px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.06)"
+              : "0 4px 12px rgba(0,0,0,.07)",
+            transition: "box-shadow .5s ease",
+          }}
+        >
+          {/* Subtle grid bg for stages 1 & 2 */}
+          {stage < 2 && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.03,
+                backgroundImage:
+                  "linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)",
+                backgroundSize: "24px 24px",
+                pointerEvents: "none",
+                zIndex: 0,
+              }}
+            />
+          )}
+
+          {/* Top label chip */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 20,
+              padding: "14px 16px 32px",
+              background:
+                "linear-gradient(to bottom,rgba(255,255,255,.9) 0%,transparent 100%)",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "5px 13px",
+                borderRadius: 100,
+                border: "1px solid #e0e0e0",
+                background: "rgba(255,255,255,.85)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                fontFamily: F.mono,
+                fontSize: 9,
+                letterSpacing: ".18em",
+                textTransform: "uppercase",
+                color: N[600],
+              }}
+            >
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: AZURE[500],
+                  display: "inline-block",
+                }}
+              />
+              {card.label}
+            </span>
+          </div>
+
+          {/* Stages */}
+          <AnimatePresence mode="wait">
+            {stage === 0 && (
+              <motion.div
+                key="s1"
+                style={{ position: "absolute", inset: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+              >
+                <Stage1 card={card} />
+              </motion.div>
+            )}
+            {stage === 1 && (
+              <motion.div
+                key="s2"
+                style={{ position: "absolute", inset: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+              >
+                <Stage2 card={card} />
+              </motion.div>
+            )}
+            {stage === 2 && (
+              <motion.div
+                key="s3"
+                style={{ position: "absolute", inset: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Stage3 card={card} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Progress bar */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 3,
+              background: "rgba(0,0,0,.06)",
+              zIndex: 30,
+            }}
+          >
+            <div
+              ref={fillRef}
+              style={{
+                height: "100%",
+                width: "0%",
+                background: AZURE[500],
+                opacity: 0.7,
+                transition: "none",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Meta below card */}
+      <div
+        style={{
+          padding: "0 4px",
+          opacity: isActive ? 1 : 0.35,
+          transform: isActive ? "translateY(0)" : "translateY(5px)",
+          transition: "opacity .45s ease,transform .45s ease",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: F.serif,
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 20,
+            color: "#f0ede8",
+            marginBottom: 5,
+            lineHeight: 1.1,
+          }}
+        >
+          {card.label}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,.4)",
+            lineHeight: 1.65,
+            fontFamily: F.syne,
+          }}
+        >
+          {card.sub}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ServicesInMotion ──────────────────────────────────────────────────────────
+function ServicesInMotion({ dark, scrollProgress, simOpacity }) {
+  const CARD_W = 360;
+  const CARD_GAP = 28;
+  const VISIBLE = 3.2;
+  const STEP = CARD_W + CARD_GAP;
+
+  const simProgress = Math.min(1, Math.max(0, (scrollProgress - 0.52) / 0.48));
+  const maxScroll = (SIM_CARDS.length - VISIBLE) * STEP;
+  const translateX = -(simProgress * maxScroll);
+  const activeIndex = Math.round(
+    simProgress / (1 / (SIM_CARDS.length - Math.floor(VISIBLE))),
+  );
+
+  // Text colors adapt to the dark bg transition
+  const eyebrowColor = simOpacity > 0.5 ? "rgba(255,255,255,.3)" : "#8a9ab0";
+  const headingColor = simOpacity > 0.5 ? "#f0ede8" : "#0a0f1e";
+  const arrowColor = simOpacity > 0.5 ? "#ccc" : "#555";
+  const arrowBorder =
+    simOpacity > 0.5 ? "rgba(255,255,255,.15)" : "rgba(0,0,0,.14)";
+  const dotActive =
+    simOpacity > 0.5 ? "rgba(255,255,255,.75)" : "rgba(10,22,40,.65)";
+  const dotInactive =
+    simOpacity > 0.5 ? "rgba(255,255,255,.18)" : "rgba(10,22,40,.16)";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "90px 48px 40px",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexShrink: 0,
+        }}
+      >
+        <div>
+          <p
+            style={{
+              margin: "0 0 8px",
+              fontFamily: F.mono,
+              fontSize: 10,
+              letterSpacing: ".22em",
+              textTransform: "uppercase",
+              color: eyebrowColor,
+              transition: "color .3s",
+            }}
+          >
+            Services in motion &nbsp;·&nbsp; scroll to explore
+          </p>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: F.serif,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: "clamp(28px,3vw,38px)",
+              color: headingColor,
+              lineHeight: 1.05,
+              transition: "color .3s",
+            }}
+          >
+            Systems for growth.
+          </h2>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            { d: "M14 6L8 12l6 6", label: "Previous" },
+            { d: "M10 6l6 6-6 6", label: "Next" },
+          ].map(({ d, label }, i) => (
+            <button
+              key={i}
+              aria-label={label}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "transparent",
+                border: `1px solid ${arrowBorder}`,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "border-color .3s",
+              }}
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={arrowColor}
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d={d} />
+              </svg>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Card strip */}
+      <div style={{ flex: 1, overflow: "hidden", paddingLeft: 48 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: CARD_GAP,
+            transform: `translateX(${translateX}px)`,
+            transition: "transform 0.08s linear",
+            willChange: "transform",
+            height: "100%",
+            alignItems: "flex-start",
+            paddingTop: 6,
+            paddingBottom: 4,
+          }}
+        >
+          {SIM_CARDS.map((card, i) => (
+            <SimCard
+              key={card.label}
+              card={card}
+              isActive={i === activeIndex}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Progress dots */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: 20,
+          paddingTop: 10,
+          gap: 8,
+          flexShrink: 0,
+        }}
+      >
+        {SIM_CARDS.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: i === activeIndex ? 20 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: i === activeIndex ? dotActive : dotInactive,
+              transition: "all .35s cubic-bezier(.23,1,.32,1)",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// MAIN EXPORT
+// ════════════════════════════════════════════════════════════════
+export default function WhatWeDo() {
+  const { dark } = useTheme();
+  const wrapRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const fn = () => {
+      if (!wrapRef.current) return;
+      const rect = wrapRef.current.getBoundingClientRect();
+      const total = wrapRef.current.offsetHeight - window.innerHeight;
+      setScrollProgress(
+        Math.min(1, Math.max(0, Math.max(0, -rect.top) / total)),
+      );
+    };
+    fn();
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  // ── View transitions ──────────────────────────────────────────
+  const heroOpacity = Math.min(
+    1,
+    Math.max(0, 1 - (scrollProgress - 0.38) / 0.1),
+  );
+  const heroScale = 0.93 + heroOpacity * 0.07;
+  const heroY = (1 - heroOpacity) * -40;
+  const heroVisible = heroOpacity > 0.01;
+
+  const simOpacity = Math.min(1, Math.max(0, (scrollProgress - 0.42) / 0.1));
+  const simY = (1 - simOpacity) * 50;
+  const simVisible = simOpacity > 0.01;
+
+  // ── Background transition: azure-50 → dark-900 ───────────────
+  // Smooth lerp driven by simOpacity (0 = home light, 1 = services dark)
+  const stickyBg = dark
+    ? N[900] // respect global dark mode
+    : lerpBg(simOpacity);
+
+  return (
+    <section
+      ref={wrapRef}
+      id="services"
+      className="relative"
+      style={{ height: "420vh" }}
+    >
+      <div
+        className="sticky top-0 h-screen overflow-hidden"
+        style={{ background: stickyBg, transition: "background 0.05s linear" }}
+      >
+        {/* Grain */}
+        <div
+          className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat",
+            backgroundSize: "128px",
+          }}
+        />
+
+        {/* VIEW 1: HERO GRID */}
+        {heroVisible && (
+          <div
+            className="absolute inset-0 z-10"
+            style={{
+              opacity: heroOpacity,
+              transform: `scale(${heroScale}) translateY(${heroY}px)`,
+              transition: "none",
+              pointerEvents: heroOpacity > 0.2 ? "auto" : "none",
+            }}
+          >
+            <HeroView dark={dark} />
+          </div>
+        )}
+
+        {/* VIEW 2: SERVICES IN MOTION */}
+        {simVisible && (
+          <div
+            className="absolute inset-0 z-20"
+            style={{
+              opacity: simOpacity,
+              transform: `translateY(${simY}px)`,
+              transition: "none",
+              pointerEvents: simOpacity > 0.2 ? "auto" : "none",
+            }}
+          >
+            <ServicesInMotion
+              dark={dark}
+              scrollProgress={scrollProgress}
+              simOpacity={simOpacity}
+            />
+          </div>
+        )}
+
+        {/* Scroll cue */}
+        <AnimatePresence>
+          {scrollProgress > 0.93 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2"
+            >
+              <span
+                className="text-[8px] tracking-widest uppercase"
+                style={{ color: "rgba(255,255,255,.32)", fontFamily: F.mono }}
+              >
+                Continue scrolling
+              </span>
+              <motion.div
+                animate={{ y: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.3 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 5v14M5 12l7 7 7-7"
+                    stroke="rgba(255,255,255,.28)"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}

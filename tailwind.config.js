@@ -75,7 +75,10 @@ export default {
 
       fontFamily: {
         sans: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
-        montserrat: ["Montserrat", "sans-serif"],
+
+        display: ["Montserrat", "Helvetica Neue", "sans-serif"],
+
+        mono: ["JetBrains Mono", "monospace"],
       },
 
       borderRadius: {

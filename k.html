@@ -1,0 +1,3790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>MAD Studio — Service Cards</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --blue: #1980c2;
+        --blue-dark: #0f4f7a;
+        --blue-light: #3da0e4;
+        --dark: #181817;
+        --light: #f5f5f3;
+        --serif: "DM Serif Display", Georgia, serif;
+        --syne: "Syne", "Helvetica Neue", sans-serif;
+        --mono: "JetBrains Mono", "Courier New", monospace;
+        --card-bg: #f5f5f3;
+      }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: #f0f9ff;
+        overflow: hidden;
+        color: #0f172a;
+      }
+
+      #wrapper {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+        background: #f0f9ff;
+      }
+      /* ── HEADER ── */
+      #header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        background: rgba(15, 15, 14, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .hd-logo {
+        font-family: var(--syne);
+        font-weight: 800;
+        font-size: 15px;
+        color: #fff;
+        letter-spacing: -0.02em;
+      }
+      .hd-logo span {
+        color: var(--blue);
+      }
+      .hd-nav {
+        display: flex;
+        gap: 32px;
+      }
+      .hd-nav a {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .hd-nav a:hover {
+        color: #fff;
+      }
+      .hd-cta {
+        background: var(--blue);
+        color: #fff;
+        font-family: var(--syne);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 9px 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* ── MAIN SECTION ── */
+      #section {
+        position: absolute;
+        inset: 0;
+        padding-top: 64px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      @keyframes cinematicZoom {
+        0% {
+          transform: scale(1);
+          filter: blur(0px);
+        }
+        50% {
+          transform: scale(1.08);
+          filter: blur(1px);
+        }
+        100% {
+          transform: scale(1.15);
+          filter: blur(0px);
+        }
+      }
+
+      @keyframes fadeReveal {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0px);
+        }
+      }
+
+      /* ── SECTION HEADER ── */
+      #sec-header {
+        padding: 36px 48px 28px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .sec-eyebrow {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+
+        color: rgba(15, 23, 42, 0.45);
+
+        margin-bottom: 8px;
+      }
+      .sec-h {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 38px;
+        color: #020617;
+        line-height: 1.05;
+      }
+      .nav-arrows {
+        display: flex;
+        gap: 10px;
+      }
+      .nav-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .nav-btn:hover {
+        border-color: rgba(255, 255, 255, 0.4);
+        color: #fff;
+      }
+
+      /* ── CARD STRIP ── */
+      #strip-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        padding-left: 48px;
+        padding-bottom: 8px;
+      }
+      #strip {
+        display: flex;
+        gap: 22px;
+        height: 100%;
+        align-items: flex-start;
+        padding-top: 4px;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        will-change: transform;
+      }
+
+      /* ── SINGLE CARD ── */
+      .scard {
+        width: 330px;
+        min-width: 330px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        position: relative;
+        padding-bottom: 10px;
+        padding-right: 10px;
+      }
+
+      /* depth stack */
+      .scard-d3 {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        right: 0;
+        height: 490px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.06);
+        z-index: 0;
+      }
+      .scard-d2 {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        right: -6px;
+        height: 490px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        z-index: 1;
+      }
+
+      .scard-inner {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 490px;
+        border-radius: 22px;
+        overflow: hidden;
+
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.4);
+      }
+
+      /* ── STAGE SYSTEM ── */
+      .stage {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      .stage.on {
+        opacity: 1;
+      }
+
+      /* ── CHIP ── */
+      .chip-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 30;
+        padding: 14px 16px 28px;
+        background: linear-gradient(
+          to bottom,
+          rgba(20, 20, 18, 0.95) 0%,
+          transparent 100%
+        );
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(8px);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .chip-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--blue);
+        display: inline-block;
+      }
+
+      /* ── PROGRESS BAR ── */
+      .pbar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.06);
+        z-index: 30;
+      }
+      .pfill {
+        height: 100%;
+        width: 0%;
+        background: var(--blue);
+        opacity: 0.8;
+        transition: none;
+      }
+      .play-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 35;
+        pointer-events: none;
+      }
+
+      .play-btn {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          0 10px 30px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .play-btn svg {
+        margin-left: 2px;
+      }
+      /* ── DOTS ── */
+      .pdots {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 5px;
+        z-index: 30;
+      }
+      .pd {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        transition:
+          background 0.3s,
+          width 0.3s,
+          border-radius 0.3s;
+      }
+      .pd.on {
+        background: rgba(255, 255, 255, 0.8);
+        width: 14px;
+        border-radius: 3px;
+      }
+
+      /* ── META BELOW CARD ── */
+      .scard-meta {
+        padding: 0 4px;
+      }
+      .scard-meta-title {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 19px;
+        color: #0f172a;
+        margin-bottom: 4px;
+        line-height: 1.1;
+      }
+      .scard-meta-sub {
+        font-size: 11.5px;
+        color: rgba(15, 23, 42, 0.55);
+        line-height: 1.6;
+        font-family: var(--syne);
+      }
+
+      /* ── PROGRESS DOTS (bottom nav) ── */
+      #prog-dots {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 7px;
+        z-index: 100;
+      }
+      .prog-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .prog-dot.on {
+        background: rgba(255, 255, 255, 0.7);
+        width: 18px;
+        border-radius: 3px;
+      }
+
+      /* ══════════════════════════════════════
+   STAGE 1: PROMPT + RICH BG
+══════════════════════════════════════ */
+      .s1-bg {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .s1-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(15, 15, 14, 0.25) 0%,
+          rgba(15, 15, 14, 0.6) 60%,
+          rgba(15, 15, 14, 0.85) 100%
+        );
+        z-index: 2;
+      }
+      .s1-content {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 54px 18px 28px;
+        gap: 7px;
+      }
+      .prompt-bubble {
+        background: rgba(255, 255, 255, 0.97);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 18px 18px 4px 18px;
+        padding: 14px 16px;
+        max-width: 255px;
+        font-size: 12.5px;
+        line-height: 1.65;
+        color: #181817;
+        font-family: var(--syne);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      }
+      .prompt-ts {
+        font-size: 9.5px;
+        color: rgba(255, 255, 255, 0.4);
+        font-family: var(--mono);
+        letter-spacing: 0.05em;
+      }
+
+      /* ── WIREFRAME BG (Product) ── */
+      .wf-browser {
+        position: absolute;
+        top: 28px;
+        left: 18px;
+        right: 18px;
+        bottom: 0;
+        background: #f8f8f6;
+        border-radius: 10px 10px 0 0;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+      }
+      .wf-bar {
+        height: 28px;
+        background: #e8e8e6;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        gap: 6px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .wf-circle {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .wf-url {
+        flex: 1;
+        height: 14px;
+        background: #d8d8d6;
+        border-radius: 4px;
+        margin: 0 8px;
+      }
+      .wf-hero {
+        height: 110px;
+        background: linear-gradient(135deg, #dbeeff, #c0d8f0);
+        margin: 8px;
+        border-radius: 6px;
+        position: relative;
+        overflow: hidden;
+      }
+      .wf-hero-shimmer {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.5) 50%,
+          transparent 100%
+        );
+        animation: shimmer 1.8s infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+      .wf-hero-txt {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 14px;
+      }
+      .wf-h1 {
+        height: 10px;
+        background: #1980c2;
+        border-radius: 3px;
+        width: 60%;
+        margin-bottom: 6px;
+        opacity: 0.7;
+      }
+      .wf-h2 {
+        height: 7px;
+        background: rgba(25, 128, 194, 0.4);
+        border-radius: 2px;
+        width: 40%;
+        margin-bottom: 10px;
+      }
+      .wf-btn-wf {
+        height: 20px;
+        width: 70px;
+        background: #1980c2;
+        border-radius: 4px;
+        opacity: 0.8;
+      }
+      .wf-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+        padding: 8px;
+      }
+      .wf-prod {
+        background: #fff;
+        border-radius: 5px;
+        padding: 5px;
+        border: 0.5px solid #e0e0e0;
+      }
+      .wf-prod-img {
+        height: 42px;
+        background: linear-gradient(135deg, #dbeeff, #c0d8f0);
+        border-radius: 3px;
+        margin-bottom: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+      .wf-prod-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        animation: shimmer 2s infinite;
+        animation-delay: var(--d, 0s);
+      }
+      .wf-prod-line {
+        height: 5px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        margin-bottom: 3px;
+        width: 80%;
+      }
+      .wf-prod-price {
+        height: 5px;
+        background: #1980c2;
+        border-radius: 2px;
+        width: 40%;
+        opacity: 0.6;
+      }
+      .wf-nav {
+        display: flex;
+        gap: 6px;
+        padding: 0 8px 6px;
+        align-items: center;
+      }
+      .wf-nav-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .wf-nav-line {
+        flex: 1;
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+      }
+
+      /* ── INSTAGRAM BG (Marketing) ── */
+      .ig-bg-wrap {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+      }
+      .ig-bg-header {
+        height: 44px;
+        background: #fafafa;
+        border-bottom: 0.5px solid #dbdbdb;
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 8px;
+      }
+      .ig-bg-logo {
+        font-family: Georgia, serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #262626;
+        flex: 1;
+      }
+      .ig-bg-icons {
+        display: flex;
+        gap: 12px;
+      }
+      .ig-bg-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        background: #dbdbdb;
+      }
+      .ig-bg-profile {
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 0.5px solid #f0f0f0;
+      }
+      .ig-bg-av {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          #f09433,
+          #e65e25,
+          #dc2743,
+          #cc2366,
+          #bc1888
+        );
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 900;
+        color: #fff;
+      }
+      .ig-bg-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #262626;
+      }
+      .ig-bg-handle {
+        font-size: 9.5px;
+        color: #8e8e8e;
+      }
+      .ig-bg-follow {
+        background: var(--blue);
+        color: #fff;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 6px;
+        border: none;
+        margin-left: auto;
+      }
+      .ig-bg-stats {
+        display: flex;
+        padding: 8px 14px;
+        gap: 0;
+        border-bottom: 0.5px solid #f0f0f0;
+      }
+      .ig-bg-stat {
+        flex: 1;
+        text-align: center;
+      }
+      .ig-bg-stat-n {
+        font-size: 12px;
+        font-weight: 800;
+        color: #262626;
+      }
+      .ig-bg-stat-l {
+        font-size: 8px;
+        color: #8e8e8e;
+      }
+      .ig-bg-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2px;
+        padding: 2px;
+      }
+      .ig-bg-cell {
+        aspect-ratio: 1;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: 700;
+      }
+      .ig-bg-cell-lbl {
+        position: absolute;
+        bottom: 4px;
+        left: 5px;
+        font-size: 7px;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .ig-bg-post {
+        position: absolute;
+        bottom: 0;
+        left: 8px;
+        right: 8px;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 8px 8px 0 0;
+        border: 0.5px solid #dbdbdb;
+      }
+      .ig-bg-post-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .ig-bg-post-av {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f09433, #dc2743);
+        flex-shrink: 0;
+      }
+      .ig-bg-post-nm {
+        font-size: 9px;
+        font-weight: 800;
+        color: #262626;
+        flex: 1;
+      }
+      .ig-bg-post-more {
+        font-size: 14px;
+        color: #8e8e8e;
+        line-height: 1;
+      }
+      .ig-bg-post-caption {
+        font-size: 8px;
+        color: #262626;
+        line-height: 1.5;
+        margin-bottom: 5px;
+      }
+      .ig-bg-post-tags {
+        display: flex;
+        gap: 3px;
+        flex-wrap: wrap;
+      }
+      .ig-bg-post-tag {
+        font-size: 7px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+
+      /* ── COLOR PALETTE BG (Brand) ── */
+      .pal-bg-wrap {
+        position: absolute;
+        inset: 0;
+        background: #f8f7f5;
+      }
+      .pal-bg-header {
+        height: 36px;
+        background: #fff;
+        border-bottom: 0.5px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 8px;
+      }
+      .pal-bg-logo {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .pal-bg-logo span {
+        color: var(--blue);
+      }
+      .pal-bg-tabs {
+        display: flex;
+        gap: 0;
+        height: 28px;
+        background: #fff;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .pal-bg-tab {
+        padding: 0 12px;
+        font-size: 8px;
+        font-weight: 700;
+        color: #aaa;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid transparent;
+      }
+      .pal-bg-tab.act {
+        color: var(--blue);
+        border-bottom-color: var(--blue);
+      }
+      .pal-bg-body {
+        padding: 10px;
+      }
+      /* large swatch row */
+      .pal-swatches-main {
+        display: flex;
+        gap: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 64px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .pal-sw-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding-bottom: 5px;
+      }
+      .pal-sw-main-lbl {
+        font-size: 6px;
+        font-weight: 700;
+        opacity: 0.7;
+      }
+      /* type specimens */
+      .pal-type-sect {
+        background: #fff;
+        border-radius: 8px;
+        padding: 8px 10px;
+        margin-bottom: 7px;
+        border: 0.5px solid #e8e8e6;
+      }
+      .pal-type-row {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .pal-type-lbl {
+        font-size: 7px;
+        color: #ccc;
+        width: 28px;
+        flex-shrink: 0;
+        font-family: var(--mono);
+      }
+      /* logo variants */
+      .pal-logo-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 7px;
+      }
+      .pal-lv {
+        flex: 1;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--syne);
+        font-size: 10px;
+        font-weight: 800;
+      }
+      /* component row */
+      .pal-comp-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        padding: 6px 8px;
+        background: #fff;
+        border-radius: 6px;
+        border: 0.5px solid #e8e8e6;
+      }
+      .pal-btn {
+        font-size: 7px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-family: "Montserrat", sans-serif;
+        border: 1px solid transparent;
+      }
+
+      /* ── STAGE 2: PROCESSING ── */
+      .s2-wrap {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 54px 22px 24px;
+        gap: 16px;
+        background: #1a1a18;
+      }
+      .s2-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -20px;
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(59, 130, 246, 0.18),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at bottom left,
+            rgba(14, 165, 233, 0.12),
+            transparent 45%
+          );
+        animation: cinematicZoom 5s ease-in-out infinite alternate;
+      }
+
+      .proc-icon-wrap,
+      .proc-label,
+      .proc-dots,
+      .proc-panel {
+        animation: fadeReveal 0.8s ease forwards;
+      }
+
+      .scard-inner {
+        transform-style: preserve-3d;
+      }
+
+      .stage {
+        transform: scale(1.02);
+      }
+
+      .stage.on {
+        opacity: 1;
+        transform: scale(1);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .proc-panel {
+        position: absolute;
+        top: 56px;
+        right: 16px;
+        width: 96px;
+        background: #242422;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 8px 10px;
+      }
+      .proc-panel-lbl {
+        font-size: 7px;
+        color: rgba(255, 255, 255, 0.3);
+        font-family: var(--mono);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 7px;
+      }
+      .proc-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 4px;
+      }
+      .proc-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .proc-item-lbl {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.45);
+        font-family: var(--syne);
+      }
+      .proc-icon-wrap {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .proc-label {
+        font-size: 10.5px;
+        color: rgba(255, 255, 255, 0.4);
+        font-family: var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-align: center;
+      }
+      .proc-dots {
+        display: flex;
+        gap: 7px;
+        justify-content: center;
+      }
+      @keyframes _blink {
+        0%,
+        100% {
+          opacity: 0.18;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+      .proc-d {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue);
+        animation: _blink 1.1s ease-in-out infinite;
+      }
+      .proc-d:nth-child(2) {
+        animation-delay: 0.22s;
+      }
+      .proc-d:nth-child(3) {
+        animation-delay: 0.44s;
+      }
+
+      /* ── STAGE 3: RESULT FULL IMAGE ── */
+      .s3-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .s3-grad {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.82) 0%,
+          rgba(0, 0, 0, 0.18) 52%,
+          rgba(0, 0, 0, 0.05) 100%
+        );
+      }
+      .s3-badge {
+        position: absolute;
+        bottom: 22px;
+        left: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 14px;
+        padding: 12px 15px;
+      }
+      .s3-badge-eyebrow {
+        font-size: 8.5px;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: var(--mono);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .s3-badge-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        font-family: var(--syne);
+      }
+
+      /* ── ECOM RESULT STAGE ── */
+      .ecom-result {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+      }
+      .ec-topbar {
+        height: 32px;
+        background: #fff;
+        border-bottom: 0.5px solid #e8e8e6;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        justify-content: space-between;
+      }
+      .ec-brand {
+        font-family: var(--syne);
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .ec-nav-items {
+        display: flex;
+        gap: 8px;
+      }
+      .ec-nav-items span {
+        font-size: 7.5px;
+        color: #aaa;
+      }
+      .ec-hero {
+        height: 120px;
+        background: linear-gradient(135deg, #0f1a2c, #1a3050);
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+      .ec-hero::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(
+          circle,
+          rgba(25, 128, 194, 0.3) 0%,
+          transparent 70%
+        );
+      }
+      .ec-hero-txt .ec-h {
+        font-family: var(--syne);
+        font-size: 12px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.2;
+        margin-bottom: 4px;
+      }
+      .ec-hero-txt .ec-p {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 8px;
+      }
+      .ec-hero-btn {
+        background: var(--blue);
+        color: #fff;
+        font-size: 7px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .ec-hero-img {
+        width: 60px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .ec-products {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        padding: 8px 10px;
+      }
+      .ec-prod {
+        background: #f8f8f6;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 0.5px solid #e8e8e6;
+      }
+      .ec-prod-img {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .ec-prod-info {
+        padding: 5px 6px;
+      }
+      .ec-prod-name {
+        font-size: 7px;
+        color: #888;
+        margin-bottom: 1px;
+      }
+      .ec-prod-price {
+        font-size: 9px;
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .ec-done {
+        position: absolute;
+        bottom: 20px;
+        right: 12px;
+        background: var(--dark);
+        color: #fff;
+        font-size: 8.5px;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .ec-done-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--blue);
+        border-radius: 50%;
+      }
+
+      /* ── IG RESULT ── */
+      .ig-result {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+      }
+      .ig-r-header {
+        height: 40px;
+        background: #fafafa;
+        border-bottom: 0.5px solid #dbdbdb;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+      }
+      .ig-r-logo {
+        font-family: Georgia, serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #262626;
+        flex: 1;
+      }
+      .ig-r-story {
+        display: flex;
+        gap: 8px;
+        padding: 10px 12px;
+        overflow: hidden;
+        border-bottom: 0.5px solid #f0f0f0;
+      }
+      .ig-r-story-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .ig-r-story-av {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        padding: 2px;
+        background: linear-gradient(135deg, #f09433, #e65e25, #dc2743, #cc2366);
+      }
+      .ig-r-story-av-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 900;
+        color: #262626;
+      }
+      .ig-r-story-lbl {
+        font-size: 8px;
+        color: #262626;
+      }
+      .ig-r-post {
+        border-bottom: 0.5px solid #f0f0f0;
+      }
+      .ig-r-post-top {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .ig-r-post-av {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f09433, #dc2743);
+        flex-shrink: 0;
+      }
+      .ig-r-post-nm {
+        font-size: 10px;
+        font-weight: 700;
+        color: #262626;
+        flex: 1;
+      }
+      .ig-r-post-img {
+        height: 160px;
+        background: linear-gradient(135deg, var(--blue), #0f4f7a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .ig-r-post-img::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 30% 50%,
+          rgba(255, 255, 255, 0.08) 0%,
+          transparent 60%
+        );
+      }
+      .ig-r-post-headline {
+        font-family: var(--syne);
+        font-size: 18px;
+        font-weight: 900;
+        color: #fff;
+        text-align: center;
+        line-height: 1.1;
+        padding: 10px;
+        z-index: 1;
+        position: relative;
+      }
+      .ig-r-post-actions {
+        padding: 6px 12px;
+        display: flex;
+        gap: 12px;
+      }
+      .ig-r-action {
+        width: 20px;
+        height: 20px;
+        background: #f0f0f0;
+        border-radius: 50%;
+      }
+      .ig-r-post-caption {
+        padding: 0 12px 6px;
+        font-size: 8.5px;
+        color: #262626;
+        line-height: 1.5;
+      }
+      .ig-r-post-tags {
+        padding: 0 12px 8px;
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .ig-r-tag {
+        font-size: 8px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .ig-done-pill {
+        position: absolute;
+        bottom: 16px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        font-size: 8px;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* ── BRAND RESULT ── */
+      .brand-result {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .brand-r-top {
+        height: 55%;
+        background: linear-gradient(
+          160deg,
+          #0a1628 0%,
+          #0f2a4a 60%,
+          rgba(25, 128, 194, 0.5) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+      .brand-r-top::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 160px;
+        height: 160px;
+        background: radial-gradient(
+          circle,
+          rgba(25, 128, 194, 0.25) 0%,
+          transparent 65%
+        );
+      }
+      .brand-r-mark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand-r-hex {
+        width: 42px;
+        height: 42px;
+        background: var(--blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .brand-r-word {
+        font-family: var(--syne);
+        font-size: 28px;
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: -0.02em;
+      }
+      .brand-r-word span {
+        color: var(--blue-light);
+      }
+      .brand-r-tagline {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      .brand-r-vars {
+        display: flex;
+        gap: 0;
+        height: 32px;
+        overflow: hidden;
+      }
+      .brand-rv {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--syne);
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .brand-r-bottom {
+        flex: 1;
+        background: #fff;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .brand-r-pal {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .brand-r-swatch-row {
+        display: flex;
+        gap: 4px;
+      }
+      .brand-r-sw {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+      }
+      .brand-r-sw-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .brand-r-sw-name {
+        font-size: 8px;
+        font-weight: 700;
+        color: var(--dark);
+      }
+      .brand-r-sw-hex {
+        font-size: 7px;
+        color: #aaa;
+        font-family: var(--mono);
+      }
+      .brand-r-type-row {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        border-top: 0.5px solid #f0f0f0;
+        padding-top: 6px;
+      }
+      .brand-r-type-lbl {
+        font-size: 7px;
+        color: #ccc;
+        width: 26px;
+        font-family: var(--mono);
+      }
+      .brand-done {
+        position: absolute;
+        bottom: 16px;
+        right: 12px;
+        background: var(--dark);
+        color: #fff;
+        font-size: 8px;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 10;
+      }
+
+      /* ── ANALYTICS RESULT ── */
+      .analytics-result {
+        position: absolute;
+        inset: 0;
+        background: #0d1117;
+        display: flex;
+        flex-direction: column;
+        padding: 14px;
+      }
+      .an-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .an-title {
+        font-family: var(--syne);
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .an-date {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.3);
+        font-family: var(--mono);
+      }
+      .an-kpis {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .an-kpi {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+        padding: 8px 9px;
+        border: 0.5px solid rgba(255, 255, 255, 0.07);
+      }
+      .an-kpi-lbl {
+        font-size: 7px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-bottom: 2px;
+      }
+      .an-kpi-val {
+        font-size: 15px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1;
+      }
+      .an-kpi-delta {
+        font-size: 8px;
+        font-weight: 700;
+        color: #22a05a;
+      }
+      .an-chart {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        border: 0.5px solid rgba(255, 255, 255, 0.06);
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .an-chart-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 60px;
+      }
+      .an-bar-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+      }
+      .an-bar {
+        border-radius: 3px 3px 0 0;
+        width: 100%;
+      }
+      .an-bar-lbl {
+        font-size: 6.5px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .an-roas {
+        background: rgba(25, 128, 194, 0.15);
+        border: 0.5px solid rgba(25, 128, 194, 0.3);
+        border-radius: 8px;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .an-roas-lbl {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: var(--mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .an-roas-val {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--blue);
+        font-family: var(--syne);
+      }
+
+      /* ── PERSONA RESULT ── */
+      .persona-result {
+        position: absolute;
+        inset: 0;
+        background: #fff8f2;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+      }
+      .pr-title {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .pr-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        flex: 1;
+      }
+      .pr-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px;
+        border: 0.5px solid rgba(230, 126, 34, 0.15);
+      }
+      .pr-av {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 900;
+        color: #fff;
+        margin-bottom: 4px;
+      }
+      .pr-name {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .pr-role {
+        font-size: 7.5px;
+        color: #aaa;
+        margin-bottom: 3px;
+      }
+      .pr-tag-pill {
+        display: inline-block;
+        background: #fde8c8;
+        color: #c47a1b;
+        font-size: 6.5px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 4px;
+        margin-bottom: 3px;
+      }
+      .pr-pain {
+        font-size: 7.5px;
+        color: #888;
+        line-height: 1.4;
+      }
+
+      /* ── CONTENT RESULT ── */
+      .content-result {
+        position: absolute;
+        inset: 0;
+        background: #f5f3ff;
+        display: flex;
+        flex-direction: column;
+      }
+      .cr-header {
+        background: #6d28d9;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .cr-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .cr-title {
+        font-family: var(--syne);
+        font-size: 10px;
+        font-weight: 800;
+        color: #fff;
+        flex: 1;
+        text-align: center;
+      }
+      .cr-body {
+        flex: 1;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .cr-art-title {
+        font-size: 11px;
+        font-weight: 900;
+        color: var(--dark);
+        line-height: 1.3;
+      }
+      .cr-art-meta {
+        font-size: 7.5px;
+        color: #aaa;
+      }
+      .cr-img {
+        height: 50px;
+        background: linear-gradient(135deg, #ede9fe, #c4b5fd);
+        border-radius: 5px;
+      }
+      .cr-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .cr-line {
+        height: 3.5px;
+        border-radius: 2px;
+        background: #e0d9f7;
+      }
+      .cr-line.a {
+        background: #9f7aea;
+      }
+      .cr-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+      }
+      .cr-met {
+        background: #fff;
+        border-radius: 6px;
+        padding: 5px 6px;
+        text-align: center;
+        border: 0.5px solid rgba(109, 40, 217, 0.1);
+      }
+      .cr-met-val {
+        font-size: 12px;
+        font-weight: 900;
+        color: #6d28d9;
+      }
+      .cr-met-lbl {
+        font-size: 6.5px;
+        color: #aaa;
+      }
+
+      /* ── PIPELINE RESULT ── */
+      .pipeline-result {
+        position: absolute;
+        inset: 0;
+        background: #0a1a12;
+        display: flex;
+        flex-direction: column;
+        padding: 14px;
+      }
+      .pipe-r-title {
+        font-family: var(--syne);
+        font-size: 11px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 10px;
+      }
+      .pipe-steps {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .pipe-step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .pipe-step-ico {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .pipe-step-lbl {
+        font-size: 7px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .pipe-connector {
+        flex: 1;
+        height: 2px;
+        background: rgba(34, 160, 90, 0.3);
+        margin-bottom: 10px;
+      }
+      .pipe-insights {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .pipe-insight {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 7px;
+        padding: 6px 8px;
+        border: 0.5px solid rgba(34, 160, 90, 0.15);
+      }
+      .pipe-insight-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22a05a;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .pipe-insight-txt {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.55);
+        line-height: 1.45;
+      }
+      .pipe-roas-big {
+        background: rgba(34, 160, 90, 0.1);
+        border: 0.5px solid rgba(34, 160, 90, 0.25);
+        border-radius: 8px;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4px;
+      }
+      .pipe-roas-lbl {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.4);
+        font-family: var(--mono);
+        letter-spacing: 0.1em;
+      }
+      .pipe-roas-val {
+        font-size: 24px;
+        font-weight: 900;
+        color: #22a05a;
+        font-family: var(--syne);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <!-- HEADER -->
+      <header id="header">
+        <div class="hd-logo">MA<span>DESIGN</span></div>
+        <nav class="hd-nav">
+          <a href="#">Work</a><a href="#">Services</a><a href="#">About</a>
+        </nav>
+        <button class="hd-cta">Work With Us</button>
+      </header>
+
+      <!-- MAIN -->
+      <div id="section">
+        <div id="sec-header">
+          <div>
+            <div class="sec-eyebrow">
+              Services in motion &nbsp;·&nbsp; scroll to explore
+            </div>
+            <div class="sec-h">Systems for growth.</div>
+          </div>
+          <div class="nav-arrows">
+            <button class="nav-btn" onclick="stripPrev()">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M14 6L8 12l6 6" />
+              </svg>
+            </button>
+            <button class="nav-btn" onclick="stripNext()">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M10 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="strip-wrap">
+          <div id="strip">
+            <!-- ═══════════════════════════════
+             CARD 1: PRODUCT & DIGITAL
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c1">
+                <!-- STAGE 1: Prompt over wireframe bg -->
+                <div class="stage on" id="c1s1">
+                  <div class="s1-bg">
+                    <!-- wireframe loading website -->
+                    <div class="wf-browser">
+                      <div class="wf-bar">
+                        <div
+                          class="wf-circle"
+                          style="background: #ff5f57"
+                        ></div>
+                        <div
+                          class="wf-circle"
+                          style="background: #febc2e"
+                        ></div>
+                        <div
+                          class="wf-circle"
+                          style="background: #28c840"
+                        ></div>
+                        <div class="wf-url"></div>
+                      </div>
+                      <div style="padding: 6px">
+                        <div class="wf-hero">
+                          <div class="wf-hero-shimmer"></div>
+                          <div class="wf-hero-txt">
+                            <div class="wf-h1"></div>
+                            <div class="wf-h2"></div>
+                            <div class="wf-btn-wf"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="wf-grid">
+                        <div class="wf-prod">
+                          <div class="wf-prod-img" style="--d: 0s"></div>
+                          <div class="wf-prod-line"></div>
+                          <div class="wf-prod-price"></div>
+                        </div>
+                        <div class="wf-prod">
+                          <div class="wf-prod-img" style="--d: 0.4s"></div>
+                          <div class="wf-prod-line" style="width: 65%"></div>
+                          <div class="wf-prod-price"></div>
+                        </div>
+                        <div class="wf-prod">
+                          <div class="wf-prod-img" style="--d: 0.8s"></div>
+                          <div class="wf-prod-line" style="width: 75%"></div>
+                          <div class="wf-prod-price"></div>
+                        </div>
+                      </div>
+                      <div class="wf-nav">
+                        <div
+                          class="wf-nav-dot"
+                          style="background: #1980c2"
+                        ></div>
+                        <div
+                          class="wf-nav-dot"
+                          style="background: #e0e0e0"
+                        ></div>
+                        <div
+                          class="wf-nav-dot"
+                          style="background: #e0e0e0"
+                        ></div>
+                        <div class="wf-nav-line"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Product &amp; Digital</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Build us a clean e-commerce storefront with a hero
+                      carousel and product grid.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+
+                <!-- STAGE 2: Processing -->
+                <div class="stage" id="c1s2">
+                  <div class="s2-wrap">
+                    <div class="proc-panel">
+                      <div class="proc-panel-lbl">Status</div>
+                      <div class="proc-item">
+                        <div
+                          class="proc-dot"
+                          style="background: var(--blue)"
+                        ></div>
+                        <div class="proc-item-lbl">Layout</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #555"></div>
+                        <div class="proc-item-lbl">Assets</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #333"></div>
+                        <div class="proc-item-lbl">Copy</div>
+                      </div>
+                    </div>
+                    <div class="proc-icon-wrap">🖥️</div>
+                    <div class="proc-label">Generating layout</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Product &amp; Digital</span
+                    >
+                  </div>
+                </div>
+
+                <!-- STAGE 3: E-commerce result -->
+                <div class="stage" id="c1s3">
+                  <div class="ecom-result">
+                    <div class="ec-topbar">
+                      <span class="ec-brand">STRKT</span>
+                      <div class="ec-nav-items">
+                        <span>Shop</span><span>Drops</span><span>About</span>
+                      </div>
+                    </div>
+                    <div class="ec-hero">
+                      <div class="ec-hero-txt">
+                        <div class="ec-h">Wear what<br />you mean.</div>
+                        <div class="ec-p">Limited drops, weekly.</div>
+                        <div class="ec-hero-btn">Shop now →</div>
+                      </div>
+                      <div class="ec-hero-img"></div>
+                    </div>
+                    <div class="ec-products">
+                      <div class="ec-prod">
+                        <div
+                          class="ec-prod-img"
+                          style="
+                            background: linear-gradient(
+                              135deg,
+                              #0f2a4a,
+                              #1a3a5c
+                            );
+                          "
+                        >
+                          <span style="font-size: 18px">👕</span>
+                        </div>
+                        <div class="ec-prod-info">
+                          <div class="ec-prod-name">Cargo Tee</div>
+                          <div class="ec-prod-price">$48</div>
+                        </div>
+                      </div>
+                      <div class="ec-prod">
+                        <div
+                          class="ec-prod-img"
+                          style="
+                            background: linear-gradient(
+                              135deg,
+                              #1a2030,
+                              #253040
+                            );
+                          "
+                        >
+                          <span style="font-size: 18px">🧥</span>
+                        </div>
+                        <div class="ec-prod-info">
+                          <div class="ec-prod-name">Wide Hoodie</div>
+                          <div class="ec-prod-price">$90</div>
+                        </div>
+                      </div>
+                      <div class="ec-prod">
+                        <div
+                          class="ec-prod-img"
+                          style="
+                            background: linear-gradient(
+                              135deg,
+                              #0a1520,
+                              #152030
+                            );
+                          "
+                        >
+                          <span style="font-size: 18px">👖</span>
+                        </div>
+                        <div class="ec-prod-info">
+                          <div class="ec-prod-name">Track Pant</div>
+                          <div class="ec-prod-price">$72</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- performance bar -->
+                    <div
+                      style="
+                        padding: 6px 10px;
+                        display: flex;
+                        gap: 10px;
+                        justify-content: center;
+                        border-top: 0.5px solid #f0f0f0;
+                      "
+                    >
+                      <div style="text-align: center">
+                        <div
+                          style="
+                            font-size: 13px;
+                            font-weight: 900;
+                            color: var(--blue);
+                          "
+                        >
+                          98
+                        </div>
+                        <div style="font-size: 7px; color: #aaa">Perf</div>
+                      </div>
+                      <div style="text-align: center">
+                        <div
+                          style="
+                            font-size: 13px;
+                            font-weight: 900;
+                            color: var(--blue);
+                          "
+                        >
+                          1.2s
+                        </div>
+                        <div style="font-size: 7px; color: #aaa">Load</div>
+                      </div>
+                      <div style="text-align: center">
+                        <div
+                          style="
+                            font-size: 13px;
+                            font-weight: 900;
+                            color: var(--blue);
+                          "
+                        >
+                          4.9★
+                        </div>
+                        <div style="font-size: 7px; color: #aaa">Rating</div>
+                      </div>
+                    </div>
+                    <div class="ec-done">
+                      <div class="ec-done-dot"></div>
+                      Live &amp; converting
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Product &amp; Digital</span
+                    >
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d1">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p1"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">Product &amp; Digital</div>
+                <div class="scard-meta-sub">
+                  Websites, apps, and digital platforms built to perform and
+                  scale.
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════
+             CARD 2: MARKETING & COMMS
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c2">
+                <!-- STAGE 1: Prompt over IG background -->
+                <div class="stage on" id="c2s1">
+                  <div class="s1-bg">
+                    <div class="ig-bg-wrap">
+                      <div class="ig-bg-header">
+                        <div class="ig-bg-logo">Instagram</div>
+                        <div class="ig-bg-icons">
+                          <div class="ig-bg-icon"></div>
+                          <div class="ig-bg-icon"></div>
+                        </div>
+                      </div>
+                      <div class="ig-bg-profile">
+                        <div class="ig-bg-av">M</div>
+                        <div style="flex: 1">
+                          <div class="ig-bg-name">mad.studio</div>
+                          <div class="ig-bg-handle">
+                            @mad.studio · Creative Agency
+                          </div>
+                        </div>
+                        <button class="ig-bg-follow">Follow</button>
+                      </div>
+                      <div class="ig-bg-stats">
+                        <div class="ig-bg-stat">
+                          <div class="ig-bg-stat-n">48</div>
+                          <div class="ig-bg-stat-l">posts</div>
+                        </div>
+                        <div class="ig-bg-stat">
+                          <div class="ig-bg-stat-n">24.8K</div>
+                          <div class="ig-bg-stat-l">followers</div>
+                        </div>
+                        <div class="ig-bg-stat">
+                          <div class="ig-bg-stat-n">4.2%</div>
+                          <div class="ig-bg-stat-l">eng.</div>
+                        </div>
+                      </div>
+                      <div class="ig-bg-grid">
+                        <div class="ig-bg-cell" style="background: var(--blue)">
+                          <div class="ig-bg-cell-lbl">Brand</div>
+                        </div>
+                        <div class="ig-bg-cell" style="background: #181817">
+                          <div class="ig-bg-cell-lbl">Launch</div>
+                        </div>
+                        <div class="ig-bg-cell" style="background: #3da0e4">
+                          <div class="ig-bg-cell-lbl">Web</div>
+                        </div>
+                        <div class="ig-bg-cell" style="background: #f0f0ee">
+                          <span
+                            style="
+                              font-size: 13px;
+                              font-weight: 900;
+                              color: #181817;
+                            "
+                            >MAD</span
+                          >
+                        </div>
+                        <div class="ig-bg-cell" style="background: #0f4f7a">
+                          <div class="ig-bg-cell-lbl">Identity</div>
+                        </div>
+                        <div class="ig-bg-cell" style="background: #e8e8e4">
+                          <span
+                            style="
+                              font-size: 8px;
+                              font-weight: 700;
+                              color: #aaa;
+                            "
+                            >Campaign</span
+                          >
+                        </div>
+                      </div>
+                      <!-- floating post preview at bottom -->
+                      <div class="ig-bg-post">
+                        <div class="ig-bg-post-top">
+                          <div class="ig-bg-post-av"></div>
+                          <div class="ig-bg-post-nm">mad.studio</div>
+                          <div class="ig-bg-post-more">···</div>
+                        </div>
+                        <div class="ig-bg-post-caption">
+                          Spring collection is here — drop everything and
+                          explore. 🌿
+                        </div>
+                        <div class="ig-bg-post-tags">
+                          <span class="ig-bg-post-tag">#springdrop</span
+                          ><span class="ig-bg-post-tag">#branding</span
+                          ><span class="ig-bg-post-tag">#launch</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Marketing &amp; Comms</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Create a social media content calendar for our spring
+                      product launch.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+
+                <!-- STAGE 2 -->
+                <div class="stage" id="c2s2">
+                  <div class="s2-wrap">
+                    <div class="proc-panel">
+                      <div class="proc-panel-lbl">Status</div>
+                      <div class="proc-item">
+                        <div
+                          class="proc-dot"
+                          style="background: var(--blue)"
+                        ></div>
+                        <div class="proc-item-lbl">Strategy</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #555"></div>
+                        <div class="proc-item-lbl">Content</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #333"></div>
+                        <div class="proc-item-lbl">Schedule</div>
+                      </div>
+                    </div>
+                    <div class="proc-icon-wrap">📣</div>
+                    <div class="proc-label">Planning campaign</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Marketing &amp; Comms</span
+                    >
+                  </div>
+                </div>
+
+                <!-- STAGE 3: IG result post -->
+                <div class="stage" id="c2s3">
+                  <div class="ig-result">
+                    <div class="ig-r-header">
+                      <div class="ig-r-logo">Instagram</div>
+                    </div>
+                    <div class="ig-r-story">
+                      <div class="ig-r-story-item">
+                        <div class="ig-r-story-av">
+                          <div class="ig-r-story-av-inner">M</div>
+                        </div>
+                        <div class="ig-r-story-lbl">mad.studio</div>
+                      </div>
+                      <div class="ig-r-story-item">
+                        <div
+                          class="ig-r-story-av"
+                          style="
+                            background: linear-gradient(
+                              135deg,
+                              #833ab4,
+                              #fd1d1d
+                            );
+                          "
+                        >
+                          <div class="ig-r-story-av-inner">S</div>
+                        </div>
+                        <div class="ig-r-story-lbl">strkt</div>
+                      </div>
+                      <div class="ig-r-story-item">
+                        <div
+                          class="ig-r-story-av"
+                          style="
+                            background: linear-gradient(
+                              135deg,
+                              #405de6,
+                              #5851db
+                            );
+                          "
+                        >
+                          <div class="ig-r-story-av-inner">W</div>
+                        </div>
+                        <div class="ig-r-story-lbl">work_mad</div>
+                      </div>
+                    </div>
+                    <div class="ig-r-post">
+                      <div class="ig-r-post-top">
+                        <div class="ig-r-post-av"></div>
+                        <div class="ig-r-post-nm">mad.studio</div>
+                        <span
+                          style="
+                            font-size: 14px;
+                            color: #8e8e8e;
+                            line-height: 1;
+                          "
+                          >···</span
+                        >
+                      </div>
+                      <div class="ig-r-post-img">
+                        <div class="ig-r-post-headline">
+                          Your brand,<br />everywhere.
+                        </div>
+                      </div>
+                      <div class="ig-r-post-actions">
+                        <div class="ig-r-action"></div>
+                        <div class="ig-r-action"></div>
+                        <div class="ig-r-action"></div>
+                      </div>
+                      <div class="ig-r-post-caption">
+                        <strong>mad.studio</strong> Campaigns that connect —
+                        content built to reach the right people at the right
+                        time.
+                      </div>
+                      <div class="ig-r-post-tags">
+                        <span class="ig-r-tag">#branding</span>
+                        <span class="ig-r-tag">#marketing</span>
+                        <span class="ig-r-tag">#springdrop</span>
+                        <span class="ig-r-tag">#growth</span>
+                      </div>
+                    </div>
+                    <div style="padding: 6px 12px; display: flex; gap: 8px">
+                      <div
+                        style="
+                          flex: 1;
+                          background: #f5f5f3;
+                          border-radius: 6px;
+                          padding: 5px 8px;
+                        "
+                      >
+                        <div style="font-size: 7px; color: #aaa">
+                          Total Reach
+                        </div>
+                        <div
+                          style="
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: var(--dark);
+                          "
+                        >
+                          248K
+                        </div>
+                        <div
+                          style="
+                            font-size: 8px;
+                            font-weight: 700;
+                            color: #22a05a;
+                          "
+                        >
+                          ↑ +38%
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          flex: 1;
+                          background: #f5f5f3;
+                          border-radius: 6px;
+                          padding: 5px 8px;
+                        "
+                      >
+                        <div style="font-size: 7px; color: #aaa">Conv.</div>
+                        <div
+                          style="
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: var(--dark);
+                          "
+                        >
+                          3.2K
+                        </div>
+                        <div
+                          style="
+                            font-size: 8px;
+                            font-weight: 700;
+                            color: #22a05a;
+                          "
+                        >
+                          ↑ +52%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ig-done-pill">
+                    <div class="ec-done-dot"></div>
+                    Campaign live
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Marketing &amp; Comms</span
+                    >
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d2">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p2"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">Marketing &amp; Comms</div>
+                <div class="scard-meta-sub">
+                  Campaigns and content systems that connect brands with the
+                  right audience.
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════
+             CARD 3: BRAND & IDENTITY
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c3">
+                <!-- STAGE 1: Prompt over color palette bg -->
+                <div class="stage on" id="c3s1">
+                  <div class="s1-bg">
+                    <div class="pal-bg-wrap">
+                      <div class="pal-bg-header">
+                        <div class="pal-bg-logo">
+                          M<span>A</span>D Brand Studio
+                        </div>
+                        <div style="flex: 1"></div>
+                        <div
+                          style="
+                            font-size: 7px;
+                            color: #aaa;
+                            background: #f0f0ee;
+                            padding: 2px 7px;
+                            border-radius: 4px;
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                          "
+                        >
+                          <div
+                            style="
+                              width: 6px;
+                              height: 6px;
+                              border-radius: 50%;
+                              background: #a259ff;
+                            "
+                          ></div>
+                          Figma
+                        </div>
+                      </div>
+                      <div class="pal-bg-tabs">
+                        <div class="pal-bg-tab act">Colours</div>
+                        <div class="pal-bg-tab">Typography</div>
+                        <div class="pal-bg-tab">Components</div>
+                      </div>
+                      <div class="pal-bg-body">
+                        <div class="pal-swatches-main">
+                          <div class="pal-sw-main" style="background: #1980c2">
+                            <div
+                              class="pal-sw-main-lbl"
+                              style="
+                                color: rgba(255, 255, 255, 0.7);
+                                font-size: 6px;
+                                font-weight: 700;
+                              "
+                            >
+                              Azure
+                            </div>
+                          </div>
+                          <div class="pal-sw-main" style="background: #181817">
+                            <div
+                              class="pal-sw-main-lbl"
+                              style="
+                                color: rgba(255, 255, 255, 0.7);
+                                font-size: 6px;
+                                font-weight: 700;
+                              "
+                            >
+                              Onyx
+                            </div>
+                          </div>
+                          <div
+                            class="pal-sw-main"
+                            style="
+                              background: #fff;
+                              border: 0.5px solid #e0e0e0;
+                            "
+                          >
+                            <div
+                              class="pal-sw-main-lbl"
+                              style="
+                                color: #aaa;
+                                font-size: 6px;
+                                font-weight: 700;
+                              "
+                            >
+                              White
+                            </div>
+                          </div>
+                          <div class="pal-sw-main" style="background: #0f4f7a">
+                            <div
+                              class="pal-sw-main-lbl"
+                              style="
+                                color: rgba(255, 255, 255, 0.7);
+                                font-size: 6px;
+                                font-weight: 700;
+                              "
+                            >
+                              Deep
+                            </div>
+                          </div>
+                          <div class="pal-sw-main" style="background: #3da0e4">
+                            <div
+                              class="pal-sw-main-lbl"
+                              style="
+                                color: rgba(255, 255, 255, 0.7);
+                                font-size: 6px;
+                                font-weight: 700;
+                              "
+                            >
+                              Sky
+                            </div>
+                          </div>
+                        </div>
+                        <div class="pal-type-sect">
+                          <div class="pal-type-row">
+                            <span class="pal-type-lbl">H1</span>
+                            <span
+                              style="
+                                font-size: 16px;
+                                font-weight: 900;
+                                color: var(--dark);
+                                font-family: &quot;Syne&quot;, sans-serif;
+                              "
+                              >Headline Bold</span
+                            >
+                          </div>
+                          <div class="pal-type-row">
+                            <span class="pal-type-lbl">Body</span>
+                            <span style="font-size: 9px; color: #aaa"
+                              >Body regular, readable at scale.</span
+                            >
+                          </div>
+                          <div class="pal-type-row">
+                            <span class="pal-type-lbl">Mono</span>
+                            <span
+                              style="
+                                font-size: 8px;
+                                color: #aaa;
+                                font-family: var(--mono);
+                              "
+                              >Code · Labels · Tags</span
+                            >
+                          </div>
+                        </div>
+                        <div class="pal-logo-row">
+                          <div
+                            class="pal-lv"
+                            style="background: var(--blue); color: #fff"
+                          >
+                            MAD
+                          </div>
+                          <div
+                            class="pal-lv"
+                            style="background: var(--dark); color: #fff"
+                          >
+                            MAD
+                          </div>
+                          <div
+                            class="pal-lv"
+                            style="
+                              background: #f0f0ee;
+                              color: var(--dark);
+                              border: 0.5px solid #ddd;
+                            "
+                          >
+                            MAD
+                          </div>
+                        </div>
+                        <div class="pal-comp-row">
+                          <div
+                            class="pal-btn"
+                            style="
+                              background: var(--blue);
+                              color: #fff;
+                              border-color: var(--blue);
+                            "
+                          >
+                            Primary
+                          </div>
+                          <div
+                            class="pal-btn"
+                            style="
+                              color: var(--blue);
+                              border-color: var(--blue);
+                            "
+                          >
+                            Outline
+                          </div>
+                          <div
+                            class="pal-btn"
+                            style="
+                              background: #f0f0ee;
+                              color: var(--dark);
+                              border-color: #ddd;
+                            "
+                          >
+                            Light
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Brand &amp; Identity</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Design a bold brand identity system with logo, type, and a
+                      colour palette.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+
+                <!-- STAGE 2 -->
+                <div class="stage" id="c3s2">
+                  <div class="s2-wrap">
+                    <div class="proc-panel">
+                      <div class="proc-panel-lbl">Status</div>
+                      <div class="proc-item">
+                        <div
+                          class="proc-dot"
+                          style="background: var(--blue)"
+                        ></div>
+                        <div class="proc-item-lbl">Mark</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #555"></div>
+                        <div class="proc-item-lbl">Palette</div>
+                      </div>
+                      <div class="proc-item">
+                        <div class="proc-dot" style="background: #333"></div>
+                        <div class="proc-item-lbl">System</div>
+                      </div>
+                    </div>
+                    <div class="proc-icon-wrap">🎨</div>
+                    <div class="proc-label">Building identity</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Brand &amp; Identity</span
+                    >
+                  </div>
+                </div>
+
+                <!-- STAGE 3: Brand result -->
+                <div class="stage" id="c3s3">
+                  <div class="brand-result">
+                    <div class="brand-r-top">
+                      <div class="brand-r-mark">
+                        <div class="brand-r-hex">
+                          <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 22 22"
+                            fill="none"
+                          >
+                            <polygon
+                              points="11,1 21,7 21,15 11,21 1,15 1,7"
+                              fill="white"
+                              opacity=".9"
+                            />
+                          </svg>
+                        </div>
+                        <div class="brand-r-word">M<span>AD</span></div>
+                      </div>
+                      <div class="brand-r-tagline">Identity System · 2025</div>
+                      <div
+                        class="brand-r-vars"
+                        style="
+                          width: 200px;
+                          border-radius: 8px;
+                          overflow: hidden;
+                        "
+                      >
+                        <div
+                          class="brand-rv"
+                          style="background: var(--blue); color: #fff"
+                        >
+                          MAD
+                        </div>
+                        <div
+                          class="brand-rv"
+                          style="background: #fff; color: var(--dark)"
+                        >
+                          MAD
+                        </div>
+                        <div
+                          class="brand-rv"
+                          style="background: var(--dark); color: #fff"
+                        >
+                          MAD
+                        </div>
+                      </div>
+                    </div>
+                    <div class="brand-r-bottom">
+                      <div class="brand-r-pal">
+                        <div class="brand-r-swatch-row">
+                          <div
+                            class="brand-r-sw"
+                            style="background: #1980c2"
+                          ></div>
+                          <div
+                            class="brand-r-sw"
+                            style="background: #181817"
+                          ></div>
+                          <div
+                            class="brand-r-sw"
+                            style="
+                              background: #fff;
+                              border: 0.5px solid #e0e0e0;
+                            "
+                          ></div>
+                          <div
+                            class="brand-r-sw"
+                            style="background: #0f4f7a"
+                          ></div>
+                          <div
+                            class="brand-r-sw"
+                            style="background: #3da0e4"
+                          ></div>
+                        </div>
+                        <div class="brand-r-sw-info" style="margin-left: 8px">
+                          <div class="brand-r-sw-name">Azure Blue</div>
+                          <div class="brand-r-sw-hex">#1980c2 · Primary</div>
+                        </div>
+                      </div>
+                      <div class="brand-r-type-row">
+                        <span class="brand-r-type-lbl">H1</span>
+                        <span
+                          style="
+                            font-size: 15px;
+                            font-weight: 900;
+                            color: var(--dark);
+                            font-family: &quot;Syne&quot;, sans-serif;
+                          "
+                          >Headline Bold</span
+                        >
+                      </div>
+                      <div class="brand-r-type-row">
+                        <span class="brand-r-type-lbl">Body</span>
+                        <span style="font-size: 9px; color: #aaa"
+                          >Regular, readable at scale.</span
+                        >
+                      </div>
+                      <div style="display: flex; gap: 5px; margin-top: 2px">
+                        <div
+                          class="pal-btn"
+                          style="
+                            background: var(--blue);
+                            color: #fff;
+                            border-color: var(--blue);
+                          "
+                        >
+                          Primary
+                        </div>
+                        <div
+                          class="pal-btn"
+                          style="color: var(--blue); border-color: var(--blue)"
+                        >
+                          Outline
+                        </div>
+                        <div
+                          class="pal-btn"
+                          style="
+                            background: #f0f0ee;
+                            color: var(--dark);
+                            border-color: #ddd;
+                          "
+                        >
+                          Light
+                        </div>
+                      </div>
+                    </div>
+                    <div class="brand-done">
+                      <div class="ec-done-dot"></div>
+                      Brand system complete
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Brand &amp; Identity</span
+                    >
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d3">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p3"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">Brand &amp; Identity</div>
+                <div class="scard-meta-sub">
+                  Logo, type, colour, and brand systems that bring clarity to
+                  every touchpoint.
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════
+             CARD 4: E-COMMERCE
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c4">
+                <div class="stage on" id="c4s1">
+                  <div class="s1-bg">
+                    <div class="wf-browser">
+                      <div class="wf-bar">
+                        <div
+                          class="wf-circle"
+                          style="background: #ff5f57"
+                        ></div>
+                        <div
+                          class="wf-circle"
+                          style="background: #febc2e"
+                        ></div>
+                        <div
+                          class="wf-circle"
+                          style="background: #28c840"
+                        ></div>
+                        <div class="wf-url"></div>
+                        <div
+                          style="
+                            font-size: 7px;
+                            color: #888;
+                            font-family: var(--mono);
+                          "
+                        >
+                          shopify.com/admin
+                        </div>
+                      </div>
+                      <div style="background: #f8f8f6; padding: 8px">
+                        <div
+                          style="
+                            height: 90px;
+                            background: linear-gradient(
+                              135deg,
+                              #1a2030,
+                              #2a3545
+                            );
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 6px;
+                            position: relative;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            class="wf-hero-shimmer"
+                            style="animation-delay: 0.3s"
+                          ></div>
+                          <div
+                            style="
+                              font-family: &quot;Syne&quot;, sans-serif;
+                              font-size: 13px;
+                              font-weight: 900;
+                              color: #fff;
+                              text-align: center;
+                              line-height: 1.2;
+                              z-index: 1;
+                            "
+                          >
+                            Spring Drop<br /><span
+                              style="
+                                font-size: 9px;
+                                opacity: 0.6;
+                                font-weight: 400;
+                              "
+                              >New collection live</span
+                            >
+                          </div>
+                        </div>
+                        <div
+                          style="
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 5px;
+                          "
+                        >
+                          <div
+                            style="
+                              background: #fff;
+                              border-radius: 5px;
+                              border: 0.5px solid #e0e0e0;
+                              padding: 5px;
+                            "
+                          >
+                            <div
+                              style="
+                                height: 36px;
+                                background: linear-gradient(
+                                  135deg,
+                                  #dbeeff,
+                                  #c0d8f0
+                                );
+                                border-radius: 3px;
+                                margin-bottom: 4px;
+                                position: relative;
+                                overflow: hidden;
+                              "
+                            >
+                              <div
+                                class="wf-hero-shimmer"
+                                style="animation-delay: 0.6s"
+                              ></div>
+                            </div>
+                            <div
+                              style="
+                                height: 5px;
+                                background: #e0e0e0;
+                                border-radius: 2px;
+                                width: 75%;
+                                margin-bottom: 2px;
+                              "
+                            ></div>
+                            <div
+                              style="
+                                height: 5px;
+                                background: var(--blue);
+                                border-radius: 2px;
+                                width: 40%;
+                                opacity: 0.7;
+                              "
+                            ></div>
+                          </div>
+                          <div
+                            style="
+                              background: #fff;
+                              border-radius: 5px;
+                              border: 0.5px solid #e0e0e0;
+                              padding: 5px;
+                            "
+                          >
+                            <div
+                              style="
+                                height: 36px;
+                                background: linear-gradient(
+                                  135deg,
+                                  #dbeeff,
+                                  #c0d8f0
+                                );
+                                border-radius: 3px;
+                                margin-bottom: 4px;
+                                position: relative;
+                                overflow: hidden;
+                              "
+                            >
+                              <div
+                                class="wf-hero-shimmer"
+                                style="animation-delay: 0.9s"
+                              ></div>
+                            </div>
+                            <div
+                              style="
+                                height: 5px;
+                                background: #e0e0e0;
+                                border-radius: 2px;
+                                width: 60%;
+                                margin-bottom: 2px;
+                              "
+                            ></div>
+                            <div
+                              style="
+                                height: 5px;
+                                background: var(--blue);
+                                border-radius: 2px;
+                                width: 45%;
+                                opacity: 0.7;
+                              "
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>E-Commerce</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Set up a Shopify store with custom checkout and Spring
+                      drop landing pages.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+                <div class="stage" id="c4s2">
+                  <div class="s2-wrap">
+                    <div class="proc-icon-wrap">🛍️</div>
+                    <div class="proc-label">Configuring store</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>E-Commerce</span
+                    >
+                  </div>
+                </div>
+                <div class="stage" id="c4s3">
+                  <img class="s3-img" src="/public//flier/image6.png" alt="" />
+                  <div class="s3-grad"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>E-Commerce</span
+                    >
+                  </div>
+                  <div class="s3-badge">
+                    <div class="s3-badge-eyebrow">Delivered</div>
+                    <div class="s3-badge-title">Store live · converting</div>
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d4">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p4"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">E-Commerce</div>
+                <div class="scard-meta-sub">
+                  Shopify and Next.js stores optimised to convert from day one.
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════
+             CARD 5: CAMPAIGN ANALYTICS
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c5">
+                <div class="stage on" id="c5s1">
+                  <div class="s1-bg">
+                    <div
+                      style="
+                        background: #0d1117;
+                        position: absolute;
+                        inset: 0;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: var(--syne);
+                          font-size: 11px;
+                          font-weight: 800;
+                          color: rgba(255, 255, 255, 0.5);
+                          margin-bottom: 10px;
+                        "
+                      >
+                        Analytics Dashboard
+                      </div>
+                      <div
+                        style="
+                          display: grid;
+                          grid-template-columns: 1fr 1fr 1fr;
+                          gap: 6px;
+                          margin-bottom: 10px;
+                        "
+                      >
+                        <div
+                          style="
+                            background: rgba(255, 255, 255, 0.04);
+                            border-radius: 7px;
+                            padding: 7px;
+                            border: 0.5px solid rgba(255, 255, 255, 0.06);
+                          "
+                        >
+                          <div
+                            style="
+                              font-size: 6.5px;
+                              color: rgba(255, 255, 255, 0.3);
+                            "
+                          >
+                            ROAS
+                          </div>
+                          <div
+                            style="
+                              font-size: 16px;
+                              font-weight: 900;
+                              color: #fff;
+                            "
+                          >
+                            6.4×
+                          </div>
+                          <div
+                            style="
+                              font-size: 7px;
+                              color: #22a05a;
+                              font-weight: 700;
+                            "
+                          >
+                            ↑ high
+                          </div>
+                        </div>
+                        <div
+                          style="
+                            background: rgba(255, 255, 255, 0.04);
+                            border-radius: 7px;
+                            padding: 7px;
+                            border: 0.5px solid rgba(255, 255, 255, 0.06);
+                          "
+                        >
+                          <div
+                            style="
+                              font-size: 6.5px;
+                              color: rgba(255, 255, 255, 0.3);
+                            "
+                          >
+                            Reach
+                          </div>
+                          <div
+                            style="
+                              font-size: 16px;
+                              font-weight: 900;
+                              color: #fff;
+                            "
+                          >
+                            248K
+                          </div>
+                          <div
+                            style="
+                              font-size: 7px;
+                              color: #22a05a;
+                              font-weight: 700;
+                            "
+                          >
+                            ↑ +38%
+                          </div>
+                        </div>
+                        <div
+                          style="
+                            background: rgba(255, 255, 255, 0.04);
+                            border-radius: 7px;
+                            padding: 7px;
+                            border: 0.5px solid rgba(255, 255, 255, 0.06);
+                          "
+                        >
+                          <div
+                            style="
+                              font-size: 6.5px;
+                              color: rgba(255, 255, 255, 0.3);
+                            "
+                          >
+                            CPA
+                          </div>
+                          <div
+                            style="
+                              font-size: 16px;
+                              font-weight: 900;
+                              color: #fff;
+                            "
+                          >
+                            $12
+                          </div>
+                          <div
+                            style="
+                              font-size: 7px;
+                              color: #22a05a;
+                              font-weight: 700;
+                            "
+                          >
+                            ↓ low
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          background: rgba(255, 255, 255, 0.03);
+                          border-radius: 8px;
+                          padding: 10px;
+                          border: 0.5px solid rgba(255, 255, 255, 0.05);
+                        "
+                      >
+                        <div
+                          style="
+                            display: flex;
+                            align-items: flex-end;
+                            gap: 5px;
+                            height: 50px;
+                          "
+                        >
+                          <div
+                            style="
+                              flex: 1;
+                              border-radius: 3px 3px 0 0;
+                              background: rgba(25, 128, 194, 0.35);
+                              height: 40%;
+                            "
+                          ></div>
+                          <div
+                            style="
+                              flex: 1;
+                              border-radius: 3px 3px 0 0;
+                              background: rgba(25, 128, 194, 0.45);
+                              height: 55%;
+                            "
+                          ></div>
+                          <div
+                            style="
+                              flex: 1;
+                              border-radius: 3px 3px 0 0;
+                              background: rgba(25, 128, 194, 0.55);
+                              height: 45%;
+                            "
+                          ></div>
+                          <div
+                            style="
+                              flex: 1;
+                              border-radius: 3px 3px 0 0;
+                              background: rgba(25, 128, 194, 0.7);
+                              height: 70%;
+                            "
+                          ></div>
+                          <div
+                            style="
+                              flex: 1;
+                              border-radius: 3px 3px 0 0;
+                              background: var(--blue);
+                              height: 90%;
+                            "
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Campaign Analytics</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Build a real-time dashboard showing ROAS, reach, CPA, and
+                      conversions.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+                <div class="stage" id="c5s2">
+                  <div class="s2-wrap">
+                    <div class="proc-icon-wrap">📊</div>
+                    <div class="proc-label">Wiring live data</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Campaign Analytics</span
+                    >
+                  </div>
+                </div>
+                <div class="stage" id="c5s3">
+                  <div class="analytics-result">
+                    <div class="an-header">
+                      <div class="an-title">Live Dashboard</div>
+                      <div class="an-date">Real-time · May 2025</div>
+                    </div>
+                    <div class="an-kpis">
+                      <div class="an-kpi">
+                        <div class="an-kpi-lbl">ROAS</div>
+                        <div class="an-kpi-val">6.4×</div>
+                        <div class="an-kpi-delta">↑ Strong</div>
+                      </div>
+                      <div class="an-kpi">
+                        <div class="an-kpi-lbl">Reach</div>
+                        <div class="an-kpi-val">248K</div>
+                        <div class="an-kpi-delta">↑ +38%</div>
+                      </div>
+                      <div class="an-kpi">
+                        <div class="an-kpi-lbl">Conv.</div>
+                        <div class="an-kpi-val">3.2K</div>
+                        <div class="an-kpi-delta">↑ +52%</div>
+                      </div>
+                    </div>
+                    <div class="an-chart">
+                      <div class="an-chart-bars">
+                        <div class="an-bar-wrap">
+                          <div
+                            class="an-bar"
+                            style="
+                              height: 28%;
+                              background: rgba(25, 128, 194, 0.4);
+                            "
+                          ></div>
+                          <div class="an-bar-lbl">Jan</div>
+                        </div>
+                        <div class="an-bar-wrap">
+                          <div
+                            class="an-bar"
+                            style="
+                              height: 42%;
+                              background: rgba(25, 128, 194, 0.5);
+                            "
+                          ></div>
+                          <div class="an-bar-lbl">Feb</div>
+                        </div>
+                        <div class="an-bar-wrap">
+                          <div
+                            class="an-bar"
+                            style="
+                              height: 35%;
+                              background: rgba(25, 128, 194, 0.55);
+                            "
+                          ></div>
+                          <div class="an-bar-lbl">Mar</div>
+                        </div>
+                        <div class="an-bar-wrap">
+                          <div
+                            class="an-bar"
+                            style="
+                              height: 58%;
+                              background: rgba(25, 128, 194, 0.65);
+                            "
+                          ></div>
+                          <div class="an-bar-lbl">Apr</div>
+                        </div>
+                        <div class="an-bar-wrap">
+                          <div
+                            class="an-bar"
+                            style="height: 75%; background: var(--blue)"
+                          ></div>
+                          <div class="an-bar-lbl">May</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="an-roas">
+                      <div class="an-roas-lbl">ROAS · Campaign total</div>
+                      <div class="an-roas-val">6.4×</div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Campaign Analytics</span
+                    >
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d5">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p5"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">Campaign Analytics</div>
+                <div class="scard-meta-sub">
+                  Live dashboards, KPI benchmarks, and weekly insight reports.
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════
+             CARD 6: ILLUSTRATION
+        ═══════════════════════════════ -->
+            <div class="scard">
+              <div class="scard-d3"></div>
+              <div class="scard-d2"></div>
+              <div class="scard-inner" id="c6">
+                <div class="stage on" id="c6s1">
+                  <div class="s1-bg">
+                    <img
+                      class="s3-img"
+                      src="/public//flier/image4.png"
+                      alt=""
+                      style="filter: brightness(0.55)"
+                    />
+                  </div>
+                  <div class="s1-overlay"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Illustration</span
+                    >
+                  </div>
+                  <div class="s1-content">
+                    <div class="prompt-bubble">
+                      Create a 4-panel editorial comic for our product launch
+                      announcement.
+                    </div>
+                    <div class="prompt-ts">you · just now</div>
+                  </div>
+                </div>
+                <div class="stage" id="c6s2">
+                  <div class="s2-wrap">
+                    <div class="proc-icon-wrap">✏️</div>
+                    <div class="proc-label">Rendering illustrations</div>
+                    <div class="proc-dots">
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                      <div class="proc-d"></div>
+                    </div>
+                  </div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Illustration</span
+                    >
+                  </div>
+                </div>
+                <div class="stage" id="c6s3">
+                  <img class="s3-img" src="/public//flier/image10.png" alt="" />
+                  <div class="s3-grad"></div>
+                  <div class="chip-bar">
+                    <span class="chip"
+                      ><span class="chip-dot"></span>Illustration</span
+                    >
+                  </div>
+                  <div class="s3-badge">
+                    <div class="s3-badge-eyebrow">Delivered</div>
+                    <div class="s3-badge-title">Illustration pack ready</div>
+                  </div>
+                </div>
+                <div class="play-overlay">
+                  <div class="play-btn">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="pdots" id="d6">
+                  <div class="pd on"></div>
+                  <div class="pd"></div>
+                  <div class="pd"></div>
+                </div>
+                <div class="pbar"><div class="pfill" id="p6"></div></div>
+              </div>
+              <div class="scard-meta">
+                <div class="scard-meta-title">Illustration</div>
+                <div class="scard-meta-sub">
+                  Editorial illustration, comics, and icon systems for campaigns
+                  and brand.
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /strip -->
+        </div>
+        <!-- /strip-wrap -->
+      </div>
+      <!-- /section -->
+
+      <!-- PROGRESS DOTS -->
+      <div id="prog-dots">
+        <button class="prog-dot on"></button>
+        <button class="prog-dot"></button>
+        <button class="prog-dot"></button>
+        <button class="prog-dot"></button>
+        <button class="prog-dot"></button>
+        <button class="prog-dot"></button>
+      </div>
+    </div>
+    <!-- /wrapper -->
+
+    <script>
+      // ── STRIP NAVIGATION ──────────────────────────────────────────
+      const CARDS = 6;
+      const CARD_W = 330;
+      const CARD_GAP = 22;
+      const STEP = CARD_W + CARD_GAP;
+      const VISIBLE = 3.2;
+      let stripOffset = 0;
+      let activeCard = 0;
+
+      function setStrip(idx) {
+        activeCard = Math.max(0, Math.min(CARDS - 1, idx));
+        const maxOff = (CARDS - VISIBLE) * STEP;
+        stripOffset = Math.min(activeCard * STEP, maxOff);
+        document.getElementById("strip").style.transform =
+          "translateX(-" + stripOffset + "px)";
+        document
+          .querySelectorAll(".prog-dot")
+          .forEach((d, i) => d.classList.toggle("on", i === activeCard));
+      }
+      function stripNext() {
+        setStrip(activeCard + 1);
+      }
+      function stripPrev() {
+        setStrip(activeCard - 1);
+      }
+
+      document
+        .querySelectorAll(".prog-dot")
+        .forEach((d, i) => d.addEventListener("click", () => setStrip(i)));
+
+      // scroll strip
+      let wheelAcc = 0;
+      document.getElementById("strip-wrap").addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          wheelAcc += e.deltaY;
+          if (wheelAcc > 80) {
+            stripNext();
+            wheelAcc = 0;
+          } else if (wheelAcc < -80) {
+            stripPrev();
+            wheelAcc = 0;
+          }
+        },
+        { passive: false },
+      );
+
+      // ── CARD CYCLING ──────────────────────────────────────────────
+      // Timings: Stage1=3s (prompt), Stage2=1.8s (processing), Stage3=7s (result — LONG)
+      const S1 = 3000,
+        S2 = 1800,
+        S3 = 7000;
+      const TOTAL = S1 + S2 + S3;
+      const TRANS = 500;
+
+      [
+        { id: "c1", dots: "d1", fill: "p1" },
+        { id: "c2", dots: "d2", fill: "p2" },
+        { id: "c3", dots: "d3", fill: "p3" },
+        { id: "c4", dots: "d4", fill: "p4" },
+        { id: "c5", dots: "d5", fill: "p5" },
+        { id: "c6", dots: "d6", fill: "p6" },
+      ].forEach(function (cfg, ci) {
+        var stageEls = [
+          document.getElementById(cfg.id + "s1"),
+          document.getElementById(cfg.id + "s2"),
+          document.getElementById(cfg.id + "s3"),
+        ];
+        var dotEls = document.querySelectorAll("#" + cfg.dots + " .pd");
+        var fillEl = document.getElementById(cfg.fill);
+        var cur = 0;
+
+        function showStage(n) {
+          stageEls.forEach((s, i) => s.classList.toggle("on", i === n));
+          dotEls.forEach((d, i) => d.classList.toggle("on", i === n));
+          cur = n;
+        }
+
+        function runCycle() {
+          // Reset bar
+          fillEl.style.transition = "none";
+          fillEl.style.width = "0%";
+
+          showStage(0); // Stage 1: prompt
+
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              fillEl.style.transition = "width " + TOTAL + "ms linear";
+              fillEl.style.width = "100%";
+
+              // → Stage 2 after S1
+              setTimeout(() => {
+                showStage(1);
+              }, S1);
+
+              // → Stage 3 after S1+S2
+              setTimeout(() => {
+                showStage(2);
+              }, S1 + S2);
+
+              // → loop after full cycle
+              setTimeout(() => {
+                setTimeout(runCycle, TRANS);
+              }, TOTAL);
+            }),
+          );
+        }
+
+        // Stagger card starts
+        setTimeout(runCycle, ci * 700);
+      });
+    </script>
+  </body>
+</html>
