@@ -5,8 +5,8 @@ import Hero from "../components/home/Hero";
 import WhatWeDo from "../components/home/WhatWeDo";
 import Experience from "../components/home/Experience";
 import Contact from "../components/home/Contact";
+import CTASection from "@/components/home/CTASection";
 
-// ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function MADLanding() {
   const [dark, setDark] = useState(false);
   const toggle = useCallback(() => setDark((d) => !d), []);
@@ -14,22 +14,24 @@ export default function MADLanding() {
   useEffect(() => {
     const key = "mad:homes:scroll";
     const originalRestoration = window.history.scrollRestoration;
+
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
 
     const saved = sessionStorage.getItem(key);
     const savedY = saved ? Number(saved) : 0;
-    const restoreY = Number.isFinite(savedY) && savedY > 0 ? savedY : 0;
 
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => window.scrollTo(0, restoreY));
+      requestAnimationFrame(() => window.scrollTo(0, savedY || 0));
     });
 
     let ticking = false;
+
     const remember = () => {
       if (ticking) return;
       ticking = true;
+
       requestAnimationFrame(() => {
         sessionStorage.setItem(key, String(window.scrollY));
         ticking = false;
@@ -42,6 +44,7 @@ export default function MADLanding() {
     return () => {
       window.removeEventListener("scroll", remember);
       window.removeEventListener("pagehide", remember);
+
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = originalRestoration;
       }
@@ -51,31 +54,31 @@ export default function MADLanding() {
   return (
     <ThemeCtx.Provider value={{ dark, toggle }}>
       <div className={dark ? "dark" : ""}>
-        <div
-          className="font-sans transition-colors duration-300"
-          style={{ background: dark ? "#141413" : "#f5f1eb" }}
-        >
+        <div className="font-sans transition-colors duration-300 bg-azure-50 dark:bg-dark-900">
+          
           <style>{`
-            @keyframes pulseGlow { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
-            @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-            @media (max-width: 767px) {
-              .mad-hero-left { width: 100% !important; height: 44vw !important; min-height: 200px !important; }
-              .mad-exp-devices { display: none !important; }
-              .mad-contact-grid { grid-template-columns: 1fr !important; }
-              .mad-contact-grid > div:first-child { border-right: none !important; padding: 40px 24px !important; }
-              .mad-contact-grid > div:last-child { padding: 40px 24px 64px !important; min-height: 500px !important; }
-              .mad-nav-ul { display: none !important; }
-              .mad-trusted { padding: 28px 20px !important; }
-            }
-            input::placeholder, textarea::placeholder { color: rgba(24,24,23,0.28) !important; }
             * { box-sizing: border-box; }
+
+            @media (max-width: 767px) {
+              .mad-nav-ul { display: none !important; }
+            }
+
+            input::placeholder, textarea::placeholder {
+              color: rgba(24,24,23,0.28) !important;
+            }
           `}</style>
+
           <Nav />
           <div className="h-[60px]" />
-          <Hero />
-          <WhatWeDo />
-          <Experience />
-          <Contact />
+
+          <div className="max-w-[1400px] mx-auto">
+            <Hero />
+            <WhatWeDo />
+            <CTASection />
+            <Experience />
+            <Contact />
+          </div>
+
         </div>
       </div>
     </ThemeCtx.Provider>

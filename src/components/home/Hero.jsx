@@ -38,25 +38,28 @@ const HERO_SLIDES = [
 ];
 
 const THUMB_IMGS = [
-  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=300&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1558655146-d09347e92766?w=300&q=75&auto=format&fit=crop",
+  "/flier/image.png",
+  "/flier/image2.png",
+  "/flier/image3.png",
+  "/flier/image4.png",
+  "/flier/image5.png",
+  "/flier/image6.png",
+  "/flier/image7.png",
+  "/flier/image8.png",
 ];
 
+const THUMB_W = 266;
+const THUMB_H = 186;
+
 const THUMB_FINAL = [
-  { x: -50, y: -30, w: 260, h: 182, r: -2.5 },
-  { x: -20, y: -33, w: 274, h: 192, r: 1.5 },
-  { x: +20, y: -29, w: 256, h: 180, r: -1 },
-  { x: +50, y: -34, w: 266, h: 186, r: 2 },
-  { x: -48, y: +30, w: 262, h: 184, r: 2.5 },
-  { x: -18, y: +33, w: 270, h: 190, r: -1.5 },
-  { x: +18, y: +30, w: 258, h: 182, r: 1 },
-  { x: +48, y: +34, w: 264, h: 186, r: -2 },
+  { x: -50, y: -30, r: -2.5 },
+  { x: -20, y: -33, r: 1.5 },
+  { x: +20, y: -29, r: -1 },
+  { x: +50, y: -34, r: 2 },
+  { x: -48, y: +30, r: 2.5 },
+  { x: -18, y: +33, r: -1.5 },
+  { x: +18, y: +30, r: 1 },
+  { x: +48, y: +34, r: -2 },
 ];
 
 function PhoneNotif({ show, msg, sub }) {
@@ -80,10 +83,7 @@ function PhoneNotif({ show, msg, sub }) {
       }}
     >
       <div className="flex items-center gap-2">
-        <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-        
-        >
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0">
           <img src="mawhit.png" alt="ma logo" className="w-16 h-16" />
         </div>
         <div>
@@ -215,13 +215,16 @@ export default function Hero() {
   const collapseT = Math.min(1, Math.max(0, (rawPct * 3 - 2) * 2.5));
 
   return (
-    <div ref={wrapRef} className="relative h-[400vh]">
+    <div
+      ref={wrapRef}
+      className="relative h-[400vh] "
+    >
       <div
-        className="sticky top-[60px] flex overflow-hidden bg-azure-100 dark:bg-dark-900"
+        className="sticky top-[60px] flex overflow-hidden "
         style={{ height: "calc(100vh - 60px)" }}
       >
         <div
-          className="absolute inset-0 z-0 bg-white/70 dark:bg-azure-500/20"
+          className="absolute inset-0 z-0  dark:bg-azure-500/20"
           style={{ opacity: collapseT }}
         />
 
@@ -440,6 +443,8 @@ export default function Hero() {
               key={i}
               className="pointer-events-none absolute z-[15] h-[186px] w-[266px] overflow-hidden"
               style={{
+                width: THUMB_W,
+                height: THUMB_H,
                 left: `calc(50% + ${cx}%)`,
                 top: `calc(50% + ${cy}%)`,
                 transform: `translate(-50%, -50%) rotate(${tf.r}deg) scale(${sc})`,
@@ -463,8 +468,12 @@ export default function Hero() {
               <img
                 src={src}
                 alt=""
-                className="absolute left-0 right-0 bottom-0 w-full object-cover block"
-                style={{ top: 12, height: "calc(100% - 12px)" }}
+                className="absolute left-0 right-0 bottom-0 w-full object-contain block"
+                style={{
+                  top: 12,
+                  height: "calc(100% - 12px)",
+                  background: "#f4f4f2",
+                }}
               />
             </div>
           );
@@ -504,7 +513,10 @@ export default function Hero() {
           <div className="flex gap-3 justify-center flex-wrap">
             <button
               className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
-              style={{ background: "#1980c2", boxShadow: `0 4px 24px ${"#1980c2"}50` }}
+              style={{
+                background: "#1980c2",
+                boxShadow: `0 4px 24px ${"#1980c2"}50`,
+              }}
             >
               Start a Project →
             </button>
