@@ -45,21 +45,22 @@ const THUMB_IMGS = [
   "/flier/image5.png",
   "/flier/image6.png",
   "/flier/image7.png",
-  "/flier/image8.png",
+  // "/flier/image8.png",
+  
 ];
 
-const THUMB_W = 266;
-const THUMB_H = 186;
+const THUMB_W = 180;
+const THUMB_H = 156;
 
 const THUMB_FINAL = [
-  { x: -50, y: -30, r: -2.5 },
+  { x: -40, y: -30, r: -2.5 },
   { x: -20, y: -33, r: 1.5 },
-  { x: +20, y: -29, r: -1 },
-  { x: +50, y: -34, r: 2 },
-  { x: -48, y: +30, r: 2.5 },
-  { x: -18, y: +33, r: -1.5 },
-  { x: +18, y: +30, r: 1 },
-  { x: +48, y: +34, r: -2 },
+  { x: +42, y: +21, r: -2 },
+  { x: +35, y: -34, r: 2 },
+  { x: -38, y: +20, r: 2.5 },
+  { x: -18, y: +20, r: -1.5 },
+  { x: +18, y: +19, r: 1 },
+
 ];
 
 function PhoneNotif({ show, msg, sub }) {
@@ -248,7 +249,7 @@ export default function Hero() {
           <div
             className="absolute top-0 left-0 right-0 z-30 flex items-center overflow-hidden"
             style={{
-              height: `${collapseT * 18}px`,
+              height: `${collapseT * 12}px`,
               background: "rgba(22,22,24,0.96)",
               opacity: collapseT,
               padding: `0 ${collapseT * 8}px`,
@@ -367,7 +368,7 @@ export default function Hero() {
                   style={{
                     
                     
-                    fontWeight: 400,
+                    
                     fontSize: "clamp(24px,6vw,52px)",
                     lineHeight: 1.1,
                     letterSpacing: "-.02em",
@@ -499,7 +500,7 @@ export default function Hero() {
             style={{
               
               
-              fontWeight: 400,
+          
               fontSize: "clamp(28px,4.4vw,56px)",
               lineHeight: 1.1,
               letterSpacing: "-.02em",
