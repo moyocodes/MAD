@@ -28,22 +28,22 @@ export default function Nav() {
       <motion.span
         animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: "rgba(15,79,122,.7)", transformOrigin: "center" }}
       />
       <motion.span
         animate={open ? { opacity: 0 } : { opacity: 1 }}
         transition={{ duration: 0.15 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)" }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: "rgba(15,79,122,.7)" }}
       />
       <motion.span
         animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: "rgba(15,79,122,.7)", transformOrigin: "center" }}
       />
     </button>
   );
 
-  const inner = (light) => (
+  const inner = (_light) => (
     <>
       <img src="/ma.png" alt="MAD" className="h-40 w-36" />
       <div className="hidden md:flex gap-7">
@@ -52,9 +52,9 @@ export default function Nav() {
             key={l}
             href="#"
             className="text-[11px] tracking-[0.14em] uppercase font-semibold"
-            style={{ color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)", transition: "color .2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)")}
+            style={{ color: "rgba(15,79,122,.65)", transition: "color .2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#0f4f7a")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(15,79,122,.65)")}
           >
             {l}
           </a>
@@ -66,7 +66,7 @@ export default function Nav() {
       >
         Work With Us
       </button>
-      <Hamburger light={light} open={menuOpen} />
+      <Hamburger light={false} open={menuOpen} />
     </>
   );
 
@@ -90,9 +90,9 @@ export default function Nav() {
               minWidth: "min(92vw, 540px)",
               maxWidth: 720,
               borderRadius: 50,
-              backdropFilter: "blur(16px)",
-              background: "#d9ecfa",
-              border: "1px solid rgba(25,128,194,.18)",
+              backdropFilter: "blur(20px)",
+              background: "rgba(240,248,255,0.88)",
+              border: "1px solid rgba(25,128,194,.14)",
               padding: "0 20px",
               zIndex: 300,
               height: 52,
@@ -100,7 +100,7 @@ export default function Nav() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 24,
-              boxShadow: "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
+              boxShadow: "0 4px 28px rgba(25,128,194,.10), 0 1px 4px rgba(0,0,0,.04)",
               transformOrigin: "top center",
             }}
           >

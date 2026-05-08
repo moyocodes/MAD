@@ -171,7 +171,14 @@ export default function Hero() {
   const ns = SLIDES[(slide + 1) % SLIDES.length];
 
   return (
-    <div ref={wrapRef} style={{ height: "300vh", position: "relative", background: "#eef7fd" }}>
+    <div
+      ref={wrapRef}
+      style={{
+        height: "300vh",
+        position: "relative",
+        background: "transparent",
+      }}
+    >
       <div
         style={{
           position: "sticky",
@@ -188,7 +195,7 @@ export default function Hero() {
             zIndex: 0,
             opacity: collapseT,
             background:
-              "linear-gradient(160deg,#daeefb 0%,#b3d8f5 55%,#8cc3ef 100%)",
+              " linear-gradient(160deg, #d0d4d8 10%,#d0d4d8 20%, #a8d8f0 50%)",
           }}
         />
 

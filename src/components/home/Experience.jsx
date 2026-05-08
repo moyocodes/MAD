@@ -503,8 +503,7 @@ export default function Experience() {
       ref={ref}
       className="pb-24 font-sans overflow-x-hidden"
       style={{
-        background:
-          "linear-gradient(180deg,#5aa7e6 0%,#fff8f2 22%,#fef3ea 60%,#fdeee2 100%)",
+        background: "transparent",
       }}
     >
       <div className="max-w-[1100px] mx-auto px-4 sm:px-8">

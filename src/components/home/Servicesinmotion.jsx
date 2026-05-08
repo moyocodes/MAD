@@ -1551,7 +1551,7 @@ export default function ServicesInMotion() {
         position: "relative",
         height: sectionHeight,
         paddingBottom: 0,
-        background: "linear-gradient(180deg,#f5f5f4 0%,rgba(170,170,168,.18) 50%,rgba(170,170,168,.28) 100%)",
+        background: "transparent",
       }}
     >
       <div
@@ -1562,7 +1562,7 @@ export default function ServicesInMotion() {
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(180deg,#f5f5f4 0%,rgba(170,170,168,.18) 50%,rgba(170,170,168,.28) 100%)",
+          background: "transparent",
         }}
       >
         {/* Header */}

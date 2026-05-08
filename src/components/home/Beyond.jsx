@@ -1,123 +1,208 @@
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+
+function CountUp({ to, suffix = "", duration = 1400, inView }) {
+  const [val, setVal] = useState(0);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (!inView) { setVal(0); return; }
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setVal(Math.round(eased * to));
+      if (t < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [inView, to, duration]);
+
+  return <>{val}{suffix}</>;
+}
+
 export default function Beyond() {
+  const [inView, setInView] = useState(false);
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.35 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section
       style={{
-        padding: "48px 24px",
-        background:
-          "linear-gradient(180deg, #fdeee2 0%, #eef4fa 45%, #b3d8f5 75%, #1980c2 100%)",
+        background: "transparent",
+        padding: 0,
       }}
     >
+      {/* ── Content area ── */}
       <div
-        className="flex flex-col sm:flex-row"
         style={{
           maxWidth: 1100,
           margin: "0 auto",
-          borderRadius: 0,
-          background: "transparent",
-          overflow: "hidden",
-          alignItems: "stretch",
-          minHeight: 300,
-          position: "relative",
+          padding: "clamp(56px,7vw,96px) clamp(20px,4vw,48px) clamp(48px,5vw,72px)",
         }}
       >
-        {/* Image — top on mobile, right on sm+ */}
-        <div
-          className="order-1 sm:order-2 w-full sm:w-[clamp(200px,32%,380px)] h-48 sm:h-auto"
-          style={{ flexShrink: 0, position: "relative", overflow: "hidden" }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center top",
-            }}
-          />
-        </div>
-
-        {/* Text — below image on mobile, left on sm+ */}
-        <div
-          className="order-2 sm:order-1"
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "clamp(28px,4vw,48px) clamp(24px,4vw,56px)",
-            textAlign: "center",
-            zIndex: 1,
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "clamp(20px,2.4vw,30px)",
-              fontWeight: 700,
-              lineHeight: 1.2,
-              letterSpacing: -0.3,
-              color: "#181817",
-              marginBottom: 12,
-            }}
-          >
-            Not sure where to start?
-          </h2>
-          <p
-            style={{
-              fontSize: "clamp(13px,1.4vw,15px)",
-              color: "#555",
-              lineHeight: 1.65,
-              marginBottom: 28,
-              maxWidth: 400,
-            }}
-          >
-            Unlock MAD's team of expert designers, developers and strategists —
-            and get exclusive access to our full service offering.
-          </p>
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <button
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+          {/* Left — heading */}
+          <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1] }}>
+            <div
               style={{
-                background: "#181817",
-                color: "#fff",
-                border: "none",
-                borderRadius: 6,
-                padding: "11px 26px",
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                background: "rgba(25,128,194,.1)",
+                border: "1px solid rgba(25,128,194,.2)",
+                borderRadius: 99,
+                padding: "4px 12px 4px 8px",
+                marginBottom: 22,
+                width: "fit-content",
               }}
             >
-              Start a Project →
-            </button>
-            <button
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#1980c2" }} />
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: "#1980c2", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                Work With Us
+              </span>
+            </div>
+            <h2
               style={{
-                background: "#fff",
+                fontSize: "clamp(26px,3.2vw,46px)",
+                fontWeight: 800,
+                lineHeight: 1.08,
+                letterSpacing: -0.7,
                 color: "#181817",
-                border: "1.5px solid rgba(24,24,23,.18)",
-                borderRadius: 6,
-                padding: "11px 26px",
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
+                marginBottom: 16,
               }}
             >
-              View Our Work
-            </button>
-          </div>
+              Your idea deserves
+              <br />
+              expert hands.
+            </h2>
+            <p
+              style={{
+                fontSize: "clamp(13px,1.3vw,15px)",
+                color: "#556",
+                lineHeight: 1.72,
+                maxWidth: 380,
+              }}
+            >
+              Unlock MAD's full team of designers, developers &amp; strategists —
+              built to take your vision from concept to shipped product.
+            </p>
+          </motion.div>
+
+          {/* Right — stats + CTAs */}
+          <motion.div className="flex flex-col justify-between" style={{ paddingTop: "clamp(0px,1vw,16px)" }} initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1], delay:0.15 }}>
+            {/* Count-up stats */}
+            <div
+              ref={statsRef}
+              style={{ display: "flex", gap: "clamp(24px,4vw,52px)", marginBottom: 36, flexWrap: "wrap" }}
+            >
+              {[
+                { to: 50, suffix: "+", label: "Projects launched" },
+                { to: 98, suffix: "%", label: "Client retention" },
+                { to: 6,  suffix: " wk", label: "Avg. ship time" },
+              ].map(({ to, suffix, label }) => (
+                <div key={label}>
+                  <div
+                    style={{
+                      fontSize: "clamp(28px,2.8vw,40px)",
+                      fontWeight: 900,
+                      color: "#1980c2",
+                      letterSpacing: -0.6,
+                      lineHeight: 1,
+                      marginBottom: 5,
+                    }}
+                  >
+                    <CountUp to={to} suffix={suffix} inView={inView} />
+                  </div>
+                  <div style={{ fontSize: 10.5, color: "#888", fontWeight: 600, letterSpacing: "0.05em" }}>
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <Button className="bg-[#181817] text-white border-none rounded-lg px-7 py-3 text-xs font-bold tracking-wider h-auto hover:bg-[#2a2a28]">
+                Start a Project →
+              </Button>
+              <Button variant="outline" className="bg-white/70 text-[#181817] border-[rgba(24,24,23,.14)] rounded-lg px-7 py-3 text-xs font-semibold tracking-wider h-auto">
+                View Our Work
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </div>
+
+      {/* ── Landscape photo — fades into Contact ── */}
+      <motion.div style={{ position: "relative", height: "clamp(260px,26vw,400px)", overflow: "hidden" }} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.8, ease:[0.16,1,0.3,1] }}>
+        <img
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80&auto=format&fit=crop"
+          alt=""
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%" }}
+        />
+        {/* Floating badge */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 32,
+            left: "clamp(20px,4vw,48px)",
+            background: "rgba(255,255,255,0.93)",
+            backdropFilter: "blur(16px)",
+            borderRadius: 14,
+            padding: "12px 18px",
+            boxShadow: "0 8px 28px rgba(0,0,0,.12)",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            zIndex: 5,
+          }}
+        >
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 9,
+              background: "linear-gradient(135deg,#1980c2,#45b3f5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              fontSize: 16,
+              color: "#fff",
+            }}
+          >
+            ✓
+          </div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 800, color: "#181817", lineHeight: 1.2 }}>Delivered on time</div>
+            <div style={{ fontSize: 10, color: "#888", fontWeight: 500 }}>100% of our projects</div>
+          </div>
+        </div>
+        {/* Bottom fade into Contact bg */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "70%",
+            background: "linear-gradient(to bottom, transparent 0%, #bddff5 100%)",
+            pointerEvents: "none",
+          }}
+        />
+      </motion.div>
     </section>
   );
 }

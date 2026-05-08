@@ -36,7 +36,9 @@ export default function MADLandingPage() {
     // Restore last scroll position after render settles
     const saved = sessionStorage.getItem("mad_scroll");
     if (saved) {
-      requestAnimationFrame(() => window.scrollTo({ top: Number(saved), behavior: "instant" }));
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: Number(saved), behavior: "instant" }),
+      );
     }
 
     // Save scroll position continuously
@@ -53,7 +55,13 @@ export default function MADLandingPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <main style={{ background: "linear-gradient(180deg, #f5f5f4 0%, #f7f7f5 38%, #faf7f4 69%, #f6fafb 54%, #f8fafb 100%)", minHeight: "100vh" }}>
+    <main
+      style={{
+        background:
+          "linear-gradient(180deg, #f5f5f4 0%, #f6f4f2 28%, #fdf4ed 52%, #f3f7fb 78%, #f5f8fc 100%)",
+        minHeight: "100vh",
+      }}
+    >
       <Nav />
       <Hero />
       <WhatWeDo />

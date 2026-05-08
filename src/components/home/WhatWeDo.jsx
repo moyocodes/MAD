@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const WWD = [
   {
@@ -65,14 +66,13 @@ export default function WhatWeDo() {
   return (
     <section
       style={{
-        background:
-          "linear-gradient(180deg,#eef7fd 0%,#d9ecfa 40%,#b3d8f5 100%)",
+        background: "transparent",
         paddingTop: 72,
       }}
     >
       {/* Intro row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
-        <div>
+        <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1] }}>
           <p
             className="text-azure-500"
             style={{
@@ -98,8 +98,8 @@ export default function WhatWeDo() {
             <span className="text-azure-500">better</span> than they were{" "}
             <span style={{ color: "#F26522" }}>yesterday.</span>
           </h2>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1], delay:0.12 }}>
           <p
             style={{
               fontSize: 15,
@@ -123,11 +123,11 @@ export default function WhatWeDo() {
             We create the conditions for growth by helping organizations balance
             business, design, and technology.
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Image grid */}
-      <div className="max-w-[1100px] mx-auto px-1">
+      <motion.div className="max-w-[1100px] mx-auto px-1" initial={{ opacity:0, y:36 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.7, ease:[0.16,1,0.3,1], delay:0.08 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
           {/* Big left */}
           <div
@@ -497,7 +497,7 @@ export default function WhatWeDo() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
