@@ -8,8 +8,7 @@ function injectCSS() {
   s.id = "_mad";
   s.textContent = `
     *{box-sizing:border-box;margin:0;padding:0}
-    html{overflow-x:hidden;max-width:100%}
-    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff;color:#181817;overflow-x:hidden;max-width:100%;position:relative}
+    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff;color:#181817;overflow-x:hidden}
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
     .sh{animation:shimmer 1.8s linear infinite}
     @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -44,24 +43,49 @@ function Nav() {
   const Hamburger = ({ light, open }) => (
     <button
       className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full border-none"
-      style={{ background: "transparent", cursor: "pointer", padding: 0, flexShrink: 0 }}
+      style={{
+        background: "transparent",
+        cursor: "pointer",
+        padding: 0,
+        flexShrink: 0,
+      }}
       onClick={() => setMenuOpen((o) => !o)}
       aria-label="Menu"
     >
       <motion.span
         animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+        style={{
+          display: "block",
+          height: 1.5,
+          width: 22,
+          borderRadius: 2,
+          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
+          transformOrigin: "center",
+        }}
       />
       <motion.span
         animate={open ? { opacity: 0 } : { opacity: 1 }}
         transition={{ duration: 0.15 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)" }}
+        style={{
+          display: "block",
+          height: 1.5,
+          width: 22,
+          borderRadius: 2,
+          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
+        }}
       />
       <motion.span
         animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+        style={{
+          display: "block",
+          height: 1.5,
+          width: 22,
+          borderRadius: 2,
+          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
+          transformOrigin: "center",
+        }}
       />
     </button>
   );
@@ -75,9 +99,18 @@ function Nav() {
             key={l}
             href="#"
             className="text-[11px] tracking-[0.14em] uppercase font-semibold"
-            style={{ color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)", transition: "color .2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)")}
+            style={{
+              color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)",
+              transition: "color .2s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = light
+                ? "rgba(15,79,122,.65)"
+                : "rgba(255,255,255,.55)")
+            }
           >
             {l}
           </a>
@@ -123,7 +156,8 @@ function Nav() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 24,
-              boxShadow: "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
+              boxShadow:
+                "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
               transformOrigin: "top center",
             }}
           >
@@ -166,7 +200,13 @@ function Nav() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setMenuOpen(false)}
-              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.45)", zIndex: 290, backdropFilter: "blur(4px)" }}
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,.45)",
+                zIndex: 290,
+                backdropFilter: "blur(4px)",
+              }}
             />
             <motion.div
               key="drawer"
@@ -193,9 +233,22 @@ function Nav() {
                     href="#"
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.08 + i * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                      delay: 0.08 + i * 0.05,
+                      duration: 0.3,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
                     onClick={() => setMenuOpen(false)}
-                    style={{ display: "block", color: "rgba(255,255,255,.75)", fontSize: 22, fontWeight: 700, letterSpacing: -0.3, padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,.06)", textDecoration: "none" }}
+                    style={{
+                      display: "block",
+                      color: "rgba(255,255,255,.75)",
+                      fontSize: 22,
+                      fontWeight: 700,
+                      letterSpacing: -0.3,
+                      padding: "10px 0",
+                      borderBottom: "1px solid rgba(255,255,255,.06)",
+                      textDecoration: "none",
+                    }}
                   >
                     {l}
                   </motion.a>
@@ -205,7 +258,20 @@ function Nav() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.28, duration: 0.3 }}
-                style={{ marginTop: 28, background: "#1980c2", color: "#fff", border: "none", padding: "14px 32px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", borderRadius: 8, cursor: "pointer", width: "100%" }}
+                style={{
+                  marginTop: 28,
+                  background: "#1980c2",
+                  color: "#fff",
+                  border: "none",
+                  padding: "14px 32px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  width: "100%",
+                }}
               >
                 Work With Us
               </motion.button>
@@ -361,7 +427,7 @@ function Hero() {
       if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
-      const raw = Math.min(1, Math.max(0, -rect.top / total));
+      const raw = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
       setRawPct(raw);
       const phase = Math.min(2, Math.floor(raw * 3));
       if (phase !== prevPhaseRef.current) {
@@ -389,7 +455,7 @@ function Hero() {
   const ns = SLIDES[(slide + 1) % SLIDES.length];
 
   return (
-    <div ref={wrapRef} style={{ height: "300vh", position: "relative" }}>
+    <div ref={wrapRef} style={{ height: "100dvh", position: "relative" }}>
       <div
         style={{
           position: "sticky",
@@ -406,7 +472,7 @@ function Hero() {
             zIndex: 0,
             opacity: collapseT,
             background:
-              "linear-gradient(160deg,#0d0f14 0%,#181817 55%,#0f1c2e 100%)",
+              "linear-gradient(160deg,rgba(13,15,20,0.82) 0%,rgba(24,24,23,0.78) 55%,rgba(15,28,46,0.80) 100%)",
           }}
         />
 
@@ -1112,7 +1178,12 @@ function WhatWeDo() {
     >
       {/* Intro row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        >
           <p
             className="text-azure-500"
             style={{
@@ -1138,8 +1209,13 @@ function WhatWeDo() {
             <span className="text-azure-500">better</span> than they were{" "}
             <span style={{ color: "#F26522" }}>yesterday.</span>
           </h2>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
           <p
             style={{
               fontSize: 15,
@@ -1163,7 +1239,7 @@ function WhatWeDo() {
             We create the conditions for growth by helping organizations balance
             business, design, and technology.
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Image grid */}
@@ -2803,7 +2879,7 @@ const S1 = 3000,
   S3 = 90000;
 const LOOP = S1 + S2 + S3;
 
-function SvcCard({ config, startDelay, isActive }) {
+function SvcCard({ config, startDelay, isActive, compact }) {
   const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
   const rafRef = useRef(null);
@@ -2850,49 +2926,63 @@ function SvcCard({ config, startDelay, isActive }) {
         flexDirection: "column",
         gap: 12,
         position: "relative",
-        width: "min(380px,calc(100vw - 48px))",
-        paddingBottom: 8,
-        paddingRight: 8,
+        width: compact ? "100%" : "min(310px,calc(100vw - 48px))",
+        paddingBottom: compact ? 0 : 8,
+        paddingRight: compact ? 0 : 8,
+        opacity: compact ? (isActive ? 1 : 0.55) : 1,
+        transition: compact ? "opacity .4s" : "none",
       }}
     >
-      <div
-        className="bg-azure-500/[7%]"
-        style={{
-          position: "absolute",
-          top: 10,
-          left: 10,
-          right: 0,
-          height: 460,
-          borderRadius: 18,
-          zIndex: 0,
-        }}
-      />
-      <div
-        className="bg-azure-500/10"
-        style={{
-          position: "absolute",
-          top: 5,
-          left: 5,
-          right: -5,
-          height: 460,
-          border: "1px solid rgba(25,128,194,.18)",
-          borderRadius: 18,
-          zIndex: 1,
-        }}
-      />
+      {!compact && (
+        <>
+          <div
+            className="bg-azure-500/[7%]"
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              right: 0,
+              height: 460,
+              borderRadius: 18,
+              zIndex: 0,
+            }}
+          />
+          <div
+            className="bg-azure-500/10"
+            style={{
+              position: "absolute",
+              top: 5,
+              left: 5,
+              right: -5,
+              height: 460,
+              border: "1px solid rgba(25,128,194,.18)",
+              borderRadius: 18,
+              zIndex: 1,
+            }}
+          />
+        </>
+      )}
       <div
         style={{
           position: "relative",
           width: "100%",
-          height: 460,
-          borderRadius: 18,
+          height: compact ? 280 : 460,
+          borderRadius: compact ? 14 : 18,
           overflow: "hidden",
           zIndex: 2,
-          border: "1px solid rgba(25,128,194,.25)",
-          boxShadow: isActive
-            ? "0 20px 56px rgba(25,128,194,.14)"
-            : "0 6px 20px rgba(0,0,0,.07)",
-          transition: "box-shadow .5s",
+          border: compact
+            ? isActive
+              ? "2px solid #1980c2"
+              : "1px solid rgba(24,24,23,.08)"
+            : "1px solid rgba(25,128,194,.25)",
+          boxShadow: compact
+            ? isActive
+              ? "0 8px 32px rgba(25,128,194,.18)"
+              : "0 2px 12px rgba(0,0,0,.06)"
+            : isActive
+              ? "0 20px 56px rgba(25,128,194,.14)"
+              : "0 6px 20px rgba(0,0,0,.07)",
+          transition: "box-shadow .5s, border .4s",
         }}
       >
         <AnimatePresence>
@@ -3014,8 +3104,11 @@ function SvcCard({ config, startDelay, isActive }) {
 
 function ServicesInMotion() {
   const wrapRef = useRef(null);
+  const gridWrapRef = useRef(null);
   const [active, setActive] = useState(0);
-  const W = 380,
+  const [gridActive, setGridActive] = useState(-1);
+  const [viewMode, setViewMode] = useState("scroll");
+  const W = 310,
     G = 20,
     STEP = W + G;
   const max = CARDS.length - 1;
@@ -3033,6 +3126,20 @@ function ServicesInMotion() {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, [max]);
+
+  useEffect(() => {
+    const fn = () => {
+      if (!gridWrapRef.current || viewMode !== "grid") return;
+      const rect = gridWrapRef.current.getBoundingClientRect();
+      const total = gridWrapRef.current.offsetHeight - window.innerHeight;
+      if (total <= 0) return;
+      const p = Math.min(1, Math.max(0, -rect.top / total));
+      setGridActive(Math.min(CARDS.length - 1, Math.floor(p * CARDS.length)));
+    };
+    fn();
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, [viewMode]);
 
   const touchX = useRef(null);
   const onTouchStart = (e) => {
@@ -3061,158 +3168,334 @@ function ServicesInMotion() {
 
   return (
     <section
-      ref={wrapRef}
       style={{
         position: "relative",
-        height: `calc(100vh + ${CARDS.length * 260}px)`,
         background: "#f3f3f1",
       }}
     >
+      {/* Layout toggle */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
           display: "flex",
-          flexDirection: "column",
-          background: "#f3f3f1",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          padding: "12px 32px 0",
         }}
       >
-        {/* Header */}
         <div
           style={{
-            padding: "72px 32px 8px",
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            flexShrink: 0,
+            display: "inline-flex",
+            background: "rgba(24,24,23,.06)",
+            borderRadius: 99,
+            padding: 3,
+            gap: 2,
+            border: "1px solid rgba(24,24,23,.08)",
           }}
         >
-          <div>
-            <p
-              className="text-azure-500"
+          {["scroll", "grid"].map((m) => (
+            <button
+              key={m}
+              onClick={() => setViewMode(m)}
               style={{
-                fontFamily: "monospace",
-                fontSize: 9,
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-                marginBottom: 6,
-              }}
-            >
-              Services in motion · scroll to explore
-            </p>
-            <h2
-              className="text-dark-900"
-              style={{
-                fontSize: "clamp(26px,3.8vw,44px)",
-                fontWeight: 700,
-                lineHeight: 1.05,
-                letterSpacing: "-.04em",
-              }}
-            >
-              Systems for <span className="text-azure-500">growth.</span>
-            </h2>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {[
-              {
-                d: "M14 6L8 12l6 6",
-                fn: () => setActive((a) => Math.max(0, a - 1)),
-              },
-              {
-                d: "M10 6l6 6-6 6",
-                fn: () => setActive((a) => Math.min(max, a + 1)),
-              },
-            ].map(({ d, fn }, i) => (
-              <button
-                key={i}
-                onClick={fn}
-                className="bg-transparent flex items-center justify-center"
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(24,24,23,.14)",
-                }}
-              >
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="rgba(15,23,42,.45)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <path d={d} />
-                </svg>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Strip */}
-        <div
-          className="pl-4 sm:pl-8"
-          style={{ flex: 1, overflow: "hidden" }}
-          onWheel={onWheel}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <motion.div
-            style={{
-              display: "flex",
-              height: "100%",
-              alignItems: "flex-start",
-              paddingTop: 24,
-              gap: G,
-            }}
-            animate={{ x: -active * STEP }}
-            transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
-          >
-            {CARDS.map((c, i) => (
-              <SvcCard
-                key={c.id}
-                config={c}
-                isActive={i === active}
-                startDelay={i * 600}
-              />
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Dots */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 8,
-            padding: "10px 0 18px",
-            flexShrink: 0,
-          }}
-        >
-          {CARDS.map((_, i) => (
-            <motion.button
-              key={i}
-              onClick={() => setActive(i)}
-              animate={{
-                width: i === active ? 16 : 5,
-                background:
-                  i === active ? "rgba(15,23,42,.52)" : "rgba(15,23,42,.16)",
-              }}
-              transition={{ duration: 0.2 }}
-              style={{
-                height: 5,
-                borderRadius: 2.5,
+                padding: "5px 14px",
+                borderRadius: 99,
                 border: "none",
-                padding: 0,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                background: viewMode === m ? "#181817" : "transparent",
+                color: viewMode === m ? "#fff" : "rgba(24,24,23,.45)",
+                transition: "all .2s",
               }}
-            />
+            >
+              {m === "scroll" ? "Motion" : "Grid"}
+            </button>
           ))}
         </div>
       </div>
+
+      {viewMode === "grid" && (
+        <div
+          ref={gridWrapRef}
+          style={{
+            position: "relative",
+            height: `calc(100vh + ${CARDS.length * 180}px)`,
+            background: "#f3f3f1",
+          }}
+        >
+          <div
+            style={{
+              position: "sticky",
+              top: 0,
+              height: "100vh",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              background: "#f3f3f1",
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: "64px 32px 20px",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                flexShrink: 0,
+              }}
+            >
+              <div>
+                <p
+                  className="text-azure-500"
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: "0.28em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                    marginBottom: 6,
+                  }}
+                >
+                  Services In Motion
+                </p>
+                <h2
+                  className="text-dark-900/80"
+                  style={{
+                    fontSize: "clamp(20px,2.8vw,34px)",
+                    fontWeight: 700,
+                    lineHeight: 1.08,
+                    letterSpacing: -0.4,
+                  }}
+                >
+                  What we do, at a glance.
+                </h2>
+              </div>
+              {/* Progress indicator */}
+              <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+                {CARDS.map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: i === gridActive ? 18 : 6,
+                      height: 6,
+                      borderRadius: 3,
+                      background:
+                        i <= gridActive ? "#1980c2" : "rgba(24,24,23,.15)",
+                      transition: "all .3s",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Grid — same SvcCard content, 3-col layout */}
+            <div
+              style={{ flex: 1, overflow: "hidden", padding: "0 28px 20px" }}
+            >
+              <div
+                className="grid grid-cols-2 lg:grid-cols-3 gap-5 h-full"
+                style={{ alignContent: "start" }}
+              >
+                {CARDS.map((c, i) => (
+                  <div
+                    key={c.id}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
+                    <SvcCard
+                      config={c}
+                      startDelay={i * 280}
+                      isActive={gridActive === i}
+                      compact
+                    />
+                    <div style={{ paddingLeft: 2 }}>
+                      <div
+                        className="text-dark-900/75"
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          letterSpacing: -0.2,
+                          marginBottom: 2,
+                        }}
+                      >
+                        {c.title}
+                      </div>
+                      <div
+                        className="text-dark-400/50"
+                        style={{ fontSize: 10, lineHeight: 1.55 }}
+                      >
+                        {c.sub}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {viewMode === "scroll" && (
+        <div
+          ref={wrapRef}
+          style={{
+            position: "relative",
+            height: `calc(100vh + ${CARDS.length * 160}px)`,
+            background: "#f3f3f1",
+          }}
+        >
+          <div
+            style={{
+              position: "sticky",
+              top: 0,
+              height: "100vh",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              background: "#f3f3f1",
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: "72px 32px 8px",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                flexShrink: 0,
+              }}
+            >
+              <div>
+                <p
+                  className="text-azure-500"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 9,
+                    letterSpacing: "0.28em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                    marginBottom: 6,
+                  }}
+                >
+                  Services in motion · scroll to explore
+                </p>
+                <h2
+                  className="text-dark-900"
+                  style={{
+                    fontSize: "clamp(26px,3.8vw,44px)",
+                    fontWeight: 700,
+                    lineHeight: 1.05,
+                    letterSpacing: "-.04em",
+                  }}
+                >
+                  Systems for <span className="text-azure-500">growth.</span>
+                </h2>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[
+                  {
+                    d: "M14 6L8 12l6 6",
+                    fn: () => setActive((a) => Math.max(0, a - 1)),
+                  },
+                  {
+                    d: "M10 6l6 6-6 6",
+                    fn: () => setActive((a) => Math.min(max, a + 1)),
+                  },
+                ].map(({ d, fn }, i) => (
+                  <button
+                    key={i}
+                    onClick={fn}
+                    className="bg-transparent flex items-center justify-center"
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: "50%",
+                      border: "1px solid rgba(24,24,23,.14)",
+                    }}
+                  >
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="rgba(15,23,42,.45)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d={d} />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Strip */}
+            <div
+              className="pl-4 sm:pl-8"
+              style={{ flex: 1, overflow: "hidden" }}
+              onWheel={onWheel}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+            >
+              <motion.div
+                style={{
+                  display: "flex",
+                  height: "100%",
+                  alignItems: "flex-start",
+                  paddingTop: 24,
+                  gap: G,
+                }}
+                animate={{ x: -active * STEP }}
+                transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
+              >
+                {CARDS.map((c, i) => (
+                  <SvcCard
+                    key={c.id}
+                    config={c}
+                    isActive={i === active}
+                    startDelay={i * 600}
+                  />
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Dots */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 8,
+                padding: "10px 0 18px",
+                flexShrink: 0,
+              }}
+            >
+              {CARDS.map((_, i) => (
+                <motion.button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  animate={{
+                    width: i === active ? 16 : 5,
+                    background:
+                      i === active
+                        ? "rgba(15,23,42,.52)"
+                        : "rgba(15,23,42,.16)",
+                  }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    height: 5,
+                    borderRadius: 2.5,
+                    border: "none",
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -3925,115 +4208,209 @@ function Experience() {
 }
 
 /* ── BEYOND PROJECTS ── */
+const BEYOND_IMGS = [
+  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&q=80",
+  "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=700&q=80",
+  "https://images.unsplash.com/photo-1558655146-d09347e92766?w=700&q=80",
+  "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=700&q=80",
+  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=700&q=80",
+];
+
+const BEYOND_STATS = [
+  { n: "32+", label: "Retainer clients" },
+  { n: "98%", label: "Renewal rate" },
+  { n: "4×", label: "Average growth" },
+];
+
 function Beyond() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
-    <section className="bg-white" style={{ padding: "48px 24px" }}>
-      <div
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          borderRadius: 12,
-          background: "#e8e8e4",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "stretch",
-          minHeight: 300,
-          position: "relative",
-        }}
-      >
-        {/* Text content */}
+    <section
+      ref={ref}
+      style={{
+        background: "linear-gradient(160deg,#f7f5f0 0%,#f2ede6 100%)",
+        position: "relative",
+        overflow: "hidden",
+        padding: "80px 0 88px",
+      }}
+    >
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-10 md:gap-14 items-center">
+        {/* ── Left: two stacked images — hidden on mobile ── */}
         <div
+          className="hidden md:flex"
           style={{
-            flex: 1,
-            display: "flex",
+            flex: "0 0 38%",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "48px 48px 48px 56px",
-            textAlign: "center",
-            zIndex: 1,
+            gap: 10,
+            minWidth: 0,
           }}
         >
-          <h2
-            style={{
-              fontSize: "clamp(20px,2.4vw,30px)",
-              fontWeight: 700,
-              lineHeight: 1.2,
-              letterSpacing: -0.3,
-              color: "#181817",
-              marginBottom: 12,
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{
+              duration: 0.65,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.05,
             }}
+            style={{ borderRadius: 14, overflow: "hidden", aspectRatio: "4/3" }}
           >
-            Not sure where to start?
-          </h2>
-          <p
-            style={{
-              fontSize: "clamp(13px,1.4vw,15px)",
-              color: "#555",
-              lineHeight: 1.65,
-              marginBottom: 28,
-              maxWidth: 400,
-            }}
-          >
-            Unlock MAD's team of expert designers, developers and strategists — and get exclusive access to our full service offering.
-          </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-            <button
-              style={{
-                background: "#181817",
-                color: "#fff",
-                border: "none",
-                borderRadius: 6,
-                padding: "11px 26px",
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
-              }}
-            >
-              Start a Project →
-            </button>
-            <button
-              style={{
-                background: "#fff",
-                color: "#181817",
-                border: "1.5px solid rgba(24,24,23,.18)",
-                borderRadius: 6,
-                padding: "11px 26px",
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
-              }}
-            >
-              View Our Work
-            </button>
+            <img
+              src={BEYOND_IMGS[0]}
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </motion.div>
+          <div style={{ display: "flex", gap: 10 }}>
+            {[1, 2].map((idx, i) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.65,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: 0.12 + i * 0.07,
+                }}
+                style={{
+                  flex: 1,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  aspectRatio: "1/1",
+                }}
+              >
+                <img
+                  src={BEYOND_IMGS[idx]}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
 
-        {/* Image flush right */}
-        <div
-          className="hidden sm:block"
-          style={{
-            width: "clamp(200px,32%,380px)",
-            flexShrink: 0,
-            position: "relative",
-            overflow: "hidden",
-          }}
+        {/* ── Right: copy ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+          style={{ flex: 1, minWidth: 0 }}
         >
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"
-            alt=""
+          <p
             style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
+              fontSize: 9,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              fontWeight: 700,
+              color: "#1980c2",
+              marginBottom: 16,
             }}
-          />
-        </div>
+          >
+            Beyond Projects
+          </p>
+          <h2
+            style={{
+              fontSize: "clamp(26px,3.5vw,46px)",
+              fontWeight: 800,
+              lineHeight: 1.07,
+              color: "#181817",
+              marginBottom: 18,
+              letterSpacing: -0.6,
+            }}
+          >
+            We don't just
+            <br />
+            deliver work.
+            <br />
+            <span style={{ color: "#F26522" }}>We stay in it.</span>
+          </h2>
+          <p
+            style={{
+              fontSize: 14,
+              color: "rgba(24,24,23,.5)",
+              lineHeight: 1.75,
+              marginBottom: 32,
+              maxWidth: 380,
+            }}
+          >
+            Retainer partnerships that embed a dedicated product, brand, and
+            marketing team into your growth — strategy to execution, month after
+            month.
+          </p>
+
+          {/* Stats row */}
+          <div
+            style={{
+              display: "flex",
+              gap: 24,
+              marginBottom: 36,
+              flexWrap: "wrap",
+            }}
+          >
+            {BEYOND_STATS.map(({ n, label }) => (
+              <div key={label}>
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 800,
+                    color: "#181817",
+                    letterSpacing: -0.8,
+                    lineHeight: 1,
+                  }}
+                >
+                  {n}
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: "rgba(24,24,23,.38)",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    marginTop: 4,
+                  }}
+                >
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button
+              style={{
+                background: "#F26522",
+                color: "#fff",
+                border: "none",
+                padding: "12px 26px",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                borderRadius: 8,
+                cursor: "pointer",
+              }}
+            >
+              Compare Plans
+            </button>
+            <button
+              style={{
+                background: "rgba(24,24,23,.07)",
+                color: "rgba(24,24,23,.65)",
+                border: "1px solid rgba(24,24,23,.12)",
+                padding: "12px 26px",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                borderRadius: 8,
+                cursor: "pointer",
+              }}
+            >
+              Talk with us
+            </button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -4107,7 +4484,7 @@ function Contact() {
 
   return (
     <section
-      className="bg-azure-500"
+      className="bg-azure-500 overflow-visible"
       style={{ paddingTop: 0, paddingBottom: "72px" }}
     >
       <style>{`
@@ -4120,186 +4497,200 @@ function Contact() {
       `}</style>
 
       <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
-        {/* LEFT — copy + form — second on mobile, first on md+ */}
-        <div className="order-2 md:order-1 pt-10 md:pt-16">
-          {/* shadcn-inspired form card on mobile */}
-          <div className="md:contents">
-            <div className="md:hidden bg-white/[8%] rounded-2xl border border-white/[12%] p-6 mb-8">
-              <p className="text-white/[38%] text-[9px] tracking-[0.28em] uppercase font-bold mb-3">
-                Get In Touch
-              </p>
-              <h2
-                className="text-white font-bold mb-3"
+        {/* LEFT — phone — first on both mobile and desktop */}
+        <div className="order-1 pt-10 md:pt-16">
+          {/* Heading — desktop only (mobile version lives above phone) */}
+          <div className="hidden md:block">
+            <p
+              className="text-white/[38%]"
+              style={{
+                fontSize: 9,
+                letterSpacing: "0.28em",
+                textTransform: "uppercase",
+                fontWeight: 700,
+                marginBottom: 10,
+              }}
+            >
+              Get In Touch
+            </p>
+            <h2
+              className="text-white"
+              style={{
+                fontSize: "clamp(22px,2.8vw,34px)",
+                fontWeight: 700,
+                lineHeight: 1.1,
+                letterSpacing: -0.4,
+                marginBottom: 14,
+              }}
+            >
+              Not sure what comes next?
+              <br />
+              Talk to MAD.
+            </h2>
+            <p
+              className="text-white/[52%]"
+              style={{ fontSize: 14, lineHeight: 1.72, marginBottom: 36 }}
+            >
+              Whether you have a clear brief or just an idea, we'll help you
+              shape it into something structured and actionable.
+            </p>
+          </div>
+
+          {/* shadcn-inspired form card wraps all inputs on mobile */}
+          <div className="bg-white/[8%] md:bg-transparent rounded-2xl md:rounded-none border border-white/[12%] md:border-0 p-5 md:p-0">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 12,
+                marginBottom: 12,
+              }}
+            >
+              {[
+                ["First Name", "Alex"],
+                ["Last Name", "Johnson"],
+              ].map(([l, ph]) => (
+                <div
+                  key={l}
+                  style={{ display: "flex", flexDirection: "column", gap: 5 }}
+                >
+                  <label
+                    className="text-white/40"
+                    style={{
+                      fontSize: 9,
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {l}
+                  </label>
+                  <input
+                    className="mad-finput"
+                    type="text"
+                    placeholder={ph}
+                    style={inputStyle}
+                  />
+                </div>
+              ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+                marginBottom: 12,
+              }}
+            >
+              <label
+                className="text-white/40"
                 style={{
-                  fontSize: "clamp(20px,5vw,28px)",
-                  lineHeight: 1.15,
-                  letterSpacing: -0.4,
+                  fontSize: 9,
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  fontWeight: 700,
                 }}
               >
-                Not sure what comes next?
-                <br />
-                Talk to MAD.
-              </h2>
-              <p
-                className="text-white/[52%] mb-5"
-                style={{ fontSize: 13, lineHeight: 1.65 }}
-              >
-                Whether you have a clear brief or just an idea, we'll help you
-                shape it.
-              </p>
+                Email Address
+              </label>
+              <input
+                className="mad-finput"
+                type="email"
+                placeholder="alex@company.com"
+                style={inputStyle}
+              />
             </div>
-          </div>
-          <p
-            className="text-white/[38%]"
-            style={{
-              fontSize: 9,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              marginBottom: 10,
-            }}
-          >
-            Get In Touch
-          </p>
-          <h2
-            style={{
-              fontSize: "clamp(22px,2.8vw,34px)",
-              fontWeight: 700,
-              lineHeight: 1.1,
-              letterSpacing: -0.4,
-              marginBottom: 14,
-            }}
-            className="text-white"
-          >
-            Not sure what comes next?
-            <br />
-            Talk to MAD.
-          </h2>
-          <p
-            className="text-white/[52%]"
-            style={{
-              fontSize: 14,
-              lineHeight: 1.72,
-              marginBottom: 36,
-            }}
-          >
-            Whether you have a clear brief or just an idea, we'll help you shape
-            it into something structured and actionable.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-              marginBottom: 12,
-            }}
-          >
-            {[
-              ["First Name", "Alex"],
-              ["Last Name", "Johnson"],
-            ].map(([l, ph]) => (
-              <div
-                key={l}
-                style={{ display: "flex", flexDirection: "column", gap: 5 }}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+                marginBottom: 20,
+              }}
+            >
+              <label
+                className="text-white/40"
+                style={{
+                  fontSize: 9,
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  fontWeight: 700,
+                }}
               >
-                <label
-                  className="text-white/40"
-                  style={{
-                    fontSize: 9,
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    fontWeight: 700,
-                  }}
-                >
-                  {l}
-                </label>
-                <input
-                  className="mad-finput"
-                  type="text"
-                  placeholder={ph}
-                  style={inputStyle}
-                />
-              </div>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 5,
-              marginBottom: 12,
-            }}
-          >
-            <label
-              className="text-white/40"
+                What are you working on?
+              </label>
+              <textarea
+                className="mad-finput"
+                placeholder="Tell us about your project..."
+                style={{ ...inputStyle, height: 90, resize: "none" }}
+              />
+            </div>
+            <button
+              className="bg-white text-azure-500"
               style={{
-                fontSize: 9,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
+                border: "none",
+                padding: "13px 28px",
+                fontSize: 11,
                 fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                width: "100%",
+                borderRadius: 8,
+                cursor: "pointer",
               }}
             >
-              Email Address
-            </label>
-            <input
-              className="mad-finput"
-              type="email"
-              placeholder="alex@company.com"
-              style={inputStyle}
-            />
+              Send Message
+            </button>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 5,
-              marginBottom: 20,
-            }}
-          >
-            <label
-              className="text-white/40"
-              style={{
-                fontSize: 9,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-              }}
-            >
-              What are you working on?
-            </label>
-            <textarea
-              className="mad-finput"
-              placeholder="Tell us about your project..."
-              style={{ ...inputStyle, height: 90, resize: "none" }}
-            />
-          </div>
-          <button
-            className="bg-white text-azure-500"
-            style={{
-              border: "none",
-              padding: "13px 28px",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              width: "100%",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            Send Message
-          </button>
+          {/* end form card */}
         </div>
 
-        {/* RIGHT — phone as AI chat */}
+        {/* RIGHT — phone as AI chat — first on mobile, second on md+ */}
         <div
+          className="order-1 md:order-2"
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            transform: "translateY(0)",
+          }}
+          ref={(el) => {
+            if (el) {
+              const mq = window.matchMedia("(min-width:768px)");
+              const apply = () => {
+                el.style.transform = mq.matches ? "translateY(-72px)" : "none";
+              };
+              apply();
+              mq.addEventListener("change", apply);
+            }
           }}
         >
+          {/* Mobile heading card — only on small screens */}
+          <div className="md:hidden w-full mb-5 bg-white/[8%] rounded-2xl border border-white/[12%] p-5">
+            <p className="text-white/[38%] text-[9px] tracking-[0.28em] uppercase font-bold mb-2">
+              Get In Touch
+            </p>
+            <h2
+              className="text-white font-bold mb-2"
+              style={{
+                fontSize: "clamp(18px,5vw,24px)",
+                lineHeight: 1.15,
+                letterSpacing: -0.4,
+              }}
+            >
+              Not sure what comes next?
+              <br />
+              Talk to MAD.
+            </h2>
+            <p
+              className="text-white/[52%]"
+              style={{ fontSize: 12, lineHeight: 1.65 }}
+            >
+              Whether you have a clear brief or just an idea, we'll help you
+              shape it.
+            </p>
+          </div>
+
           <div
             style={{
               display: "flex",
@@ -4334,7 +4725,7 @@ function Contact() {
           <div
             style={{
               width: "100%",
-              maxWidth: 320,
+              maxWidth: 260,
               background: "#080808",
               borderRadius: 44,
               padding: 10,
@@ -4376,7 +4767,7 @@ function Contact() {
                 overflow: "hidden",
                 display: "flex",
                 flexDirection: "column",
-                height: 480,
+                height: 400,
               }}
             >
               {/* Status bar */}
@@ -4474,7 +4865,7 @@ function Contact() {
                     style={{
                       fontSize: 13,
                       fontWeight: 700,
-                      color: "#fff",
+                  color: "#fff",
                       lineHeight: 1,
                       marginBottom: 4,
                     }}
@@ -4711,14 +5102,30 @@ function Footer() {
       }}
     >
       <div
-        style={{ maxWidth: 1100, margin: "0 auto", marginBottom: 48 }}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12"
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr 1fr 1fr",
+          gap: 52,
+          marginBottom: 48,
+        }}
+        className="grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
       >
         <div>
-          <img src="/ma.png" alt="MAD" style={{ height: 80, width: "auto", opacity: 0.9 }} />
+          <img
+            src="/ma.png"
+            alt="MAD"
+            style={{ height: 80, width: "auto", opacity: 0.9 }}
+          />
           <p
             className="text-dark-500/60"
-            style={{ fontSize: 12, marginTop: 16, lineHeight: 1.72, maxWidth: 260 }}
+            style={{
+              fontSize: 12,
+              marginTop: 16,
+              lineHeight: 1.72,
+              maxWidth: 260,
+            }}
           >
             Product, marketing, and design firm creating systems that help
             organizations grow stronger, operate better, and perform over time.
@@ -4732,7 +5139,13 @@ function Footer() {
           <div key={col}>
             <h5
               className="text-dark-400/50"
-              style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 18, fontWeight: 700 }}
+              style={{
+                fontSize: 9,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                marginBottom: 18,
+                fontWeight: 700,
+              }}
             >
               {col}
             </h5>
@@ -4741,7 +5154,12 @@ function Footer() {
                 key={l}
                 href="#"
                 className="text-dark-500/55"
-                style={{ display: "block", fontSize: 12, marginBottom: 10, transition: "color .2s" }}
+                style={{
+                  display: "block",
+                  fontSize: 12,
+                  marginBottom: 10,
+                  transition: "color .2s",
+                }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#181817")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "")}
               >
@@ -4778,7 +5196,7 @@ export default function MADLandingPage() {
     injectCSS();
   }, []);
   return (
-    <>
+    <div style={{ overflowX: "hidden", width: "100%" }}>
       <Nav />
       <Hero />
       <WhatWeDo />
@@ -4787,6 +5205,6 @@ export default function MADLandingPage() {
       <Beyond />
       <Contact />
       <Footer />
-    </>
+    </div>
   );
 }
