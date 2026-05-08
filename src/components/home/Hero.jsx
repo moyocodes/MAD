@@ -195,7 +195,7 @@ export default function Hero() {
             zIndex: 0,
             opacity: collapseT,
             background:
-              " linear-gradient(160deg, #d0d4d8 10%,#d0d4d8 20%, #a8d8f0 50%)",
+              " linear-gradient(160deg,  #a8d8f0 10%,#d0d4d8 20%, #b6d7e7 50%)",
           }}
         />
 
