@@ -32,10 +32,7 @@ function Nav() {
     const fn = () => {
       const y = window.scrollY;
       setSolid(y > 20);
-      setHidden(
-        (y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) ||
-          (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5),
-      );
+      setHidden((y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) || (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5));
     };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
@@ -47,49 +44,24 @@ function Nav() {
   const Hamburger = ({ light, open }) => (
     <button
       className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full border-none"
-      style={{
-        background: "transparent",
-        cursor: "pointer",
-        padding: 0,
-        flexShrink: 0,
-      }}
+      style={{ background: "transparent", cursor: "pointer", padding: 0, flexShrink: 0 }}
       onClick={() => setMenuOpen((o) => !o)}
       aria-label="Menu"
     >
       <motion.span
         animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{
-          display: "block",
-          height: 1.5,
-          width: 22,
-          borderRadius: 2,
-          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
-          transformOrigin: "center",
-        }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
       />
       <motion.span
         animate={open ? { opacity: 0 } : { opacity: 1 }}
         transition={{ duration: 0.15 }}
-        style={{
-          display: "block",
-          height: 1.5,
-          width: 22,
-          borderRadius: 2,
-          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
-        }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)" }}
       />
       <motion.span
         animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
         transition={{ duration: 0.22 }}
-        style={{
-          display: "block",
-          height: 1.5,
-          width: 22,
-          borderRadius: 2,
-          background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)",
-          transformOrigin: "center",
-        }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
       />
     </button>
   );
@@ -103,18 +75,9 @@ function Nav() {
             key={l}
             href="#"
             className="text-[11px] tracking-[0.14em] uppercase font-semibold"
-            style={{
-              color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)",
-              transition: "color .2s",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = light
-                ? "rgba(15,79,122,.65)"
-                : "rgba(255,255,255,.55)")
-            }
+            style={{ color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)", transition: "color .2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)")}
           >
             {l}
           </a>
@@ -160,8 +123,7 @@ function Nav() {
               alignItems: "center",
               justifyContent: "space-between",
               gap: 24,
-              boxShadow:
-                "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
+              boxShadow: "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
               transformOrigin: "top center",
             }}
           >
@@ -204,13 +166,7 @@ function Nav() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setMenuOpen(false)}
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,.45)",
-                zIndex: 290,
-                backdropFilter: "blur(4px)",
-              }}
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.45)", zIndex: 290, backdropFilter: "blur(4px)" }}
             />
             <motion.div
               key="drawer"
@@ -237,22 +193,9 @@ function Nav() {
                     href="#"
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: 0.08 + i * 0.05,
-                      duration: 0.3,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
+                    transition={{ delay: 0.08 + i * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => setMenuOpen(false)}
-                    style={{
-                      display: "block",
-                      color: "rgba(255,255,255,.75)",
-                      fontSize: 22,
-                      fontWeight: 700,
-                      letterSpacing: -0.3,
-                      padding: "10px 0",
-                      borderBottom: "1px solid rgba(255,255,255,.06)",
-                      textDecoration: "none",
-                    }}
+                    style={{ display: "block", color: "rgba(255,255,255,.75)", fontSize: 22, fontWeight: 700, letterSpacing: -0.3, padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,.06)", textDecoration: "none" }}
                   >
                     {l}
                   </motion.a>
@@ -262,20 +205,7 @@ function Nav() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.28, duration: 0.3 }}
-                style={{
-                  marginTop: 28,
-                  background: "#1980c2",
-                  color: "#fff",
-                  border: "none",
-                  padding: "14px 32px",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  width: "100%",
-                }}
+                style={{ marginTop: 28, background: "#1980c2", color: "#fff", border: "none", padding: "14px 32px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", borderRadius: 8, cursor: "pointer", width: "100%" }}
               >
                 Work With Us
               </motion.button>
@@ -1174,14 +1104,14 @@ function WhatWeDo() {
 
   return (
     <section
-      className="pt-6 sm:pt-16"
       style={{
         background:
           "linear-gradient(180deg,#eaf4fb 0%,#f4f9ff 40%,#f0f4fa 100%)",
+        paddingTop: 72,
       }}
     >
       {/* Intro row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-8 sm:pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
         <div>
           <p
             className="text-azure-500"
@@ -3140,9 +3070,8 @@ function ServicesInMotion() {
   };
 
   const isMobile = window.innerWidth < 640;
-  const sectionHeight = isMobile
-    ? `calc(100vh + ${CARDS.length * 80}px)`
-    : `calc(100vh + ${CARDS.length * 260}px)`;
+  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 200}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
+
   return (
     <section
       ref={wrapRef}
@@ -4060,17 +3989,9 @@ function Beyond() {
               maxWidth: 400,
             }}
           >
-            Unlock MAD's team of expert designers, developers and strategists —
-            and get exclusive access to our full service offering.
+            Unlock MAD's team of expert designers, developers and strategists — and get exclusive access to our full service offering.
           </p>
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
             <button
               style={{
                 background: "#181817",
@@ -4808,19 +4729,10 @@ function Footer() {
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12"
       >
         <div>
-          <img
-            src="/ma.png"
-            alt="MAD"
-            style={{ height: 80, width: "auto", opacity: 0.9 }}
-          />
+          <img src="/ma.png" alt="MAD" style={{ height: 80, width: "auto", opacity: 0.9 }} />
           <p
             className="text-dark-500/60"
-            style={{
-              fontSize: 12,
-              marginTop: 16,
-              lineHeight: 1.72,
-              maxWidth: 260,
-            }}
+            style={{ fontSize: 12, marginTop: 16, lineHeight: 1.72, maxWidth: 260 }}
           >
             Product, marketing, and design firm creating systems that help
             organizations grow stronger, operate better, and perform over time.
@@ -4834,13 +4746,7 @@ function Footer() {
           <div key={col}>
             <h5
               className="text-dark-400/50"
-              style={{
-                fontSize: 9,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                marginBottom: 18,
-                fontWeight: 700,
-              }}
+              style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 18, fontWeight: 700 }}
             >
               {col}
             </h5>
@@ -4849,12 +4755,7 @@ function Footer() {
                 key={l}
                 href="#"
                 className="text-dark-500/55"
-                style={{
-                  display: "block",
-                  fontSize: 12,
-                  marginBottom: 10,
-                  transition: "color .2s",
-                }}
+                style={{ display: "block", fontSize: 12, marginBottom: 10, transition: "color .2s" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#181817")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "")}
               >
