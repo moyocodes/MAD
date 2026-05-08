@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import Nav from "../components/home/Nav";
-import Hero from "../components/home/Hero";
-import WhatWeDo from "../components/home/WhatWeDo";
-import ServicesInMotion from "../components/home/ServicesInMotion";
-import Experience from "../components/home/Experience";
-import Beyond from "../components/home/Beyond";
-import Contact from "../components/home/Contact";
-import Footer from "../components/home/Footer";
+import Nav from "@/components/home/Nav";
+import Hero from "@/components/home/Hero";
+import WhatWeDo from "@/components/home/WhatWeDo";
+import ServicesInMotion from "@/components/home/ServicesInMotion";
+import Experience from "@/components/home/Experience";
+import Beyond from "@/components/home/Beyond";
+import Contact from "@/components/home/Contact";
+import Footer from "@/components/home/Footer";
 
 function injectCSS() {
   if (typeof document === "undefined" || document.getElementById("_mad"))
