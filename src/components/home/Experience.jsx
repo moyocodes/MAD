@@ -1,5 +1,44 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
+
+function TypingText({ text, inView, delay = 0, style = {}, className = "" }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (!inView) { setDisplayed(""); setDone(false); return; }
+    let i = 0;
+    setDisplayed("");
+    setDone(false);
+    const t = setTimeout(() => {
+      const id = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) { clearInterval(id); setDone(true); }
+      }, 65);
+      return () => clearInterval(id);
+    }, delay * 1000);
+    return () => clearTimeout(t);
+  }, [inView, text, delay]);
+  return (
+    <span className={className} style={style}>
+      {displayed}
+      {!done && (
+        <span
+          style={{
+            display: "inline-block",
+            width: 2,
+            height: "0.85em",
+            background: "currentColor",
+            marginLeft: 2,
+            verticalAlign: "text-bottom",
+            animation: "blink 0.75s step-end infinite",
+          }}
+        />
+      )}
+      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}`}</style>
+    </span>
+  );
+}
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -34,20 +73,22 @@ function LeftPanel({ inView }) {
     >
       {/* Need card */}
       <div
-        className="bg-white rounded-2xl p-4"
+        className="rounded-2xl p-4"
         style={{
-          border: "0.5px solid rgba(0,0,0,.09)",
-          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(14px)",
+          border: "0.5px solid rgba(255,255,255,0.85)",
+          boxShadow: "0 6px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.7)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
-            <i
-              className="ti ti-alert-circle text-white"
-              style={{ fontSize: 12 }}
-            />
+          <div
+            className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(25,128,194,.15)", border: "1px solid rgba(25,128,194,.2)" }}
+          >
+            <i className="ti ti-alert-circle" style={{ fontSize: 12, color: "#1980c2" }} />
           </div>
-          <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1980c2" }}>
             The Need
           </span>
         </div>
@@ -57,17 +98,11 @@ function LeftPanel({ inView }) {
               key={n}
               initial={{ opacity: 0, x: -12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.5 + i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="text-[11px] pl-3.5 relative"
-              style={{ color: "#555" }}
+              style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold text-azure-500">
-                —
-              </span>
+              <span className="absolute left-0 font-bold" style={{ color: "#1980c2" }}>—</span>
               {n}
             </motion.li>
           ))}
@@ -76,17 +111,22 @@ function LeftPanel({ inView }) {
 
       {/* Approach card */}
       <div
-        className="bg-white rounded-2xl p-4"
+        className="rounded-2xl p-4"
         style={{
-          border: "0.5px solid rgba(0,0,0,.09)",
-          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+          background: "rgba(255,255,255,0.88)",
+          backdropFilter: "blur(14px)",
+          border: "0.5px solid rgba(255,255,255,0.8)",
+          boxShadow: "0 6px 28px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.65)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
-            <i className="ti ti-bulb text-white" style={{ fontSize: 12 }} />
+          <div
+            className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(242,101,34,.12)", border: "1px solid rgba(242,101,34,.2)" }}
+          >
+            <i className="ti ti-bulb" style={{ fontSize: 12, color: "#F26522" }} />
           </div>
-          <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
             Our Approach
           </span>
         </div>
@@ -96,17 +136,11 @@ function LeftPanel({ inView }) {
               key={a}
               initial={{ opacity: 0, x: -12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.5 + i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="text-[11px] pl-3.5 relative"
-              style={{ color: "#555" }}
+              style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold text-tangerine-500">
-                —
-              </span>
+              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
               {a}
             </motion.li>
           ))}
@@ -125,17 +159,22 @@ function RightPanel({ inView }) {
       className="hidden xl:block absolute top-[10%] -right-[160px] xl:-right-[180px] w-[220px] xl:w-[240px] z-20 pointer-events-none"
     >
       <div
-        className="bg-white rounded-2xl p-4"
+        className="rounded-2xl p-4"
         style={{
-          border: "0.5px solid rgba(0,0,0,.09)",
-          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+          background: "rgba(255,255,255,0.90)",
+          backdropFilter: "blur(14px)",
+          border: "0.5px solid rgba(255,255,255,0.82)",
+          boxShadow: "0 6px 28px rgba(0,0,0,.09), inset 0 1px 0 rgba(255,255,255,.65)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
-            <i className="ti ti-check text-white" style={{ fontSize: 12 }} />
+          <div
+            className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(242,101,34,.12)", border: "1px solid rgba(242,101,34,.2)" }}
+          >
+            <i className="ti ti-check" style={{ fontSize: 12, color: "#F26522" }} />
           </div>
-          <span className="text-[11px] font-bold tracking-wide uppercase text-tangerine-500">
+          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
             The Solution
           </span>
         </div>
@@ -145,34 +184,24 @@ function RightPanel({ inView }) {
               key={s}
               initial={{ opacity: 0, x: 12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-              transition={{
-                duration: 0.5,
-                delay: 0.5 + i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="text-[11px] pl-3.5 relative"
-              style={{ color: "#555" }}
+              style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold text-tangerine-500">
-                —
-              </span>
+              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
               {s}
             </motion.li>
           ))}
         </ul>
-        {/* Outcome box */}
         <div
-          className="p-3 rounded-xl bg-tangerine-500/[6%]"
-          style={{
-            border: "1px solid rgba(242,101,34,.25)",
-          }}
+          className="p-3 rounded-xl"
+          style={{ background: "rgba(242,101,34,.07)", border: "1px solid rgba(242,101,34,.2)" }}
         >
-          <span className="text-[9px] font-bold tracking-[.2em] uppercase text-tangerine-500">
+          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F26522" }}>
             Outcome
           </span>
-          <p className="text-[11px] font-semibold mt-1 leading-snug m-0 text-dark-900">
-            A more structured, efficient, and scalable approach to business
-            billing.
+          <p className="text-[11px] font-semibold mt-1 leading-snug m-0" style={{ color: "#333" }}>
+            A more structured, efficient, and scalable approach to business billing.
           </p>
         </div>
       </div>
@@ -355,29 +384,20 @@ function LaptopFrame({ inView }) {
             transition={{ duration: 0.6, ease, delay: 0.55 }}
             style={{ position: "absolute", bottom: 24, left: 24 }}
           >
-            <div
-              className="text-tangerine-500"
-              style={{
-                fontSize: 9,
-                letterSpacing: ".18em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-                marginBottom: 4,
-              }}
-            >
-              Product Development
-            </div>
-            <div
+          
+            <p
+              text="trubilling"
+              inView={inView}
+              delay={0.65}
               className="text-dark-900"
               style={{
                 fontSize: "clamp(20px, 3vw, 32px)",
                 fontWeight: 900,
                 letterSpacing: -0.6,
                 lineHeight: 1,
+                display: "block",
               }}
-            >
-              TruBilling
-            </div>
+            />
           </motion.div>
 
           {/* stat chips */}
@@ -484,7 +504,7 @@ export default function Experience() {
       className="pb-24 font-sans overflow-x-hidden"
       style={{
         background:
-          "linear-gradient(180deg,#eaf4fb 0%,#f4f9ff 8%,#fff8f2 30%,#fef3ea 65%,#fdeee2 100%)",
+          "linear-gradient(180deg,#5aa7e6 0%,#fff8f2 22%,#fef3ea 60%,#fdeee2 100%)",
       }}
     >
       <div className="max-w-[1100px] mx-auto px-4 sm:px-8">
@@ -525,7 +545,19 @@ export default function Experience() {
             className="text-dark-900"
             style={{ textShadow: "0 2px 24px rgba(0,0,0,.18)" }}
           >
-            billing
+         <TypingText
+              text="billing"
+              inView={inView}
+              delay={0.65}
+              className="text-dark-900"
+              // style={{
+              //   fontSize: "clamp(20px, 3vw, 32px)",
+              //   fontWeight: 900,
+              //   letterSpacing: -0.6,
+              //   lineHeight: 1,
+              //   display: "block",
+              // }}
+            />
           </span>
           <span className="text-dark-900">.</span>
         </motion.h2>

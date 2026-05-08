@@ -1308,7 +1308,7 @@ function SvcCard({ config, startDelay, isActive }) {
         flexDirection: "column",
         gap: 12,
         position: "relative",
-        width: "min(460px,calc(100vw - 48px))",
+        width: "min(560px,calc(100vw - 24px))",
         paddingBottom: 8,
         paddingRight: 8,
       }}
@@ -1473,9 +1473,13 @@ function SvcCard({ config, startDelay, isActive }) {
 export default function ServicesInMotion() {
   const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
-  const W = 460,
-    G = 20,
-    STEP = W + G;
+  const G = 16;
+  const [cardW, setCardW] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth < 640 ? Math.max(280, window.innerWidth - 24) : 560
+      : 560
+  );
+  const STEP = cardW + G;
   const max = CARDS.length - 1;
   const isMobileRef = useRef(false);
 
@@ -1486,6 +1490,16 @@ export default function ServicesInMotion() {
     check();
     window.addEventListener("resize", check, { passive: true });
     return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Keep cardW in sync with viewport for 1-per-view on mobile
+  useEffect(() => {
+    const update = () => {
+      const mobile = window.innerWidth < 640;
+      setCardW(mobile ? Math.max(280, window.innerWidth - 24) : 560);
+    };
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   useEffect(() => {
@@ -1536,8 +1550,8 @@ export default function ServicesInMotion() {
       style={{
         position: "relative",
         height: sectionHeight,
-        background: "#f3f3f1",
         paddingBottom: 0,
+        background: "linear-gradient(180deg,#f5f5f4 0%,rgba(170,170,168,.18) 50%,rgba(170,170,168,.28) 100%)",
       }}
     >
       <div
@@ -1548,7 +1562,7 @@ export default function ServicesInMotion() {
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          background: "#f3f3f1",
+          background: "linear-gradient(180deg,#f5f5f4 0%,rgba(170,170,168,.18) 50%,rgba(170,170,168,.28) 100%)",
         }}
       >
         {/* Header */}

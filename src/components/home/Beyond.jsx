@@ -1,28 +1,54 @@
 export default function Beyond() {
   return (
-    <section className="bg-white" style={{ padding: "48px 24px" }}>
+    <section
+      style={{
+        padding: "48px 24px",
+        background:
+          "linear-gradient(180deg, #fdeee2 0%, #eef4fa 45%, #b3d8f5 75%, #1980c2 100%)",
+      }}
+    >
       <div
+        className="flex flex-col sm:flex-row"
         style={{
           maxWidth: 1100,
           margin: "0 auto",
-          borderRadius: 12,
-          background: "#e8e8e4",
+          borderRadius: 0,
+          background: "transparent",
           overflow: "hidden",
-          display: "flex",
           alignItems: "stretch",
           minHeight: 300,
           position: "relative",
         }}
       >
-        {/* Text content */}
+        {/* Image — top on mobile, right on sm+ */}
         <div
+          className="order-1 sm:order-2 w-full sm:w-[clamp(200px,32%,380px)] h-48 sm:h-auto"
+          style={{ flexShrink: 0, position: "relative", overflow: "hidden" }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+            }}
+          />
+        </div>
+
+        {/* Text — below image on mobile, left on sm+ */}
+        <div
+          className="order-2 sm:order-1"
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: "48px 48px 48px 56px",
+            padding: "clamp(28px,4vw,48px) clamp(24px,4vw,56px)",
             textAlign: "center",
             zIndex: 1,
           }}
@@ -48,9 +74,17 @@ export default function Beyond() {
               maxWidth: 400,
             }}
           >
-            Unlock MAD's team of expert designers, developers and strategists — and get exclusive access to our full service offering.
+            Unlock MAD's team of expert designers, developers and strategists —
+            and get exclusive access to our full service offering.
           </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
             <button
               style={{
                 background: "#181817",
@@ -82,30 +116,6 @@ export default function Beyond() {
               View Our Work
             </button>
           </div>
-        </div>
-
-        {/* Image flush right */}
-        <div
-          className="hidden sm:block"
-          style={{
-            width: "clamp(200px,32%,380px)",
-            flexShrink: 0,
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
         </div>
       </div>
     </section>

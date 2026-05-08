@@ -14,9 +14,8 @@ function injectCSS() {
   const s = document.createElement("style");
   s.id = "_mad";
   s.textContent = `
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{overflow-x:hidden;max-width:100%}
-    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff;color:#181817;overflow-x:hidden;max-width:100%;position:relative}
+ *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff;color:#181817;overflow-x:hidden}
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
     .sh{animation:shimmer 1.8s linear infinite}
     @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -31,7 +30,28 @@ function injectCSS() {
 }
 
 export default function MADLandingPage() {
-  useEffect(() => { injectCSS(); }, []);
+  useEffect(() => {
+    injectCSS();
+
+    // Restore last scroll position after render settles
+    const saved = sessionStorage.getItem("mad_scroll");
+    if (saved) {
+      requestAnimationFrame(() => window.scrollTo({ top: Number(saved), behavior: "instant" }));
+    }
+
+    // Save scroll position continuously
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        sessionStorage.setItem("mad_scroll", String(window.scrollY));
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
     <main>
       <Nav />

@@ -66,7 +66,7 @@ export default function WhatWeDo() {
     <section
       style={{
         background:
-          "linear-gradient(180deg,#eaf4fb 0%,#f4f9ff 40%,#f0f4fa 100%)",
+          "linear-gradient(180deg,#eef7fd 0%,#d9ecfa 40%,#b3d8f5 100%)",
         paddingTop: 72,
       }}
     >

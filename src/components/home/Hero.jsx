@@ -171,7 +171,7 @@ export default function Hero() {
   const ns = SLIDES[(slide + 1) % SLIDES.length];
 
   return (
-    <div ref={wrapRef} style={{ height: "300vh", position: "relative" }}>
+    <div ref={wrapRef} style={{ height: "300vh", position: "relative", background: "#eef7fd" }}>
       <div
         style={{
           position: "sticky",
@@ -188,7 +188,7 @@ export default function Hero() {
             zIndex: 0,
             opacity: collapseT,
             background:
-              "linear-gradient(160deg,#0d0f14 0%,#181817 55%,#0f1c2e 100%)",
+              "linear-gradient(160deg,#daeefb 0%,#b3d8f5 55%,#8cc3ef 100%)",
           }}
         />
 
@@ -238,7 +238,7 @@ export default function Hero() {
                     }}
                   />
                 ))}
-                <div className="absolute inset-0 bg-black/[22%]" />
+                <div className="absolute inset-0 bg-azure-900/[8%]" />
                 {/* Pantone card */}
                 <div
                   style={{
@@ -393,7 +393,7 @@ export default function Hero() {
                   position: "absolute",
                   inset: 0,
                   background:
-                    "linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,.08) 55%,transparent)",
+                    "linear-gradient(to top,rgba(8,42,80,.58),rgba(8,42,80,.08) 55%,transparent)",
                 }}
               />
 
@@ -657,7 +657,7 @@ export default function Hero() {
                 borderRadius: 9,
                 overflow: "hidden",
                 boxShadow: `0 ${10 * collapseT}px ${28 * collapseT}px rgba(0,0,0,${collapseT * 0.35})`,
-                border: `1px solid rgba(255,255,255,${collapseT * 0.1})`,
+                border: `1px solid rgba(15,79,122,${collapseT * 0.12})`,
               }}
             >
               <img
@@ -689,7 +689,6 @@ export default function Hero() {
           }}
         >
           <p
-            className="text-white/35"
             style={{
               fontFamily: "monospace",
               fontSize: 9,
@@ -697,6 +696,7 @@ export default function Hero() {
               letterSpacing: "0.28em",
               textTransform: "uppercase",
               marginBottom: 14,
+              color: "rgba(15,79,122,0.55)",
             }}
           >
             Making A Difference
@@ -707,7 +707,7 @@ export default function Hero() {
               fontWeight: 800,
               lineHeight: 1.0,
               letterSpacing: "-.03em",
-              color: "#f0ede8",
+              color: "#0f2a45",
               marginBottom: 28,
             }}
           >
@@ -738,10 +738,10 @@ export default function Hero() {
               Start a Project →
             </button>
             <button
-              className="bg-white/[8%]"
               style={{
-                color: "#f0ede8",
-                border: "1px solid rgba(255,255,255,.18)",
+                background: "rgba(255,255,255,0.55)",
+                color: "#0f2a45",
+                border: "1px solid rgba(15,79,122,.18)",
                 padding: "11px 28px",
                 borderRadius: 99,
                 fontSize: 9,
@@ -767,13 +767,14 @@ export default function Hero() {
           }}
         >
           <p
-            className="text-white/30"
             style={{
               fontSize: 8,
               letterSpacing: "0.24em",
               textTransform: "uppercase",
               fontWeight: 600,
               marginBottom: 10,
+              color: "rgba(15,79,122,0.45)",
+              textShadow: "0 0 10px rgba(255,255,255,.7)",
             }}
           >
             Trusted by growing businesses
@@ -808,7 +809,7 @@ export default function Hero() {
                     height: 24,
                     width: "auto",
                     objectFit: "contain",
-                    opacity: 0.75,
+                    opacity: 0.55,
                     flexShrink: 0,
                   }}
                 />

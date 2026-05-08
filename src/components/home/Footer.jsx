@@ -1,9 +1,9 @@
 export default function Footer() {
   return (
     <footer
+      className="pt-[130px] px-4 sm:px-8 pb-9"
       style={{
         background: "#f7f7f5",
-        padding: "56px 32px 36px",
         borderTop: "1px solid rgba(24,24,23,.07)",
       }}
     >
@@ -12,7 +12,7 @@ export default function Footer() {
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12"
       >
         <div>
-          <img src="/ma.png" alt="MAD" style={{ height: 80, width: "auto", opacity: 0.9 }} />
+          <img src="/ma.png" alt="MAD" style={{ height: 130, width: "auto", opacity: 0.9 }} />
           <p
             className="text-dark-500/60"
             style={{ fontSize: 12, marginTop: 16, lineHeight: 1.72, maxWidth: 260 }}
