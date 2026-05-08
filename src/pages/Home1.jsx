@@ -32,7 +32,7 @@ function Nav() {
     const fn = () => {
       const y = window.scrollY;
       setSolid(y > 20);
-      setHidden(y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6);
+      setHidden((y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) || (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5));
     };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
@@ -2850,7 +2850,7 @@ function SvcCard({ config, startDelay, isActive }) {
         flexDirection: "column",
         gap: 12,
         position: "relative",
-        width: "min(380px,calc(100vw - 48px))",
+        width: "min(460px,calc(100vw - 48px))",
         paddingBottom: 8,
         paddingRight: 8,
       }}
@@ -3015,14 +3015,24 @@ function SvcCard({ config, startDelay, isActive }) {
 function ServicesInMotion() {
   const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
-  const W = 380,
+  const W = 460,
     G = 20,
     STEP = W + G;
   const max = CARDS.length - 1;
+  const isMobileRef = useRef(false);
+
+  useEffect(() => {
+    const check = () => {
+      isMobileRef.current = window.innerWidth < 640;
+    };
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const fn = () => {
-      if (!wrapRef.current || window.innerWidth < 640) return;
+      if (!wrapRef.current || isMobileRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
       if (total <= 0) return;
@@ -3059,13 +3069,17 @@ function ServicesInMotion() {
     }
   };
 
+  const isMobile = window.innerWidth < 640;
+  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 200}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
+
   return (
     <section
       ref={wrapRef}
       style={{
         position: "relative",
-        height: `calc(100vh + ${CARDS.length * 260}px)`,
+        height: sectionHeight,
         background: "#f3f3f1",
+        paddingBottom: 0,
       }}
     >
       <div
