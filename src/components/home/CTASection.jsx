@@ -1,28 +1,28 @@
 export default function CTASection() {
   return (
-    <section className="px-6 md:px-12 lg:px-20 py-24 md:py-36 bg-azure-50 text-center relative overflow-hidden text-dark-900">
-      
+    <section className="px-6 md:px-12 lg:px-20 py-24 md:py-36 bg-tangerine-50 text-center relative overflow-hidden text-dark-900">
+
       {/* Eyebrow */}
-      <p className="mb-5 uppercase tracking-[.24em] font-mono text-[10px] text-dark-700/50">
+      <p className="mb-5 uppercase tracking-[.24em] font-mono text-[10px] text-tangerine-600/80">
         Ready when you are
       </p>
 
       {/* Headline */}
-      <h2 className="mx-auto mb-5 max-w-[760px] leading-[0.96] font-display font-semibold text-[clamp(42px,6vw,78px)] tracking-[-0.04em]">
+      <h2 className="mx-auto mb-5 max-w-[760px] leading-[0.96] font-semibold text-[clamp(42px,6vw,78px)] tracking-[-0.04em]">
         Let's build something
         <br />
         that works.
       </h2>
 
       {/* Subtext */}
-      <p className="mx-auto mb-11 max-w-[500px] leading-relaxed font-sans text-[15px] text-dark-700/70">
+      <p className="mx-auto mb-11 max-w-[500px] leading-relaxed text-[15px] text-dark-700/70">
         We design systems, not just visuals — built to convert,
         scale, and stand the test of time.
       </p>
 
       {/* Actions */}
       <div className="flex items-center justify-center gap-4 flex-wrap">
-        
+
         <button className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-md bg-dark-900 text-white text-[13px] font-display font-semibold tracking-[.08em] transition-all duration-200 hover:opacity-85 hover:-translate-y-0.5 active:scale-[.98]">
           Get started
 
@@ -57,7 +57,7 @@ export default function CTASection() {
             key={t}
             className="flex items-center gap-1.5 uppercase tracking-[.1em] font-mono text-[10px] text-dark-700/40"
           >
-            <span className="w-1 h-1 rounded-full bg-azure-500" />
+            <span className="w-1 h-1 rounded-full bg-tangerine-500" />
             {t}
           </span>
         ))}

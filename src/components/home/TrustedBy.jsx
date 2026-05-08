@@ -1,4 +1,3 @@
-// ─── TRUSTED BY ───────────────────────────────────────────────────────────────
 const LOGOS = [
   "/log1.png",
   "/log2.png",
@@ -10,23 +9,23 @@ const LOGOS = [
 ];
 
 export default function TrustedBy({ inHero = false }) {
-  // duplicate for seamless loop
-  const loopLogos = [...LOGOS, ...LOGOS];
-
   return (
     <div
-      className={`mad-trusted overflow-hidden border-y border-dark-100 bg-gradient-to-b from-dark-900 via-azure-100 to-white-soft dark:border-white/[.08] dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 ${
+      className={`mad-trusted overflow-hidden dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 ${
         inHero
-          ? "absolute bottom-0 left-0 right-0 z-50 px-4 py-5 sm:py-7"
+          ? "absolute bottom-0 left-0 right-0 z-50 px-4 py-5 "
           : "relative py-14"
       }`}
     >
       <p
-        className={`text-center font-bold uppercase tracking-[.25em] text-white/70 dark:text-white/55 ${
-          inHero ? "mb-4 text-[8px] sm:mb-5 sm:text-[9px]" : "mb-9 text-[10px]"
+        className={`font-bold uppercase tracking-[.25em] ${
+          inHero
+            ? "mb-4 text-[8px] sm:mb-5 sm:text-[9px] text-white/40"
+            : "mb-9 text-[10px] text-[rgba(10,22,40,.45)] dark:text-white"
         }`}
       >
-        Trusted by growing businesses, institutions & mission-driven organizations
+        Trusted by growing businesses, institutions & mission-driven
+        organizations
       </p>
 
       <div className="relative w-full overflow-hidden">
@@ -35,7 +34,7 @@ export default function TrustedBy({ inHero = false }) {
             inHero ? "gap-10 px-8 sm:gap-14 sm:px-12" : "gap-20 px-14"
           }`}
         >
-          {loopLogos.map((src, i) => (
+          {LOGOS.map((src, i) => (
             <img
               key={i}
               src={src}

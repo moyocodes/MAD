@@ -45,8 +45,7 @@ const THUMB_IMGS = [
   "/flier/image5.png",
   "/flier/image6.png",
   "/flier/image7.png",
-  // "/flier/image8.png",
-  
+  "/flier/image8.png",
 ];
 
 const THUMB_W = 180;
@@ -60,7 +59,7 @@ const THUMB_FINAL = [
   { x: -38, y: +20, r: 2.5 },
   { x: -18, y: +20, r: -1.5 },
   { x: +18, y: +19, r: 1 },
-
+  { x: -38, y: +20, r: 2.5 },
 ];
 
 function PhoneNotif({ show, msg, sub }) {
@@ -216,17 +215,18 @@ export default function Hero() {
   const collapseT = Math.min(1, Math.max(0, (rawPct * 3 - 2) * 2.5));
 
   return (
-    <div
-      ref={wrapRef}
-      className="relative h-[400vh] "
-    >
+    <div ref={wrapRef} className="relative h-[400vh] ">
       <div
-        className="sticky top-[60px] flex overflow-hidden "
-        style={{ height: "calc(100vh - 60px)" }}
+        className="sticky top-0 flex overflow-hidden"
+        style={{ height: "100vh", marginTop: "-100vh" }}
       >
+        {/* Collapsed bg — always dark gray, mode-independent */}
         <div
-          className="absolute inset-0 z-0  dark:bg-azure-500/20"
-          style={{ opacity: collapseT }}
+          className="absolute inset-0 z-0"
+          style={{
+            opacity: collapseT,
+            background: "linear-gradient(150deg, #2e2e2c 0%, #1c1c1a 60%, #252523 100%)",
+          }}
         />
 
         {/* Main screen */}
@@ -246,21 +246,10 @@ export default function Hero() {
           }}
         >
           {/* Macbook bar */}
-          <div
-            className="absolute top-0 left-0 right-0 z-30 flex items-center overflow-hidden"
-            style={{
-              height: `${collapseT * 12}px`,
-              background: "rgba(22,22,24,0.96)",
-              opacity: collapseT,
-              padding: `0 ${collapseT * 8}px`,
-              gap: collapseT * 4,
-            }}
-          >
-            <ChromeDots scale={collapseT} />
-          </div>
+
           <div
             className="absolute left-0 right-0 bottom-0 flex"
-            style={{ top: `${collapseT * 18}px` }}
+            style={{ top: `${collapseT * 0}px` }}
           >
             {/* Left panel */}
             <div className="mad-hero-left relative w-[42%] flex-shrink-0 overflow-hidden">
@@ -366,9 +355,6 @@ export default function Hero() {
                 <h1
                   className="text-white mb-4"
                   style={{
-                    
-                    
-                    
                     fontSize: "clamp(24px,6vw,52px)",
                     lineHeight: 1.1,
                     letterSpacing: "-.02em",
@@ -450,66 +436,49 @@ export default function Hero() {
                 top: `calc(50% + ${cy}%)`,
                 transform: `translate(-50%, -50%) rotate(${tf.r}deg) scale(${sc})`,
                 opacity: Math.max(0, collapseT * 1.3 - 0.1 - i * 0.01),
-                borderRadius: 8,
-                boxShadow: `0 ${8 * collapseT}px ${24 * collapseT}px rgba(0,0,0,.16)`,
-                border: `1px solid ${dark ? "rgba(255,255,255,.08)" : "#e8e8e6"}`,
+                borderRadius: 10,
+                boxShadow: `0 ${12 * collapseT}px ${36 * collapseT}px rgba(0,0,0,${collapseT * 0.38})`,
+                border: `1px solid rgba(255,255,255,${collapseT * 0.12})`,
               }}
             >
-              <div
-                className="absolute top-0 left-0 right-0 z-[5] flex items-center"
-                style={{
-                  height: 12,
-                  background: "#16161a",
-                  padding: "0 6px",
-                  gap: 3.5,
-                }}
-              >
-                <ChromeDots scale={0.83} />
-              </div>
               <img
                 src={src}
                 alt=""
                 className="absolute left-0 right-0 bottom-0 w-full object-contain block"
-                style={{
-                  top: 12,
-                  height: "calc(100% - 12px)",
-                  background: "#f4f4f2",
-                }}
+                style={{ top: `${collapseT * 0}px` }}
               />
             </div>
           );
         })}
 
-        {/* CTA overlay */}
+        {/* CTA overlay — always on dark gray bg so text is always light */}
         <div
           className="absolute z-30 text-center"
           style={{
             top: "50%",
             left: "50%",
-            transform: `translate(-50%, -50%) translateY(${(1 - collapseT) * 20}px)`,
+            transform: `translate(-50%, -50%) translateY(${(1 - collapseT) * 24}px)`,
             pointerEvents: collapseT > 0.82 ? "all" : "none",
             opacity: Math.max(0, collapseT * 3 - 2),
-            width: "min(560px, 80vw)",
+            width: "min(640px, 82vw)",
           }}
         >
-          <p className="text-[8px] font-bold tracking-[.25em] uppercase text-neutral-400 mb-3">
+          <p className="font-mono text-[9px] font-bold tracking-[.28em] uppercase mb-4" style={{ color: "rgba(255,255,255,.38)" }}>
             Making A Difference
           </p>
           <h2
-            className="mb-6"
+            className="mb-8"
             style={{
-              
-              
-          
-              fontSize: "clamp(28px,4.4vw,56px)",
-              lineHeight: 1.1,
-              letterSpacing: "-.02em",
-              color: dark ? "#f0ede8" : "#181817",
+              fontSize: "clamp(36px,5.5vw,72px)",
+              fontWeight: 800,
+              lineHeight: 1.0,
+              letterSpacing: "-.03em",
+              color: "#f0ede8",
             }}
           >
-            Ready to build
+            Structure changes
             <br />
-            something real?
+            <span style={{ color: "#1980c2" }}>everything.</span>
           </h2>
           <div className="flex gap-3 justify-center flex-wrap">
             <button
@@ -524,13 +493,9 @@ export default function Hero() {
             <button
               className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer border"
               style={{
-                background: dark
-                  ? "rgba(255,255,255,.08)"
-                  : "rgba(24,24,23,.06)",
-                color: dark ? "#f0ede8" : "#181817",
-                borderColor: dark
-                  ? "rgba(255,255,255,.15)"
-                  : "rgba(24,24,23,.12)",
+                background: "rgba(255,255,255,.08)",
+                color: "#f0ede8",
+                borderColor: "rgba(255,255,255,.18)",
               }}
             >
               View Our Work
