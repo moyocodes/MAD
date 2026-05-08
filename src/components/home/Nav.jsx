@@ -1,81 +1,195 @@
-import { useScrollY } from "../../hooks/homeHooks";
-import { useTheme } from "../../context/ThemeContext";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Nav() {
-  const y = useScrollY();
-  const { dark, toggle } = useTheme();
-  const scrolled = y > 20;
+  const [solid, setSolid] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const fn = () => {
+      const y = window.scrollY;
+      setSolid(y > 20);
+      setHidden((y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) || (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5));
+    };
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+  const isPill = solid && !hidden;
+
+  const links = ["Work", "Services", "About", "Journal"];
+
+  const Hamburger = ({ light, open }) => (
+    <button
+      className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full border-none"
+      style={{ background: "transparent", cursor: "pointer", padding: 0, flexShrink: 0 }}
+      onClick={() => setMenuOpen((o) => !o)}
+      aria-label="Menu"
+    >
+      <motion.span
+        animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+        transition={{ duration: 0.22 }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+      />
+      <motion.span
+        animate={open ? { opacity: 0 } : { opacity: 1 }}
+        transition={{ duration: 0.15 }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)" }}
+      />
+      <motion.span
+        animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+        transition={{ duration: 0.22 }}
+        style={{ display: "block", height: 1.5, width: 22, borderRadius: 2, background: light ? "rgba(15,79,122,.7)" : "rgba(255,255,255,.8)", transformOrigin: "center" }}
+      />
+    </button>
+  );
+
+  const inner = (light) => (
+    <>
+      <img src="/ma.png" alt="MAD" className="h-40 w-36" />
+      <div className="hidden md:flex gap-7">
+        {links.map((l) => (
+          <a
+            key={l}
+            href="#"
+            className="text-[11px] tracking-[0.14em] uppercase font-semibold"
+            style={{ color: light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)", transition: "color .2s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = light ? "#0f4f7a" : "#fff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = light ? "rgba(15,79,122,.65)" : "rgba(255,255,255,.55)")}
+          >
+            {l}
+          </a>
+        ))}
+      </div>
+      <button
+        className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none rounded-full px-5 py-2"
+        style={{ background: "#1980c2", color: "#fff" }}
+      >
+        Work With Us
+      </button>
+      <Hamburger light={light} open={menuOpen} />
+    </>
+  );
 
   return (
-    <div className="fixed left-0 right-0 top-2 z-[300] px-2 sm:top-3 sm:px-4">
-      <nav
-        className={`flex h-14 items-center justify-between rounded-2xl px-4 sm:h-[60px] sm:px-8 transition-all duration-300 backdrop-blur-xl ${
-          scrolled
-            ? dark
-              ? "bg-dark-900/94 border border-white/[.07] shadow-[0_12px_32px_rgba(0,0,0,.3)]"
-              : "bg-white/94 border border-dark-100/70 shadow-[0_12px_32px_rgba(10,22,40,.10)]"
-            : dark
-              ? "bg-dark-900/80 border border-white/[.06] shadow-[0_8px_24px_rgba(0,0,0,.22)]"
-              : "bg-white/80 border border-dark-100/50 shadow-[0_8px_24px_rgba(10,22,40,.08)]"
-        }`}
-      >
-        {/* Logo */}
-        <div className="flex items-center">
-          <img src="ma.png" alt="MAD logo" className="h-20 w-20 sm:h-32 sm:w-32" />
-        </div>
-
-        {/* Nav links */}
-        <ul className="mad-nav-ul flex gap-8 list-none m-0 p-0">
-          {["Work", "Services", "About"].map((l) => (
-            <li key={l}>
-              <a
-                href={`#${l.toLowerCase()}`}
-                className={`text-[10px] font-bold uppercase tracking-[.22em] no-underline transition-colors duration-200 ${
-                  dark ? "text-white/52 hover:text-white" : "text-dark-700/55 hover:text-dark-900"
-                }`}
-              >
-                {l}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        {/* Right side */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          {/* Dark mode toggle */}
-          <button
-            onClick={toggle}
-            aria-label="Toggle dark mode"
-            className={`relative h-5 w-9 cursor-pointer rounded-full border p-0 transition-colors duration-300 ${
-              dark
-                ? "border-azure-500 bg-azure-500"
-                : "border-dark-200/60 bg-dark-100/80"
-            }`}
+    <>
+      <AnimatePresence mode="wait" initial={false}>
+        {hidden ? null : isPill ? (
+          <motion.nav
+            key="pill"
+            initial={{ scaleY: 0.4, opacity: 0, y: -12 }}
+            animate={{ scaleY: 1, opacity: 1, y: 0 }}
+            exit={{ scaleY: 0.4, opacity: 0, y: -12 }}
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: "fixed",
+              top: 16,
+              left: 0,
+              right: 0,
+              margin: "0 auto",
+              width: "fit-content",
+              minWidth: "min(92vw, 540px)",
+              maxWidth: 720,
+              borderRadius: 50,
+              backdropFilter: "blur(16px)",
+              background: "#d9ecfa",
+              border: "1px solid rgba(25,128,194,.18)",
+              padding: "0 20px",
+              zIndex: 300,
+              height: 52,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 24,
+              boxShadow: "0 4px 24px rgba(25,128,194,.14), 0 1px 4px rgba(0,0,0,.06)",
+              transformOrigin: "top center",
+            }}
           >
-            <div
-              className="absolute w-3.5 h-3.5 rounded-full top-[3px] shadow-sm transition-all duration-300"
-              style={{
-                left: dark ? 18 : 2,
-                background: dark ? "#fff" : "#fff",
-              }}
+            {inner(true)}
+          </motion.nav>
+        ) : (
+          <motion.nav
+            key="flat"
+            initial={false}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 300,
+              height: 56,
+              background: "transparent",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 24px",
+            }}
+          >
+            {inner(false)}
+          </motion.nav>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.div
+              key="overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMenuOpen(false)}
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.45)", zIndex: 290, backdropFilter: "blur(4px)" }}
             />
-          </button>
-
-          {/* Contact text */}
-          <span
-            className={`hidden cursor-pointer text-[10px] font-semibold tracking-wide transition-colors duration-200 sm:inline ${
-              dark ? "text-white/45 hover:text-white/85" : "text-dark-700/50 hover:text-dark-900"
-            }`}
-          >
-            Contact
-          </span>
-
-          {/* CTA */}
-          <button className="hidden cursor-pointer rounded-full border-none bg-azure-500 px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-[0_2px_16px_rgba(25,128,194,.28)] transition-all duration-200 hover:bg-azure-400 hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(25,128,194,.38)] active:scale-[.97] sm:block">
-            Work With Us
-          </button>
-        </div>
-      </nav>
-    </div>
+            <motion.div
+              key="drawer"
+              initial={{ y: "-100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 295,
+                background: "#0d1117",
+                borderRadius: "0 0 20px 20px",
+                padding: "80px 28px 36px",
+                boxShadow: "0 16px 48px rgba(0,0,0,.4)",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {links.map((l, i) => (
+                  <motion.a
+                    key={l}
+                    href="#"
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.08 + i * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    onClick={() => setMenuOpen(false)}
+                    style={{ display: "block", color: "rgba(255,255,255,.75)", fontSize: 22, fontWeight: 700, letterSpacing: -0.3, padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,.06)", textDecoration: "none" }}
+                  >
+                    {l}
+                  </motion.a>
+                ))}
+              </div>
+              <motion.button
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.28, duration: 0.3 }}
+                style={{ marginTop: 28, background: "#1980c2", color: "#fff", border: "none", padding: "14px 32px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", borderRadius: 8, cursor: "pointer", width: "100%" }}
+              >
+                Work With Us
+              </motion.button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

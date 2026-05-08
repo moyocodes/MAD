@@ -1,219 +1,445 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── STAGE TIMINGS ────────────────────────────────────────────────────────────
-const S1_DUR = 3200;
-const S3_DUR = 4000;
-const S4_DUR = 120000;
-const LOADING_DUR = S1_DUR + S3_DUR;
-const TOTAL_DUR = LOADING_DUR + S4_DUR;
-const LOOP_PAUSE = 750;
-
-// ─── BLINK ────────────────────────────────────────────────────────────────────
-const BLINK_CSS = `
-@keyframes _madBlink{0%,100%{opacity:.18}50%{opacity:.85}}
-._mb{animation:_madBlink 1.1s ease-in-out infinite}
-._mb:nth-child(2){animation-delay:.22s}
-._mb:nth-child(3){animation-delay:.44s}
-@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.shimmer-anim{animation:shimmer 1.8s linear infinite}
-`;
-function injectBlink() {
-  if (typeof document === "undefined" || document.getElementById("_mad-blink-sim")) return;
-  const s = document.createElement("style");
-  s.id = "_mad-blink-sim";
-  s.textContent = BLINK_CSS;
-  document.head.appendChild(s);
-}
-
-// ════════════════════════════════════════════════════════════════
-// SHARED ATOMS
-// ════════════════════════════════════════════════════════════════
-
 function Chip({ label }) {
   return (
-    <div className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 pb-8 bg-gradient-to-b from-neutral-100/95 to-transparent">
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[9px] tracking-widest uppercase text-neutral-500 border border-neutral-200 bg-white/90 backdrop-blur-sm">
-        <span className="inline-block rounded-full w-1.5 h-1.5 bg-sky-600" />
+    <div
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 30,
+        padding: "10px 14px 28px",
+        background:
+          "linear-gradient(to bottom,rgba(244,244,242,.95),transparent)",
+      }}
+    >
+      <span
+        className="bg-white/90 inline-flex items-center gap-[5px]"
+        style={{
+          padding: "3px 10px",
+          borderRadius: 99,
+          fontFamily: "monospace",
+          fontSize: 8,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "#666",
+          border: "1px solid #ddd",
+          backdropFilter: "blur(6px)",
+        }}
+      >
+        <span
+          className="bg-azure-500"
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            display: "inline-block",
+          }}
+        />
         {label}
       </span>
     </div>
   );
 }
 
-function DeliveredBadge({ eyebrow, title }) {
+function Shimmer({ delay = 0, style = {} }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.35, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute left-4 right-4 bottom-5 bg-white/10 backdrop-blur-md border border-white/25 rounded-2xl px-4 py-3"
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        background: "linear-gradient(135deg,#dbeeff,#c0d8f0)",
+        ...style,
+      }}
     >
-      <div className="font-mono text-[9px] text-white/50 tracking-widest uppercase mb-1">{eyebrow}</div>
-      <div className="text-[15px] text-white">{title}</div>
-    </motion.div>
-  );
-}
-
-function CoverImage({ src, alt, children }) {
-  return (
-    <>
-      <motion.img
-        src={src}
-        alt={alt}
-        initial={{ opacity: 0, scale: 1.06 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0 w-full h-full object-cover"
+      <div
+        className="sh"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)",
+          animationDelay: `${delay}s`,
+        }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-      {children}
-    </>
+    </div>
   );
 }
 
-function WFBrowser({ children }) {
+function Browser({ children }) {
   return (
-    <div className="absolute top-7 left-4 right-4 bottom-0 overflow-hidden rounded-t-xl bg-[#f8f8f6] border border-black/10">
-      <div className="h-7 flex items-center px-2.5 gap-1.5 bg-[#e8e8e6] border-b border-black/[0.08]">
+    <div
+      style={{
+        position: "absolute",
+        top: 24,
+        left: 12,
+        right: 12,
+        bottom: 0,
+        background: "#f8f8f6",
+        border: "1px solid rgb(0 0 0 / 9%)",
+        borderRadius: "10px 10px 0 0",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          height: 24,
+          background: "#e8e8e6",
+          borderBottom: "1px solid rgb(0 0 0 / 7%)",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 8px",
+          gap: 5,
+        }}
+      >
         {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-          <div key={c} style={{ background: c }} className="w-2 h-2 rounded-full" />
+          <div
+            key={c}
+            style={{ width: 7, height: 7, borderRadius: "50%", background: c }}
+          />
         ))}
-        <div className="flex-1 h-3.5 rounded bg-[#d8d8d6] mx-2" />
+        <div
+          style={{
+            flex: 1,
+            height: 12,
+            borderRadius: 3,
+            background: "#d8d8d6",
+            margin: "0 6px",
+          }}
+        />
       </div>
       {children}
     </div>
   );
 }
 
-function Shimmer({ delay = 0, className = "" }) {
+function ReqBubble({ text }) {
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-br from-[#dbeeff] to-[#c0d8f0] ${className}`}>
-      <div
-        className="shimmer-anim absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
-        style={{ animationDelay: `${delay}s` }}
-      />
-    </div>
-  );
-}
-
-function RequestBubble({ text }) {
-  return (
-    <div className="absolute inset-0 flex flex-col items-end justify-end px-5 pt-14 pb-6 gap-1.5">
-      <div
-        className="absolute inset-0 opacity-[0.035] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        justifyContent: "flex-end",
+        padding: "48px 16px 18px",
+        gap: 5,
+      }}
+    >
       <motion.div
-        initial={{ opacity: 0, x: -8, rotate: -2 }}
-        animate={{ opacity: 1, x: 0, rotate: -2 }}
-        transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute top-14 left-4 w-[118px] h-[76px] rounded-xl bg-white border border-neutral-100 shadow-lg px-3 py-2.5 overflow-hidden"
-      >
-        {[28, 14, 20, 10].map((w, i) => (
-          <div
-            key={i}
-            style={{ width: `${w}%` }}
-            className={`h-[5px] rounded mb-1.5 ${i === 0 ? "bg-neutral-300" : "bg-neutral-100"}`}
-          />
-        ))}
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 12, scale: 0.96 }}
+        initial={{ opacity: 0, y: 10, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 bg-[rgba(26,26,24,0.93)] border border-white/10 rounded-[18px_18px_4px_18px] px-4 py-3.5 max-w-[255px] text-[13px] leading-relaxed text-[#f0ede8] shadow-xl"
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          background: "rgba(26,26,24,.93)",
+          border: "1px solid rgba(255,255,255,.1)",
+          borderRadius: "16px 16px 3px 16px",
+          padding: "12px 14px",
+          maxWidth: 240,
+          fontSize: 12,
+          lineHeight: 1.55,
+          color: "#f0ede8",
+        }}
       >
         {text}
       </motion.div>
-      <span className="font-mono text-[9.5px] text-white/35 tracking-wide">you · just now</span>
+      <span
+        className="text-white/30"
+        style={{
+          fontFamily: "monospace",
+          fontSize: 8.5,
+        }}
+      >
+        you · just now
+      </span>
     </div>
   );
 }
 
-// ════════════════════════════════════════════════════════════════
-// PER-CARD STAGES
-// ════════════════════════════════════════════════════════════════
-
 function C1S1() {
   return (
-    <div className="absolute inset-0">
-      <WFBrowser>
-        <div className="p-1.5">
-          <Shimmer className="h-28 rounded-md relative">
-            <div className="absolute inset-0 flex flex-col justify-center p-3.5">
-              <div className="h-2.5 rounded w-3/5 mb-1.5 bg-sky-600/70" />
-              <div className="h-1.5 rounded w-2/5 mb-2.5 bg-sky-600/40" />
-              <div className="h-5 w-16 rounded bg-sky-600/80" />
+    <div style={{ position: "absolute", inset: 0 }}>
+      <Browser>
+        <div style={{ padding: 6 }}>
+          <Shimmer
+            style={{ height: 100, borderRadius: 5, position: "relative" }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                padding: 12,
+              }}
+            >
+              <div
+                className="bg-azure-500/70"
+                style={{
+                  height: 10,
+                  width: "55%",
+                  borderRadius: 2,
+                  marginBottom: 6,
+                }}
+              />
+              <div
+                className="bg-azure-500/40"
+                style={{
+                  height: 7,
+                  width: "35%",
+                  borderRadius: 2,
+                  marginBottom: 10,
+                }}
+              />
+              <div
+                className="bg-azure-500/80"
+                style={{
+                  height: 20,
+                  width: 56,
+                  borderRadius: 3,
+                }}
+              />
             </div>
           </Shimmer>
         </div>
-        <div className="grid grid-cols-3 gap-1.5 px-2">
-          {[0, 0.4, 0.8].map((d, i) => (
-            <div key={i} className="rounded-md overflow-hidden bg-white border border-neutral-100/50">
-              <Shimmer delay={d} className="h-11" />
-              <div className="p-1.5">
-                <div className="h-1.5 rounded mb-1 bg-neutral-100 w-4/5" />
-                <div className="h-1.5 rounded w-2/5 bg-sky-600/60" />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: 5,
+            padding: "0 6px",
+          }}
+        >
+          {[0, 0.35, 0.7].map((d, i) => (
+            <div
+              key={i}
+              className="bg-white"
+              style={{
+                borderRadius: 5,
+                overflow: "hidden",
+                border: "1px solid rgba(240,240,240,.6)",
+              }}
+            >
+              <Shimmer delay={d} style={{ height: 40 }} />
+              <div style={{ padding: 5 }}>
+                <div
+                  style={{
+                    height: 5,
+                    width: "80%",
+                    borderRadius: 2,
+                    background: "#f0f0f0",
+                    marginBottom: 4,
+                  }}
+                />
+                <div
+                  className="bg-azure-500/50"
+                  style={{
+                    height: 5,
+                    width: "40%",
+                    borderRadius: 2,
+                  }}
+                />
               </div>
             </div>
           ))}
         </div>
-      </WFBrowser>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
+      </Browser>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
+        }}
+      />
       <Chip label="Product & Digital" />
-      <RequestBubble text="Build us a clean e-commerce storefront with a hero carousel and product grid." />
+      <ReqBubble text="Build a clean e-commerce storefront with hero carousel and product grid." />
     </div>
   );
 }
 
-function C1S3() {
+function C1S2() {
   return (
-    <div className="absolute inset-0 flex flex-col bg-white">
-      <div className="h-8 flex items-center px-3 justify-between border-b border-neutral-200/50">
-        <span className="text-[11px] text-[#181817]">STRKT</span>
-        <div className="flex gap-2">
+    <div
+      className="bg-white"
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          height: 28,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          justifyContent: "space-between",
+          borderBottom: "1px solid rgba(229,229,229,.5)",
+        }}
+      >
+        <span
+          className="text-dark-900"
+          style={{ fontSize: 10, fontWeight: 700 }}
+        >
+          STRKT
+        </span>
+        <div style={{ display: "flex", gap: 10 }}>
           {["Shop", "Drops", "About"].map((n) => (
-            <span key={n} className="text-[7.5px] text-neutral-400">{n}</span>
+            <span key={n} style={{ fontSize: 7, color: "#aaa" }}>
+              {n}
+            </span>
           ))}
         </div>
       </div>
-      <div className="h-28 flex items-center px-3.5 gap-2.5 relative overflow-hidden bg-gradient-to-br from-[#0f1a2c] to-[#1a3050]">
-        <div className="absolute -top-5 -right-5 w-28 h-28 rounded-full bg-sky-600/30 blur-2xl pointer-events-none" />
-        <div className="flex-1">
-          <div className="text-xs text-white leading-tight mb-1">Wear what<br />you mean.</div>
-          <div className="text-[8px] text-white/50 mb-2">Limited drops, weekly.</div>
-          <div className="inline-block text-[7px] px-2.5 py-1 rounded bg-sky-600 text-white">Shop now →</div>
+      <div
+        style={{
+          height: 100,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          gap: 10,
+          background: "linear-gradient(135deg,#0f1a2c,#1a3050)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <div
+            className="text-white"
+            style={{
+              fontSize: 11,
+              lineHeight: 1.3,
+              marginBottom: 4,
+            }}
+          >
+            Wear what
+            <br />
+            you mean.
+          </div>
+          <div
+            className="text-white/50"
+            style={{
+              fontSize: 7,
+              marginBottom: 7,
+            }}
+          >
+            Limited drops, weekly.
+          </div>
+          <div
+            className="bg-azure-500 text-white"
+            style={{
+              display: "inline-block",
+              fontSize: 7,
+              padding: "3px 9px",
+              borderRadius: 3,
+            }}
+          >
+            Shop now →
+          </div>
         </div>
-        <div className="w-14 h-20 rounded-md flex-shrink-0 bg-white/10 border border-white/15" />
+        <div
+          className="bg-white/10 flex-shrink-0"
+          style={{
+            width: 48,
+            height: 68,
+            borderRadius: 5,
+            border: "1px solid rgba(255,255,255,.15)",
+          }}
+        />
       </div>
-      <div className="grid grid-cols-3 gap-1.5 p-2">
-        {[["Cargo Tee","$48","👕","#0f2a4a","#1a3a5c"],["Wide Hoodie","$90","🧥","#1a2030","#253040"],["Track Pant","$72","👖","#0a1520","#152030"]].map(([nm, pr, ic, from, to]) => (
-          <div key={nm} className="rounded-md overflow-hidden bg-neutral-50 border border-neutral-200/50">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3,1fr)",
+          gap: 5,
+          padding: 8,
+        }}
+      >
+        {[
+          ["Cargo Tee", "$48", "#0f2a4a", "#1a3a5c"],
+          ["Wide Hoodie", "$90", "#1a2030", "#253040"],
+          ["Track Pant", "$72", "#0a1520", "#152030"],
+        ].map(([nm, pr, f, t]) => (
+          <div
+            key={nm}
+            style={{
+              borderRadius: 5,
+              overflow: "hidden",
+              background: "#f8f8f8",
+              border: "1px solid rgba(229,229,229,.5)",
+            }}
+          >
             <div
-              className="h-13 flex items-center justify-center text-lg"
-              style={{ background: `linear-gradient(135deg,${from},${to})` }}
-            >{ic}</div>
-            <div className="p-1.5">
-              <div className="text-[7px] text-neutral-400">{nm}</div>
-              <div className="text-[9px] text-sky-600">{pr}</div>
+              style={{
+                height: 38,
+                background: `linear-gradient(135deg,${f},${t})`,
+              }}
+            />
+            <div style={{ padding: 5 }}>
+              <div style={{ fontSize: 6.5, color: "#aaa" }}>{nm}</div>
+              <div
+                className="text-azure-500"
+                style={{ fontSize: 8, fontWeight: 700 }}
+              >
+                {pr}
+              </div>
             </div>
           </div>
         ))}
       </div>
-      <div className="flex gap-6 justify-center pt-1.5 pb-1.5 border-t border-neutral-100">
-        {[["98","Perf"],["1.2s","Load"],["4.9★","Rating"]].map(([v, l]) => (
-          <div key={l} className="text-center">
-            <div className="text-[13px] text-sky-600">{v}</div>
-            <div className="text-[7px] text-neutral-400">{l}</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 20,
+          padding: "6px 0",
+          borderTop: "1px solid #f0f0f0",
+        }}
+      >
+        {[
+          ["98", "Perf"],
+          ["1.2s", "Load"],
+          ["4.9★", "Rating"],
+        ].map(([v, l]) => (
+          <div key={l} style={{ textAlign: "center" }}>
+            <div
+              className="text-azure-500"
+              style={{ fontSize: 12, fontWeight: 700 }}
+            >
+              {v}
+            </div>
+            <div style={{ fontSize: 6.5, color: "#aaa" }}>{l}</div>
           </div>
         ))}
       </div>
-      <div className="absolute bottom-4 right-3.5 flex items-center gap-1.5 rounded-full px-3 py-1 bg-[#181817] text-white text-[8.5px]">
-        <div className="rounded-full w-1.5 h-1.5 bg-sky-500" />
+      <div
+        style={{
+          position: "absolute",
+          bottom: 16,
+          right: 12,
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          fontSize: 7.5,
+          padding: "4px 10px",
+          borderRadius: 99,
+        }}
+        className="bg-dark-900 text-white"
+      >
+        <div
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "#38bdf8",
+          }}
+        />
         Live &amp; converting
       </div>
       <Chip label="Product & Digital" />
@@ -221,98 +447,348 @@ function C1S3() {
   );
 }
 
-function C1S4() {
+function C1S3() {
   return (
-    <CoverImage src="/flier/image6.png" alt="Product & Digital">
+    <div style={{ position: "absolute", inset: 0 }}>
+      <img
+        src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=75&auto=format&fit=crop"
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
+        }}
+      />
       <Chip label="Product & Digital" />
       <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          bottom: 18,
+          left: 14,
+          right: 14,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
       >
         <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">Product &amp; Digital</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
+          <div
+            className="text-white/[38%]"
+            style={{
+              fontFamily: "monospace",
+              fontSize: 8,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              marginBottom: 2,
+            }}
+          >
+            Product &amp; Digital
+          </div>
+          <div
+            className="text-white/[88%]"
+            style={{
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
         </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: "#38bdf8",
+            marginBottom: 3,
+          }}
+        />
       </motion.div>
-    </CoverImage>
+    </div>
   );
 }
 
 function C2S1() {
   return (
-    <div className="absolute inset-0">
-      <div className="absolute inset-0 bg-white">
-        <div className="flex items-center px-3 gap-2 h-11 border-b border-neutral-200/50">
-          <span className="font-serif text-[15px] text-[#262626] flex-1">Instagram</span>
-          {[0, 1].map((i) => <div key={i} className="w-5 h-5 rounded bg-neutral-300" />)}
+    <div style={{ position: "absolute", inset: 0 }}>
+      <div className="bg-white" style={{ position: "absolute", inset: 0 }}>
+        <div
+          style={{
+            height: 38,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 12px",
+            gap: 8,
+            borderBottom: "1px solid rgba(229,229,229,.5)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 14,
+              color: "#262626",
+              flex: 1,
+              fontFamily: "serif",
+            }}
+          >
+            Instagram
+          </span>
         </div>
-        <div className="flex items-center px-3.5 py-3 gap-2.5 border-b border-neutral-100">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-400 via-rose-500 to-pink-700 flex items-center justify-center text-white text-sm font-black flex-shrink-0">M</div>
-          <div className="flex-1">
-            <div className="text-[11px] text-[#262626]">mad.studio</div>
-            <div className="text-[9.5px] text-[#8e8e8e]">@mad.studio · Creative Agency</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "10px 12px",
+            gap: 10,
+            borderBottom: "1px solid #f5f5f5",
+          }}
+        >
+          <div
+            className="text-white"
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg,#fb923c,#db2777)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 900,
+              fontSize: 13,
+              flexShrink: 0,
+            }}
+          >
+            M
           </div>
-          <div className="text-[9px] px-3.5 py-1 rounded-md bg-sky-600 text-white">Follow</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 10, color: "#262626" }}>mad.studio</div>
+            <div style={{ fontSize: 8.5, color: "#8e8e8e" }}>
+              @mad.studio · Creative Agency
+            </div>
+          </div>
+          <div
+            className="bg-azure-500 text-white"
+            style={{
+              fontSize: 8,
+              padding: "4px 12px",
+              borderRadius: 5,
+            }}
+          >
+            Follow
+          </div>
         </div>
-        <div className="flex border-b border-neutral-100">
-          {[["48","posts"],["24.8K","followers"],["4.2%","eng."]].map(([n, l]) => (
-            <div key={l} className="flex-1 text-center py-2">
-              <div className="text-[12px] text-[#262626]">{n}</div>
-              <div className="text-[8px] text-[#8e8e8e]">{l}</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: 1,
+            padding: 1,
+          }}
+        >
+          {[
+            ["#1980c2", "Brand"],
+            ["#181817", "Launch"],
+            ["#3da0e4", "Web"],
+            ["#f0f0ee", "MAD"],
+            ["#0f4f7a", "Identity"],
+            ["#e8e8e4", "Campaign"],
+          ].map(([bg, lbl], i) => (
+            <div
+              key={i}
+              style={{
+                background: bg,
+                aspectRatio: "1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color:
+                  bg === "#f0f0ee" || bg === "#e8e8e4" ? "#181817" : "#ffffff",
+                fontSize: 7.5,
+                fontWeight: 900,
+              }}
+            >
+              {lbl}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-3 gap-0.5 p-0.5">
-          {[["#1980c2","Brand"],["#181817","Launch"],["#3da0e4","Web"],["#f0f0ee","MAD"],["#0f4f7a","Identity"],["#e8e8e4","Campaign"]].map(([bg, lbl], i) => (
-            <div key={i} style={{ background: bg }} className="aspect-square flex items-center justify-center text-white text-[8px] font-extrabold">{lbl}</div>
-          ))}
-        </div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
+        }}
+      />
       <Chip label="Marketing & Comms" />
-      <RequestBubble text="Create a social media content calendar for our spring product launch." />
+      <ReqBubble text="Create a social media content calendar for our spring product launch." />
     </div>
   );
 }
 
-function C2S3() {
+function C2S2() {
   return (
-    <div className="absolute inset-0 flex flex-col bg-white">
-      <div className="h-10 flex items-center px-3 border-b border-neutral-200/50 bg-neutral-50">
-        <span className="font-serif text-sm text-[#262626] flex-1">Instagram</span>
+    <div
+      className="bg-white"
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          height: 36,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          borderBottom: "1px solid rgba(229,229,229,.5)",
+          background: "#f8f8f8",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 13,
+            color: "#262626",
+            flex: 1,
+            fontFamily: "serif",
+          }}
+        >
+          Instagram
+        </span>
       </div>
-      <div className="border-b border-neutral-100">
-        <div className="flex items-center px-3 py-2 gap-2">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-rose-600 flex-shrink-0" />
-          <span className="text-[10px] text-[#262626] flex-1">mad.studio</span>
+      <div style={{ borderBottom: "1px solid #f5f5f5" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "8px 12px",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg,#fb923c,#db2777)",
+              flexShrink: 0,
+            }}
+          />
+          <span style={{ fontSize: 9, color: "#262626", flex: 1 }}>
+            mad.studio
+          </span>
         </div>
-        <div className="h-40 flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-sky-600 to-sky-800">
-          <div className="text-lg text-white text-center leading-tight px-2.5 relative z-10">
-            Your brand,<br />everywhere.
+        <div
+          style={{
+            height: 140,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(135deg,#1980c2,#0f4f7a)",
+            position: "relative",
+          }}
+        >
+          <div
+            className="text-white"
+            style={{
+              fontSize: 17,
+              textAlign: "center",
+              lineHeight: 1.25,
+              padding: "0 10px",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            Your brand,
+            <br />
+            everywhere.
           </div>
         </div>
-        <div className="px-3 py-1.5 text-[8.5px] text-[#262626] leading-relaxed">
-          <strong>mad.studio</strong> Campaigns that connect — content built to reach the right people at the right time.
+        <div
+          style={{
+            padding: "5px 12px 3px",
+            fontSize: 8,
+            color: "#262626",
+            lineHeight: 1.55,
+          }}
+        >
+          <strong>mad.studio</strong> Campaigns that connect — content built to
+          reach the right people.
         </div>
-        <div className="px-3 pb-2 flex gap-1 flex-wrap">
-          {["#branding","#marketing","#springdrop","#growth"].map((t) => (
-            <span key={t} className="text-[8px] text-sky-600">{t}</span>
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            flexWrap: "wrap",
+            padding: "0 12px 8px",
+          }}
+        >
+          {["#branding", "#marketing", "#springdrop", "#growth"].map((t) => (
+            <span key={t} className="text-azure-500" style={{ fontSize: 7.5 }}>
+              {t}
+            </span>
           ))}
         </div>
       </div>
-      <div className="flex gap-2 p-3">
-        {[["Total Reach","248K","+38%"],["Conv.","3.2K","+52%"]].map(([l, v, d]) => (
-          <div key={l} className="flex-1 rounded-md p-2 bg-neutral-50">
-            <div className="text-[7px] text-neutral-400">{l}</div>
-            <div className="text-sm text-[#181817]">{v}</div>
-            <div className="text-[8px] text-green-600">↑ {d}</div>
+      <div style={{ display: "flex", gap: 8, padding: "8px 12px" }}>
+        {[
+          ["Total Reach", "248K", "+38%"],
+          ["Conv.", "3.2K", "+52%"],
+        ].map(([l, v, d]) => (
+          <div
+            key={l}
+            style={{
+              flex: 1,
+              borderRadius: 5,
+              padding: 8,
+              background: "#f8f8f8",
+            }}
+          >
+            <div style={{ fontSize: 6.5, color: "#aaa" }}>{l}</div>
+            <div
+              className="text-dark-900"
+              style={{ fontSize: 13, fontWeight: 700 }}
+            >
+              {v}
+            </div>
+            <div style={{ fontSize: 7.5, color: "#22c55e" }}>↑ {d}</div>
           </div>
         ))}
       </div>
-      <div className="absolute bottom-4 right-3 flex items-center gap-1.5 rounded-full px-3 py-1 bg-black/75 backdrop-blur-sm text-white text-[8px]">
-        <div className="rounded-full w-1.5 h-1.5 bg-sky-500" />
+      <div
+        className="text-white bg-black/75 flex items-center gap-[5px]"
+        style={{
+          position: "absolute",
+          bottom: 14,
+          right: 12,
+          backdropFilter: "blur(8px)",
+          fontSize: 7.5,
+          padding: "4px 10px",
+          borderRadius: 99,
+        }}
+      >
+        <div
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "#38bdf8",
+          }}
+        />
         Campaign live
       </div>
       <Chip label="Marketing & Comms" />
@@ -320,102 +796,346 @@ function C2S3() {
   );
 }
 
-function C2S4() {
+function C2S3() {
   return (
-    <CoverImage src="/flier/image4.png" alt="Marketing & Comms">
+    <div style={{ position: "absolute", inset: 0 }}>
+      <img
+        src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500&q=75&auto=format&fit=crop"
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
+        }}
+      />
       <Chip label="Marketing & Comms" />
       <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          bottom: 18,
+          left: 14,
+          right: 14,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
       >
         <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">Marketing &amp; Comms</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
+          <div
+            className="text-white/[38%]"
+            style={{
+              fontFamily: "monospace",
+              fontSize: 8,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              marginBottom: 2,
+            }}
+          >
+            Marketing &amp; Comms
+          </div>
+          <div
+            className="text-white/[88%]"
+            style={{
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
         </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: "#38bdf8",
+            marginBottom: 3,
+          }}
+        />
       </motion.div>
-    </CoverImage>
+    </div>
   );
 }
 
 function C3S1() {
   return (
-    <div className="absolute inset-0">
-      <div className="absolute inset-0 bg-[#f8f7f5]">
-        <div className="h-9 flex items-center px-3 gap-2 bg-white border-b border-neutral-100">
-          <span className="text-[11px] text-[#181817]">M<span className="text-sky-600">A</span>D Brand Studio</span>
+    <div style={{ position: "absolute", inset: 0 }}>
+      <div style={{ position: "absolute", inset: 0, background: "#f8f7f5" }}>
+        <div
+          className="bg-white"
+          style={{
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 12px",
+            borderBottom: "1px solid #f0f0f0",
+          }}
+        >
+          <span className="text-dark-900" style={{ fontSize: 10 }}>
+            M<span className="text-azure-500">A</span>D Brand Studio
+          </span>
         </div>
-        <div className="h-7 flex bg-white border-b border-neutral-100">
-          {["Colours","Typography","Components"].map((t, i) => (
+        <div
+          className="bg-white"
+          style={{
+            height: 24,
+            display: "flex",
+            borderBottom: "1px solid #f0f0f0",
+          }}
+        >
+          {["Colours", "Typography", "Components"].map((t, i) => (
             <div
               key={t}
-              className={`flex items-center px-3 text-[8px] border-b-2 ${i === 0 ? "text-sky-600 border-sky-600" : "text-neutral-400 border-transparent"}`}
-            >{t}</div>
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0 10px",
+                fontSize: 7.5,
+                borderBottom: `2px solid ${i === 0 ? "#1980c2" : "transparent"}`,
+                color: i === 0 ? "#1980c2" : "#aaa",
+              }}
+            >
+              {t}
+            </div>
           ))}
         </div>
-        <div className="p-2.5">
-          <div className="flex rounded-lg overflow-hidden h-16 mb-2 shadow-md">
-            {[["#1980c2","Azure","rgba(255,255,255,0.7)"],["#181817","Onyx","rgba(255,255,255,0.7)"],["#fff","White","#aaa"],["#0f4f7a","Deep","rgba(255,255,255,0.7)"],["#3da0e4","Sky","rgba(255,255,255,0.7)"]].map(([bg, l, c]) => (
+        <div style={{ padding: 10 }}>
+          <div
+            style={{
+              display: "flex",
+              borderRadius: 6,
+              overflow: "hidden",
+              height: 52,
+              marginBottom: 8,
+              boxShadow: "0 2px 8px rgba(0,0,0,.1)",
+            }}
+          >
+            {[
+              ["#1980c2", "Azure", "rgba(255,255,255,.7)"],
+              ["#181817", "Onyx", "rgba(255,255,255,.7)"],
+              ["#ffffff", "White", "#aaa"],
+              ["#0f4f7a", "Deep", "rgba(255,255,255,.7)"],
+              ["#3da0e4", "Sky", "rgba(255,255,255,.7)"],
+            ].map(([bg, l, c]) => (
               <div
                 key={l}
-                style={{ background: bg, color: c }}
-                className="flex-1 flex items-end justify-center pb-1.5 text-[6px]"
-              >{l}</div>
+                style={{
+                  background: bg,
+                  color: c,
+                  flex: 1,
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  paddingBottom: 5,
+                  fontSize: 5.5,
+                  fontWeight: 700,
+                }}
+              >
+                {l}
+              </div>
             ))}
           </div>
         </div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
+        }}
+      />
       <Chip label="Brand & Identity" />
-      <RequestBubble text="Design a bold brand identity system with logo, type, and a colour palette." />
+      <ReqBubble text="Design a bold brand identity system with logo, type, and a colour palette." />
     </div>
   );
 }
 
-function C3S3() {
+function C3S2() {
   return (
-    <div className="absolute inset-0 flex flex-col">
-      <div className="relative overflow-hidden flex flex-col items-center justify-center gap-2.5 bg-gradient-to-br from-[#0a1628] via-[#0f2a4a] to-sky-700/50" style={{ height: "55%" }}>
-        <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-sky-600/25 blur-3xl pointer-events-none" />
-        <div className="flex items-center gap-2.5 relative z-10">
-          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <polygon points="11,1 21,7 21,15 11,21 1,15 1,7" fill="white" opacity=".9" />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          height: "52%",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+          background:
+            "linear-gradient(135deg,#0a1628,#0f2a4a,rgba(25,128,194,.4))",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <div
+            className="bg-azure-500"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <polygon
+                points="11,1 21,7 21,15 11,21 1,15 1,7"
+                fill="white"
+                opacity=".9"
+              />
             </svg>
           </div>
-          <span className="text-[28px] text-white leading-none tracking-tight">M<span className="text-sky-400">AD</span></span>
+          <span
+            className="text-white"
+            style={{
+              fontSize: 26,
+              lineHeight: 1,
+              letterSpacing: -0.4,
+            }}
+          >
+            M<span style={{ color: "#7dd3fc" }}>AD</span>
+          </span>
         </div>
-        <div className="font-mono text-[9px] tracking-widest uppercase text-white/40 relative z-10">Identity System · 2025</div>
-        <div className="flex rounded-lg overflow-hidden w-48 relative z-10">
-          {[["#1980c2","#fff","MAD"],["#fff","#181817","MAD"],["#181817","#fff","MAD"]].map(([bg, color, lbl], i) => (
+        <div
+          className="text-white/40"
+          style={{
+            fontFamily: "monospace",
+            fontSize: 8,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          Identity System · 2025
+        </div>
+        <div
+          style={{
+            display: "flex",
+            borderRadius: 6,
+            overflow: "hidden",
+            width: 176,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          {[
+            ["#1980c2", "#ffffff", "MAD"],
+            ["#ffffff", "#181817", "MAD"],
+            ["#181817", "#ffffff", "MAD"],
+          ].map(([bg, col, lbl], i) => (
             <div
               key={i}
-              style={{ background: bg, color }}
-              className="flex-1 flex items-center justify-center py-1.5 text-[10px]"
-            >{lbl}</div>
+              style={{
+                background: bg,
+                color: col,
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "5px 0",
+                fontSize: 9,
+                fontWeight: 900,
+              }}
+            >
+              {lbl}
+            </div>
           ))}
         </div>
       </div>
-      <div className="flex-1 flex flex-col gap-2 p-3 bg-white">
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1">
-            {["#1980c2","#181817","#fff","#0f4f7a","#3da0e4"].map((c, i) => (
-              <div
-                key={i}
-                style={{ background: c }}
-                className={`w-5 h-5 rounded shadow-sm ${c === "#fff" ? "border border-neutral-200" : ""}`}
-              />
-            ))}
+      <div
+        className="bg-white"
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          padding: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", gap: 4 }}>
+            {["#1980c2", "#181817", "#ffffff", "#0f4f7a", "#3da0e4"].map(
+              (c, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: 3,
+                    background: c,
+                    border: c === "#ffffff" ? "1px solid #eee" : "none",
+                  }}
+                />
+              ),
+            )}
           </div>
-          <div className="ml-2">
-            <div className="text-[8px] text-[#181817]">Azure Blue</div>
-            <div className="font-mono text-[7px] text-neutral-400">#1980c2 · Primary</div>
+          <div>
+            <div className="text-dark-900" style={{ fontSize: 7.5 }}>
+              Azure Blue
+            </div>
+            <div
+              style={{ fontFamily: "monospace", fontSize: 6.5, color: "#aaa" }}
+            >
+              #1980c2 · Primary
+            </div>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-4 right-3 flex items-center gap-1.5 rounded-full px-3 py-1 bg-[#181817] text-white text-[8px] z-10">
-        <div className="rounded-full w-1.5 h-1.5 bg-sky-500" />
+      <div
+        className="bg-dark-900 text-white"
+        style={{
+          position: "absolute",
+          bottom: 14,
+          right: 12,
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          fontSize: 7.5,
+          padding: "4px 10px",
+          borderRadius: 99,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "#38bdf8",
+          }}
+        />
         Brand system complete
       </div>
       <Chip label="Brand & Identity" />
@@ -423,186 +1143,125 @@ function C3S3() {
   );
 }
 
-function C3S4() {
+function C3S3() {
   return (
-    <CoverImage src="/flier/image10.png" alt="Brand & Identity">
+    <div style={{ position: "absolute", inset: 0 }}>
+      <img
+        src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=500&q=75&auto=format&fit=crop"
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
+        }}
+      />
       <Chip label="Brand & Identity" />
       <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          bottom: 18,
+          left: 14,
+          right: 14,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
       >
         <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">Brand &amp; Identity</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
-        </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
-      </motion.div>
-    </CoverImage>
-  );
-}
-
-function C4S1() {
-  return (
-    <div className="absolute inset-0">
-      <div className="absolute inset-0 bg-[#f8f8f6]">
-        <WFBrowser><div /></WFBrowser>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
-      <Chip label="E-Commerce" />
-      <RequestBubble text="Set up a Shopify store with custom checkout and Spring drop landing pages." />
-    </div>
-  );
-}
-
-function C4S3() {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-sky-800 to-sky-600" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/5" />
-      <DeliveredBadge eyebrow="Delivered" title="Store live · converting" />
-      <Chip label="E-Commerce" />
-    </div>
-  );
-}
-
-function C4S4() {
-  return (
-    <CoverImage src="/flier/image6.png" alt="E-Commerce">
-      <Chip label="E-Commerce" />
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
-      >
-        <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">E-Commerce</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
-        </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
-      </motion.div>
-    </CoverImage>
-  );
-}
-
-function C5S1() {
-  return (
-    <div className="absolute inset-0 bg-[#0d1117]">
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
-      <Chip label="Campaign Analytics" />
-      <RequestBubble text="Build a real-time dashboard showing ROAS, reach, CPA, and conversions." />
-    </div>
-  );
-}
-
-function C5S3() {
-  return (
-    <div className="absolute inset-0 flex flex-col p-3.5 bg-[#0d1117]">
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-xs text-white">Live Dashboard</span>
-        <span className="font-mono text-[8px] text-white/30">Real-time · May 2025</span>
-      </div>
-      <div className="grid grid-cols-3 gap-1.5 mb-2.5">
-        {[["ROAS","6.4×","↑ Strong"],["Reach","248K","↑ +38%"],["Conv.","3.2K","↑ +52%"]].map(([l, v, d]) => (
-          <div key={l} className="rounded-lg p-2 bg-white/[0.04] border border-white/[0.07]">
-            <div className="text-[7px] text-white/35 mb-0.5">{l}</div>
-            <div className="text-[15px] text-white leading-none">{v}</div>
-            <div className="text-[8px] text-green-500">{d}</div>
+          <div
+            className="text-white/[38%]"
+            style={{
+              fontFamily: "monospace",
+              fontSize: 8,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              marginBottom: 2,
+            }}
+          >
+            Brand &amp; Identity
           </div>
-        ))}
-      </div>
-      <div className="rounded-lg flex items-center justify-between p-2.5 bg-sky-600/15 border border-sky-600/30">
-        <div className="font-mono text-[9px] text-white/50 tracking-widest uppercase">ROAS · Campaign total</div>
-        <div className="text-[22px] text-sky-500">6.4×</div>
-      </div>
-      <Chip label="Campaign Analytics" />
-    </div>
-  );
-}
-
-function C5S4() {
-  return (
-    <CoverImage src="/flier/image5.png" alt="Campaign Analytics">
-      <Chip label="Campaign Analytics" />
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
-      >
-        <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">Campaign Analytics</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
+          <div
+            className="text-white/[88%]"
+            style={{
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            MAD Studio.
+          </div>
         </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: "#38bdf8",
+            marginBottom: 3,
+          }}
+        />
       </motion.div>
-    </CoverImage>
-  );
-}
-
-function C6S1() {
-  return (
-    <div className="absolute inset-0">
-      <div className="absolute inset-0 bg-[#1a1a18]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/60 to-black/85" />
-      <Chip label="Illustration" />
-      <RequestBubble text="Create a 4-panel editorial comic for our product launch announcement." />
     </div>
   );
 }
 
-function C6S3() {
-  return (
-    <div className="absolute inset-0 overflow-hidden bg-[#1a1a18]">
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/5" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="grid grid-cols-2 gap-1.5 w-[88%] p-6">
-          {["✏️","🎨","🖼️","✨"].map((icon, i) => (
-            <div
-              key={i}
-              className="aspect-square rounded-xl flex items-center justify-center text-2xl bg-white/[0.06] border border-white/10"
-            >{icon}</div>
-          ))}
-        </div>
-      </div>
-      <DeliveredBadge eyebrow="Delivered" title="Illustration pack ready" />
-      <Chip label="Illustration" />
-    </div>
-  );
-}
-
-function C6S4() {
-  return (
-    <CoverImage src="/flier/image8.png" alt="Illustration">
-      <Chip label="Illustration" />
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.9 }}
-        className="absolute bottom-5 left-4 right-4 flex items-end justify-between"
-      >
-        <div>
-          <div className="font-mono text-[9px] text-white/40 tracking-widest uppercase mb-0.5">Illustration</div>
-          <div className="text-[22px] text-white/90 leading-none">MAD Studio.</div>
-        </div>
-        <div className="rounded-full w-2 h-2 mb-1 bg-sky-500" />
-      </motion.div>
-    </CoverImage>
-  );
-}
-
-// ─── CARD CONFIG ──────────────────────────────────────────────────────────────
-const CARD_CONFIGS = [
-  { id:"c1", title:"Product & Digital", sub:"Websites, apps, and digital platforms built to perform and scale.", S1:C1S1, S3:C1S3, S4:C1S4 },
-  { id:"c2", title:"Marketing & Comms", sub:"Campaigns and content systems that connect brands with the right audience.", S1:C2S1, S3:C2S3, S4:C2S4 },
-  { id:"c3", title:"Brand & Identity", sub:"Logo, type, colour, and brand systems that bring clarity to every touchpoint.", S1:C3S1, S3:C3S3, S4:C3S4 },
-  { id:"c4", title:"E-Commerce", sub:"Shopify and Next.js stores optimised to convert from day one.", S1:C4S1, S3:C4S3, S4:C4S4 },
-  { id:"c5", title:"Campaign Analytics", sub:"Live dashboards, KPI benchmarks, and weekly insight reports.", S1:C5S1, S3:C5S3, S4:C5S4 },
-  { id:"c6", title:"Illustration", sub:"Editorial illustration, comics, and icon systems for campaigns and brand.", S1:C6S1, S3:C6S3, S4:C6S4 },
+const CARDS = [
+  {
+    id: "c1",
+    title: "Product & Digital",
+    sub: "Websites, apps & platforms built to perform.",
+    stages: [C1S1, C1S2, C1S3],
+  },
+  {
+    id: "c2",
+    title: "Marketing & Comms",
+    sub: "Campaigns and content that reach the right audience.",
+    stages: [C2S1, C2S2, C2S3],
+  },
+  {
+    id: "c3",
+    title: "Brand & Identity",
+    sub: "Logo, type, colour, and brand systems that bring clarity.",
+    stages: [C3S1, C3S2, C3S3],
+  },
+  {
+    id: "c4",
+    title: "Brand & Identity",
+    sub: "Logo, type, colour, and brand systems that bring clarity.",
+    stages: [C3S1, C3S2, C3S3],
+  },
+  {
+    id: "c5",
+    title: "Marketing & Comms",
+    sub: "Campaigns and content that reach the right audience.",
+    stages: [C2S1, C2S2, C2S3],
+  },
+  {
+    id: "c6",
+    title: "Brand & Identity",
+    sub: "Logo, type, colour, and brand systems that bring clarity.",
+    stages: [C3S1, C3S2, C3S3],
+  },
 ];
 
-// ════════════════════════════════════════════════════════════════
-// SERVICE CARD
-// ════════════════════════════════════════════════════════════════
-function ServiceCard({ config, startDelay, isActive }) {
+const S1 = 3000,
+  S2 = 3500,
+  S3 = 90000;
+const LOOP = S1 + S2 + S3;
+
+function SvcCard({ config, startDelay, isActive }) {
   const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
   const rafRef = useRef(null);
@@ -610,199 +1269,355 @@ function ServiceCard({ config, startDelay, isActive }) {
 
   const runCycle = useCallback(() => {
     const pf = fillRef.current;
-    if (pf) { pf.style.transition = "none"; pf.style.width = "0%"; }
+    if (pf) {
+      pf.style.transition = "none";
+      pf.style.width = "0%";
+    }
     setStage(0);
-    let startTs = null;
+    let t0 = null;
     const tick = (ts) => {
-      if (!startTs) startTs = ts;
-      const el = ts - startTs;
-      const pct = Math.min(100, (el / LOADING_DUR) * 100);
-      if (pf) pf.style.width = `${pct}%`;
-      if (el < S1_DUR) setStage(0);
-      else if (el < LOADING_DUR) setStage(1);
+      if (!t0) t0 = ts;
+      const el = ts - t0;
+      if (pf) pf.style.width = `${Math.min(100, (el / (S1 + S2)) * 100)}%`;
+      if (el < S1) setStage(0);
+      else if (el < S1 + S2) setStage(1);
       else setStage(2);
-      if (el < TOTAL_DUR) { rafRef.current = requestAnimationFrame(tick); }
-      else { timerRef.current = setTimeout(runCycle, LOOP_PAUSE); }
+      if (el < LOOP) rafRef.current = requestAnimationFrame(tick);
+      else timerRef.current = setTimeout(runCycle, 600);
     };
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
   useEffect(() => {
-    injectBlink();
     const t = setTimeout(runCycle, startDelay);
-    return () => { clearTimeout(t); clearTimeout(timerRef.current); cancelAnimationFrame(rafRef.current); };
+    return () => {
+      clearTimeout(t);
+      clearTimeout(timerRef.current);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, [runCycle, startDelay]);
 
-  const { S1, S3, S4, title, sub } = config;
+  const { stages, title, sub } = config;
+  const [S1c, S2c, S3c] = stages;
 
   return (
-    <div className="flex-shrink-0 flex flex-col gap-3.5 relative w-[min(340px,calc(100vw-48px))] pb-2.5 pr-2.5">
-      {/* Shadow layers */}
-      <div className="absolute top-3 left-3 right-0 h-[490px] bg-azure-200/20 rounded-[22px] z-0" />
-      <div className="absolute top-1.5 left-1.5 -right-1.5 h-[490px] bg-azure-100/30 border border-azure-200/40 rounded-[22px] z-[1]" />
-
-      {/* Card */}
+    <div
+      style={{
+        flexShrink: 0,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        position: "relative",
+        width: "min(460px,calc(100vw - 48px))",
+        paddingBottom: 8,
+        paddingRight: 8,
+      }}
+    >
       <div
-        className={`relative w-full h-[490px] rounded-[22px] z-[2] bg-azure-50 border border-azure-200/60 overflow-hidden ${
-          isActive ? "shadow-2xl shadow-azure-500/10" : "shadow-md shadow-black/[0.06]"
-        }`}
-        style={{ transition: "box-shadow 0.5s ease" }}
+        className="bg-azure-500/[7%]"
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 10,
+          right: 0,
+          height: 460,
+          borderRadius: 18,
+          zIndex: 0,
+        }}
+      />
+      <div
+        className="bg-azure-500/10"
+        style={{
+          position: "absolute",
+          top: 5,
+          left: 5,
+          right: -5,
+          height: 460,
+          border: "1px solid rgba(25,128,194,.18)",
+          borderRadius: 18,
+          zIndex: 1,
+        }}
+      />
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: 460,
+          borderRadius: 18,
+          overflow: "hidden",
+          zIndex: 2,
+          border: "1px solid rgba(25,128,194,.25)",
+          boxShadow: isActive
+            ? "0 20px 56px rgba(25,128,194,.14)"
+            : "0 6px 20px rgba(0,0,0,.07)",
+          transition: "box-shadow .5s",
+        }}
       >
         <AnimatePresence>
           {stage === 0 && (
-            <motion.div key="s1" className="absolute inset-0"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-              <S1 />
+            <motion.div
+              key="s1"
+              style={{ position: "absolute", inset: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45 }}
+            >
+              <S1c />
             </motion.div>
           )}
           {stage === 1 && (
-            <motion.div key="s3" className="absolute inset-0"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-              <S3 />
+            <motion.div
+              key="s2"
+              style={{ position: "absolute", inset: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45 }}
+            >
+              <S2c />
             </motion.div>
           )}
           {stage === 2 && (
-            <motion.div key="s4" className="absolute inset-0"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-              <S4 />
+            <motion.div
+              key="s3"
+              style={{ position: "absolute", inset: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.55 }}
+            >
+              <S3c />
             </motion.div>
           )}
         </AnimatePresence>
-
         {/* Stage dots */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex gap-1.5 z-30">
+        <div
+          style={{
+            position: "absolute",
+            bottom: 14,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: 5,
+            zIndex: 30,
+          }}
+        >
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              animate={{ width: i === stage ? 14 : 5, background: i === stage ? "rgba(255,255,255,.85)" : "rgba(255,255,255,.22)" }}
+              animate={{
+                width: i === stage ? 12 : 4,
+                background:
+                  i === stage
+                    ? "rgba(255,255,255,.85)"
+                    : "rgba(255,255,255,.22)",
+              }}
               transition={{ duration: 0.2 }}
-              className="h-1.5 rounded-full"
+              style={{ height: 5, borderRadius: 2.5 }}
             />
           ))}
         </div>
-
         {/* Progress bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-30 h-[3px] bg-black/[0.06]">
-          <div ref={fillRef} className="h-full w-0 bg-azure-500/80" style={{ transition: "none" }} />
+        <div
+          className="bg-black/[6%]"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 2.5,
+            zIndex: 30,
+          }}
+        >
+          <div
+            ref={fillRef}
+            className="bg-azure-500/75"
+            style={{
+              height: "100%",
+              width: "0%",
+            }}
+          />
         </div>
       </div>
-
-      {/* Text */}
       <motion.div
-        className="px-1"
-        animate={{ opacity: isActive ? 1 : 0.45, y: isActive ? 0 : 4 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ opacity: isActive ? 1 : 0.4, y: isActive ? 0 : 3 }}
+        transition={{ duration: 0.3 }}
+        style={{ paddingLeft: 2 }}
       >
-        <div className="text-[19px] text-dark-900 leading-tight mb-1">{title}</div>
-        <div className="text-[11.5px] text-dark-900/55 leading-relaxed">{sub}</div>
+        <div
+          className="text-dark-900"
+          style={{
+            fontSize: 17,
+            lineHeight: 1.2,
+            marginBottom: 3,
+            fontWeight: 700,
+          }}
+        >
+          {title}
+        </div>
+        <div
+          className="text-dark-900/[52%]"
+          style={{
+            fontSize: 11,
+            lineHeight: 1.55,
+          }}
+        >
+          {sub}
+        </div>
       </motion.div>
     </div>
   );
 }
 
-// ════════════════════════════════════════════════════════════════
-// SERVICES IN MOTION
-// ════════════════════════════════════════════════════════════════
 export default function ServicesInMotion() {
   const wrapRef = useRef(null);
-  const stripRef = useRef(null);
   const [active, setActive] = useState(0);
+  const W = 460,
+    G = 20,
+    STEP = W + G;
+  const max = CARDS.length - 1;
+  const isMobileRef = useRef(false);
 
-  const CARD_W_BASE = 340;
-  const CARD_GAP = 24;
-  const STEP = CARD_W_BASE + CARD_GAP;
-  const maxIdx = CARD_CONFIGS.length - 1;
+  useEffect(() => {
+    const check = () => {
+      isMobileRef.current = window.innerWidth < 640;
+    };
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-  // Desktop scroll-driven
   useEffect(() => {
     const fn = () => {
-      if (!wrapRef.current) return;
-      if (window.innerWidth < 640) return;
+      if (!wrapRef.current || isMobileRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
       if (total <= 0) return;
       const p = Math.min(1, Math.max(0, -rect.top / total));
-      const cardIdx = Math.round(p * maxIdx);
-      setActive(Math.min(maxIdx, Math.max(0, cardIdx)));
+      setActive(Math.min(max, Math.max(0, Math.round(p * max))));
     };
     fn();
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
-  }, [maxIdx]);
+  }, [max]);
 
-  // Mobile touch swipe
-  const touchStartX = useRef(null);
-  const handleTouchStart = useCallback((e) => { touchStartX.current = e.touches[0].clientX; }, []);
-  const handleTouchEnd = useCallback((e) => {
-    if (touchStartX.current === null) return;
-    const dx = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 40) {
-      if (dx > 0) setActive((a) => Math.min(maxIdx, a + 1));
-      else setActive((a) => Math.max(0, a - 1));
-    }
-    touchStartX.current = null;
-  }, [maxIdx]);
+  const touchX = useRef(null);
+  const onTouchStart = (e) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e) => {
+    if (touchX.current === null) return;
+    const dx = touchX.current - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40)
+      setActive((a) => (dx > 0 ? Math.min(max, a + 1) : Math.max(0, a - 1)));
+    touchX.current = null;
+  };
 
-  // Desktop wheel
-  const wheelAcc = useRef(0);
-  const handleWheel = useCallback((e) => {
+  const wAcc = useRef(0);
+  const onWheel = (e) => {
     e.preventDefault();
-    wheelAcc.current += e.deltaY;
-    if (wheelAcc.current > 60) { setActive((a) => Math.min(maxIdx, a + 1)); wheelAcc.current = 0; }
-    else if (wheelAcc.current < -60) { setActive((a) => Math.max(0, a - 1)); wheelAcc.current = 0; }
-  }, [maxIdx]);
+    wAcc.current += e.deltaY;
+    if (wAcc.current > 60) {
+      setActive((a) => Math.min(max, a + 1));
+      wAcc.current = 0;
+    } else if (wAcc.current < -60) {
+      setActive((a) => Math.max(0, a - 1));
+      wAcc.current = 0;
+    }
+  };
 
-  const translateX = -active * STEP;
-
-  const navBtns = [
-    { d: "M14 6L8 12l6 6", fn: () => setActive((a) => Math.max(0, a - 1)) },
-    { d: "M10 6l6 6-6 6", fn: () => setActive((a) => Math.min(maxIdx, a + 1)) },
-  ];
+  const isMobile = window.innerWidth < 640;
+  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 200}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
 
   return (
     <section
       ref={wrapRef}
-      id="services-in-motion"
-      className="relative"
       style={{
-        height: `calc(100vh + ${CARD_CONFIGS.length * 420}px)`,
-        background: "linear-gradient(160deg, #eef7fd 0%, #f7fbff 30%, rgba(179,216,245,0.22) 65%, #eef7fd 100%)",
+        position: "relative",
+        height: sectionHeight,
+        background: "#f3f3f1",
+        paddingBottom: 0,
       }}
     >
-      {/* Grain */}
       <div
-        className="absolute inset-0 pointer-events-none z-0 opacity-[0.02]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "128px",
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          background: "#f3f3f1",
         }}
-      />
-
-      {/* Sticky panel */}
-      <div className="sticky top-0 h-screen overflow-hidden z-[1] flex flex-col bg-azure-50/55 backdrop-blur-[1px]">
-
+      >
         {/* Header */}
-        <div className="pt-[72px] px-6 flex items-end justify-between flex-shrink-0">
+        <div
+          style={{
+            padding: "72px 32px 8px",
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            flexShrink: 0,
+          }}
+        >
           <div>
-            <p className="m-0 mb-2 font-mono text-[10px] tracking-widest uppercase text-dark-900/40">
-              Services in motion &nbsp;·&nbsp; scroll to explore
+            <p
+              className="text-azure-500"
+              style={{
+                fontFamily: "monospace",
+                fontSize: 9,
+                letterSpacing: "0.28em",
+                textTransform: "uppercase",
+                fontWeight: 700,
+                marginBottom: 6,
+              }}
+            >
+              Services in motion · scroll to explore
             </p>
-            <h2 className="m-0 text-dark-900 leading-[1.05] tracking-[-0.04em]" style={{ fontSize: "clamp(28px,4vw,48px)" }}>
-              Systems for <span style={{ color: "#1980c2" }}>growth.</span>
+            <h2
+              className="text-dark-900"
+              style={{
+                fontSize: "clamp(26px,3.8vw,44px)",
+                fontWeight: 700,
+                lineHeight: 1.05,
+                letterSpacing: "-.04em",
+              }}
+            >
+              Systems for <span className="text-azure-500">growth.</span>
             </h2>
           </div>
-          <div className="flex gap-2">
-            {navBtns.map(({ d, fn }, i) => (
+          <div style={{ display: "flex", gap: 8 }}>
+            {[
+              {
+                d: "M14 6L8 12l6 6",
+                fn: () => setActive((a) => Math.max(0, a - 1)),
+              },
+              {
+                d: "M10 6l6 6-6 6",
+                fn: () => setActive((a) => Math.min(max, a + 1)),
+              },
+            ].map(({ d, fn }, i) => (
               <button
                 key={i}
                 onClick={fn}
-                className="w-9 h-9 rounded-full bg-transparent border border-dark-900/15 cursor-pointer flex items-center justify-center hover:bg-dark-900/5 transition-colors"
+                className="bg-transparent flex items-center justify-center"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  border: "1px solid rgba(24,24,23,.14)",
+                }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(15,23,42,.5)" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="rgba(15,23,42,.45)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <path d={d} />
                 </svg>
               </button>
@@ -810,38 +1625,62 @@ export default function ServicesInMotion() {
           </div>
         </div>
 
-        {/* Card strip */}
+        {/* Strip */}
         <div
-          ref={stripRef}
-          className="flex-1 overflow-hidden pl-5 sm:pl-12"
-          onWheel={handleWheel}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          className="pl-4 sm:pl-8"
+          style={{ flex: 1, overflow: "hidden" }}
+          onWheel={onWheel}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           <motion.div
-            className="flex h-full items-start pt-6 pb-2"
-            style={{ gap: CARD_GAP }}
-            animate={{ x: translateX }}
-            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            style={{
+              display: "flex",
+              height: "100%",
+              alignItems: "flex-start",
+              paddingTop: 24,
+              gap: G,
+            }}
+            animate={{ x: -active * STEP }}
+            transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
           >
-            {CARD_CONFIGS.map((cfg, i) => (
-              <ServiceCard key={cfg.id} config={cfg} isActive={i === active} startDelay={i * 650} />
+            {CARDS.map((c, i) => (
+              <SvcCard
+                key={c.id}
+                config={c}
+                isActive={i === active}
+                startDelay={i * 600}
+              />
             ))}
           </motion.div>
         </div>
 
-        {/* Dot nav */}
-        <div className="flex justify-center pb-5 pt-2.5 gap-2 flex-shrink-0">
-          {CARD_CONFIGS.map((_, i) => (
+        {/* Dots */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 8,
+            padding: "10px 0 18px",
+            flexShrink: 0,
+          }}
+        >
+          {CARDS.map((_, i) => (
             <motion.button
               key={i}
               onClick={() => setActive(i)}
               animate={{
-                width: i === active ? 18 : 6,
-                background: i === active ? "rgba(15,23,42,.55)" : "rgba(15,23,42,.18)",
+                width: i === active ? 16 : 5,
+                background:
+                  i === active ? "rgba(15,23,42,.52)" : "rgba(15,23,42,.16)",
               }}
               transition={{ duration: 0.2 }}
-              className="h-1.5 rounded-full border-none cursor-pointer p-0"
+              style={{
+                height: 5,
+                borderRadius: 2.5,
+                border: "none",
+                padding: 0,
+              }}
             />
           ))}
         </div>
@@ -849,5 +1688,3 @@ export default function ServicesInMotion() {
     </section>
   );
 }
-
-

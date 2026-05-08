@@ -1,465 +1,702 @@
-import { useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
-// ─── constants ────────────────────────────────────────────────────────────────
-const AZ = "#1980c2";
-const DK = "#111111";
-const WH = "#ffffff";
 const ease = [0.22, 1, 0.36, 1];
 
-// ─── floating card data ───────────────────────────────────────────────────────
-const CARDS = [
-  {
-    id: "billing",
-    icon: "ti-receipt",
-    title: "TruBilling",
-    sub: "Financial clarity for growing teams",
-    tag: "Active",
-    tagColor: "#7ef8b5",
-    tagBg: "rgba(126,248,181,.15)",
-    delay: 0.45,
-  },
-  {
-    id: "payments",
-    icon: "ti-credit-card",
-    title: "Payment Tracking",
-    sub: "Real-time status across all clients",
-    tag: "7 pending",
-    tagColor: "#fbbf77",
-    tagBg: "rgba(251,191,119,.15)",
-    delay: 0.6,
-  },
-  {
-    id: "records",
-    icon: "ti-chart-bar",
-    title: "Financial Records",
-    sub: "Clear, structured history at a glance",
-    tag: "Up to date",
-    tagColor: "#7ef8b5",
-    tagBg: "rgba(126,248,181,.15)",
-    delay: 0.75,
-  },
-  {
-    id: "invoices",
-    icon: "ti-file-invoice",
-    title: "Invoice Manager",
-    sub: "Draft, send and track with one click",
-    tag: "24 paid",
-    tagColor: AZ,
-    tagBg: "rgba(25,128,194,.12)",
-    delay: 0.9,
-  },
+const NEEDS = [
+  "Unstructured billing processes",
+  "Difficulty tracking payments and invoices",
+  "Lack of financial visibility in real time",
+  "Over-reliance on manual and fragmented tools",
 ];
 
-// ─── mobile tab panels ────────────────────────────────────────────────────────
-const MOBILE_TABS = [
-  {
-    id: "need",
-    label: "The Need",
-    items: [
-      "Unstructured billing processes",
-      "No real-time payment visibility",
-      "Fragmented manual tools",
-      "Difficulty tracking overdue invoices",
-    ],
-  },
-  {
-    id: "solution",
-    label: "The Solution",
-    items: [
-      "Invoices created and managed in one place",
-      "Real-time payment status tracking",
-      "Clear, structured financial records",
-      "One-click draft, send and follow-up",
-    ],
-  },
-  {
-    id: "outcome",
-    label: "Outcome",
-    items: [
-      "Scalable billing for growing businesses",
-      "Teams save hours every billing cycle",
-      "Full financial clarity at a glance",
-      "Built to scale with the business",
-    ],
-  },
+const APPROACH = [
+  "Simplified financial workflows",
+  "Clean, intuitive user experience",
+  "Built for scalability from day one",
+  "Business, design & tech aligned",
 ];
 
-// ─── FloatingCard (desktop only) ──────────────────────────────────────────────
-function FloatingCard({ icon, title, sub, tag, tagColor, tagBg, delay, index, inView }) {
-  const topMap = [28, 158, 288, 418];
+const SOLUTIONS = [
+  "Create & manage invoices easily",
+  "Track payments in real time",
+  "Maintain clear financial records",
+  "Improved daily financial visibility",
+];
+
+function LeftPanel({ inView }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 56 }}
-      animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 56 }}
-      transition={{ duration: 0.7, ease, delay }}
-      className="hidden lg:block absolute"
-      style={{
-        top: topMap[index],
-        right: -16,
-        width: 232,
-        background: WH,
-        borderRadius: 16,
-        padding: "14px 16px",
-        border: "0.5px solid rgba(0,0,0,.1)",
-        zIndex: 20,
-        boxShadow: "0 4px 28px rgba(0,0,0,.09)",
-      }}
+      initial={{ opacity: 0, x: -60 }}
+      animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -60 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+      className="hidden xl:flex absolute top-[10%] -left-[160px] xl:-left-[180px] w-[220px] xl:w-[240px] z-20 flex-col gap-3 pointer-events-none"
     >
-      <div className="flex items-center gap-2 mb-1.5">
-        <div
-          className="flex items-center justify-center flex-shrink-0 rounded-lg"
-          style={{ width: 28, height: 28, background: AZ }}
-        >
-          <i className={`ti ${icon} text-white`} style={{ fontSize: 14 }} aria-hidden="true" />
-        </div>
-        <span className="text-[13px] font-bold" style={{ color: DK }}>{title}</span>
-        <span
-          className="ml-auto text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0"
-          style={{ color: tagColor, background: tagBg }}
-        >
-          {tag}
-        </span>
-      </div>
-      <p className="text-[11.5px] leading-snug mb-2.5" style={{ color: "#666" }}>{sub}</p>
-      <div className="flex gap-1.5 items-center">
-        {["ti-plus", "ti-settings"].map((ic) => (
-          <div
-            key={ic}
-            className="flex items-center justify-center rounded-full"
-            style={{ width: 24, height: 24, background: "#f4f2ed", border: "0.5px solid #e2dfd8" }}
-          >
-            <i className={`ti ${ic}`} style={{ fontSize: 12, color: "#777" }} aria-hidden="true" />
+      {/* Need card */}
+      <div
+        className="bg-white rounded-2xl p-4"
+        style={{
+          border: "0.5px solid rgba(0,0,0,.09)",
+          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
+            <i
+              className="ti ti-alert-circle text-white"
+              style={{ fontSize: 12 }}
+            />
           </div>
-        ))}
+          <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+            The Need
+          </span>
+        </div>
+        <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+          {NEEDS.map((n, i) => (
+            <motion.li
+              key={n}
+              initial={{ opacity: 0, x: -12 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="text-[11px] pl-3.5 relative"
+              style={{ color: "#555" }}
+            >
+              <span className="absolute left-0 font-bold text-azure-500">
+                —
+              </span>
+              {n}
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Approach card */}
+      <div
+        className="bg-white rounded-2xl p-4"
+        style={{
+          border: "0.5px solid rgba(0,0,0,.09)",
+          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
+            <i className="ti ti-bulb text-white" style={{ fontSize: 12 }} />
+          </div>
+          <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+            Our Approach
+          </span>
+        </div>
+        <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+          {APPROACH.map((a, i) => (
+            <motion.li
+              key={a}
+              initial={{ opacity: 0, x: -12 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="text-[11px] pl-3.5 relative"
+              style={{ color: "#555" }}
+            >
+              <span className="absolute left-0 font-bold text-tangerine-500">
+                —
+              </span>
+              {a}
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+    </motion.div>
+  );
+}
+
+function RightPanel({ inView }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 60 }}
+      animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 60 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+      className="hidden xl:block absolute top-[10%] -right-[160px] xl:-right-[180px] w-[220px] xl:w-[240px] z-20 pointer-events-none"
+    >
+      <div
+        className="bg-white rounded-2xl p-4"
+        style={{
+          border: "0.5px solid rgba(0,0,0,.09)",
+          boxShadow: "0 4px 24px rgba(0,0,0,.1)",
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-azure-500">
+            <i className="ti ti-check text-white" style={{ fontSize: 12 }} />
+          </div>
+          <span className="text-[11px] font-bold tracking-wide uppercase text-tangerine-500">
+            The Solution
+          </span>
+        </div>
+        <ul className="list-none p-0 m-0 flex flex-col gap-1.5 mb-4">
+          {SOLUTIONS.map((s, i) => (
+            <motion.li
+              key={s}
+              initial={{ opacity: 0, x: 12 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="text-[11px] pl-3.5 relative"
+              style={{ color: "#555" }}
+            >
+              <span className="absolute left-0 font-bold text-tangerine-500">
+                —
+              </span>
+              {s}
+            </motion.li>
+          ))}
+        </ul>
+        {/* Outcome box */}
         <div
-          className="flex items-center justify-center rounded-full ml-auto"
-          style={{ width: 28, height: 28, background: AZ }}
+          className="p-3 rounded-xl bg-tangerine-500/[6%]"
+          style={{
+            border: "1px solid rgba(242,101,34,.25)",
+          }}
         >
-          <i className="ti ti-arrow-up-right text-white" style={{ fontSize: 13 }} aria-hidden="true" />
+          <span className="text-[9px] font-bold tracking-[.2em] uppercase text-tangerine-500">
+            Outcome
+          </span>
+          <p className="text-[11px] font-semibold mt-1 leading-snug m-0 text-dark-900">
+            A more structured, efficient, and scalable approach to business
+            billing.
+          </p>
         </div>
       </div>
     </motion.div>
   );
 }
 
-// ─── MobileTabPanel ───────────────────────────────────────────────────────────
-function MobileTabPanel({ inView }) {
-  const [active, setActive] = useState("need");
-  const current = MOBILE_TABS.find((t) => t.id === active);
-
+function LaptopFrame({ inView }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease, delay: 0.35 }}
-      className="mt-6 lg:hidden"
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+      className="relative z-10"
     >
-      {/* tab bar */}
+      {/* lid */}
       <div
-        className="flex rounded-xl p-1 mb-4"
-        style={{ background: "rgba(0,0,0,.06)" }}
+        style={{
+          background: "#e8e8e8",
+          borderRadius: "18px 18px 0 0",
+          padding: "10px 12px 0",
+          border: "2.5px solid #c8c8c8",
+          borderBottom: "none",
+        }}
       >
-        {MOBILE_TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActive(tab.id)}
-            className="flex-1 text-[11px] font-semibold py-2 rounded-lg transition-all duration-200"
+        {/* browser chrome */}
+        <div
+          style={{
+            background: "#f2f2f2",
+            borderRadius: "8px 8px 0 0",
+            padding: "7px 12px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {/* traffic lights */}
+          <div style={{ display: "flex", gap: 5 }}>
+            {["#ff5f57", "#ffbd2e", "#27c840"].map((c) => (
+              <div
+                key={c}
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: c,
+                }}
+              />
+            ))}
+          </div>
+          {/* URL bar */}
+          <div
             style={{
-              background: active === tab.id ? WH : "transparent",
-              color: active === tab.id ? AZ : "#888",
-              boxShadow: active === tab.id ? "0 1px 6px rgba(0,0,0,.1)" : "none",
-              border: "none",
-              cursor: "pointer",
-              letterSpacing: ".02em",
+              flex: 1,
+              maxWidth: 280,
+              margin: "0 auto",
+              background: "#ffffff",
+              borderRadius: 6,
+              padding: "4px 10px",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              border: "1px solid #e0e0e0",
             }}
           >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* animated panel */}
-      <div style={{ position: "relative", overflow: "hidden", minHeight: 180 }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.35, ease }}
+            <i
+              className="ti ti-lock text-dark-900/30"
+              style={{ fontSize: 10 }}
+            />
+            <span
+              className="text-dark-900/45"
+              style={{
+                fontSize: 10,
+                fontWeight: 500,
+              }}
+            >
+              trubilling.com/dashboard
+            </span>
+          </div>
+          {/* publish btn */}
+          <div
+            className="bg-tangerine-500 text-white"
+            style={{
+              borderRadius: 6,
+              padding: "4px 11px",
+              fontSize: 10,
+              fontWeight: 700,
+            }}
           >
-            <ul className="list-none m-0 p-0">
-              {current.items.map((item, i) => (
-                <motion.li
-                  key={item}
-                  initial={{ opacity: 0, x: 16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.06, ease: "easeOut" }}
-                  className="text-[13px] py-2.5 pl-4 border-b relative"
-                  style={{ color: "#555", borderColor: "#e4e0d9" }}
-                >
-                  <span className="absolute left-0" style={{ color: AZ }}>—</span>
-                  {item}
-                </motion.li>
-              ))}
-            </ul>
+            Publish
+          </div>
+        </div>
 
-            {active === "outcome" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.28, duration: 0.4, ease }}
-                className="mt-4 p-4"
-                style={{ border: "1px solid #dedad3", borderLeft: `2px solid ${AZ}` }}
+        {/* screen */}
+        <div
+          style={{
+            position: "relative",
+            aspectRatio: "16/9",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="/image.png"
+            alt="TruBilling"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+          {/* gradient */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to top, rgba(255,248,240,.88) 0%, rgba(255,248,240,.15) 45%, transparent 100%)",
+            }}
+          />
+
+          {/* MAD badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -8 }}
+            animate={
+              inView
+                ? { opacity: 1, scale: 1, y: 0 }
+                : { opacity: 0, scale: 0.8, y: -8 }
+            }
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
+            className="bg-dark-900/85 flex items-center gap-[6px]"
+            style={{
+              position: "absolute",
+              top: 14,
+              right: 14,
+              backdropFilter: "blur(8px)",
+              border: "0.5px solid rgba(255,255,255,.12)",
+              borderRadius: 99,
+              padding: "5px 10px 5px 6px",
+            }}
+          >
+            <div
+              className="bg-tangerine-500"
+              style={{
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                className="text-white"
+                style={{
+                  fontSize: 7,
+                  fontWeight: 900,
+                  letterSpacing: 0.5,
+                }}
               >
-                <span
-                  className="text-[9px] font-bold tracking-widest uppercase"
-                  style={{ color: AZ }}
-                >
-                  Result
-                </span>
-                <p className="text-[13px] font-semibold mt-1 leading-snug" style={{ color: DK }}>
-                  Scalable billing and financial management built for growing businesses.
-                </p>
-              </motion.div>
-            )}
+                M
+              </span>
+            </div>
+            <span
+              className="text-white/75"
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+              }}
+            >
+              Built by MAD
+            </span>
           </motion.div>
-        </AnimatePresence>
+
+          {/* product label */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            transition={{ duration: 0.6, ease, delay: 0.55 }}
+            style={{ position: "absolute", bottom: 24, left: 24 }}
+          >
+            <div
+              className="text-tangerine-500"
+              style={{
+                fontSize: 9,
+                letterSpacing: ".18em",
+                textTransform: "uppercase",
+                fontWeight: 700,
+                marginBottom: 4,
+              }}
+            >
+              Product Development
+            </div>
+            <div
+              className="text-dark-900"
+              style={{
+                fontSize: "clamp(20px, 3vw, 32px)",
+                fontWeight: 900,
+                letterSpacing: -0.6,
+                lineHeight: 1,
+              }}
+            >
+              TruBilling
+            </div>
+          </motion.div>
+
+          {/* stat chips */}
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
+            transition={{ duration: 0.6, ease, delay: 0.6 }}
+            style={{
+              position: "absolute",
+              bottom: 24,
+              right: 24,
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            {[
+              ["24", "Paid"],
+              ["7", "Pending"],
+              ["2", "Overdue"],
+            ].map(([val, label]) => (
+              <div
+                key={label}
+                className="bg-white/80 text-center"
+                style={{
+                  borderRadius: 10,
+                  padding: "8px 12px",
+                  border: "0.5px solid rgba(24,24,23,.12)",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                <div
+                  className="text-dark-900"
+                  style={{
+                    fontSize: "clamp(14px, 2vw, 18px)",
+                    fontWeight: 800,
+                    lineHeight: 1,
+                  }}
+                >
+                  {val}
+                </div>
+                <div
+                  className="text-dark-900/50"
+                  style={{
+                    fontSize: 9,
+                    marginTop: 3,
+                  }}
+                >
+                  {label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
+
+      {/* hinge */}
+      <div
+        style={{
+          background: "#d8d8d8",
+          height: 12,
+          borderRadius: "0 0 4px 4px",
+          border: "2.5px solid #c0c0c0",
+          borderTop: "1.5px solid #cccccc",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 72,
+            height: 5,
+            background: "#cacaca",
+            borderRadius: "0 0 6px 6px",
+          }}
+        />
+      </div>
+
+      {/* base */}
+      <div
+        style={{
+          width: "55%",
+          margin: "0 auto",
+          height: 8,
+          background: "#e0e0e0",
+          borderRadius: "0 0 10px 10px",
+          border: "2.5px solid #c8c8c8",
+          borderTop: "none",
+        }}
+      />
     </motion.div>
   );
 }
 
-// ─── main component ───────────────────────────────────────────────────────────
 export default function Experience() {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: false, margin: "-80px" });
 
   return (
     <section
       ref={ref}
-      className="bg-[#f0ede8] pb-16 lg:pb-20 font-sans"
+      className="pb-24 font-sans overflow-x-hidden"
+      style={{
+        background:
+          "linear-gradient(180deg,#eaf4fb 0%,#f4f9ff 8%,#fff8f2 30%,#fef3ea 65%,#fdeee2 100%)",
+      }}
     >
-      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* ── header ── */}
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-8">
+        {/* header */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 18 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           transition={{ duration: 0.55, ease, delay: 0 }}
-          className="text-[9px] tracking-[.28em] uppercase font-bold pt-12 lg:pt-16 mb-2"
-          style={{ color: AZ }}
+          className="text-[9px] tracking-[.28em] uppercase font-bold pt-12 lg:pt-16 mb-2 text-tangerine-500"
         >
-          Our Experience
+          Our Experience · Product Development
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.5, ease, delay: 0.04 }}
+          className="text-[13px] text-dark-900/45 italic mb-3 max-w-[480px]"
+        >
+          Struggling to track where your money goes? Tired of chasing unpaid
+          invoices?
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 22 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
           transition={{ duration: 0.65, ease, delay: 0.08 }}
-          className="text-[clamp(26px,3.5vw,46px)] font-extrabold leading-[1.05] tracking-tight mb-8 lg:mb-10"
-          style={{ color: DK }}
+          className="font-extrabold leading-[1.05] tracking-tight mb-5 text-dark-900"
+          style={{ fontSize: "clamp(26px, 3.5vw, 46px)" }}
         >
-          Built from the ground up.
+          <span
+            className="text-tangerine-500"
+            style={{ textShadow: "0 2px 18px rgba(242,101,34,.35)" }}
+          >
+            tru
+          </span>
+          <span
+            className="text-dark-900"
+            style={{ textShadow: "0 2px 24px rgba(0,0,0,.18)" }}
+          >
+            billing
+          </span>
+          <span className="text-dark-900">.</span>
         </motion.h2>
 
-        {/* ── main row ── */}
-        <div className="flex flex-col lg:flex-row gap-0 items-start">
+        {/* intro */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: 0.6, ease, delay: 0.16 }}
+          className="mb-12 lg:mb-16 max-w-[620px]"
+          style={{
+            fontSize: 15,
+            color: "rgba(24,24,23,.55)",
+            lineHeight: 1.72,
+          }}
+        >
+          A financial management platform designed to help small and growing
+          businesses manage billing, track payments, and maintain financial
+          clarity in one structured system — built to simplify operations
+          without overwhelming complexity.
+        </motion.p>
 
-          {/* ── LAPTOP FRAME ── */}
+        {/* device + floating panels */}
+        <div className="flex justify-center">
+          <div className="relative w-full" style={{ maxWidth: 780 }}>
+            <LeftPanel inView={inView} />
+            <RightPanel inView={inView} />
+            <LaptopFrame inView={inView} />
+          </div>
+        </div>
+
+        {/* Mobile cards: Need / Approach / Outcome — hidden on xl+ where floating panels show */}
+        <div className="xl:hidden mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Need */}
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.75, ease, delay: 0.18 }}
-            className="w-full lg:flex-1 relative min-w-0"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.55, ease, delay: 0.4 }}
+            className="bg-white rounded-2xl p-4"
+            style={{
+              border: "0.5px solid rgba(0,0,0,.09)",
+              boxShadow: "0 4px 24px rgba(0,0,0,.08)",
+            }}
           >
-            {/* lid */}
-            <div
-              className="rounded-t-[16px] lg:rounded-t-[18px]"
-              style={{
-                background: "#1c1c1e",
-                padding: "8px 10px 0",
-                border: "2px solid #2c2c2e",
-                borderBottom: "none",
-              }}
-            >
-              {/* browser bar */}
-              <div
-                className="rounded-t-lg flex items-center gap-2 px-3 py-1.5"
-                style={{ background: "#2c2c2e" }}
-              >
-                {/* traffic lights - hidden on very small screens */}
-                <div className="hidden sm:flex gap-1.5">
-                  {["#ff5f57", "#ffbd2e", "#27c840"].map((c) => (
-                    <div key={c} style={{ width: 9, height: 9, borderRadius: "50%", background: c }} />
-                  ))}
-                </div>
-                {/* URL bar */}
-                <div
-                  className="flex-1 max-w-[260px] mx-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md"
-                  style={{ background: "#3c3c3e" }}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-tangerine-500">
+                <i
+                  className="ti ti-alert-circle text-white"
+                  style={{ fontSize: 12 }}
+                />
+              </div>
+              <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+                The Need
+              </span>
+            </div>
+            <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+              {NEEDS.map((n) => (
+                <li
+                  key={n}
+                  className="text-[11px] pl-3.5 relative"
+                  style={{ color: "#555" }}
                 >
-                  <i className="ti ti-lock text-white/35" style={{ fontSize: 9 }} aria-hidden="true" />
-                  <span className="text-[9px] sm:text-[10px] text-white/45 font-medium truncate">
-                    trubilling.io/dashboard
+                  <span className="absolute left-0 font-bold text-tangerine-500">
+                    —
                   </span>
-                </div>
-                {/* publish */}
-                <div
-                  className="rounded-md px-2 py-1 text-[9px] sm:text-[10px] font-bold text-white flex-shrink-0"
-                  style={{ background: AZ }}
-                >
-                  Publish
-                </div>
-              </div>
-
-              {/* screen */}
-              <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
-                <img
-                  src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&q=85"
-                  alt="TruBilling dashboard"
-                  className="w-full h-full object-cover block"
-                />
-                {/* gradient */}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.08) 55%, transparent 100%)" }}
-                />
-
-                {/* product label bottom-left */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, ease, delay: 0.5 }}
-                  className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6"
-                >
-                  <div className="text-[8px] sm:text-[9px] tracking-[.18em] uppercase text-white/50 font-bold mb-1">
-                    Product Development
-                  </div>
-                  <div
-                    className="text-[22px] sm:text-[30px] font-black text-white leading-none"
-                    style={{ letterSpacing: -0.6 }}
-                  >
-                    TruBilling
-                  </div>
-                </motion.div>
-
-                {/* stat chips bottom-right */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.6, ease, delay: 0.55 }}
-                  className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 flex gap-1.5 sm:gap-2"
-                >
-                  {[["24", "Paid"], ["7", "Pending"], ["2", "Overdue"]].map(([val, label]) => (
-                    <div
-                      key={label}
-                      className="text-center rounded-lg px-2.5 sm:px-3 py-2"
-                      style={{
-                        background: "rgba(255,255,255,.13)",
-                        border: "0.5px solid rgba(255,255,255,.18)",
-                      }}
-                    >
-                      <div className="text-[15px] sm:text-[18px] font-extrabold text-white leading-none">{val}</div>
-                      <div className="text-[8px] sm:text-[9px] text-white/55 mt-0.5">{label}</div>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-
-            {/* hinge */}
-            <div
-              className="relative"
-              style={{
-                background: "#242426", height: 11,
-                borderRadius: "0 0 3px 3px",
-                border: "2px solid #2c2c2e", borderTop: "1.5px solid #3a3a3c",
-              }}
-            >
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2"
-                style={{ width: 68, height: 5, background: "#333335", borderRadius: "0 0 6px 6px" }}
-              />
-            </div>
-            {/* base */}
-            <div
-              className="mx-auto"
-              style={{
-                width: "55%", height: 7, background: "#1c1c1e",
-                borderRadius: "0 0 8px 8px",
-                border: "2px solid #2c2c2e", borderTop: "none",
-              }}
-            />
-
-            {/* desktop floating cards */}
-            {CARDS.map((card, i) => (
-              <FloatingCard key={card.id} {...card} index={i} inView={inView} />
-            ))}
-
-            {/* mobile tab panel — sits below the laptop */}
-            <MobileTabPanel inView={inView} />
+                  {n}
+                </li>
+              ))}
+            </ul>
           </motion.div>
 
-          {/* ── RIGHT: desktop text panel ── */}
+          {/* Approach */}
           <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, ease, delay: 0.3 }}
-            className="hidden lg:flex flex-col gap-7 flex-shrink-0"
-            style={{ width: 240, marginLeft: 256, paddingTop: 4 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.55, ease, delay: 0.5 }}
+            className="bg-white rounded-2xl p-4"
+            style={{
+              border: "0.5px solid rgba(0,0,0,.09)",
+              boxShadow: "0 4px 24px rgba(0,0,0,.08)",
+            }}
           >
-            <p className="text-[14px] leading-[1.78] m-0" style={{ color: "#555" }}>
-              Simplifying financial operations without overwhelming teams — a system design problem, not just a software build.
-            </p>
-
-            {[
-              ["The Need", ["Unstructured billing", "No payment visibility", "Fragmented tools"]],
-              ["The Solution", ["Invoices in one place", "Real-time tracking", "Clear records"]],
-            ].map(([title, items]) => (
-              <div key={title}>
-                <h4
-                  className="text-[9px] tracking-[.22em] uppercase font-bold mb-3"
-                  style={{ color: AZ }}
-                >
-                  {title}
-                </h4>
-                <ul className="list-none m-0 p-0">
-                  {items.map((it, i) => (
-                    <motion.li
-                      key={it}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={inView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.4, delay: 0.4 + i * 0.07, ease: "easeOut" }}
-                      className="text-[13px] py-1.5 pl-4 border-b relative"
-                      style={{ color: "#555", borderColor: "#e4e0d9" }}
-                    >
-                      <span className="absolute left-0" style={{ color: AZ }}>—</span>
-                      {it}
-                    </motion.li>
-                  ))}
-                </ul>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-tangerine-500">
+                <i className="ti ti-bulb text-white" style={{ fontSize: 12 }} />
               </div>
-            ))}
+              <span className="text-[11px] font-bold tracking-wide uppercase text-dark-900">
+                Our Approach
+              </span>
+            </div>
+            <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+              {APPROACH.map((a) => (
+                <li
+                  key={a}
+                  className="text-[11px] pl-3.5 relative"
+                  style={{ color: "#555" }}
+                >
+                  <span className="absolute left-0 font-bold text-tangerine-500">
+                    —
+                  </span>
+                  {a}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, ease, delay: 0.9 }}
-              className="p-4"
-              style={{ border: "1px solid #dedad3", borderLeft: `2px solid ${AZ}` }}
+          {/* Solution + Outcome */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.55, ease, delay: 0.6 }}
+            className="bg-white rounded-2xl p-4 sm:col-span-2"
+            style={{
+              border: "0.5px solid rgba(0,0,0,.09)",
+              boxShadow: "0 4px 24px rgba(0,0,0,.08)",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-tangerine-500">
+                <i
+                  className="ti ti-check text-white"
+                  style={{ fontSize: 12 }}
+                />
+              </div>
+              <span className="text-[11px] font-bold tracking-wide uppercase text-tangerine-500">
+                The Solution
+              </span>
+            </div>
+            <ul className="list-none p-0 m-0 flex flex-col gap-1.5 mb-4 sm:columns-2">
+              {SOLUTIONS.map((s) => (
+                <li
+                  key={s}
+                  className="text-[11px] pl-3.5 relative"
+                  style={{ color: "#555" }}
+                >
+                  <span className="absolute left-0 font-bold text-tangerine-500">
+                    —
+                  </span>
+                  {s}
+                </li>
+              ))}
+            </ul>
+            <div
+              className="p-3 rounded-xl bg-tangerine-500/[6%]"
+              style={{ border: "1px solid rgba(242,101,34,.25)" }}
             >
-              <span className="text-[9px] tracking-[.2em] uppercase font-bold" style={{ color: AZ }}>
+              <span className="text-[9px] font-bold tracking-[.2em] uppercase text-tangerine-500">
                 Outcome
               </span>
-              <p className="text-[13px] font-semibold mt-1.5 leading-snug m-0" style={{ color: DK }}>
-                Scalable billing and financial management for growing businesses.
+              <p className="text-[11px] font-semibold mt-1 leading-snug m-0 text-dark-900">
+                A more structured, efficient, and scalable approach to business
+                billing.
               </p>
-            </motion.div>
+            </div>
           </motion.div>
-
         </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, ease, delay: 0.9 }}
+          className="flex justify-center mt-14"
+        >
+          <button
+            className="bg-tangerine-500 text-white border-none rounded-full text-[11px] font-bold tracking-[.12em] uppercase cursor-pointer"
+            style={{ padding: "13px 32px" }}
+          >
+            Work With Us Today →
+          </button>
+        </motion.div>
       </div>
     </section>
   );

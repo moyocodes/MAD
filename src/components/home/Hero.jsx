@@ -1,170 +1,128 @@
-import { useState, useEffect, useRef } from "react";
-import { useTheme } from "../../context/ThemeContext";
-import ChromeDots from "./ChromeDots";
-import TrustedBy from "./TrustedBy";
+import { useState, useRef, useEffect } from "react";
 
-// ─── HERO ─────────────────────────────────────────────────────────────────────
-const HERO_SLIDES = [
+const SLIDES = [
   {
-    left: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85&auto=format&fit=crop",
+    left: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&auto=format&fit=crop",
     right:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=85&auto=format&fit=crop",
-    cardImg:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop",
     card: "Product & Digital",
+    cardImg:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=75&auto=format&fit=crop",
     h1: "Structure changes\neverything.",
     sub: "Websites, apps & platforms built to scale.",
   },
   {
-    left: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=900&q=85&auto=format&fit=crop",
+    left: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80&auto=format&fit=crop",
     right:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400&q=85&auto=format&fit=crop",
-    cardImg:
-      "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80&auto=format&fit=crop",
     card: "Marketing & Comms",
+    cardImg:
+      "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&q=75&auto=format&fit=crop",
     h1: "Communication\nthat connects.",
-    sub: "Campaigns and content that reach the right people.",
+    sub: "Campaigns that reach the right people.",
   },
   {
-    left: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=85&auto=format&fit=crop",
+    left: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop",
     right:
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1400&q=85&auto=format&fit=crop",
-    cardImg:
-      "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&q=80&auto=format&fit=crop",
     card: "Brand & Design",
+    cardImg:
+      "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&q=75&auto=format&fit=crop",
     h1: "Identities built\nfor clarity.",
     sub: "Brand systems that speak before you do.",
   },
 ];
 
-const THUMB_IMGS = [
-  "/flier/image.png",
-  "/flier/image2.png",
-  "/flier/image3.png",
-  "/flier/image4.png",
-  "/flier/image5.png",
-  "/flier/image6.png",
-  "/flier/image7.png",
-  "/flier/image8.png",
+const THUMBS = [
+  {
+    src: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=240&q=60&auto=format&fit=crop",
+    x: -38,
+    y: -28,
+    r: -2.5,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=240&q=60&auto=format&fit=crop",
+    x: -18,
+    y: -32,
+    r: 1.5,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=240&q=60&auto=format&fit=crop",
+    x: +40,
+    y: +20,
+    r: -2,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=240&q=60&auto=format&fit=crop",
+    x: +34,
+    y: -32,
+    r: 2,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=240&q=60&auto=format&fit=crop",
+    x: -36,
+    y: +18,
+    r: 2.5,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=240&q=60&auto=format&fit=crop",
+    x: -16,
+    y: +19,
+    r: -1.5,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=240&q=60&auto=format&fit=crop",
+    x: +17,
+    y: +18,
+    r: 1,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=240&q=60&auto=format&fit=crop",
+    x: -36,
+    y: +18,
+    r: 2.5,
+  },
 ];
-
-const THUMB_W = 180;
-const THUMB_H = 156;
-
-const THUMB_FINAL = [
-  { x: -40, y: -30, r: -2.5 },
-  { x: -20, y: -33, r: 1.5 },
-  { x: +42, y: +21, r: -2 },
-  { x: +35, y: -34, r: 2 },
-  { x: -38, y: +20, r: 2.5 },
-  { x: -18, y: +20, r: -1.5 },
-  { x: +18, y: +19, r: 1 },
-  { x: -38, y: +20, r: 2.5 },
-];
-
-function PhoneNotif({ show, msg, sub }) {
-  return (
-    <div
-      className="absolute z-40 right-6 pointer-events-none"
-      style={{
-        top: 88,
-        width: 230,
-        background: "rgba(24,24,23,0.93)",
-        backdropFilter: "blur(18px)",
-        borderRadius: 12,
-        padding: 12,
-        border: "1px solid rgba(255,255,255,.1)",
-        transform: show
-          ? "translateY(0) scale(1)"
-          : "translateY(-56px) scale(.88)",
-        opacity: show ? 1 : 0,
-        transition:
-          "transform .5s cubic-bezier(.22,1,.36,1), opacity .35s ease",
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0">
-          <img src="mawhit.png" alt="ma logo" className="w-16 h-16" />
-        </div>
-        <div>
-          <div className="text-[8px] font-bold text-white/40 tracking-[.2em] uppercase"></div>
-          <div className="text-[11px] font-medium text-white/85 leading-snug">
-            {msg}
-          </div>
-        </div>
-      </div>
-      {sub && (
-        <div className="text-[8px] text-white/50 mt-1 leading-relaxed">
-          {sub}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function PantoneCard({ data, opacity, translateY }) {
-  return (
-    <div
-      className="absolute bg-white rounded-lg overflow-hidden"
-      style={{
-        transform: `translate(-50%, calc(-50% + ${translateY}px))`,
-        width: "100%",
-        opacity,
-        boxShadow: "0 24px 64px rgba(0,0,0,.32)",
-      }}
-    >
-      <img
-        src={data.cardImg}
-        alt=""
-        className="w-full h-44 object-cover block"
-      />
-      <div className="p-4">
-        <div className="text-base font-black tracking-tight text-[#181817] mb-3 leading-tight">
-          {data.card}
-        </div>
-        <div className="text-[7px] font-bold tracking-[.2em] uppercase text-neutral-400 mb-0.5">
-          Service crafted by
-        </div>
-        <div className="text-xs font-black tracking-wider uppercase text-[#181817]">
-          MAD™
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function Hero() {
-  const { dark } = useTheme();
   const wrapRef = useRef(null);
-  const [rawPct, setRawPct] = useState(0);
-  const [phase, setPhase] = useState(0);
-  const [pct, setPct] = useState(0);
+  const rafRef = useRef(null);
+  const lastTs = useRef(null);
+  const slideRef = useRef({ slide: 0, prog: 0, paused: false });
   const [slide, setSlide] = useState(0);
   const [prog, setProg] = useState(0);
   const [paused, setPaused] = useState(false);
-  const slideRef = useRef({ slide: 0, prog: 0, paused: false });
-  const rafRef = useRef(null);
-  const lastTs = useRef(null);
+  const [rawPct, setRawPct] = useState(0);
   const [notif, setNotif] = useState(false);
-  const [notifData, setNotifData] = useState({ msg: "", sub: "" });
-  const prevPhase = useRef(-1);
-  const notifTimer = useRef(null);
-  const NOTIFS = [
-    { msg: "New inquiry from Kova Group", sub: "Brand & Design · 2 min ago" },
-    { msg: "TruBilling shipped ✓", sub: "Product launch confirmed" },
-    { msg: "Meridian went live today", sub: "Marketing campaign active" },
-  ];
+  const [notifMsg, setNotifMsg] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const prevPhaseRef = useRef(-1);
+  const notifTimerRef = useRef(null);
 
   useEffect(() => {
-    const DURATION = 5000;
-    const step = (ts) => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const NOTIFS = [
+    "New inquiry from Kova Group",
+    "TruBilling shipped ✓ — Product launch confirmed",
+    "Meridian campaign went live today",
+  ];
+
+  // Slide auto-play
+  useEffect(() => {
+    const DUR = 5000;
+    const tick = (ts) => {
       if (!lastTs.current) lastTs.current = ts;
       const dt = ts - lastTs.current;
       lastTs.current = ts;
       if (!slideRef.current.paused) {
-        const np = slideRef.current.prog + (dt / DURATION) * 100;
+        const np = slideRef.current.prog + (dt / DUR) * 100;
         if (np >= 100) {
-          const ns = (slideRef.current.slide + 1) % HERO_SLIDES.length;
+          const ns = (slideRef.current.slide + 1) % SLIDES.length;
           slideRef.current = { ...slideRef.current, slide: ns, prog: 0 };
           setSlide(ns);
           setProg(0);
@@ -173,232 +131,488 @@ export default function Hero() {
           setProg(np);
         }
       }
-      rafRef.current = requestAnimationFrame(step);
+      rafRef.current = requestAnimationFrame(tick);
     };
-    rafRef.current = requestAnimationFrame(step);
+    rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
+  // Scroll tracking
   useEffect(() => {
     const fn = () => {
       if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
-      const scrolled = Math.max(0, -rect.top);
-      const raw = Math.min(1, Math.max(0, scrolled / total));
+      const raw = Math.min(1, Math.max(0, -rect.top / total));
       setRawPct(raw);
-      const phaseF = raw * 3;
-      const p = Math.min(2, Math.floor(phaseF));
-      setPct(phaseF - p);
-      setPhase(p);
+      const phase = Math.min(2, Math.floor(raw * 3));
+      if (phase !== prevPhaseRef.current) {
+        prevPhaseRef.current = phase;
+        clearTimeout(notifTimerRef.current);
+        setNotif(false);
+        setTimeout(() => {
+          setNotifMsg(NOTIFS[Math.min(phase, NOTIFS.length - 1)]);
+          setNotif(true);
+          notifTimerRef.current = setTimeout(() => setNotif(false), 3500);
+        }, 300);
+      }
     };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  useEffect(() => {
-    if (phase === prevPhase.current) return;
-    prevPhase.current = phase;
-    clearTimeout(notifTimer.current);
-    setNotif(false);
-    setTimeout(() => {
-      setNotifData(NOTIFS[Math.min(phase, NOTIFS.length - 1)]);
-      setNotif(true);
-      notifTimer.current = setTimeout(() => setNotif(false), 3800);
-    }, 350);
-  }, [phase]);
-
-  const s = HERO_SLIDES[slide];
-  const ns = HERO_SLIDES[(slide + 1) % HERO_SLIDES.length];
-  const phase1visible = Math.min(1, Math.max(0, (rawPct * 3 - 1) * 2.5));
+  const pf = rawPct * 3;
+  const phase = Math.min(2, Math.floor(pf));
+  const pct = pf - phase;
+  const collapseT = Math.min(1, Math.max(0, rawPct * 3));
+  const phase1v = Math.min(1, Math.max(0, rawPct * 3));
   const cardOut = Math.max(0, (pct - 0.7) / 0.3);
-  const collapseT = Math.min(1, Math.max(0, (rawPct * 3 - 2) * 2.5));
+  const s = SLIDES[slide];
+  const ns = SLIDES[(slide + 1) % SLIDES.length];
 
   return (
-    <div ref={wrapRef} className="relative h-[400vh] ">
+    <div ref={wrapRef} style={{ height: "300vh", position: "relative" }}>
       <div
-        className="sticky top-0 flex overflow-hidden"
-        style={{ height: "100vh", marginTop: "-100vh" }}
+        style={{
+          position: "sticky",
+          top: 0,
+          height: "100dvh",
+          overflow: "hidden",
+        }}
       >
-        {/* Collapsed bg — always dark gray, mode-independent */}
+        {/* Collapse bg */}
         <div
-          className="absolute inset-0 z-0"
           style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
             opacity: collapseT,
-            background: "linear-gradient(150deg, #2e2e2c 0%, #1c1c1a 60%, #252523 100%)",
+            background:
+              "linear-gradient(160deg,#0d0f14 0%,#181817 55%,#0f1c2e 100%)",
           }}
         />
 
-        {/* Main screen */}
+        {/* Main viewport frame */}
         <div
-          className="absolute z-20 overflow-hidden"
           style={{
+            position: "absolute",
+            zIndex: 20,
+            overflow: "hidden",
             left: `${collapseT * 43}%`,
             right: `${collapseT * 43}%`,
             top: `${collapseT * 11}%`,
             bottom: `${collapseT * 72}%`,
             borderRadius: collapseT * 8,
-            boxShadow: `0 ${collapseT * 16}px ${collapseT * 40}px rgba(0,0,0,${collapseT * 0.14})`,
-            outline:
-              collapseT > 0.05
-                ? `${collapseT * 1.5}px solid rgba(0,0,0,.08)`
-                : "none",
+            boxShadow: `0 ${collapseT * 16}px ${collapseT * 40}px rgba(0,0,0,${collapseT * 0.2})`,
           }}
         >
-          {/* Macbook bar */}
-
-          <div
-            className="absolute left-0 right-0 bottom-0 flex"
-            style={{ top: `${collapseT * 0}px` }}
-          >
+          <div style={{ position: "absolute", inset: 0, display: "flex" }}>
             {/* Left panel */}
-            <div className="mad-hero-left relative w-[42%] flex-shrink-0 overflow-hidden">
-              {HERO_SLIDES.map((sl, i) => (
-                <img
-                  key={i}
-                  src={sl.left}
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{
-                    opacity:
-                      i === slide
-                        ? 1 - cardOut
-                        : i === (slide + 1) % HERO_SLIDES.length
-                          ? cardOut
-                          : 0,
-                  }}
-                />
-              ))}
-              <div className="absolute inset-0 bg-black/25" />
+            {!isMobile && (
               <div
-                className="absolute top-1/2 left-1/2 z-10"
                 style={{
-                  width: "min(260px,80%)",
-                  opacity: Math.max(0, 1 - phase1visible * 2),
+                  width: "42%",
+                  flexShrink: 0,
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                <PantoneCard
-                  data={s}
-                  opacity={1 - cardOut}
-                  translateY={cardOut * -24}
-                />
-                <PantoneCard
-                  data={ns}
-                  opacity={cardOut}
-                  translateY={(1 - cardOut) * 24}
-                />
-              </div>
-              <div
-                className="absolute bottom-6 left-6 flex flex-col gap-2"
-                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
-              >
-                {HERO_SLIDES.map((_, i) => (
-                  <div key={i} className="flex items-center gap-2">
+                {SLIDES.map((sl, i) => (
+                  <img
+                    key={i}
+                    src={sl.left}
+                    alt=""
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      opacity:
+                        i === slide
+                          ? 1 - cardOut
+                          : i === (slide + 1) % SLIDES.length
+                            ? cardOut
+                            : 0,
+                      transition: "opacity .05s",
+                    }}
+                  />
+                ))}
+                <div className="absolute inset-0 bg-black/[22%]" />
+                {/* Pantone card */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    width: "min(240px,75%)",
+                    opacity: Math.max(0, 1 - phase1v * 2),
+                  }}
+                >
+                  {[
+                    { data: s, op: 1 - cardOut, ty: cardOut * -20 },
+                    { data: ns, op: cardOut, ty: (1 - cardOut) * 20 },
+                  ].map(({ data, op, ty }, i) => (
                     <div
-                      className="rounded-sm transition-all duration-300"
+                      key={i}
+                      className="bg-white"
                       style={{
-                        height: 1.5,
-                        width: i === slide ? 22 : 10,
-                        background:
-                          i === slide ? "#fff" : "rgba(255,255,255,.3)",
-                      }}
-                    />
-                    <span
-                      className="text-[8px] font-bold tracking-wider"
-                      style={{
-                        color:
-                          i === slide
-                            ? "rgba(255,255,255,.8)"
-                            : "rgba(255,255,255,.28)",
+                        position: "absolute",
+                        borderRadius: 8,
+                        overflow: "hidden",
+                        transform: `translate(-50%,calc(-50% + ${ty}px))`,
+                        opacity: op,
+                        width: "100%",
+                        boxShadow: "0 16px 48px rgba(0,0,0,.3)",
                       }}
                     >
-                      0{i + 1}
-                    </span>
-                  </div>
-                ))}
+                      <img
+                        src={data.cardImg}
+                        alt=""
+                        style={{
+                          width: "100%",
+                          height: 140,
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                      <div style={{ padding: "12px 14px" }}>
+                        <div
+                          className="text-dark-900"
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 900,
+                            marginBottom: 6,
+                            letterSpacing: -0.2,
+                          }}
+                        >
+                          {data.card}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 7,
+                            fontWeight: 700,
+                            color: "#aaa",
+                            letterSpacing: "0.2em",
+                            textTransform: "uppercase",
+                            marginBottom: 2,
+                          }}
+                        >
+                          Service by
+                        </div>
+                        <div
+                          className="text-dark-900"
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 900,
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          MAD™
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Slide indicators */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 20,
+                    left: 20,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    opacity: Math.max(0, 1 - phase1v * 2),
+                  }}
+                >
+                  {SLIDES.map((_, i) => (
+                    <div
+                      key={i}
+                      style={{ display: "flex", alignItems: "center", gap: 6 }}
+                    >
+                      <div
+                        style={{
+                          height: 1.5,
+                          width: i === slide ? 20 : 8,
+                          background:
+                            i === slide ? "#ffffff" : "rgba(255,255,255,.3)",
+                          transition: "width .3s",
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 7,
+                          fontWeight: 700,
+                          color:
+                            i === slide
+                              ? "rgba(255,255,255,.75)"
+                              : "rgba(255,255,255,.25)",
+                        }}
+                      >
+                        0{i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
             {/* Right panel */}
-            <div className="relative flex-1 overflow-hidden">
-              {HERO_SLIDES.map((sl, i) => (
+            <div
+              style={{
+                flex: isMobile ? undefined : 1,
+                width: isMobile ? "100%" : undefined,
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              {SLIDES.map((sl, i) => (
                 <img
                   key={i}
                   src={sl.right}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
                     opacity:
                       i === slide
                         ? 1 - cardOut
-                        : i === (slide + 1) % HERO_SLIDES.length
+                        : i === (slide + 1) % SLIDES.length
                           ? cardOut
                           : 0,
                   }}
                 />
               ))}
               <div
-                className="absolute inset-0"
                 style={{
+                  position: "absolute",
+                  inset: 0,
                   background:
-                    "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.1) 50%, transparent 100%)",
+                    "linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,.08) 55%,transparent)",
                 }}
               />
-              <PhoneNotif
-                show={notif}
-                msg={notifData.msg}
-                sub={notifData.sub}
-              />
+
+              {/* Mobile Pantone card — shown instead of left panel */}
+              {isMobile && (
+                <div
+                  className="bg-white"
+                  style={{
+                    position: "absolute",
+                    top: 72,
+                    left: 16,
+                    width: 130,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    boxShadow: "0 12px 32px rgba(0,0,0,.28)",
+                    opacity: Math.max(0, 1 - phase1v * 2),
+                    zIndex: 30,
+                    pointerEvents: "none",
+                  }}
+                >
+                  <img
+                    src={s.cardImg}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: 80,
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                  <div style={{ padding: "8px 10px" }}>
+                    <div
+                      className="text-dark-900"
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        marginBottom: 4,
+                        letterSpacing: -0.2,
+                      }}
+                    >
+                      {s.card}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 6.5,
+                        fontWeight: 700,
+                        color: "#aaa",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Service by
+                    </div>
+                    <div
+                      className="text-dark-900"
+                      style={{
+                        fontSize: 9,
+                        fontWeight: 900,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      MAD™
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Notification */}
               <div
-                className="absolute bottom-8 left-6 right-6 max-w-[480px] text-left sm:bottom-12 sm:left-auto sm:right-11 sm:text-right"
-                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
+                className="bg-dark-900/[92%]"
+                style={{
+                  position: "absolute",
+                  top: 72,
+                  right: 20,
+                  width: 220,
+                  zIndex: 40,
+                  backdropFilter: "blur(16px)",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  border: "1px solid rgba(255,255,255,.1)",
+                  transform: notif
+                    ? "translateY(0) scale(1)"
+                    : "translateY(-40px) scale(.9)",
+                  opacity: notif ? 1 : 0,
+                  transition:
+                    "transform .45s cubic-bezier(.22,1,.36,1), opacity .3s",
+                  pointerEvents: "none",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div
+                    className="bg-azure-500"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 5,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <span
+                      className="text-white"
+                      style={{
+                        fontSize: 7,
+                        fontWeight: 900,
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      MAD
+                    </span>
+                  </div>
+                  <span
+                    className="text-white/85 leading-[1.4]"
+                    style={{ fontSize: 10.5 }}
+                  >
+                    {notifMsg}
+                  </span>
+                </div>
+              </div>
+
+              {/* Hero copy */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: isMobile ? 96 : 36,
+                  right: 28,
+                  left: 20,
+                  maxWidth: 460,
+                  opacity: Math.max(0, 1 - phase1v * 2),
+                }}
               >
                 <h1
-                  className="text-white mb-4"
+                  className="text-white"
                   style={{
-                    fontSize: "clamp(24px,6vw,52px)",
-                    lineHeight: 1.1,
+                    fontSize: "clamp(22px,5.5vw,48px)",
+                    lineHeight: 1.05,
                     letterSpacing: "-.02em",
                     whiteSpace: "pre-line",
-                    textShadow: "0 2px 24px rgba(0,0,0,.35)",
+                    textShadow: "0 2px 20px rgba(0,0,0,.3)",
+                    marginBottom: 12,
                   }}
                 >
                   {s.h1}
                 </h1>
-                <p className="mb-6 text-[11px] font-medium leading-relaxed tracking-wide text-white/60">
+                <p
+                  className="text-white/60"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    marginBottom: 20,
+                  }}
+                >
                   {s.sub}
                 </p>
-                <div className="flex flex-wrap gap-2 sm:justify-end">
+                <div style={{ display: "flex", gap: 10 }}>
                   <button
-                    className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase border-none cursor-pointer"
-                    style={{ background: "#fff", color: "#181817" }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.opacity = ".85")
-                    }
-                    onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                    className="bg-white text-dark-900"
+                    style={{
+                      border: "none",
+                      padding: "9px 22px",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      borderRadius: 99,
+                    }}
                   >
                     Work With Us
                   </button>
-                  <button className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer bg-transparent text-white border border-white/50">
+                  <button
+                    className="text-white"
+                    style={{
+                      background: "transparent",
+                      border: "1px solid rgba(255,255,255,.45)",
+                      padding: "9px 22px",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      borderRadius: 99,
+                    }}
+                  >
                     View Our Work
                   </button>
                 </div>
               </div>
+
+              {/* Progress bar */}
               <div
-                className="absolute bottom-5 left-0 right-0 flex items-center justify-center gap-3 z-10"
-                style={{ opacity: Math.max(0, 1 - phase1visible * 2) }}
+                style={{
+                  position: "absolute",
+                  bottom: isMobile ? 175 : 16,
+                  left: 0,
+                  right: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  opacity: Math.max(0, 1 - phase1v * 2),
+                }}
               >
                 <div
-                  className="h-0.5 rounded-sm overflow-hidden"
+                  className="bg-white/20 overflow-hidden"
                   style={{
-                    width: "clamp(80px,10vw,140px)",
-                    background: "rgba(255,255,255,.22)",
+                    width: "clamp(70px,8vw,120px)",
+                    height: 1.5,
+                    borderRadius: 1,
                   }}
                 >
                   <div
-                    className="h-full"
                     style={{
+                      height: "100%",
                       width: `${prog}%`,
-                      background: `linear-gradient(90deg, ${"#8cc3ef"}, #fff)`,
+                      background: "linear-gradient(90deg,#1980c2,#ffffff)",
                     }}
                   />
                 </div>
@@ -407,8 +621,15 @@ export default function Hero() {
                     slideRef.current.paused = !slideRef.current.paused;
                     setPaused((p) => !p);
                   }}
-                  className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-white text-[9px] border border-white/55 bg-black/25"
-                  style={{ backdropFilter: "blur(6px)" }}
+                  className="text-white bg-black/25 flex items-center justify-center"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    border: "1px solid rgba(255,255,255,.45)",
+                    fontSize: 8,
+                    backdropFilter: "blur(6px)",
+                  }}
                 >
                   {paused ? "▶" : "⏸"}
                 </button>
@@ -417,92 +638,184 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Thumbnail grid */}
-        {THUMB_IMGS.map((src, i) => {
-          const tf = THUMB_FINAL[i];
-          const startX = tf.x * 3;
-          const startY = tf.y * 3;
-          const cx = startX + (tf.x - startX) * collapseT;
-          const cy = startY + (tf.y - startY) * collapseT;
+        {/* Scattered thumbnails */}
+        {THUMBS.map((t, i) => {
           const sc = 0.1 + collapseT * 0.9;
           return (
             <div
               key={i}
-              className="pointer-events-none absolute z-[15] h-[186px] w-[266px] overflow-hidden"
               style={{
-                width: THUMB_W,
-                height: THUMB_H,
-                left: `calc(50% + ${cx}%)`,
-                top: `calc(50% + ${cy}%)`,
-                transform: `translate(-50%, -50%) rotate(${tf.r}deg) scale(${sc})`,
-                opacity: Math.max(0, collapseT * 1.3 - 0.1 - i * 0.01),
-                borderRadius: 10,
-                boxShadow: `0 ${12 * collapseT}px ${36 * collapseT}px rgba(0,0,0,${collapseT * 0.38})`,
-                border: `1px solid rgba(255,255,255,${collapseT * 0.12})`,
+                position: "absolute",
+                zIndex: 15,
+                pointerEvents: "none",
+                width: 170,
+                height: 148,
+                left: `calc(50% + ${t.x}%)`,
+                top: `calc(50% + ${t.y}%)`,
+                transform: `translate(-50%,-50%) rotate(${t.r}deg) scale(${sc})`,
+                opacity: Math.max(0, collapseT * 1.4 - 0.1 - i * 0.01),
+                borderRadius: 9,
+                overflow: "hidden",
+                boxShadow: `0 ${10 * collapseT}px ${28 * collapseT}px rgba(0,0,0,${collapseT * 0.35})`,
+                border: `1px solid rgba(255,255,255,${collapseT * 0.1})`,
               }}
             >
               <img
-                src={src}
+                src={t.src}
                 alt=""
-                className="absolute left-0 right-0 bottom-0 w-full object-contain block"
-                style={{ top: `${collapseT * 0}px` }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
               />
             </div>
           );
         })}
 
-        {/* CTA overlay — always on dark gray bg so text is always light */}
+        {/* Final CTA overlay */}
         <div
-          className="absolute z-30 text-center"
           style={{
+            position: "absolute",
+            zIndex: 30,
+            textAlign: "center",
             top: "50%",
             left: "50%",
-            transform: `translate(-50%, -50%) translateY(${(1 - collapseT) * 24}px)`,
-            pointerEvents: collapseT > 0.82 ? "all" : "none",
+            transform: `translate(-50%,-50%) translateY(${(1 - collapseT) * 20}px)`,
             opacity: Math.max(0, collapseT * 3 - 2),
-            width: "min(640px, 82vw)",
+            pointerEvents: collapseT > 0.85 ? "all" : "none",
+            width: "min(580px,85vw)",
           }}
         >
-          <p className="font-mono text-[9px] font-bold tracking-[.28em] uppercase mb-4" style={{ color: "rgba(255,255,255,.38)" }}>
+          <p
+            className="text-white/35"
+            style={{
+              fontFamily: "monospace",
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              marginBottom: 14,
+            }}
+          >
             Making A Difference
           </p>
           <h2
-            className="mb-8"
             style={{
-              fontSize: "clamp(36px,5.5vw,72px)",
+              fontSize: "clamp(32px,5vw,68px)",
               fontWeight: 800,
               lineHeight: 1.0,
               letterSpacing: "-.03em",
               color: "#f0ede8",
+              marginBottom: 28,
             }}
           >
             Structure changes
             <br />
-            <span style={{ color: "#1980c2" }}>everything.</span>
+            <span className="text-azure-500">everything.</span>
           </h2>
-          <div className="flex gap-3 justify-center flex-wrap">
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <button
-              className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase text-white border-none cursor-pointer"
+              className="bg-azure-500 text-white"
               style={{
-                background: "#1980c2",
-                boxShadow: `0 4px 24px ${"#1980c2"}50`,
+                border: "none",
+                padding: "11px 28px",
+                borderRadius: 99,
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
               }}
             >
               Start a Project →
             </button>
             <button
-              className="px-6 py-3 rounded-full text-[9px] font-bold tracking-widest uppercase cursor-pointer border"
+              className="bg-white/[8%]"
               style={{
-                background: "rgba(255,255,255,.08)",
                 color: "#f0ede8",
-                borderColor: "rgba(255,255,255,.18)",
+                border: "1px solid rgba(255,255,255,.18)",
+                padding: "11px 28px",
+                borderRadius: 99,
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
               }}
             >
               View Our Work
             </button>
           </div>
         </div>
-        <TrustedBy inHero />
+
+        {/* Trusted by — left-aligned rotating image marquee */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 20,
+            left: 32,
+            right: 0,
+            zIndex: 50,
+            pointerEvents: "none",
+          }}
+        >
+          <p
+            className="text-white/30"
+            style={{
+              fontSize: 8,
+              letterSpacing: "0.24em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
+            Trusted by growing businesses
+          </p>
+          <div style={{ overflow: "hidden", width: "min(480px, 80vw)" }}>
+            <div
+              className="mq"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 32,
+                width: "max-content",
+              }}
+            >
+              {[
+                "/log1.png",
+                "/log2.png",
+                "/log3.png",
+                "/log4.png",
+                "/log5.png",
+                "/log1.png",
+                "/log2.png",
+                "/log3.png",
+                "/log4.png",
+                "/log5.png",
+              ].map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt=""
+                  style={{
+                    height: 24,
+                    width: "auto",
+                    objectFit: "contain",
+                    opacity: 0.75,
+                    flexShrink: 0,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
