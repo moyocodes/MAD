@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import Nav from "@/components/home/Nav";
-import Hero from "@/components/home/Hero";
-import WhatWeDo from "@/components/home/WhatWeDo";
-import ServicesInMotion from "@/components/home/ServicesInMotion";
-import Experience from "@/components/home/Experience";
-import Beyond from "@/components/home/Beyond";
-import Contact from "@/components/home/Contact";
-import Footer from "@/components/home/Footer";
+import Nav from "../components/home/Nav";
+import Hero from "../components/home/Hero";
+import WhatWeDo from "../components/home/WhatWeDo";
+import ServicesInMotion from "../components/home/ServicesInMotion";
+import Experience from "../components/home/Experience";
+import Beyond from "../components/home/Beyond";
+import Contact from "../components/home/Contact";
+import Footer from "../components/home/Footer";
 
 function injectCSS() {
   if (typeof document === "undefined" || document.getElementById("_mad"))
@@ -36,7 +36,9 @@ export default function MADLandingPage() {
     // Restore last scroll position after render settles
     const saved = sessionStorage.getItem("mad_scroll");
     if (saved) {
-      requestAnimationFrame(() => window.scrollTo({ top: Number(saved), behavior: "instant" }));
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: Number(saved), behavior: "instant" }),
+      );
     }
 
     // Save scroll position continuously
@@ -53,7 +55,13 @@ export default function MADLandingPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <main style={{ background: "linear-gradient(180deg, #f5f5f4 0%, #f7f7f5 38%, #faf7f4 69%, #f6fafb 54%, #f8fafb 100%)", minHeight: "100vh" }}>
+    <main
+      style={{
+        background:
+          "linear-gradient(180deg, #f5f5f4 0%, #f7f7f5 38%, #faf7f4 69%, #f6fafb 54%, #f8fafb 100%)",
+        minHeight: "100vh",
+      }}
+    >
       <Nav />
       <Hero />
       <WhatWeDo />
