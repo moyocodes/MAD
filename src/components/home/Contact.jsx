@@ -413,7 +413,7 @@ export default function Contact() {
                 <textarea className="c-input" placeholder="What are you working on?" value={form.msg} onChange={e => setForm({ ...form, msg: e.target.value })} style={{ ...inputBase, height: 100, resize: "none" }} />
                 <Button
                   onClick={() => form.name && form.email && setSent(true)}
-                  className="w-full bg-gradient-to-r from-[#1980c2] to-[#45b3f5] text-white border-none rounded-lg py-3 text-xs font-bold tracking-widest uppercase shadow-[0_4px_20px_rgba(25,128,194,.28)] hover:opacity-90 transition-opacity h-auto"
+                  className="w-full bg-gradient-to-r from-[#1980c2] to-[#45b3f5] text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-[0_4px_20px_rgba(25,128,194,.28)] hover:opacity-90 transition-opacity h-auto"
                 >
                   Send Message →
                 </Button>

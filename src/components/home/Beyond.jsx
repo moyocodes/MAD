@@ -147,10 +147,10 @@ export default function Beyond() {
 
             {/* CTAs */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Button className="bg-[#181817] text-white border-none rounded-lg px-7 py-3 text-xs font-bold tracking-wider h-auto hover:bg-[#2a2a28]">
+              <Button className="bg-[#181817] text-white border-none rounded-full px-7 py-3 text-xs font-bold tracking-wider h-auto hover:bg-[#2a2a28]">
                 Start a Project →
               </Button>
-              <Button variant="outline" className="bg-white/70 text-[#181817] border-[rgba(24,24,23,.14)] rounded-lg px-7 py-3 text-xs font-semibold tracking-wider h-auto">
+              <Button variant="outline" className="bg-white/70 text-[#181817] border-[rgba(24,24,23,.14)] rounded-full px-7 py-3 text-xs font-semibold tracking-wider h-auto">
                 View Our Work
               </Button>
             </div>

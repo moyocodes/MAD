@@ -44,9 +44,9 @@ export default function Footer() {
             organizations grow stronger and perform over time.
           </p>
           <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
-            {["in", "ig", "tw"].map((s) => (
+            {[<i class="fa fa-instagram" aria-hidden="true"></i>, <i class="fa fa-twitter" aria-hidden="true"></i>, <i class="fa fa-linkedin" aria-hidden="true"></i>].map((s, index) => (
               <a
-                key={s}
+                key={index}
                 href="#"
                 style={{
                   width: 36,
