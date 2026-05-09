@@ -166,40 +166,7 @@ export default function Beyond() {
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%" }}
         />
         {/* Floating badge */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 32,
-            left: "clamp(20px,4vw,48px)",
-            background: "rgba(255,255,255,0.93)",
-            backdropFilter: "blur(16px)",
-            borderRadius: 14,
-            padding: "12px 18px",
-            boxShadow: "0 8px 28px rgba(0,0,0,.12)",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            zIndex: 5,
-          }}
-        >
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 9,
-              background: "linear-gradient(135deg,#1980c2,#45b3f5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              fontSize: 16,
-              color: "#fff",
-            }}
-          >
-            ✓
-          </div>
         
-        </div>
         {/* Bottom fade into Contact bg */}
         <div
           style={{

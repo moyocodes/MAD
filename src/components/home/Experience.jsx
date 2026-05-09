@@ -448,7 +448,7 @@ function LaptopFrame({ inView }) {
               }}
             >
               <video
-                src="/your-video.mp4" // 👈 plug your src here
+                src="https://res.cloudinary.com/drxxei318/video/upload/q_auto/f_auto/v1778342850/qt_xnluza.mov"
                 autoPlay
                 loop
                 muted
@@ -460,13 +460,60 @@ function LaptopFrame({ inView }) {
                   display: "block",
                 }}
               />
+
+              {/* Cancel overlay */}
+              {/* Cancelled overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {/* CANCELLED stamp */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      border: "3.5px solid #e05a4e",
+                      borderRadius: 8,
+                      padding: "3px 14px",
+                      transform: "rotate(-12deg)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 900,
+                        color: "#e05a4e",
+                        letterSpacing: "0.15em",
+                        textTransform: "uppercase",
+                        lineHeight: 1,
+                      }}
+                    >
+                      Cancelled
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* STATS — bottom ~35% on tangerine bg */}
+            {/* STATS — bottom ~35% */}
             <div
-              className="bg-tangerine-500"
               style={{
                 flex: "0 0 35%",
+                background: "#1c1c1e",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-around",
@@ -474,29 +521,29 @@ function LaptopFrame({ inView }) {
               }}
             >
               {[
-                ["24", "Paid"],
-                ["7", "Pending"],
-                ["2", "Overdue"],
-              ].map(([val, label]) => (
+                ["24", "Paid", "#fff"],
+                ["70", "Pending", "#fff"],
+                ["28", "Overdue", "#e05a4e"],
+              ].map(([val, label, color]) => (
                 <div key={label} style={{ textAlign: "center" }}>
                   <div
-                    className="text-white"
                     style={{
                       fontSize: "clamp(14px, 2vw, 20px)",
                       fontWeight: 800,
                       lineHeight: 1,
+                      color,
                     }}
                   >
                     {val}
                   </div>
                   <div
-                    className="text-white/70"
                     style={{
                       fontSize: 9,
                       marginTop: 3,
                       fontWeight: 600,
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.45)",
                     }}
                   >
                     {label}
