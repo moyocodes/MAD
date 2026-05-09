@@ -451,7 +451,7 @@ function C1S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
       <img
-        src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=75&auto=format&fit=crop"
+        src="/web.png"
         alt=""
         style={{
           position: "absolute",
@@ -800,7 +800,7 @@ function C2S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
       <img
-        src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500&q=75&auto=format&fit=crop"
+        src="/soc.png"
         alt=""
         style={{
           position: "absolute",
@@ -1147,7 +1147,7 @@ function C3S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
       <img
-        src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=500&q=75&auto=format&fit=crop"
+        src="/brandd.png"
         alt=""
         style={{
           position: "absolute",

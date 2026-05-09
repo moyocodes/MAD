@@ -45,7 +45,7 @@ export default function Nav() {
 
   const inner = (_light) => (
     <>
-      <img src="/ma.png" alt="MAD" className="h-40 w-36" />
+      <img src="/ma.png" alt="MAD" className="h-50 w-36" />
       <div className="hidden md:flex gap-6">
         {links.map((l) => (
           <a

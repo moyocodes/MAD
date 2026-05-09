@@ -5,7 +5,11 @@ function TypingText({ text, inView, delay = 0, style = {}, className = "" }) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
   useEffect(() => {
-    if (!inView) { setDisplayed(""); setDone(false); return; }
+    if (!inView) {
+      setDisplayed("");
+      setDone(false);
+      return;
+    }
     let i = 0;
     setDisplayed("");
     setDone(false);
@@ -13,7 +17,10 @@ function TypingText({ text, inView, delay = 0, style = {}, className = "" }) {
       const id = setInterval(() => {
         i++;
         setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(id); setDone(true); }
+        if (i >= text.length) {
+          clearInterval(id);
+          setDone(true);
+        }
       }, 65);
       return () => clearInterval(id);
     }, delay * 1000);
@@ -78,17 +85,34 @@ function LeftPanel({ inView }) {
           background: "rgba(255,255,255,0.92)",
           backdropFilter: "blur(14px)",
           border: "0.5px solid rgba(255,255,255,0.85)",
-          boxShadow: "0 6px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.7)",
+          boxShadow:
+            "0 6px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.7)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
           <div
             className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
-on b            style={{ background: "rgba(242,101,34,.15)", border: "1px solid rgba(242,101,34,.2)" }}
+            on
+            b
+            style={{
+              background: "rgba(242,101,34,.15)",
+              border: "1px solid rgba(242,101,34,.2)",
+            }}
           >
-            <i className="ti ti-alert-circle" style={{ fontSize: 12, color: "#F26522" }} />
+            <i
+              className="ti ti-alert-circle"
+              style={{ fontSize: 12, color: "#F26522" }}
+            />
           </div>
-          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#F26522",
+            }}
+          >
             The Need
           </span>
         </div>
@@ -98,11 +122,20 @@ on b            style={{ background: "rgba(242,101,34,.15)", border: "1px solid 
               key={n}
               initial={{ opacity: 0, x: -12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="text-[11px] pl-3.5 relative"
               style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
+              <span
+                className="absolute left-0 font-bold"
+                style={{ color: "#F26522" }}
+              >
+                —
+              </span>
               {n}
             </motion.li>
           ))}
@@ -116,17 +149,32 @@ on b            style={{ background: "rgba(242,101,34,.15)", border: "1px solid 
           background: "rgba(255,255,255,0.88)",
           backdropFilter: "blur(14px)",
           border: "0.5px solid rgba(255,255,255,0.8)",
-          boxShadow: "0 6px 28px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.65)",
+          boxShadow:
+            "0 6px 28px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.65)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
           <div
             className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(242,101,34,.12)", border: "1px solid rgba(242,101,34,.2)" }}
+            style={{
+              background: "rgba(242,101,34,.12)",
+              border: "1px solid rgba(242,101,34,.2)",
+            }}
           >
-            <i className="ti ti-bulb" style={{ fontSize: 12, color: "#F26522" }} />
+            <i
+              className="ti ti-bulb"
+              style={{ fontSize: 12, color: "#F26522" }}
+            />
           </div>
-          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#F26522",
+            }}
+          >
             Our Approach
           </span>
         </div>
@@ -136,11 +184,20 @@ on b            style={{ background: "rgba(242,101,34,.15)", border: "1px solid 
               key={a}
               initial={{ opacity: 0, x: -12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="text-[11px] pl-3.5 relative"
               style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
+              <span
+                className="absolute left-0 font-bold"
+                style={{ color: "#F26522" }}
+              >
+                —
+              </span>
               {a}
             </motion.li>
           ))}
@@ -164,17 +221,32 @@ function RightPanel({ inView }) {
           background: "rgba(255,255,255,0.90)",
           backdropFilter: "blur(14px)",
           border: "0.5px solid rgba(255,255,255,0.82)",
-          boxShadow: "0 6px 28px rgba(0,0,0,.09), inset 0 1px 0 rgba(255,255,255,.65)",
+          boxShadow:
+            "0 6px 28px rgba(0,0,0,.09), inset 0 1px 0 rgba(255,255,255,.65)",
         }}
       >
         <div className="flex items-center gap-2 mb-3">
           <div
             className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(242,101,34,.12)", border: "1px solid rgba(242,101,34,.2)" }}
+            style={{
+              background: "rgba(242,101,34,.12)",
+              border: "1px solid rgba(242,101,34,.2)",
+            }}
           >
-            <i className="ti ti-check" style={{ fontSize: 12, color: "#F26522" }} />
+            <i
+              className="ti ti-check"
+              style={{ fontSize: 12, color: "#F26522" }}
+            />
           </div>
-          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#F26522",
+            }}
+          >
             The Solution
           </span>
         </div>
@@ -184,24 +256,48 @@ function RightPanel({ inView }) {
               key={s}
               initial={{ opacity: 0, x: 12 }}
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-              transition={{ duration: 0.5, delay: 0.5 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5 + i * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="text-[11px] pl-3.5 relative"
               style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
+              <span
+                className="absolute left-0 font-bold"
+                style={{ color: "#F26522" }}
+              >
+                —
+              </span>
               {s}
             </motion.li>
           ))}
         </ul>
         <div
           className="p-3 rounded-xl"
-          style={{ background: "rgba(242,101,34,.07)", border: "1px solid rgba(242,101,34,.2)" }}
+          style={{
+            background: "rgba(242,101,34,.07)",
+            border: "1px solid rgba(242,101,34,.2)",
+          }}
         >
-          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F26522" }}>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#F26522",
+            }}
+          >
             Outcome
           </span>
-          <p className="text-[11px] font-semibold mt-1 leading-snug m-0" style={{ color: "#333" }}>
-            A more structured, efficient, and scalable approach to business billing.
+          <p
+            className="text-[11px] font-semibold mt-1 leading-snug m-0"
+            style={{ color: "#333" }}
+          >
+            A more structured, efficient, and scalable approach to business
+            billing.
           </p>
         </div>
       </div>
@@ -296,34 +392,121 @@ function LaptopFrame({ inView }) {
         </div>
 
         {/* screen */}
+        {/* screen */}
         <div
           style={{
             position: "relative",
             aspectRatio: "16/9",
             overflow: "hidden",
+            display: "flex",
           }}
         >
-          <img
-            src="/image.png"
-            alt="TruBilling"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
-          />
-          {/* gradient */}
+          {/* LEFT HALF — image */}
           <div
             style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to top, rgba(255,248,240,.88) 0%, rgba(255,248,240,.15) 45%, transparent 100%)",
+              width: "50%",
+              position: "relative",
+              flexShrink: 0,
             }}
-          />
+          >
+            <img
+              src="/image.png"
+              alt="TruBilling"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+            {/* gradient fade on left side */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(to top, rgba(255,248,240,.88) 0%, rgba(255,248,240,.15) 45%, transparent 100%)",
+              }}
+            />
+          </div>
 
-          {/* MAD badge */}
+          {/* RIGHT HALF — video top + tangerine stats bottom */}
+          <div
+            style={{
+              width: "50%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* VIDEO — top ~65% */}
+            <div
+              style={{
+                flex: "0 0 65%",
+                position: "relative",
+                background: "#111",
+                overflow: "hidden",
+              }}
+            >
+              <video
+                src="/your-video.mp4" // 👈 plug your src here
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </div>
+
+            {/* STATS — bottom ~35% on tangerine bg */}
+            <div
+              className="bg-tangerine-500"
+              style={{
+                flex: "0 0 35%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+                padding: "0 12px",
+              }}
+            >
+              {[
+                ["24", "Paid"],
+                ["7", "Pending"],
+                ["2", "Overdue"],
+              ].map(([val, label]) => (
+                <div key={label} style={{ textAlign: "center" }}>
+                  <div
+                    className="text-white"
+                    style={{
+                      fontSize: "clamp(14px, 2vw, 20px)",
+                      fontWeight: 800,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {val}
+                  </div>
+                  <div
+                    className="text-white/70"
+                    style={{
+                      fontSize: 9,
+                      marginTop: 3,
+                      fontWeight: 600,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* MAD badge — stays top-right */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: -8 }}
             animate={
@@ -341,6 +524,7 @@ function LaptopFrame({ inView }) {
               border: "0.5px solid rgba(255,255,255,.12)",
               borderRadius: 99,
               padding: "5px 10px 5px 6px",
+              zIndex: 10,
             }}
           >
             <div
@@ -356,35 +540,26 @@ function LaptopFrame({ inView }) {
             >
               <span
                 className="text-white"
-                style={{
-                  fontSize: 7,
-                  fontWeight: 900,
-                  letterSpacing: 0.5,
-                }}
+                style={{ fontSize: 7, fontWeight: 900, letterSpacing: 0.5 }}
               >
                 M
               </span>
             </div>
             <span
               className="text-white/75"
-              style={{
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-              }}
+              style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em" }}
             >
               Built by MAD
             </span>
           </motion.div>
 
-          {/* product label */}
+          {/* product label — stays bottom-left over image */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.6, ease, delay: 0.55 }}
-            style={{ position: "absolute", bottom: 24, left: 24 }}
+            style={{ position: "absolute", bottom: 24, left: 24, zIndex: 10 }}
           >
-          
             <p
               text="trubilling"
               inView={inView}
@@ -398,57 +573,6 @@ function LaptopFrame({ inView }) {
                 display: "block",
               }}
             />
-          </motion.div>
-
-          {/* stat chips */}
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
-            transition={{ duration: 0.6, ease, delay: 0.6 }}
-            style={{
-              position: "absolute",
-              bottom: 24,
-              right: 24,
-              display: "flex",
-              gap: 8,
-            }}
-          >
-            {[
-              ["24", "Paid"],
-              ["7", "Pending"],
-              ["2", "Overdue"],
-            ].map(([val, label]) => (
-              <div
-                key={label}
-                className="bg-white/80 text-center"
-                style={{
-                  borderRadius: 10,
-                  padding: "8px 12px",
-                  border: "0.5px solid rgba(24,24,23,.12)",
-                  backdropFilter: "blur(4px)",
-                }}
-              >
-                <div
-                  className="text-dark-900"
-                  style={{
-                    fontSize: "clamp(14px, 2vw, 18px)",
-                    fontWeight: 800,
-                    lineHeight: 1,
-                  }}
-                >
-                  {val}
-                </div>
-                <div
-                  className="text-dark-900/50"
-                  style={{
-                    fontSize: 9,
-                    marginTop: 3,
-                  }}
-                >
-                  {label}
-                </div>
-              </div>
-            ))}
           </motion.div>
         </div>
       </div>
@@ -503,7 +627,8 @@ export default function Experience() {
       ref={ref}
       className="pb-24 font-sans overflow-x-hidden"
       style={{
-        background: "linear-gradient(180deg, rgba(242,101,34,.12) 0%, rgba(242,101,34,.06) 35%, rgba(242,101,34,.02) 65%, transparent 100%)",
+        background:
+          "linear-gradient(180deg, rgba(242,101,34,.12) 0%, rgba(242,101,34,.06) 35%, rgba(242,101,34,.02) 65%, transparent 100%)",
       }}
     >
       <div className="max-w-[1100px] mx-auto px-4 sm:px-8">
@@ -544,7 +669,7 @@ export default function Experience() {
             className="text-dark-900"
             style={{ textShadow: "0 2px 24px rgba(0,0,0,.18)" }}
           >
-         <TypingText
+            <TypingText
               text="billing"
               inView={inView}
               delay={0.65}

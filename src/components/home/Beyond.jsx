@@ -161,7 +161,7 @@ export default function Beyond() {
       {/* ── Landscape photo — fades into Contact ── */}
       <motion.div style={{ position: "relative", height: "clamp(260px,26vw,400px)", overflow: "hidden" }} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.8, ease:[0.16,1,0.3,1] }}>
         <img
-          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80&auto=format&fit=crop"
+          src="/mad.png"
           alt=""
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%" }}
         />
