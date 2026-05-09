@@ -83,20 +83,33 @@ export default function Beyond() {
                 marginBottom: 16,
               }}
             >
-              Your idea deserves
+              We don't just deliver projects,
               <br />
-              expert hands.
+              we build long-term partnerships.
             </h2>
             <p
               style={{
                 fontSize: "clamp(13px,1.3vw,15px)",
                 color: "#556",
                 lineHeight: 1.72,
-                maxWidth: 380,
+                maxWidth: 420,
               }}
             >
-              Unlock MAD's full team of designers, developers &amp; strategists —
-              built to take your vision from concept to shipped product.
+              Our work extends beyond initial delivery. We support organizations
+              across digital platforms, brand systems, and communication needs
+              as they grow and evolve.
+            </p>
+            <p
+              style={{
+                fontSize: "clamp(13px,1.3vw,15px)",
+                color: "#181817",
+                fontWeight: 700,
+                lineHeight: 1.5,
+                maxWidth: 380,
+                marginTop: 16,
+              }}
+            >
+              Let's build something that performs.
             </p>
           </motion.div>
 
@@ -185,10 +198,7 @@ export default function Beyond() {
           >
             ✓
           </div>
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#181817", lineHeight: 1.2 }}>Delivered on time</div>
-            <div style={{ fontSize: 10, color: "#888", fontWeight: 500 }}>100% of our projects</div>
-          </div>
+        
         </div>
         {/* Bottom fade into Contact bg */}
         <div

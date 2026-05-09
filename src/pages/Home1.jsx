@@ -58,7 +58,7 @@ export default function MADLandingPage() {
     <main
       style={{
         background:
-          "linear-gradient(180deg, #f5f5f4 0%, #f7f7f5 38%, #faf7f4 69%, #f6fafb 54%, #f8fafb 100%)",
+          "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
         minHeight: "100vh",
       }}
     >

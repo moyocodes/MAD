@@ -1,27 +1,28 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
 
 const WWD = [
   {
     tag: "01",
     label: "Product & Digital Solutions",
-    tagline: "Built for performance.",
-    wide: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format&fit=crop",
-    top: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop",
+    tagline: "Websites, apps & platforms built to scale with confidence.",
+    wide: "/web.png",
+    top: "/app.png",
   },
   {
     tag: "02",
     label: "Marketing & Communication",
-    tagline: "Reach the right people.",
-    wide: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&q=80&auto=format&fit=crop",
-    top: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&q=80&auto=format&fit=crop",
+    tagline:
+      "Campaigns that build relevance and connect brands with the right audience.",
+    wide: "/soc.png",
+    top: "/post.png",
   },
   {
     tag: "03",
     label: "Brand & Design Systems",
-    tagline: "Identity that speaks first.",
-    wide: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&q=80&auto=format&fit=crop",
-    top: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&q=80&auto=format&fit=crop",
+    tagline:
+      "Brand systems with clarity, consistency, and credibility at every touchpoint.",
+    wide: "/loggg.png",
+    top: "/brandd.png",
   },
 ];
 
@@ -64,15 +65,10 @@ export default function WhatWeDo() {
   const svc = WWD[cur];
 
   return (
-    <section
-      style={{
-        background: "transparent",
-        paddingTop: 72,
-      }}
-    >
+    <section style={{ background: "transparent", paddingTop: 72 }}>
       {/* Intro row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
-        <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1] }}>
+        <div>
           <p
             className="text-azure-500"
             style={{
@@ -98,8 +94,8 @@ export default function WhatWeDo() {
             <span className="text-azure-500">better</span> than they were{" "}
             <span style={{ color: "#F26522" }}>yesterday.</span>
           </h2>
-        </motion.div>
-        <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1], delay:0.12 }}>
+        </div>
+        <div>
           <p
             style={{
               fontSize: 15,
@@ -108,26 +104,22 @@ export default function WhatWeDo() {
               marginBottom: 16,
             }}
           >
-            MAD is a product, marketing, and design firm collaborating with the
-            brightest minds in business to create smarter systems, stronger
-            brands, and better digital experiences.
+            MAD is a product, marketing, and design firm focused on
+            collaborating with the brightest minds in business to create smarter
+            systems, stronger brands, and better digital experiences.
           </p>
           <div
-            className="border-l-2 border-azure-500 bg-azure-50 text-azure-700"
-            style={{
-              padding: "12px 16px",
-              fontSize: 13,
-              lineHeight: 1.6,
-            }}
+            className="border-l-2 border-azure-500 bg-tangerine-100/40 text-azure-700"
+            style={{ padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}
           >
             We create the conditions for growth by helping organizations balance
-            business, design, and technology.
+            business (value), design (usability) and technology (feasibility).
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Image grid */}
-      <motion.div className="max-w-[1100px] mx-auto px-1" initial={{ opacity:0, y:36 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.7, ease:[0.16,1,0.3,1], delay:0.08 }}>
+      <div className="max-w-[1100px] mx-auto px-1">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
           {/* Big left */}
           <div
@@ -174,10 +166,7 @@ export default function WhatWeDo() {
               </p>
               <p
                 className="text-white/50"
-                style={{
-                  fontSize: 12,
-                  marginBottom: 16,
-                }}
+                style={{ fontSize: 12, marginBottom: 16 }}
               >
                 {svc.tagline}
               </p>
@@ -259,10 +248,7 @@ export default function WhatWeDo() {
               </span>
               <span
                 className="text-white/35"
-                style={{
-                  fontSize: "clamp(12px,2vw,18px)",
-                  fontWeight: 300,
-                }}
+                style={{ fontSize: "clamp(12px,2vw,18px)", fontWeight: 300 }}
               >
                 ×
               </span>
@@ -369,6 +355,7 @@ export default function WhatWeDo() {
                 Work With Us →
               </button>
             </div>
+
             {/* Nav */}
             <div
               className="bg-white"
@@ -497,7 +484,15 @@ export default function WhatWeDo() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
+      <div
+        style={{
+          height: 100,
+          pointerEvents: "none",
+          background:
+            "linear-gradient(to bottom, transparent, rgba(230,242,251,0.6))",
+        }}
+      />
     </section>
   );
 }

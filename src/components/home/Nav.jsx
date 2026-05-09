@@ -46,23 +46,31 @@ export default function Nav() {
   const inner = (_light) => (
     <>
       <img src="/ma.png" alt="MAD" className="h-40 w-36" />
-      <div className="hidden md:flex gap-7">
+      <div className="hidden md:flex gap-6">
         {links.map((l) => (
           <a
             key={l}
             href="#"
             className="text-[11px] tracking-[0.14em] uppercase font-semibold"
-            style={{ color: "rgba(15,79,122,.65)", transition: "color .2s" }}
+            style={{
+              color: "rgba(15,79,122,.55)",
+              transition: "color .18s",
+              textDecoration: "none",
+            }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#0f4f7a")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(15,79,122,.65)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(15,79,122,.55)")}
           >
             {l}
           </a>
         ))}
       </div>
       <button
-        className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none rounded-full px-5 py-2"
-        style={{ background: "#1980c2", color: "#fff" }}
+        className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none px-4 py-2"
+        style={{
+          background: "#1980c2",
+          color: "#fff",
+          borderRadius: 6,
+        }}
       >
         Work With Us
       </button>

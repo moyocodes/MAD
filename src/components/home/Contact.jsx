@@ -206,7 +206,7 @@ export default function Contact() {
     <section
       style={{
         paddingBottom: 0,
-        background: "transparent",
+        background: "linear-gradient(135deg, #dff0fb 0%, #fff8f5 98%, #fdeadb 48%, #e8f5fb 68%, #fff4ef 84%, #e0f0fb 100%)",
       }}
     >
       <style>{`
@@ -236,11 +236,14 @@ export default function Contact() {
               Work With Us
             </p>
             <h2 style={{ fontSize:"clamp(28px,3.4vw,48px)",fontWeight:800,lineHeight:1.05,letterSpacing:-0.8,color:"#0f2a45",marginBottom:16 }}>
-              Start something<br />that matters.
+              Not sure what comes next?<br />Talk to MAD.
             </h2>
-            <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(15,42,69,.55)",marginBottom:32,maxWidth:400 }}>
-              Whether you have a polished brief or a raw idea — we'll help you turn it
-              into a product, brand, or campaign that moves the needle.
+            <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(15,42,69,.55)",marginBottom:8,maxWidth:400 }}>
+              Whether you have a clear brief or just an idea, we'll help you shape
+              it into something structured and actionable.
+            </p>
+            <p style={{ fontSize:13,lineHeight:1.65,color:"rgba(15,42,69,.4)",marginBottom:32,maxWidth:400 }}>
+              Tell us what you're working on, and we'll help you structure the next step.
             </p>
             </motion.div>
 

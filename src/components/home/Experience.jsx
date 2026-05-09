@@ -84,11 +84,11 @@ function LeftPanel({ inView }) {
         <div className="flex items-center gap-2 mb-3">
           <div
             className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(25,128,194,.15)", border: "1px solid rgba(25,128,194,.2)" }}
+on b            style={{ background: "rgba(242,101,34,.15)", border: "1px solid rgba(242,101,34,.2)" }}
           >
-            <i className="ti ti-alert-circle" style={{ fontSize: 12, color: "#1980c2" }} />
+            <i className="ti ti-alert-circle" style={{ fontSize: 12, color: "#F26522" }} />
           </div>
-          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1980c2" }}>
+          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522" }}>
             The Need
           </span>
         </div>
@@ -102,7 +102,7 @@ function LeftPanel({ inView }) {
               className="text-[11px] pl-3.5 relative"
               style={{ color: "#444" }}
             >
-              <span className="absolute left-0 font-bold" style={{ color: "#1980c2" }}>—</span>
+              <span className="absolute left-0 font-bold" style={{ color: "#F26522" }}>—</span>
               {n}
             </motion.li>
           ))}
@@ -503,7 +503,7 @@ export default function Experience() {
       ref={ref}
       className="pb-24 font-sans overflow-x-hidden"
       style={{
-        background: "transparent",
+        background: "linear-gradient(180deg, rgba(242,101,34,.12) 0%, rgba(242,101,34,.06) 35%, rgba(242,101,34,.02) 65%, transparent 100%)",
       }}
     >
       <div className="max-w-[1100px] mx-auto px-4 sm:px-8">
@@ -573,10 +573,11 @@ export default function Experience() {
             lineHeight: 1.72,
           }}
         >
-          A financial management platform designed to help small and growing
-          businesses manage billing, track payments, and maintain financial
-          clarity in one structured system — built to simplify operations
-          without overwhelming complexity.
+          TruBilling is a financial management platform designed to help small
+          and growing businesses manage billing, track payments, and maintain
+          financial clarity in one structured system. The goal was to simplify
+          how businesses handle day-to-day financial operations without
+          overwhelming them with complexity.
         </motion.p>
 
         {/* device + floating panels */}

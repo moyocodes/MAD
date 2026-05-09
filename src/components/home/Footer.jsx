@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 export default function Footer() {
   return (
     <footer
-      className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14"
-      style={{ background: "rgba(255,255,255,0.5)" }}
+      className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 bg-dark-100/20"
+     
     >
       <motion.div
         variants={{ hidden:{}, show:{ transition:{ staggerChildren:0.1 }}}}

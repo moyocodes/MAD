@@ -9,7 +9,7 @@ const SLIDES = [
     cardImg:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=75&auto=format&fit=crop",
     h1: "Structure changes\neverything.",
-    sub: "Websites, apps & platforms built to scale.",
+    sub: "We design and build systems that drive focus.",
   },
   {
     left: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80&auto=format&fit=crop",
@@ -35,49 +35,46 @@ const SLIDES = [
 
 const THUMBS = [
   {
-    src: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=240&q=60&auto=format&fit=crop",
+    src: "/flier/image.png",
     x: -38,
     y: -28,
     r: -2.5,
   },
   {
-    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=240&q=60&auto=format&fit=crop",
-    x: -18,
+     src: "/flier/image2.png",  x: -18,
     y: -32,
     r: 1.5,
   },
   {
-    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=240&q=60&auto=format&fit=crop",
-    x: +40,
+    src: "/flier/image3.png",   x: +40,
     y: +20,
     r: -2,
   },
   {
-    src: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=240&q=60&auto=format&fit=crop",
+    src: "/flier/image4.png",
     x: +34,
     y: -32,
     r: 2,
   },
   {
-    src: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=240&q=60&auto=format&fit=crop",
-    x: -36,
+  src: "/flier/image5.png",    x: -36,
     y: +18,
     r: 2.5,
   },
   {
-    src: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=240&q=60&auto=format&fit=crop",
+    src: "/flier/image6.png",
     x: -16,
     y: +19,
     r: -1.5,
   },
   {
-    src: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=240&q=60&auto=format&fit=crop",
+    src: "/flier/image7.png",
     x: +17,
     y: +18,
     r: 1,
   },
   {
-    src: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=240&q=60&auto=format&fit=crop",
+    src: "/flier/image8.png",
     x: -36,
     y: +18,
     r: 2.5,
@@ -195,7 +192,7 @@ export default function Hero() {
             zIndex: 0,
             opacity: collapseT,
             background:
-              " linear-gradient(160deg,  #a8d8f0 10%,#d0d4d8 20%, #b6d7e7 50%)",
+              "linear-gradient(160deg, #edf5fa 0%, #dce9f4 25%, #e6eef8 50%, #d8e6f2 75%, #e2ecf8 100%)",
           }}
         />
 
@@ -673,8 +670,8 @@ export default function Hero() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover",
-                  display: "block",
+                  objectFit: "contain",
+                  display: "transparent",
                 }}
               />
             </div>
@@ -742,7 +739,7 @@ export default function Hero() {
                 textTransform: "uppercase",
               }}
             >
-              Start a Project →
+              Work With Us
             </button>
             <button
               style={{
@@ -775,24 +772,24 @@ export default function Hero() {
         >
           <p
             style={{
-              fontSize: 8,
-              letterSpacing: "0.24em",
+              fontSize: 14,
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
-              fontWeight: 600,
-              marginBottom: 10,
-              color: "rgba(15,79,122,0.45)",
-              textShadow: "0 0 10px rgba(255,255,255,.7)",
+              fontWeight: 700,
+              marginBottom: 14,
+              color: "rgba(15,79,122,0.65)",
+              textShadow: "0 0 16px rgba(255,255,255,.9)",
             }}
           >
-            Trusted by growing businesses
+            Trusted by growing businesses, institutions, and mission-driven organizations.
           </p>
-          <div style={{ overflow: "hidden", width: "min(480px, 80vw)" }}>
+          <div style={{ overflow: "hidden", width: "min(560px, 85vw)" }}>
             <div
               className="mq"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 32,
+                gap: 40,
                 width: "max-content",
               }}
             >
@@ -813,10 +810,9 @@ export default function Hero() {
                   src={src}
                   alt=""
                   style={{
-                    height: 24,
+                    height: 36,
                     width: "auto",
                     objectFit: "contain",
-                    opacity: 0.55,
                     flexShrink: 0,
                   }}
                 />
@@ -824,6 +820,18 @@ export default function Hero() {
             </div>
           </div>
         </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 140,
+            pointerEvents: "none",
+            zIndex: 60,
+            background: "linear-gradient(to bottom, transparent, rgba(220,238,248,0.72))",
+          }}
+        />
       </div>
     </div>
   );

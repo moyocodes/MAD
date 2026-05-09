@@ -1567,6 +1567,7 @@ export default function ServicesInMotion() {
       >
         {/* Header */}
         <div
+          className="bg-dark-100/20"
           style={{
             padding: "72px 32px 8px",
             display: "flex",
@@ -1577,14 +1578,14 @@ export default function ServicesInMotion() {
         >
           <div>
             <p
-              className="text-azure-500"
               style={{
                 fontFamily: "monospace",
                 fontSize: 9,
                 letterSpacing: "0.28em",
                 textTransform: "uppercase",
-                fontWeight: 700,
+                fontWeight: 600,
                 marginBottom: 6,
+                color: "rgba(160,168,180,.75)",
               }}
             >
               Services in motion · scroll to explore
@@ -1699,6 +1700,17 @@ export default function ServicesInMotion() {
           ))}
         </div>
       </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 120,
+          pointerEvents: "none",
+          background: "linear-gradient(to bottom, transparent, rgba(242,101,34,.12))",
+        }}
+      />
     </section>
   );
 }
