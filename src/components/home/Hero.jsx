@@ -783,7 +783,7 @@ export default function Hero() {
               textShadow: "0 0 16px rgba(255,255,255,.9)",
             }}
           >
-            Trusted by growing businesses, institutions, and mission-driven organizations.
+            Trusted by 
           </p>
           <div style={{ overflow: "hidden", width: "min(560px, 85vw)" }}>
             <div
