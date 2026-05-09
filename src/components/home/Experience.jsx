@@ -672,7 +672,7 @@ export default function Experience() {
   return (
     <section
       ref={ref}
-      className="pb-24 font-sans overflow-x-hidden"
+      className="pb-8 font-sans overflow-x-hidden"
       style={{
         background:
           "linear-gradient(180deg, rgba(242,101,34,.12) 0%, rgba(242,101,34,.06) 35%, rgba(242,101,34,.02) 65%, transparent 100%)",

@@ -561,7 +561,7 @@ export default function WhatWeDo() {
 
       <div
         style={{
-          height: 100,
+          height: 30,
           pointerEvents: "none",
           background:
             "linear-gradient(to bottom, transparent, rgba(230,242,251,0.6))",
