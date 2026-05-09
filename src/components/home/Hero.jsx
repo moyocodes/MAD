@@ -111,7 +111,7 @@ export default function Hero() {
 
   // Slide auto-play
   useEffect(() => {
-    const DUR = 5000;
+    const DUR = 3000;
     const tick = (ts) => {
       if (!lastTs.current) lastTs.current = ts;
       const dt = ts - lastTs.current;
@@ -763,11 +763,13 @@ export default function Hero() {
         <div
           style={{
             position: "absolute",
-            bottom: 20,
-            left: 32,
+            bottom: 0,
+            left: 0,
             right: 0,
-            zIndex: 50,
+            zIndex: 70,
             pointerEvents: "none",
+            padding: "48px 32px 20px",
+            background: "linear-gradient(to bottom, transparent 0%, rgba(244,244,242,0.82) 45%, rgba(244,244,242,0.96) 100%)",
           }}
         >
           <p
@@ -820,18 +822,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 140,
-            pointerEvents: "none",
-            zIndex: 60,
-            background: "linear-gradient(to bottom, transparent, rgba(220,238,248,0.72))",
-          }}
-        />
       </div>
     </div>
   );

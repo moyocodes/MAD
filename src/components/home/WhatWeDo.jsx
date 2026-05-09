@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WWD = [
   {
@@ -58,6 +59,8 @@ function ProgressBar({ duration, running, onComplete }) {
   );
 }
 
+const ease = [0.16, 1, 0.3, 1];
+
 export default function WhatWeDo() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -65,10 +68,15 @@ export default function WhatWeDo() {
   const svc = WWD[cur];
 
   return (
-    <section style={{ background: "transparent", paddingTop: 72 }}>
+    <section style={{ background: "transparent", paddingTop: 40 }}>
       {/* Intro row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-12 px-4 sm:px-8 max-w-[1100px] mx-auto">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-8 px-4 sm:px-8 max-w-[1100px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease }}
+        >
           <p
             className="text-azure-500"
             style={{
@@ -94,8 +102,14 @@ export default function WhatWeDo() {
             <span className="text-azure-500">better</span> than they were{" "}
             <span style={{ color: "#F26522" }}>yesterday.</span>
           </h2>
-        </div>
-        <div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease, delay: 0.15 }}
+        >
           <p
             style={{
               fontSize: 15,
@@ -109,28 +123,37 @@ export default function WhatWeDo() {
             systems, stronger brands, and better digital experiences.
           </p>
           <div
-            className="border-l-2 border-azure-500 bg-tangerine-100/40 text-azure-700"
+            className="border-l-2 border-azure-500 bg-tangerine-50 text-azure-700"
             style={{ padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}
           >
             We create the conditions for growth by helping organizations balance
             business (value), design (usability) and technology (feasibility).
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Image grid */}
-      <div className="max-w-[1100px] mx-auto px-1">
+      <motion.div
+        className="w-full px-4 sm:px-6"
+        initial={{ opacity: 0, y: 36 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.7, ease, delay: 0.2 }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
           {/* Big left */}
-          <div
+          <motion.div
             className="md:row-span-2 relative overflow-hidden"
-            style={{ minHeight: 320 }}
+            style={{ minHeight: 480 }}
+            whileHover="hover"
           >
             {WWD.map((sv, i) => (
-              <img
+              <motion.img
                 key={i}
                 src={sv.wide}
                 alt=""
+                variants={{ hover: { scale: 1.04 } }}
+                transition={{ duration: 0.6, ease }}
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -153,23 +176,33 @@ export default function WhatWeDo() {
             <div
               style={{ position: "absolute", bottom: 24, left: 24, right: 24 }}
             >
-              <p
-                className="text-white/90"
-                style={{
-                  fontSize: "clamp(14px,2vw,22px)",
-                  fontWeight: 700,
-                  letterSpacing: -0.3,
-                  marginBottom: 4,
-                }}
-              >
-                {svc.label}
-              </p>
-              <p
-                className="text-white/50"
-                style={{ fontSize: 12, marginBottom: 16 }}
-              >
-                {svc.tagline}
-              </p>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={cur}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease }}
+                >
+                  <p
+                    className="text-white/90"
+                    style={{
+                      fontSize: "clamp(14px,2vw,22px)",
+                      fontWeight: 700,
+                      letterSpacing: -0.3,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {svc.label}
+                  </p>
+                  <p
+                    className="text-white/50"
+                    style={{ fontSize: 12, marginBottom: 16 }}
+                  >
+                    {svc.tagline}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
               <button
                 className="text-white bg-white/[12%]"
                 style={{
@@ -187,32 +220,46 @@ export default function WhatWeDo() {
               </button>
             </div>
             <div style={{ position: "absolute", top: 14, left: 14 }}>
-              <span
-                className="bg-black/30 text-white/50"
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: 7,
-                  fontWeight: 700,
-                  letterSpacing: "0.25em",
-                  textTransform: "uppercase",
-                  border: "1px solid rgba(255,255,255,.3)",
-                  padding: "4px 10px",
-                  borderRadius: 99,
-                  backdropFilter: "blur(6px)",
-                }}
-              >
-                {svc.tag} / 03
-              </span>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={cur}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3, ease }}
+                  className="bg-black/30 text-white/50"
+                  style={{
+                    display: "inline-block",
+                    fontFamily: "monospace",
+                    fontSize: 7,
+                    fontWeight: 700,
+                    letterSpacing: "0.25em",
+                    textTransform: "uppercase",
+                    border: "1px solid rgba(255,255,255,.3)",
+                    padding: "4px 10px",
+                    borderRadius: 99,
+                    backdropFilter: "blur(6px)",
+                  }}
+                >
+                  {svc.tag} / 03
+                </motion.span>
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
           {/* Top right */}
-          <div className="relative overflow-hidden" style={{ minHeight: 160 }}>
+          <motion.div
+            className="relative overflow-hidden"
+            style={{ minHeight: 240 }}
+            whileHover="hover"
+          >
             {WWD.map((sv, i) => (
-              <img
+              <motion.img
                 key={i}
                 src={sv.top}
                 alt=""
+                variants={{ hover: { scale: 1.04 } }}
+                transition={{ duration: 0.6, ease }}
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -236,33 +283,44 @@ export default function WhatWeDo() {
                 gap: 8,
               }}
             >
-              <span
-                className="text-white"
-                style={{
-                  fontSize: "clamp(16px,2.5vw,24px)",
-                  fontWeight: 700,
-                  letterSpacing: -0.4,
-                }}
-              >
-                MAD
-              </span>
-              <span
-                className="text-white/35"
-                style={{ fontSize: "clamp(12px,2vw,18px)", fontWeight: 300 }}
-              >
-                ×
-              </span>
-              <span
-                className="text-white"
-                style={{
-                  fontWeight: 900,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  fontSize: "clamp(11px,1.8vw,16px)",
-                }}
-              >
-                {svc.label.split(" ")[0]}
-              </span>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={cur}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.35, ease }}
+                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+                >
+                  <span
+                    className="text-white"
+                    style={{
+                      fontSize: "clamp(16px,2.5vw,24px)",
+                      fontWeight: 700,
+                      letterSpacing: -0.4,
+                    }}
+                  >
+                    MAD
+                  </span>
+                  <span
+                    className="text-white/35"
+                    style={{ fontSize: "clamp(12px,2vw,18px)", fontWeight: 300 }}
+                  >
+                    ×
+                  </span>
+                  <span
+                    className="text-white"
+                    style={{
+                      fontWeight: 900,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      fontSize: "clamp(11px,1.8vw,16px)",
+                    }}
+                  >
+                    {svc.label.split(" ")[0]}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
             </div>
             <div
               style={{
@@ -288,12 +346,12 @@ export default function WhatWeDo() {
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Bottom right: 2 cards */}
           <div className="grid grid-cols-2 gap-1">
             {/* Core value */}
-            <div
+            <motion.div
               className="bg-white"
               style={{
                 padding: 20,
@@ -302,6 +360,10 @@ export default function WhatWeDo() {
                 justifyContent: "space-between",
                 border: "1px solid #d4dff0",
               }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-20px" }}
+              transition={{ duration: 0.5, ease, delay: 0.3 }}
             >
               <div>
                 <p
@@ -354,10 +416,10 @@ export default function WhatWeDo() {
               >
                 Work With Us →
               </button>
-            </div>
+            </motion.div>
 
             {/* Nav */}
-            <div
+            <motion.div
               className="bg-white"
               style={{
                 padding: 16,
@@ -365,6 +427,10 @@ export default function WhatWeDo() {
                 flexDirection: "column",
                 justifyContent: "space-between",
               }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-20px" }}
+              transition={{ duration: 0.5, ease, delay: 0.4 }}
             >
               <div
                 style={{
@@ -373,16 +439,23 @@ export default function WhatWeDo() {
                   marginBottom: 12,
                 }}
               >
-                <div
-                  className="text-dark-900"
-                  style={{
-                    fontWeight: 900,
-                    fontSize: "clamp(8px,1vw,10px)",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {svc.label}
-                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={cur}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.3, ease }}
+                    className="text-dark-900"
+                    style={{
+                      fontWeight: 900,
+                      fontSize: "clamp(8px,1vw,10px)",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {svc.label}
+                  </motion.div>
+                </AnimatePresence>
               </div>
               <div>
                 {WWD.map((sv, i) => (
@@ -481,10 +554,11 @@ export default function WhatWeDo() {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
+
       <div
         style={{
           height: 100,

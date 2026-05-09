@@ -1567,13 +1567,13 @@ export default function ServicesInMotion() {
       >
         {/* Header */}
         <div
-          className="bg-dark-100/20"
           style={{
             padding: "72px 32px 8px",
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "space-between",
             flexShrink: 0,
+            background: "linear-gradient(to bottom, rgba(244,244,242,0.92) 0%, rgba(244,244,242,0.7) 55%, transparent 100%)",
           }}
         >
           <div>
