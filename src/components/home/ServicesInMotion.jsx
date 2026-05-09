@@ -1504,7 +1504,7 @@ export default function ServicesInMotion() {
 
   useEffect(() => {
     const fn = () => {
-      if (!wrapRef.current || isMobileRef.current) return;
+      if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
       if (total <= 0) return;
@@ -1542,7 +1542,7 @@ export default function ServicesInMotion() {
   };
 
   const isMobile = window.innerWidth < 640;
-  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 200}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
+  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 280}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
 
   return (
     <section

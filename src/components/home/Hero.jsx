@@ -171,7 +171,7 @@ export default function Hero() {
     <div
       ref={wrapRef}
       style={{
-        height: "300vh",
+        height: "180vh",
         position: "relative",
         background: "transparent",
       }}
