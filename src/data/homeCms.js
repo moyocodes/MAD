@@ -150,7 +150,7 @@ export const homeCms = {
     kicker:
       "Struggling to track where your money goes? Tired of chasing unpaid invoices?",
     productPrefix: "tru",
-    productTyped: "billing",
+    productTyped: ["billing", "invoicing", "payments"],
     productSuffix: ".",
     intro:
       "TruBilling is a financial management platform designed to help small and growing businesses manage billing, track payments, and maintain financial clarity in one structured system. The goal was to simplify how businesses handle day-to-day financial operations without overwhelming them with complexity.",
