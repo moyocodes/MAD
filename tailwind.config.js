@@ -77,7 +77,9 @@ export default {
         // Proxima Nova, add them here at the front of the stack; everything
         // already using font-display will pick them up automatically.
         display: [
-          "Montserrat",       // ← swap "Gotham" or "Proxima Nova" to front here
+          "Montserrat",
+          "Gotham",
+          '"Proxima Nova"',
           '"Helvetica Neue"',
           "Helvetica",
           "Arial",
@@ -142,9 +144,6 @@ export default {
           lineHeight: "1.1",
           letterSpacing: "-0.02em",
         },
-        h1: { fontSize: "clamp(2rem, 5vw, 3.5rem)" },
-        h2: { fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)" },
-        h3: { fontSize: "clamp(1.25rem, 2.5vw, 1.875rem)" },
 
         // ── UI headings (h4–h6) → Helvetica Neue, tighter ──────────────────
         "h4, h5, h6": {

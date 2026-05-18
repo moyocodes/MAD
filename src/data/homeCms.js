@@ -1,0 +1,330 @@
+export const homeCms = {
+  brand: {
+    name: "MAD",
+    logo: "/ma.png",
+    email: "hello@mad.studio",
+    serviceByLabel: "Service by",
+  },
+  nav: {
+    links: ["Work", "Services", "About", "Journal"],
+    cta: "Work With Us",
+  },
+  hero: {
+    slides: [
+      {
+        left: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&auto=format&fit=crop",
+        right:
+          "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop",
+        card: "Product & Digital",
+        cardImg:
+          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=75&auto=format&fit=crop",
+        h1: "Structure changes everything.",
+        sub: "We design and build systems that drive focus.",
+      },
+      {
+        left: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80&auto=format&fit=crop",
+        right:
+          "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80&auto=format&fit=crop",
+        card: "Marketing & Comms",
+        cardImg:
+          "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&q=75&auto=format&fit=crop",
+        h1: "Communication\nthat connects.",
+        sub: "Campaigns that reach the right people.",
+      },
+      {
+        left: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop",
+        right:
+          "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&q=80&auto=format&fit=crop",
+        card: "Brand & Design",
+        cardImg:
+          "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&q=75&auto=format&fit=crop",
+        h1: "Identities built\nfor clarity.",
+        sub: "Brand systems that speak before you do.",
+      },
+    ],
+    thumbs: [
+      { src: "/flier/image.png", x: -38, y: -28, r: -2.5 },
+      { src: "/flier/image2.png", x: -18, y: -32, r: 1.5 },
+      { src: "/flier/image3.png", x: 40, y: 20, r: -2 },
+      { src: "/flier/image4.png", x: 34, y: -32, r: 2 },
+      { src: "/flier/image5.png", x: -36, y: 18, r: 2.5 },
+      { src: "/flier/image6.png", x: -16, y: 19, r: -1.5 },
+      { src: "/flier/image7.png", x: 17, y: 18, r: 1 },
+      { src: "/flier/image8.png", x: -36, y: 18, r: 2.5 },
+      { src: "/flier/image9.png", x: 0, y: 0, r: 0 },
+      { src: "/flier/image10.png", x: 0, y: 0, r: 0 },
+    ],
+    notifications: [
+      "New inquiry from Kova Group",
+      "TruBilling shipped ✓ — Product launch confirmed",
+      "Meridian campaign went live today",
+    ],
+    cta: "Work With Us",
+  },
+  whatWeDo: {
+    eyebrow: "What We Do",
+    headline: "We help businesses become better than they were yesterday.",
+    highlightedWords: {
+      better: "better",
+      yesterday: "yesterday.",
+    },
+    body: "MAD is a product, marketing, and design firm focused on collaborating with the brightest minds in business to create smarter systems, stronger brands, and better digital experiences.",
+    note: "We create the conditions for growth by helping organizations balance business (value), design (usability) and technology (feasibility).",
+    cta: "Work With Us →",
+    coreValue: {
+      eyebrow: "Core Value",
+      title: "Growth needs balance.",
+      body: "Business value, design usability, and technology feasibility — aligned.",
+    },
+    services: [
+      {
+        tag: "01",
+        label: "Product & Digital Solutions",
+        tagline: "Websites, apps & platforms built to scale with confidence.",
+        wide: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1400&q=80", // multi-screen dev setup
+        top: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80", // mobile app UI
+      },
+      {
+        tag: "02",
+        label: "Marketing & Communication",
+        tagline:
+          "Campaigns that build relevance and connect brands with the right audience.",
+        wide: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=1400&q=80", // social media / campaign
+        top: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", // analytics / content dashboard
+      },
+      {
+        tag: "03",
+        label: "Brand & Design Systems",
+        tagline:
+          "Brand systems with clarity, consistency, and credibility at every touchpoint.",
+        wide: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=1400&q=80", // brand collateral flat lay
+        top: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80", // design / typography tools
+      },
+    ],
+  },
+  servicesInMotion: {
+    eyebrow: "Services in motion · scroll to explore",
+    title: "Systems for growth.",
+    titleAccent: "growth.",
+    cards: [
+      {
+        id: "c1",
+        title: "Product & Digital",
+        sub: "Websites, apps & platforms built to perform.",
+        stageSet: "product",
+      },
+      {
+        id: "c2",
+        title: "Marketing & Comms",
+        sub: "Campaigns and content that reach the right audience.",
+        stageSet: "marketing",
+      },
+      {
+        id: "c3",
+        title: "Brand & Identity",
+        sub: "Logo, type, colour, and brand systems that bring clarity.",
+        stageSet: "brand",
+      },
+      // {
+      //   id: "c4",
+      //   title: "Brand & Identity",
+      //   sub: "Logo, type, colour, and brand systems that bring clarity.",
+      //   stageSet: "brand",
+      // },
+      // {
+      //   id: "c5",
+      //   title: "Marketing & Comms",
+      //   sub: "Campaigns and content that reach the right audience.",
+      //   stageSet: "marketing",
+      // },
+      // {
+      //   id: "c6",
+      //   title: "Brand & Identity",
+      //   sub: "Logo, type, colour, and brand systems that bring clarity.",
+      //   stageSet: "brand",
+      // },
+    ],
+  },
+  experience: {
+    eyebrow: "Our Experience · Product Development",
+    kicker:
+      "Struggling to track where your money goes? Tired of chasing unpaid invoices?",
+    productPrefix: "tru",
+    productTyped: "billing",
+    productSuffix: ".",
+    intro:
+      "TruBilling is a financial management platform designed to help small and growing businesses manage billing, track payments, and maintain financial clarity in one structured system. The goal was to simplify how businesses handle day-to-day financial operations without overwhelming them with complexity.",
+    dashboardUrl: "trubilling.com/dashboard",
+    screenImage: "/image.png",
+    screenImageAlt: "TruBilling",
+    video:
+      "https://res.cloudinary.com/drxxei318/video/upload/q_auto/f_auto/v1778342850/qt_xnluza.mov",
+    statusStamp: "Cancelled",
+    badge: "Built by MAD",
+    cta: "Work With Us Today →",
+    needs: [
+      "Unstructured billing processes",
+      "Difficulty tracking payments and invoices",
+      "Lack of financial visibility in real time",
+      "Over-reliance on manual and fragmented tools",
+    ],
+    approach: [
+      "Simplified financial workflows",
+      "Clean, intuitive user experience",
+      "Built for scalability from day one",
+      "Business, design & tech aligned",
+    ],
+    solutions: [
+      "Create & manage invoices easily",
+      "Track payments in real time",
+      "Maintain clear financial records",
+      "Improved daily financial visibility",
+    ],
+    outcome:
+      "A more structured, efficient, and scalable approach to business billing.",
+    stats: [
+      { value: "24", label: "Paid", color: "#fff" },
+      { value: "70", label: "Pending", color: "#fff" },
+      { value: "28", label: "Overdue", color: "#e05a4e" },
+    ],
+  },
+  beyond: {
+    eyebrow: "Work With Us",
+    title: "We don't just deliver projects,\nwe build long-term partnerships.",
+    body: "Our work extends beyond initial delivery. We support organizations across digital platforms, brand systems, and communication needs as they grow and evolve.",
+    emphasis: "Let's build something that performs.",
+    image: "/mad.png",
+    primaryCta: "Start a Project →",
+    secondaryCta: "View Our Work",
+    stats: [
+      { to: 50, suffix: "+", label: "Projects launched" },
+      { to: 98, suffix: "%", label: "Client retention" },
+      { to: 6, suffix: " wk", label: "Avg. ship time" },
+    ],
+  },
+  contact: {
+    eyebrow: "Work With Us",
+    title: "Not sure what comes next?\nTalk to MAD.",
+    body: "Whether you have a clear brief or just an idea, we'll help you shape it into something structured and actionable.",
+    subbody:
+      "Tell us what you're working on, and we'll help you structure the next step.",
+    principles: [
+      [
+        "01",
+        "Strategy first",
+        "We align on what success looks like before touching a pixel.",
+      ],
+      [
+        "02",
+        "Design that converts",
+        "Every decision is made with your audience and goal in mind.",
+      ],
+      [
+        "03",
+        "Ship, then improve",
+        "We launch fast and iterate based on real data.",
+      ],
+    ],
+    fields: {
+      name: "Your name",
+      email: "Email address",
+      message: "What are you working on?",
+    },
+    submit: "Send Message →",
+    successTitle: "Message received",
+    successBody: "We'll be in touch within 24 hours.",
+    emailPrefix: "Or email us at",
+    ai: {
+      name: "MAD AI",
+      status: "Strategic Partner · Online",
+      idleTitle: "Talk to MAD AI",
+      idleBody:
+        "Tell us what you're building and we'll walk you through how MAD can help.",
+      start: "Start a conversation →",
+      greeting:
+        "Hi 👋 I'm MAD AI — a strategic partner, not just a bot. What area would you like to explore?",
+      transferPrompt:
+        "Want me to connect you with one of our strategists for a deeper conversation?",
+      noTransfer:
+        "No problem — feel free to reach out anytime. You can also fill in the form on the left.",
+      emailPrompt:
+        "Perfect. What email address should I send your project summary to?",
+      donePrefix: "✓ Done! A project summary is heading to",
+      doneSuffix: "now. Our team will follow up within 24 hours.",
+      notificationTitle: "MAD Studio",
+      notificationBody: "Your project summary is ready — let's build.",
+      services: [
+        {
+          id: "product",
+          label: "Product & Digital",
+          icon: "💻",
+          reply: [
+            "Great choice. Product & Digital is our core.",
+            "We build websites, web apps, SaaS platforms, and internal tools end-to-end — from discovery and wireframes through to UI design, development, and launch. Typical timelines run 4–8 weeks depending on scope.",
+            "Our stack is modern and performant. We care about speed, accessibility, and experiences that actually convert — not just look good in a Figma file.",
+            "Past builds include e-commerce stores, SaaS dashboards, fintech platforms, and brand microsites. Every project ships with documentation and a handoff your team can build on.",
+          ],
+        },
+        {
+          id: "marketing",
+          label: "Marketing & Comms",
+          icon: "📣",
+          reply: [
+            "Marketing & Comms — solid choice.",
+            "We build marketing systems that run, not one-off campaigns. That means content strategy, social calendars, email sequences, paid media frameworks, and brand messaging — all aligned.",
+            "We start by understanding your audience, then we craft narratives that reach them at the right moment. Everything is tracked, measured, and iterated on.",
+            "We've run campaigns across product launches, investor communications, growth sprints, and rebrands. The goal is always the same: the right message to the right person at the right time.",
+          ],
+        },
+        {
+          id: "brand",
+          label: "Brand & Design",
+          icon: "✦",
+          reply: [
+            "Brand & Design — this is where intention meets execution.",
+            "We start with brand strategy: positioning, tone of voice, values, and how you want to be perceived. That foundation drives everything visual.",
+            "From there we build the full identity — logo system, typography, colour palette, iconography, and brand guidelines your whole team can use consistently.",
+            "The result isn't just a pretty logo. It's a system with rules, rationale, and flexibility — built to scale as your business does.",
+          ],
+        },
+      ],
+    },
+  },
+  footer: {
+    description:
+      "Product, marketing & design firm creating systems that help organizations grow stronger and perform over time.",
+    social: [
+      { label: "Instagram", href: "#", iconClass: "fa fa-instagram" },
+      { label: "Twitter", href: "#", iconClass: "fa fa-twitter" },
+      { label: "LinkedIn", href: "#", iconClass: "fa fa-linkedin" },
+    ],
+    columns: [
+      {
+        title: "Services",
+        links: [
+          ["Product & Digital", "#"],
+          ["Marketing & Comms", "#"],
+          ["Brand & Design", "#"],
+        ],
+      },
+      {
+        title: "Company",
+        links: [
+          ["About MAD", "#"],
+          ["Our Work", "#"],
+          ["Journal", "#"],
+          ["Careers", "#"],
+        ],
+      },
+      {
+        title: "Get In Touch",
+        links: [
+          ["LinkedIn", "#"],
+          ["Instagram", "#"],
+          ["hello@mad.studio", "mailto:hello@mad.studio"],
+        ],
+      },
+    ],
+    copyright: "© 2025 MAD. All rights reserved.",
+  },
+};

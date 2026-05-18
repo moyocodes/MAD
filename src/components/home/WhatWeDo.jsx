@@ -1,31 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { homeCms } from "@/data/homeCms";
 
-const WWD = [
-  {
-    tag: "01",
-    label: "Product & Digital Solutions",
-    tagline: "Websites, apps & platforms built to scale with confidence.",
-    wide: "/web.png",
-    top: "/app.png",
-  },
-  {
-    tag: "02",
-    label: "Marketing & Communication",
-    tagline:
-      "Campaigns that build relevance and connect brands with the right audience.",
-    wide: "/soc.png",
-    top: "/post.png",
-  },
-  {
-    tag: "03",
-    label: "Brand & Design Systems",
-    tagline:
-      "Brand systems with clarity, consistency, and credibility at every touchpoint.",
-    wide: "/loggg.png",
-    top: "/brandd.png",
-  },
-];
+const content = homeCms.whatWeDo;
+const WWD = content.services;
 
 function ProgressBar({ duration, running, onComplete }) {
   const fillRef = useRef(null);
@@ -48,13 +26,10 @@ function ProgressBar({ duration, running, onComplete }) {
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, [duration, running, onComplete]);
+
   return (
-    <div className="w-full bg-black/10" style={{ height: 1 }}>
-      <div
-        ref={fillRef}
-        className="bg-azure-500"
-        style={{ height: "100%", width: "0%" }}
-      />
+    <div className="w-full bg-azure-700/30" style={{ height: 1 }}>
+      <div ref={fillRef} className="bg-azure-400 h-full w-0" />
     </div>
   );
 }
@@ -64,162 +39,79 @@ const ease = [0.16, 1, 0.3, 1];
 export default function WhatWeDo() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [collapse, setCollapse] = useState(0); // 0–1, drives top-right clip
+  const rootRef = useRef(null);
   const next = useCallback(() => setCur((c) => (c + 1) % WWD.length), []);
   const svc = WWD[cur];
 
+  // Scroll-driven collapse of top-right panel
+  useEffect(() => {
+    const onScroll = () => {
+      if (!rootRef.current) return;
+      const { top, height } = rootRef.current.getBoundingClientRect();
+      const scrolled = -top;
+      const maxScroll = height - window.innerHeight;
+      const progress = Math.min(Math.max(scrolled / maxScroll, 0), 1);
+      // Phase 2 starts at 65% of scroll
+      const phase2 = Math.max((progress - 0.65) / 0.35, 0);
+      setCollapse(phase2);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const clipPct = Math.round((1 - collapse) * 100);
+  const trOpacity = collapse < 0.8 ? 1 : 1 - (collapse - 0.8) / 0.2;
+
   return (
-    <section style={{ background: "transparent", paddingTop: 40 }}>
-      {/* Intro row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pb-8 px-4 sm:px-8 max-w-[1100px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease }}
-        >
-          <p
-            className="text-azure-500"
-            style={{
-              fontSize: 9,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              marginBottom: 12,
-            }}
-          >
-            What We Do
-          </p>
-          <h2
-            className="text-dark-900"
-            style={{
-              fontSize: "clamp(24px,3vw,38px)",
-              fontWeight: 700,
-              lineHeight: 1.08,
-              letterSpacing: -0.4,
-            }}
-          >
-            We help businesses become{" "}
-            <span className="text-azure-500">better</span> than they were{" "}
-            <span style={{ color: "#F26522" }}>yesterday.</span>
-          </h2>
-        </motion.div>
+    <section ref={rootRef} className="relative min-h-[200dvh]">
+      <div className="sticky top-0 overflow-hidden h-[100dvh]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease, delay: 0.15 }}
-        >
-          <p
-            style={{
-              fontSize: 15,
-              color: "#555",
-              lineHeight: 1.72,
-              marginBottom: 16,
-            }}
-          >
-            MAD is a product, marketing, and design firm focused on
-            collaborating with the brightest minds in business to create smarter
-            systems, stronger brands, and better digital experiences.
-          </p>
-          <div
-            className="border-l-2 border-azure-500 bg-tangerine-50 text-azure-700"
-            style={{ padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}
-          >
-            We create the conditions for growth by helping organizations balance
-            business (value), design (usability) and technology (feasibility).
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Image grid */}
-      <motion.div
-        className="w-full px-4 sm:px-6"
-        initial={{ opacity: 0, y: 36 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.7, ease, delay: 0.2 }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-          {/* Big left */}
-          <motion.div
-            className="md:row-span-2 relative overflow-hidden"
-            style={{ minHeight: 480 }}
-            whileHover="hover"
-          >
+          {/* ── Left full-height ── */}
+          <div className="md:row-span-2 relative overflow-hidden" style={{ minHeight: "100dvh" }}>
             {WWD.map((sv, i) => (
               <motion.img
                 key={i}
                 src={sv.wide}
                 alt=""
-                variants={{ hover: { scale: 1.04 } }}
-                transition={{ duration: 0.6, ease }}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: i === cur ? 1 : 0,
-                  transition: "opacity .9s",
-                }}
+                animate={i === cur ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ opacity: i === cur ? 1 : 0, transition: "opacity .9s" }}
               />
             ))}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,.28) 55%,transparent)",
-              }}
-            />
-            <div
-              style={{ position: "absolute", bottom: 24, left: 24, right: 24 }}
-            >
+            {/* deep azure gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-azure-900/95 via-azure-900/30 to-transparent" />
+
+            {/* Bottom label */}
+            <div className="absolute bottom-0 left-0 right-0 px-7 pb-8">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={cur}
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4, ease }}
                 >
-                  <p
-                    className="text-white/90"
-                    style={{
-                      fontSize: "clamp(14px,2vw,22px)",
-                      fontWeight: 700,
-                      letterSpacing: -0.3,
-                      marginBottom: 4,
-                    }}
-                  >
+                  <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-2 font-bold">
+                    {svc.tag} / 03
+                  </p>
+                  <p className="text-white font-black mb-2 leading-[1.05] tracking-[-0.04em] text-[clamp(20px,2.6vw,34px)]">
                     {svc.label}
                   </p>
-                  <p
-                    className="text-white/50"
-                    style={{ fontSize: 12, marginBottom: 16 }}
-                  >
+                  <p className="text-white/50 mb-5 leading-relaxed text-[clamp(10px,1.1vw,13px)]">
                     {svc.tagline}
                   </p>
                 </motion.div>
               </AnimatePresence>
-              <button
-                className="text-white bg-white/[12%]"
-                style={{
-                  backdropFilter: "blur(8px)",
-                  border: "1px solid rgba(255,255,255,.3)",
-                  padding: "7px 18px",
-                  borderRadius: 99,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                }}
-              >
-                Work With Us →
+              <button className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md">
+                {content.cta}
               </button>
             </div>
-            <div style={{ position: "absolute", top: 14, left: 14 }}>
+
+            {/* Top-left tag */}
+            <div className="absolute top-3.5 left-3.5">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={cur}
@@ -227,62 +119,38 @@ export default function WhatWeDo() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3, ease }}
-                  className="bg-black/30 text-white/50"
-                  style={{
-                    display: "inline-block",
-                    fontFamily: "monospace",
-                    fontSize: 7,
-                    fontWeight: 700,
-                    letterSpacing: "0.25em",
-                    textTransform: "uppercase",
-                    border: "1px solid rgba(255,255,255,.3)",
-                    padding: "4px 10px",
-                    borderRadius: 99,
-                    backdropFilter: "blur(6px)",
-                  }}
+                  className="bg-azure-500/20 text-azure-300 font-mono text-[7px] font-bold tracking-[0.25em] uppercase border border-azure-400/40 px-[10px] py-[4px] rounded-full backdrop-blur-md inline-block"
                 >
                   {svc.tag} / 03
                 </motion.span>
               </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Top right */}
-          <motion.div
-            className="relative overflow-hidden"
-            style={{ minHeight: 240 }}
-            whileHover="hover"
+          {/* ── Top-right: collapses on scroll exit ── */}
+          <div
+            className="hidden md:block relative overflow-hidden border-b border-azure-500/20"
+            style={{
+              minHeight: "50dvh",
+              clipPath: `inset(0 0 ${100 - clipPct}% 0)`,
+              opacity: trOpacity,
+              transition: "clip-path .05s linear, opacity .05s linear",
+            }}
           >
             {WWD.map((sv, i) => (
               <motion.img
                 key={i}
                 src={sv.top}
                 alt=""
-                variants={{ hover: { scale: 1.04 } }}
-                transition={{ duration: 0.6, ease }}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "center 40%",
-                  opacity: i === cur ? 1 : 0,
-                  transition: "opacity .9s",
-                }}
+                animate={i === cur ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+                className="absolute inset-0 w-full h-full object-cover object-[center_40%]"
+                style={{ opacity: i === cur ? 1 : 0, transition: "opacity .9s" }}
               />
             ))}
-            <div className="absolute inset-0 bg-black/[38%]" />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
+            <div className="absolute inset-0 bg-azure-900/70" />
+
+            <div className="absolute inset-0 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={cur}
@@ -290,283 +158,139 @@ export default function WhatWeDo() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.35, ease }}
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  className="flex items-center gap-2"
                 >
-                  <span
-                    className="text-white"
-                    style={{
-                      fontSize: "clamp(16px,2.5vw,24px)",
-                      fontWeight: 700,
-                      letterSpacing: -0.4,
-                    }}
-                  >
-                    MAD
-                  </span>
-                  <span
-                    className="text-white/35"
-                    style={{ fontSize: "clamp(12px,2vw,18px)", fontWeight: 300 }}
-                  >
-                    ×
-                  </span>
-                  <span
-                    className="text-white"
-                    style={{
-                      fontWeight: 900,
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      fontSize: "clamp(11px,1.8vw,16px)",
-                    }}
-                  >
+                  <span className="text-white font-black text-[clamp(16px,2.3vw,22px)] tracking-[-0.04em]">MAD</span>
+                  <span className="text-white/30 font-light text-[clamp(12px,2vw,18px)]">×</span>
+                  <span className="text-azure-400 font-black tracking-[0.1em] uppercase text-[clamp(10px,1.6vw,14px)]">
                     {svc.label.split(" ")[0]}
                   </span>
                 </motion.div>
               </AnimatePresence>
             </div>
-            <div
-              style={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                display: "flex",
-                gap: 5,
-              }}
-            >
+
+            <div className="absolute top-3 right-3 flex gap-[5px]">
               {WWD.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCur(i)}
+                  className="w-3.5 h-3.5 rounded-full cursor-pointer"
                   style={{
-                    width: 14,
-                    height: 14,
-                    borderRadius: "50%",
-                    border: `1.5px solid ${i === cur ? "#ffffff" : "rgba(255,255,255,.28)"}`,
+                    border: `1.5px solid ${i === cur ? "#ffffff" : "rgba(90,167,230,.3)"}`,
                     background: i === cur ? "#ffffff" : "transparent",
-                    cursor: "pointer",
                   }}
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Bottom right: 2 cards */}
-          <div className="grid grid-cols-2 gap-1">
-            {/* Core value */}
-            <motion.div
-              className="bg-white"
-              style={{
-                padding: 20,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                border: "1px solid #d4dff0",
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-20px" }}
-              transition={{ duration: 0.5, ease, delay: 0.3 }}
+          {/* ── Bottom-right: 2 cards ── */}
+          <div className="hidden md:grid md:grid-cols-2 gap-0">
+            {/* Intro card — azure-800 bg */}
+            <div
+              className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20"
+              style={{ minHeight: "50dvh", padding: "clamp(22px,2.8vw,36px)" }}
             >
               <div>
-                <p
-                  className="text-azure-500"
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: 7,
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    marginBottom: 8,
-                  }}
-                >
-                  Core Value
+                <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-3 font-bold">
+                  {content.eyebrow}
                 </p>
                 <h3
-                  className="text-dark-900"
-                  style={{
-                    fontSize: "clamp(12px,1.4vw,14px)",
-                    fontWeight: 700,
-                    lineHeight: 1.3,
-                    marginBottom: 8,
-                  }}
+                  className="text-white font-black leading-[1.08] mb-3"
+                  style={{ fontSize: "clamp(18px,2vw,28px)", letterSpacing: "-1px" }}
                 >
-                  Growth needs balance.
+                  We help businesses become{" "}
+                  <span className="text-azure-400">{content.highlightedWords.better}</span>{" "}
+                  than they were{" "}
+                  <span className="text-tangerine-500">{content.highlightedWords.yesterday}</span>
                 </h3>
-                <p
-                  style={{
-                    fontSize: "clamp(9px,1vw,11px)",
-                    color: "#666",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Business value, design usability, and technology feasibility —
-                  aligned.
+                <p className="text-white/50 leading-[1.75]" style={{ fontSize: "clamp(10px,1vw,12.5px)" }}>
+                  {content.body}
                 </p>
               </div>
-              <button
-                className="text-white bg-azure-500"
-                style={{
-                  alignSelf: "flex-start",
-                  marginTop: 12,
-                  padding: "6px 14px",
-                  borderRadius: 99,
-                  fontSize: 8,
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  border: "none",
-                }}
-              >
-                Work With Us →
+              <button className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none"
+                style={{ fontSize: "clamp(9px,0.85vw,11px)", padding: "10px 22px" }}>
+                {content.cta}
               </button>
-            </motion.div>
+            </div>
 
-            {/* Nav */}
-            <motion.div
-              className="bg-white"
-              style={{
-                padding: 16,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-20px" }}
-              transition={{ duration: 0.5, ease, delay: 0.4 }}
+            {/* Service card — azure-900 bg */}
+            <div
+              className="bg-azure-900 flex flex-col justify-between"
+              style={{ minHeight: "50dvh", padding: "clamp(22px,2.8vw,36px)" }}
             >
-              <div
-                style={{
-                  border: "2px solid #181817",
-                  padding: "8px 10px",
-                  marginBottom: 12,
-                }}
-              >
+              <div>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={cur}
-                    initial={{ opacity: 0, y: 6 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.3, ease }}
-                    className="text-dark-900"
-                    style={{
-                      fontWeight: 900,
-                      fontSize: "clamp(8px,1vw,10px)",
-                      lineHeight: 1.3,
-                    }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.35, ease }}
                   >
-                    {svc.label}
+                    <p className="text-azure-400 font-mono font-bold tracking-[0.28em] uppercase mb-2"
+                      style={{ fontSize: "clamp(7px,0.7vw,9px)" }}>
+                      {svc.tag} / {String(WWD.length).padStart(2, "0")}
+                    </p>
+                    <h4 className="text-white font-black leading-[1.1] mb-2"
+                      style={{ fontSize: "clamp(14px,1.8vw,22px)", letterSpacing: "-0.04em" }}>
+                      {svc.label}
+                    </h4>
+                    <p className="text-white/40 leading-[1.65]" style={{ fontSize: "clamp(9px,.95vw,12px)" }}>
+                      {svc.tagline}
+                    </p>
                   </motion.div>
                 </AnimatePresence>
               </div>
+
               <div>
                 {WWD.map((sv, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: 7,
-                    }}
-                  >
+                  <div key={i} className="flex items-center gap-2 mb-[7px]">
                     <span
-                      style={{
-                        fontFamily: "monospace",
-                        fontSize: 7,
-                        fontWeight: 700,
-                        color: i === cur ? "#1980c2" : "rgba(160,180,208,.6)",
-                        minWidth: 14,
-                      }}
+                      className="font-mono text-[7px] font-bold min-w-[14px]"
+                      style={{ color: i === cur ? "#5aa7e6" : i < cur ? "rgba(90,167,230,.45)" : "rgba(90,167,230,.2)" }}
                     >
                       {sv.tag}
                     </span>
-                    <div style={{ flex: 1 }}>
+                    <div className="flex-1">
                       {i === cur ? (
-                        <ProgressBar
-                          duration={5500}
-                          running={!paused}
-                          onComplete={next}
-                          key={`pb-${cur}`}
-                        />
+                        <ProgressBar duration={5500} running={!paused} onComplete={next} key={`pb-${cur}`} />
                       ) : (
-                        <div
-                          style={{
-                            height: 1,
-                            background: i < cur ? "#7090b8" : "#d8e0ec",
-                          }}
-                        />
+                        <div className="h-px" style={{ background: i < cur ? "rgba(90,167,230,.45)" : "rgba(255,255,255,.08)" }} />
                       )}
                     </div>
                   </div>
                 ))}
-                <div style={{ display: "flex", gap: 5, marginTop: 10 }}>
+                <div className="flex gap-[5px] mt-2.5">
                   {[
-                    {
-                      fn: () =>
-                        setCur((c) => (c - 1 + WWD.length) % WWD.length),
-                      d: "M14 6L8 12l6 6",
-                    },
-                    {
-                      fn: () => setCur((c) => (c + 1) % WWD.length),
-                      d: "M10 6l6 6-6 6",
-                    },
+                    { fn: () => setCur((c) => (c - 1 + WWD.length) % WWD.length), d: "M14 6L8 12l6 6" },
+                    { fn: () => setCur((c) => (c + 1) % WWD.length), d: "M10 6l6 6-6 6" },
                   ].map(({ fn, d }, i) => (
                     <button
                       key={i}
                       onClick={fn}
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: "transparent",
-                        border: "1px solid #d4dff0",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
+                      className="w-[22px] h-[22px] rounded-full bg-transparent border border-azure-400/30 flex items-center justify-center"
                     >
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d={d}
-                          stroke="rgba(10,22,40,.5)"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                        <path d={d} stroke="rgba(90,167,230,.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
                   ))}
                   <button
                     onClick={() => setPaused((p) => !p)}
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: "transparent",
-                      border: "1px solid #d4dff0",
-                      color: "#555",
-                      fontSize: 9,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                    className="w-[22px] h-[22px] rounded-full bg-transparent border border-azure-400/30 text-azure-400 text-[9px] flex items-center justify-center"
                   >
                     {paused ? "▶" : "⏸"}
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </motion.div>
 
-      <div
-        style={{
-          height: 30,
-          pointerEvents: "none",
-          background:
-            "linear-gradient(to bottom, transparent, rgba(230,242,251,0.6))",
-        }}
-      />
+        </div>
+      </div>
+
+      <div className="h-[30px] pointer-events-none" />
     </section>
   );
 }

@@ -1,185 +1,179 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { homeCms } from "@/data/homeCms";
 
-function CountUp({ to, suffix = "", duration = 1400, inView }) {
-  const [val, setVal] = useState(0);
-  const rafRef = useRef(null);
+const content = homeCms.beyond;
 
-  useEffect(() => {
-    if (!inView) { setVal(0); return; }
-    const start = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setVal(Math.round(eased * to));
-      if (t < 1) rafRef.current = requestAnimationFrame(step);
-    };
-    rafRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [inView, to, duration]);
+const projects = [
+  { img: "/web.png",    category: "Product & Digital",  name: "STRKT Store" },
+  { img: "/soc.png",    category: "Marketing & Comms",  name: "Meridian Campaign" },
+  { img: "/brandd.png", category: "Brand & Identity",   name: "MAD Identity" },
+  { img: "/app.png",    category: "Product & Digital",  name: "TruBilling App" },
+  { img: "/loggg.png",  category: "Brand & Identity",   name: "Brand System" },
+  { img: "/post.png",   category: "Marketing & Comms",  name: "Content Strategy" },
+];
 
-  return <>{val}{suffix}</>;
+function ProjectCard({ project, delay }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        borderRadius: 12,
+        overflow: "hidden",
+        cursor: "pointer",
+        transform: hovered ? "scale(1.025)" : "scale(1)",
+        boxShadow: hovered ? "0 20px 48px rgba(0,0,0,.18)" : "0 2px 8px rgba(0,0,0,.06)",
+        transition: "transform 0.32s cubic-bezier(.16,1,.3,1), box-shadow 0.32s ease",
+        flex: 1,
+        minHeight: 0,
+      }}
+    >
+      <img src={project.img} alt={project.name}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.12) 55%,transparent 100%)",
+      }} />
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(12px,1.6vw,18px)" }}>
+        <p style={{ fontSize: "clamp(8px,0.7vw,10px)", fontWeight: 700, color: "rgba(255,255,255,.55)",
+          letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 3 }}>
+          {project.category}
+        </p>
+        <p style={{ fontSize: "clamp(12px,1.1vw,15px)", fontWeight: 700, color: "#fff", lineHeight: 1.2, margin: 0 }}>
+          {project.name}
+        </p>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Beyond() {
-  const [inView, setInView] = useState(false);
-  const statsRef = useRef(null);
-
-  useEffect(() => {
-    const el = statsRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.35 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const titleLines = content.title.split("\n");
 
   return (
-    <section
-      style={{
-        background: "transparent",
-        padding: 0,
-      }}
-    >
-      {/* ── Content area ── */}
-      <div
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          padding: "clamp(56px,7vw,96px) clamp(20px,4vw,48px) clamp(48px,5vw,72px)",
-        }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
-          {/* Left — heading */}
-          <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1] }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 7,
-                background: "rgba(25,128,194,.1)",
-                border: "1px solid rgba(25,128,194,.2)",
-                borderRadius: 99,
-                padding: "4px 12px 4px 8px",
-                marginBottom: 22,
-                width: "fit-content",
-              }}
-            >
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#1980c2" }} />
-              <span style={{ fontSize: 9.5, fontWeight: 700, color: "#1980c2", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                Work With Us
-              </span>
-            </div>
-            <h2
-              style={{
-                fontSize: "clamp(26px,3.2vw,46px)",
-                fontWeight: 800,
-                lineHeight: 1.08,
-                letterSpacing: -0.7,
-                color: "#181817",
-                marginBottom: 16,
-              }}
-            >
-              We don't just deliver projects,
-              <br />
-              we build long-term partnerships.
+    <section style={{
+      background: "#f8f8f6",
+      minHeight: "100dvh",
+      display: "flex",
+      flexDirection: "column",
+    }}>
+      <div style={{
+        maxWidth: 1100,
+        margin: "0 auto",
+        width: "100%",
+        padding: "clamp(48px,6vw,80px) clamp(20px,4vw,48px)",
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        gap: "clamp(28px,3.5vw,44px)",
+        boxSizing: "border-box",
+      }}>
+
+        {/* ── Top: Headline + Stats ── */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "clamp(24px,4vw,60px)", flexWrap: "wrap" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p style={{ fontSize: "clamp(8px,0.75vw,10px)", fontWeight: 700, color: "#1980c2",
+              letterSpacing: "0.28em", textTransform: "uppercase", marginBottom: 14, fontFamily: "monospace" }}>
+              {content.eyebrow}
+            </p>
+            <h2 style={{
+              fontSize: "clamp(32px,4.2vw,60px)",
+              fontWeight: 900,
+              lineHeight: 1.04,
+              letterSpacing: "clamp(-1px,-0.03em,-2px)",
+              color: "#0f172a",
+              maxWidth: 540,
+              margin: 0,
+            }}>
+              {titleLines.map((line, i) => (
+                <span key={i}>{line}{i < titleLines.length - 1 && <br />}</span>
+              ))}
             </h2>
-            <p
-              style={{
-                fontSize: "clamp(13px,1.3vw,15px)",
-                color: "#556",
-                lineHeight: 1.72,
-                maxWidth: 420,
-              }}
-            >
-              Our work extends beyond initial delivery. We support organizations
-              across digital platforms, brand systems, and communication needs
-              as they grow and evolve.
-            </p>
-            <p
-              style={{
-                fontSize: "clamp(13px,1.3vw,15px)",
-                color: "#181817",
-                fontWeight: 700,
-                lineHeight: 1.5,
-                maxWidth: 380,
-                marginTop: 16,
-              }}
-            >
-              Let's build something that performs.
-            </p>
           </motion.div>
 
-          {/* Right — stats + CTAs */}
-          <motion.div className="flex flex-col justify-between" style={{ paddingTop: "clamp(0px,1vw,16px)" }} initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.6, ease:[0.16,1,0.3,1], delay:0.15 }}>
-            {/* Count-up stats */}
-            <div
-              ref={statsRef}
-              style={{ display: "flex", gap: "clamp(24px,4vw,52px)", marginBottom: 36, flexWrap: "wrap" }}
-            >
-              {[
-                { to: 50, suffix: "+", label: "Projects launched" },
-                { to: 98, suffix: "%", label: "Client retention" },
-                { to: 6,  suffix: " wk", label: "Avg. ship time" },
-              ].map(({ to, suffix, label }) => (
-                <div key={label}>
-                  <div
-                    style={{
-                      fontSize: "clamp(28px,2.8vw,40px)",
-                      fontWeight: 900,
-                      color: "#1980c2",
-                      letterSpacing: -0.6,
-                      lineHeight: 1,
-                      marginBottom: 5,
-                    }}
-                  >
-                    <CountUp to={to} suffix={suffix} inView={inView} />
-                  </div>
-                  <div style={{ fontSize: 10.5, color: "#888", fontWeight: 600, letterSpacing: "0.05em" }}>
-                    {label}
-                  </div>
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            style={{ display: "flex", gap: "clamp(28px,4vw,56px)", alignItems: "center", paddingTop: 4 }}
+          >
+            {content.stats.map((s, i) => (
+              <div key={i} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "clamp(28px,3.2vw,48px)", fontWeight: 900, color: "#0f172a",
+                  lineHeight: 1, letterSpacing: -1, marginBottom: 4 }}>
+                  {s.to}<span style={{ color: "#1980c2" }}>{s.suffix}</span>
                 </div>
-              ))}
-            </div>
-
-            {/* CTAs */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Button className="bg-[#181817] text-white border-none rounded-full px-7 py-3 text-xs font-bold tracking-wider h-auto hover:bg-[#2a2a28]">
-                Start a Project →
-              </Button>
-              <Button variant="outline" className="bg-white/70 text-[#181817] border-[rgba(24,24,23,.14)] rounded-full px-7 py-3 text-xs font-semibold tracking-wider h-auto">
-                View Our Work
-              </Button>
-            </div>
+                <p style={{ fontSize: "clamp(9px,0.75vw,11px)", color: "rgba(15,23,42,.4)",
+                  textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, margin: 0 }}>
+                  {s.label}
+                </p>
+              </div>
+            ))}
           </motion.div>
         </div>
-      </div>
 
-      {/* ── Landscape photo — fades into Contact ── */}
-      <motion.div style={{ position: "relative", height: "clamp(260px,26vw,400px)", overflow: "hidden" }} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true, margin:"-60px" }} transition={{ duration:0.8, ease:[0.16,1,0.3,1] }}>
-        <img
-          src="/mad.png"
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%" }}
-        />
-        {/* Floating badge */}
-        
-        {/* Bottom fade into Contact bg */}
-        <div
+        {/* ── Project Grid ── */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateRows: "repeat(2, 1fr)",
+          gap: "clamp(10px,1.2vw,16px)",
+          flex: 1,
+          minHeight: "clamp(280px,32vw,420px)",
+        }}>
+          {projects.map((project, i) => (
+            <ProjectCard key={i} project={project} delay={i * 0.07} />
+          ))}
+        </div>
+
+        {/* ── Bottom CTA ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "70%",
-            background: "linear-gradient(to bottom, transparent 0%, #bddff5 100%)",
-            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "clamp(16px,3vw,40px)",
+            flexWrap: "wrap",
+            borderTop: "1px solid rgba(15,23,42,.08)",
+            paddingTop: "clamp(20px,2.5vw,32px)",
           }}
-        />
-      </motion.div>
+        >
+          <p style={{ fontSize: "clamp(13px,1.1vw,15px)", color: "rgba(15,23,42,.52)", lineHeight: 1.75,
+            maxWidth: 440, margin: 0 }}>
+            {content.body}{" "}
+            <strong style={{ color: "#0f172a", fontWeight: 700 }}>{content.emphasis}</strong>
+          </p>
+          <div style={{ display: "flex", gap: 10, flexShrink: 0, flexWrap: "wrap" }}>
+            <Button className="bg-gradient-to-r from-[#1980c2] to-[#45b3f5] text-white border-none rounded-full px-7 py-3 text-xs font-bold tracking-wider h-auto hover:opacity-90 transition-opacity shadow-[0_4px_20px_rgba(25,128,194,.35)]">
+              {content.primaryCta}
+            </Button>
+            <Button variant="outline"
+              className="bg-black/[.04] text-[#0f172a] border-black/[.12] rounded-full px-7 py-3 text-xs font-semibold tracking-wider h-auto hover:bg-black/[.08] transition-colors">
+              {content.secondaryCta}
+            </Button>
+          </div>
+        </motion.div>
+
+      </div>
     </section>
   );
 }

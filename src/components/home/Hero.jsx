@@ -1,85 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { homeCms } from "@/data/homeCms";
 
-const SLIDES = [
-  {
-    left: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&auto=format&fit=crop",
-    right:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop",
-    card: "Product & Digital",
-    cardImg:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=75&auto=format&fit=crop",
-    h1: "Structure changes\neverything.",
-    sub: "We design and build systems that drive focus.",
-  },
-  {
-    left: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80&auto=format&fit=crop",
-    right:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80&auto=format&fit=crop",
-    card: "Marketing & Comms",
-    cardImg:
-      "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&q=75&auto=format&fit=crop",
-    h1: "Communication\nthat connects.",
-    sub: "Campaigns that reach the right people.",
-  },
-  {
-    left: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop",
-    right:
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&q=80&auto=format&fit=crop",
-    card: "Brand & Design",
-    cardImg:
-      "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&q=75&auto=format&fit=crop",
-    h1: "Identities built\nfor clarity.",
-    sub: "Brand systems that speak before you do.",
-  },
-];
-
-const THUMBS = [
-  {
-    src: "/flier/image.png",
-    x: -38,
-    y: -28,
-    r: -2.5,
-  },
-  {
-     src: "/flier/image2.png",  x: -18,
-    y: -32,
-    r: 1.5,
-  },
-  {
-    src: "/flier/image3.png",   x: +40,
-    y: +20,
-    r: -2,
-  },
-  {
-    src: "/flier/image4.png",
-    x: +34,
-    y: -32,
-    r: 2,
-  },
-  {
-  src: "/flier/image5.png",    x: -36,
-    y: +18,
-    r: 2.5,
-  },
-  {
-    src: "/flier/image6.png",
-    x: -16,
-    y: +19,
-    r: -1.5,
-  },
-  {
-    src: "/flier/image7.png",
-    x: +17,
-    y: +18,
-    r: 1,
-  },
-  {
-    src: "/flier/image8.png",
-    x: -36,
-    y: +18,
-    r: 2.5,
-  },
-];
+const { brand, hero } = homeCms;
+const SLIDES = hero.slides;
+const THUMBS = hero.thumbs;
 
 export default function Hero() {
   const wrapRef = useRef(null);
@@ -94,6 +18,7 @@ export default function Hero() {
   const [notifMsg, setNotifMsg] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const prevPhaseRef = useRef(-1);
+  const notifRevealTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
 
   useEffect(() => {
@@ -103,11 +28,7 @@ export default function Hero() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const NOTIFS = [
-    "New inquiry from Kova Group",
-    "TruBilling shipped ✓ — Product launch confirmed",
-    "Meridian campaign went live today",
-  ];
+  const NOTIFS = hero.notifications;
 
   // Slide auto-play
   useEffect(() => {
@@ -145,17 +66,23 @@ export default function Hero() {
       const phase = Math.min(2, Math.floor(raw * 3));
       if (phase !== prevPhaseRef.current) {
         prevPhaseRef.current = phase;
+        clearTimeout(notifRevealTimerRef.current);
         clearTimeout(notifTimerRef.current);
         setNotif(false);
-        setTimeout(() => {
+        notifRevealTimerRef.current = setTimeout(() => {
           setNotifMsg(NOTIFS[Math.min(phase, NOTIFS.length - 1)]);
           setNotif(true);
-          notifTimerRef.current = setTimeout(() => setNotif(false), 3500);
-        }, 300);
+          notifTimerRef.current = setTimeout(() => setNotif(false), 5500);
+        }, 120);
       }
     };
+    fn();
     window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
+    return () => {
+      clearTimeout(notifRevealTimerRef.current);
+      clearTimeout(notifTimerRef.current);
+      window.removeEventListener("scroll", fn);
+    };
   }, []);
 
   const pf = rawPct * 3;
@@ -166,6 +93,11 @@ export default function Hero() {
   const cardOut = Math.max(0, (pct - 0.7) / 0.3);
   const s = SLIDES[slide];
   const ns = SLIDES[(slide + 1) % SLIDES.length];
+  const frameToPanelT = Math.min(1, Math.max(0, (collapseT - 0.78) / 0.22));
+  const collapsePanels = THUMBS.map((thumb) => ({
+    src: thumb.src,
+    fit: "contain",
+  })).slice(0, 10);
 
   return (
     <div
@@ -184,15 +116,14 @@ export default function Hero() {
           overflow: "hidden",
         }}
       >
-        {/* Collapse bg */}
+        {/* Collapse bg — azure-50 so thumbnails blend into the azure ground */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             zIndex: 0,
+            background: "#eef7fd",
             opacity: collapseT,
-            background:
-              "linear-gradient(160deg, #edf5fa 0%, #dce9f4 25%, #e6eef8 50%, #d8e6f2 75%, #e2ecf8 100%)",
           }}
         />
 
@@ -207,10 +138,11 @@ export default function Hero() {
             top: `${collapseT * 11}%`,
             bottom: `${collapseT * 72}%`,
             borderRadius: collapseT * 8,
-            boxShadow: `0 ${collapseT * 16}px ${collapseT * 40}px rgba(0,0,0,${collapseT * 0.2})`,
+            opacity: 1 - frameToPanelT,
           }}
         >
           <div style={{ position: "absolute", inset: 0, display: "flex" }}>
+
             {/* Left panel */}
             {!isMobile && (
               <div
@@ -243,13 +175,14 @@ export default function Hero() {
                   />
                 ))}
                 <div className="absolute inset-0 bg-azure-900/[8%]" />
+
                 {/* Pantone card */}
                 <div
                   style={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
-                    width: "min(240px,75%)",
+                    width: "min(276px,86%)",
                     opacity: Math.max(0, 1 - phase1v * 2),
                   }}
                 >
@@ -267,7 +200,6 @@ export default function Hero() {
                         transform: `translate(-50%,calc(-50% + ${ty}px))`,
                         opacity: op,
                         width: "100%",
-                        boxShadow: "0 16px 48px rgba(0,0,0,.3)",
                       }}
                     >
                       <img
@@ -275,7 +207,7 @@ export default function Hero() {
                         alt=""
                         style={{
                           width: "100%",
-                          height: 140,
+                          height: 175,
                           objectFit: "cover",
                           display: "block",
                         }}
@@ -302,7 +234,7 @@ export default function Hero() {
                             marginBottom: 2,
                           }}
                         >
-                          Service by
+                          {brand.serviceByLabel}
                         </div>
                         <div
                           className="text-dark-900"
@@ -313,12 +245,13 @@ export default function Hero() {
                             textTransform: "uppercase",
                           }}
                         >
-                          MAD™
+                          {brand.name}™
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
+
                 {/* Slide indicators */}
                 <div
                   style={{
@@ -397,11 +330,11 @@ export default function Hero() {
                   position: "absolute",
                   inset: 0,
                   background:
-                    "linear-gradient(to top,rgba(8,42,80,.58),rgba(8,42,80,.08) 55%,transparent)",
+                    "linear-gradient(to top,rgba(5,28,46,.58),rgba(5,28,46,.08) 55%,transparent)",
                 }}
               />
 
-              {/* Mobile Pantone card — shown instead of left panel */}
+              {/* Mobile Pantone card */}
               {isMobile && (
                 <div
                   className="bg-white"
@@ -409,10 +342,9 @@ export default function Hero() {
                     position: "absolute",
                     top: 72,
                     left: 16,
-                    width: 130,
+                    width: 150,
                     borderRadius: 8,
                     overflow: "hidden",
-                    boxShadow: "0 12px 32px rgba(0,0,0,.28)",
                     opacity: Math.max(0, 1 - phase1v * 2),
                     zIndex: 30,
                     pointerEvents: "none",
@@ -423,7 +355,7 @@ export default function Hero() {
                     alt=""
                     style={{
                       width: "100%",
-                      height: 80,
+                      height: 100,
                       objectFit: "cover",
                       display: "block",
                     }}
@@ -450,7 +382,7 @@ export default function Hero() {
                         marginBottom: 2,
                       }}
                     >
-                      Service by
+                      {brand.serviceByLabel}
                     </div>
                     <div
                       className="text-dark-900"
@@ -461,41 +393,40 @@ export default function Hero() {
                         textTransform: "uppercase",
                       }}
                     >
-                      MAD™
+                      {brand.name}™
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Notification */}
+              {/* Notification — azure-50 bg, azure-800 text */}
               <div
-                className="bg-dark-900/[92%]"
                 style={{
                   position: "absolute",
-                  top: 72,
-                  right: 20,
-                  width: 220,
-                  zIndex: 40,
-                  backdropFilter: "blur(16px)",
-                  borderRadius: 10,
-                  padding: "10px 12px",
-                  border: "1px solid rgba(255,255,255,.1)",
+                  top: 82,
+                  right: 24,
+                  width: "min(300px, calc(100vw - 32px))",
+                  zIndex: 80,
+                  background: "rgba(238,247,253,.94)",
+                  backdropFilter: "blur(18px)",
+                  borderRadius: 14,
+                  padding: "14px 16px",
                   transform: notif
                     ? "translateY(0) scale(1)"
-                    : "translateY(-40px) scale(.9)",
+                    : "translateY(-28px) scale(.94)",
                   opacity: notif ? 1 : 0,
                   transition:
                     "transform .45s cubic-bezier(.22,1,.36,1), opacity .3s",
                   pointerEvents: "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
                   <div
                     className="bg-azure-500"
                     style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: 5,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -510,12 +441,12 @@ export default function Hero() {
                         letterSpacing: 0.5,
                       }}
                     >
-                      MAD
+                      {brand.name}
                     </span>
                   </div>
                   <span
-                    className="text-white/85 leading-[1.4]"
-                    style={{ fontSize: 10.5 }}
+                    className="text-azure-800 leading-[1.4]"
+                    style={{ fontSize: 12.5, fontWeight: 700 }}
                   >
                     {notifMsg}
                   </span>
@@ -540,7 +471,6 @@ export default function Hero() {
                     lineHeight: 1.05,
                     letterSpacing: "-.02em",
                     whiteSpace: "pre-line",
-                    textShadow: "0 2px 20px rgba(0,0,0,.3)",
                     marginBottom: 12,
                   }}
                 >
@@ -570,7 +500,7 @@ export default function Hero() {
                       borderRadius: 99,
                     }}
                   >
-                    Work With Us
+                    {hero.cta}
                   </button>
                   <button
                     className="text-white"
@@ -616,7 +546,7 @@ export default function Hero() {
                     style={{
                       height: "100%",
                       width: `${prog}%`,
-                      background: "linear-gradient(90deg,#1980c2,#ffffff)",
+                      background: "#5aa7e6",
                     }}
                   />
                 </div>
@@ -625,14 +555,14 @@ export default function Hero() {
                     slideRef.current.paused = !slideRef.current.paused;
                     setPaused((p) => !p);
                   }}
-                  className="text-white bg-black/25 flex items-center justify-center"
+                  className="text-white flex items-center justify-center"
                   style={{
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    border: "1px solid rgba(255,255,255,.45)",
+                    background: "transparent",
+                    border: "1px solid rgba(255,255,255,.35)",
                     fontSize: 8,
-                    backdropFilter: "blur(6px)",
                   }}
                 >
                   {paused ? "▶" : "⏸"}
@@ -642,26 +572,36 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Scattered thumbnails */}
-        {THUMBS.map((t, i) => {
-          const sc = 0.1 + collapseT * 0.9;
+        {/* Collapsed panels — mixBlendMode multiply so azure-50 bg bleeds through */}
+        {collapsePanels.map((t, i) => {
+          const rowIndex = i % 5;
+          const centerOffset = rowIndex - 2;
+          const isTopRow = i < 5;
+          const panelGap = isMobile ? 86 : 225;
+          const startScale = 0.1;
+          const endScale = isMobile ? 0.68 : 0.86;
+          const sc = startScale + collapseT * (endScale - startScale);
           return (
             <div
               key={i}
               style={{
                 position: "absolute",
-                zIndex: 15,
+                zIndex: 22,
                 pointerEvents: "none",
-                width: 170,
-                height: 148,
-                left: `calc(50% + ${t.x}%)`,
-                top: `calc(50% + ${t.y}%)`,
-                transform: `translate(-50%,-50%) rotate(${t.r}deg) scale(${sc})`,
-                opacity: Math.max(0, collapseT * 1.4 - 0.1 - i * 0.01),
+                width: isMobile ? 120 : 185,
+                height: isMobile ? 104 : 160,
+                left: `calc(50% + ${centerOffset * panelGap}px)`,
+                top: isTopRow
+                  ? isMobile ? "24%" : "24%"
+                  : isMobile ? "72%" : "72%",
+                transform: `translate(-50%,-50%) scale(${sc})`,
+                opacity: Math.max(
+                  0,
+                  Math.min(1, collapseT * 1.45 - 0.18 - i * 0.015),
+                ),
                 borderRadius: 9,
                 overflow: "hidden",
-                boxShadow: `0 ${10 * collapseT}px ${28 * collapseT}px rgba(0,0,0,${collapseT * 0.35})`,
-                border: `1px solid rgba(15,79,122,${collapseT * 0.12})`,
+                mixBlendMode: "multiply",
               }}
             >
               <img
@@ -670,8 +610,8 @@ export default function Hero() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "contain",
-                  display: "transparent",
+                  objectFit: t.fit,
+                  display: "block",
                 }}
               />
             </div>
@@ -680,78 +620,33 @@ export default function Hero() {
 
         {/* Final CTA overlay */}
         <div
+          className="w-[96vw] max-w-[1180px] text-center"
           style={{
             position: "absolute",
             zIndex: 30,
-            textAlign: "center",
             top: "50%",
             left: "50%",
             transform: `translate(-50%,-50%) translateY(${(1 - collapseT) * 20}px)`,
             opacity: Math.max(0, collapseT * 3 - 2),
             pointerEvents: collapseT > 0.85 ? "all" : "none",
-            width: "min(580px,85vw)",
           }}
         >
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              marginBottom: 14,
-              color: "rgba(15,79,122,0.55)",
-            }}
-          >
+          <p className="mb-3.5 font-mono text-xs font-bold uppercase tracking-[0.28em] text-azure-700/55">
             Making A Difference
           </p>
-          <h2
-            style={{
-              fontSize: "clamp(32px,5vw,68px)",
-              fontWeight: 800,
-              lineHeight: 1.0,
-              letterSpacing: "-.03em",
-              color: "#0f2a45",
-              marginBottom: 28,
-            }}
-          >
-            Structure changes
-            <br />
+          <h2 className="mb-7 whitespace-nowrap font-display font-black leading-none tracking-tight text-azure-800 text-[clamp(28px,5vw,60px)]">
+            Structure changes{" "}
             <span className="text-azure-500">everything.</span>
           </h2>
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <button
-              className="bg-azure-500 text-white"
-              style={{
-                border: "none",
-                padding: "11px 28px",
-                borderRadius: 99,
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-              }}
-            >
-              Work With Us
+          <div className="flex flex-wrap justify-center gap-3">
+            <button className="rounded-full border-none bg-azure-500 px-7 py-3 text-xs font-bold uppercase tracking-widest text-white">
+              {hero.cta}
             </button>
             <button
+              className="rounded-full px-7 py-3 text-xs font-bold uppercase tracking-widest text-azure-700"
               style={{
-                background: "rgba(255,255,255,0.55)",
-                color: "#0f2a45",
+                background: "rgba(255,255,255,.55)",
                 border: "1px solid rgba(15,79,122,.18)",
-                padding: "11px 28px",
-                borderRadius: 99,
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
               }}
             >
               View Our Work
@@ -759,7 +654,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Trusted by — left-aligned rotating image marquee */}
+        {/* Trusted by */}
         <div
           style={{
             position: "absolute",
@@ -769,7 +664,8 @@ export default function Hero() {
             zIndex: 70,
             pointerEvents: "none",
             padding: "48px 32px 20px",
-            background: "linear-gradient(to bottom, transparent 0%, rgba(244,244,242,0.82) 45%, rgba(244,244,242,0.96) 100%)",
+            background: "transparent",
+            opacity: Math.max(0, 1 - phase1v * 2.5),
           }}
         >
           <p
@@ -779,15 +675,14 @@ export default function Hero() {
               textTransform: "uppercase",
               fontWeight: 700,
               marginBottom: 14,
-              color: "rgba(15,79,122,0.65)",
-              textShadow: "0 0 16px rgba(255,255,255,.9)",
+              color: "#1468a0",
             }}
           >
-            Trusted by 
+            Trusted by
           </p>
           <div style={{ overflow: "hidden", width: "min(560px, 85vw)" }}>
             <div
-              className="mq"
+              className="animate-marquee"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -796,26 +691,20 @@ export default function Hero() {
               }}
             >
               {[
-                "/log1.png",
-                "/log2.png",
-                "/log3.png",
-                "/log4.png",
-                "/log5.png",
-                "/log1.png",
-                "/log2.png",
-                "/log3.png",
-                "/log4.png",
-                "/log5.png",
+                "/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png",
+                "/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png",
               ].map((src, i) => (
                 <img
                   key={i}
                   src={src}
                   alt=""
                   style={{
-                    height: 36,
+                    height: 52,
                     width: "auto",
                     objectFit: "contain",
                     flexShrink: 0,
+                  
+            
                   }}
                 />
               ))}

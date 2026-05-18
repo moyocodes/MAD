@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { homeCms } from "@/data/homeCms";
+
+const { brand, nav } = homeCms;
 
 export default function Nav() {
   const [solid, setSolid] = useState(false);
@@ -9,14 +12,20 @@ export default function Nav() {
     const fn = () => {
       const y = window.scrollY;
       setSolid(y > 20);
-      setHidden((y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) || (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5));
+      setHidden(
+        (y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) ||
+          (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5),
+      );
     };
+    fn();
     window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
+    return () => {
+      window.removeEventListener("scroll", fn);
+    };
   }, []);
   const isPill = solid && !hidden;
 
-  const links = ["Work", "Services", "About", "Journal"];
+  const links = nav.links;
 
   const Hamburger = ({ light, open }) => (
     <button
@@ -45,7 +54,7 @@ export default function Nav() {
 
   const inner = (_light) => (
     <>
-      <img src="/ma.png" alt="MAD" className="h-50 w-36" />
+      <img src={brand.logo} alt={brand.name} className="h-50 w-36" />
       <div className="hidden md:flex gap-6">
         {links.map((l) => (
           <a
@@ -72,7 +81,7 @@ export default function Nav() {
           borderRadius: 6,
         }}
       >
-        Work With Us
+        {nav.cta}
       </button>
       <Hamburger light={false} open={menuOpen} />
     </>
@@ -128,7 +137,9 @@ export default function Nav() {
               right: 0,
               zIndex: 300,
               height: 56,
-              background: "transparent",
+              background: "rgba(240,248,255,0.88)",
+              backdropFilter: "blur(18px)",
+              borderBottom: "1px solid rgba(25,128,194,.12)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -192,7 +203,7 @@ export default function Nav() {
                 transition={{ delay: 0.28, duration: 0.3 }}
                 style={{ marginTop: 28, background: "#1980c2", color: "#fff", border: "none", padding: "14px 32px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", borderRadius: 8, cursor: "pointer", width: "100%" }}
               >
-                Work With Us
+                {nav.cta}
               </motion.button>
             </motion.div>
           </>

@@ -1,42 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { homeCms } from "@/data/homeCms";
 
-const SERVICES = [
-  {
-    id: "product",
-    label: "Product & Digital",
-    icon: "💻",
-    reply: [
-      "Great choice. Product & Digital is our core.",
-      "We build websites, web apps, SaaS platforms, and internal tools end-to-end — from discovery and wireframes through to UI design, development, and launch. Typical timelines run 4–8 weeks depending on scope.",
-      "Our stack is modern and performant. We care about speed, accessibility, and experiences that actually convert — not just look good in a Figma file.",
-      "Past builds include e-commerce stores, SaaS dashboards, fintech platforms, and brand microsites. Every project ships with documentation and a handoff your team can build on.",
-    ],
-  },
-  {
-    id: "marketing",
-    label: "Marketing & Comms",
-    icon: "📣",
-    reply: [
-      "Marketing & Comms — solid choice.",
-      "We build marketing systems that run, not one-off campaigns. That means content strategy, social calendars, email sequences, paid media frameworks, and brand messaging — all aligned.",
-      "We start by understanding your audience, then we craft narratives that reach them at the right moment. Everything is tracked, measured, and iterated on.",
-      "We've run campaigns across product launches, investor communications, growth sprints, and rebrands. The goal is always the same: the right message to the right person at the right time.",
-    ],
-  },
-  {
-    id: "brand",
-    label: "Brand & Design",
-    icon: "✦",
-    reply: [
-      "Brand & Design — this is where intention meets execution.",
-      "We start with brand strategy: positioning, tone of voice, values, and how you want to be perceived. That foundation drives everything visual.",
-      "From there we build the full identity — logo system, typography, colour palette, iconography, and brand guidelines your whole team can use consistently.",
-      "The result isn't just a pretty logo. It's a system with rules, rationale, and flexibility — built to scale as your business does.",
-    ],
-  },
-];
+const { brand, contact } = homeCms;
+const SERVICES = contact.ai.services;
 
 const MadAvatar = () => (
   <div style={{ width: 24, height: 24, borderRadius: 8, background: "linear-gradient(135deg,#1980c2,#45b3f5)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -119,7 +87,7 @@ function PhoneScreen() {
     if (lockedRef.current) return;
     lockedRef.current = true;
     setPhase("greeting");
-    await typeAndSay("Hi 👋 I'm MAD AI — a strategic partner, not just a bot. What area would you like to explore?", 1200);
+    await typeAndSay(contact.ai.greeting, 1200);
     await push("mad-services", null);
   };
 
@@ -132,7 +100,7 @@ function PhoneScreen() {
     for (let i = 0; i < svc.reply.length; i++) {
       await typeAndSay(svc.reply[i], 900 + i * 150);
     }
-    await typeAndSay("Want me to connect you with one of our strategists for a deeper conversation?", 900);
+    await typeAndSay(contact.ai.transferPrompt, 900);
     await push("mad-transfer", null);
     setPhase("transfer");
   };
@@ -141,12 +109,12 @@ function PhoneScreen() {
     setMessages(prev => prev.filter(m => m.role !== "mad-transfer"));
     if (!yes) {
       await push("user", "Not right now.");
-      await typeAndSay("No problem — feel free to reach out anytime. You can also fill in the form on the left.", 900);
+      await typeAndSay(contact.ai.noTransfer, 900);
       setPhase("done");
       return;
     }
     await push("user", "Yes, connect me.");
-    await typeAndSay("Perfect. What email address should I send your project summary to?", 1000);
+    await typeAndSay(contact.ai.emailPrompt, 1000);
     setPhase("email");
     setTimeout(() => inputRef.current?.focus(), 200);
   };
@@ -158,7 +126,7 @@ function PhoneScreen() {
     setPhase("sending");
     await push("user", email);
     setEmailVal("");
-    await typeAndSay(`✓ Done! A project summary is heading to ${email} now. Our team will follow up within 24 hours.`, 1400);
+    await typeAndSay(`${contact.ai.donePrefix} ${email} ${contact.ai.doneSuffix}`, 1400);
     setPhase("done");
     setTimeout(() => { setNotif(true); setTimeout(() => setNotif(false), 4500); }, 700);
   };
@@ -184,9 +152,9 @@ function PhoneScreen() {
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>Mail</span>
                 <span style={{ fontSize: 9, color: "rgba(255,255,255,.35)" }}>now</span>
               </div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,.55)", marginBottom: 1 }}>MAD Studio</div>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,.55)", marginBottom: 1 }}>{contact.ai.notificationTitle}</div>
               <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.75)", lineHeight: 1.35, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                Your project summary is ready — let's build.
+                {contact.ai.notificationBody}
               </div>
             </div>
           </motion.div>
@@ -202,10 +170,10 @@ function PhoneScreen() {
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1, marginBottom: 3 }}>MAD AI</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1, marginBottom: 3 }}>{contact.ai.name}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
             <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399" }} />
-            <span style={{ fontSize: 9, color: "rgba(255,255,255,.38)", fontWeight: 500 }}>Strategic Partner · Online</span>
+            <span style={{ fontSize: 9, color: "rgba(255,255,255,.38)", fontWeight: 500 }}>{contact.ai.status}</span>
           </div>
         </div>
       </div>
@@ -222,16 +190,16 @@ function PhoneScreen() {
               <span style={{ fontSize: 20, fontWeight: 900, color: "#fff" }}>M</span>
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 5 }}>Talk to MAD AI</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 5 }}>{contact.ai.idleTitle}</div>
               <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.38)", lineHeight: 1.55, maxWidth: 180 }}>
-                Tell us what you're building and we'll walk you through how MAD can help.
+                {contact.ai.idleBody}
               </div>
             </div>
             <button
               onClick={startChat}
               style={{ background: "linear-gradient(135deg,#1980c2,#45b3f5)", color: "#fff", border: "none", borderRadius: 20, padding: "10px 22px", fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", cursor: "pointer", boxShadow: "0 4px 18px rgba(25,128,194,.4)" }}
             >
-              Start a conversation →
+              {contact.ai.start}
             </button>
           </div>
         ) : (
@@ -325,6 +293,7 @@ function PhoneScreen() {
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
+  const titleLines = contact.title.split("\n");
 
   const inputBase = {
     background: "rgba(255,255,255,0.88)",
@@ -346,12 +315,14 @@ export default function Contact() {
         .mad-scroll::-webkit-scrollbar{display:none}
         .c-input::placeholder{color:rgba(24,24,23,.32)}
         .c-input:focus{border-color:rgba(25,128,194,.45)!important;background:#fff!important}
+        @keyframes signagePulse{0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(25,128,194,.4)}50%{transform:scale(1.03);box-shadow:0 8px 32px rgba(25,128,194,.6)}}
+        @keyframes signageBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+        @keyframes liveDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.7)}}
         @media(min-width:768px){
           .phone-sticky{
             position:sticky;
             top:24px;
             align-self:start;
-            margin-top:-240px;
           }
         }
       `}</style>
@@ -361,18 +332,30 @@ export default function Contact() {
 
           {/* LEFT — form */}
           <div className="order-2 md:order-1" style={{ paddingTop: "clamp(48px,7vw,96px)", paddingBottom: 80 }}>
-            <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
+            <motion.div
+              className="section-sticky-title -mx-4 px-4 py-5 sm:-mx-8 sm:px-8 md:mx-0 md:px-0"
+              style={{ background: "rgba(223,240,251,0.94)" }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
               <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(25,128,194,.6)", marginBottom: 12 }}>
-                Work With Us
+                {contact.eyebrow}
               </p>
               <h2 style={{ fontSize: "clamp(28px,3.4vw,48px)", fontWeight: 800, lineHeight: 1.05, letterSpacing: -0.8, color: "#0f2a45", marginBottom: 16 }}>
-                Not sure what comes next?<br />Talk to MAD.
+                {titleLines.map((line, index) => (
+                  <span key={line}>
+                    {line}
+                    {index < titleLines.length - 1 && <br />}
+                  </span>
+                ))}
               </h2>
               <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(15,42,69,.55)", marginBottom: 8, maxWidth: 400 }}>
-                Whether you have a clear brief or just an idea, we'll help you shape it into something structured and actionable.
+                {contact.body}
               </p>
               <p style={{ fontSize: 13, lineHeight: 1.65, color: "rgba(15,42,69,.4)", marginBottom: 32, maxWidth: 400 }}>
-                Tell us what you're working on, and we'll help you structure the next step.
+                {contact.subbody}
               </p>
             </motion.div>
 
@@ -383,11 +366,7 @@ export default function Contact() {
               viewport={{ once: true, margin: "-40px" }}
               style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 36 }}
             >
-              {[
-                ["01", "Strategy first", "We align on what success looks like before touching a pixel."],
-                ["02", "Design that converts", "Every decision is made with your audience and goal in mind."],
-                ["03", "Ship, then improve", "We launch fast and iterate based on real data."],
-              ].map(([num, title, sub]) => (
+              {contact.principles.map(([num, title, sub]) => (
                 <motion.div key={num} variants={{ hidden: { opacity: 0, x: -16 }, show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } } }} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                   <span style={{ fontFamily: "monospace", fontSize: 8, fontWeight: 700, color: "rgba(25,128,194,.45)", paddingTop: 3, minWidth: 18 }}>{num}</span>
                   <div>
@@ -398,28 +377,58 @@ export default function Contact() {
               ))}
             </motion.div>
 
+            {/* Chat with MAD AI prompt */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+              <div style={{ flex: 1, height: 1, background: "rgba(15,42,69,.1)" }} />
+              <motion.a
+                href="#contact-form"
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  background: "linear-gradient(135deg,#1980c2,#45b3f5)",
+                  borderRadius: 99,
+                  padding: "7px 14px 7px 8px",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(255,255,255,.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>Chat with MAD AI</span>
+                <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399", animation: "liveDot 1.4s ease-in-out infinite" }} />
+              </motion.a>
+              <div style={{ flex: 1, height: 1, background: "rgba(15,42,69,.1)" }} />
+            </div>
+
             {sent ? (
               <div style={{ background: "rgba(52,211,153,.1)", border: "1.5px solid rgba(52,211,153,.3)", borderRadius: 12, padding: "24px 20px", textAlign: "center" }}>
                 <div style={{ fontSize: 22, marginBottom: 8 }}>✓</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#0f2a45", marginBottom: 6 }}>Message received</div>
-                <div style={{ fontSize: 12, color: "rgba(15,42,69,.5)" }}>We'll be in touch within 24 hours.</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#0f2a45", marginBottom: 6 }}>{contact.successTitle}</div>
+                <div style={{ fontSize: 12, color: "rgba(15,42,69,.5)" }}>{contact.successBody}</div>
               </div>
             ) : (
               <motion.div id="contact-form" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input className="c-input" type="text" placeholder="Your name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputBase} />
-                  <input className="c-input" type="email" placeholder="Email address" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputBase} />
+                  <input className="c-input" type="text" placeholder={contact.fields.name} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputBase} />
+                  <input className="c-input" type="email" placeholder={contact.fields.email} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputBase} />
                 </div>
-                <textarea className="c-input" placeholder="What are you working on?" value={form.msg} onChange={e => setForm({ ...form, msg: e.target.value })} style={{ ...inputBase, height: 100, resize: "none" }} />
+                <textarea className="c-input" placeholder={contact.fields.message} value={form.msg} onChange={e => setForm({ ...form, msg: e.target.value })} style={{ ...inputBase, height: 100, resize: "none" }} />
                 <Button
                   onClick={() => form.name && form.email && setSent(true)}
                   className="w-full bg-gradient-to-r from-[#1980c2] to-[#45b3f5] text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-[0_4px_20px_rgba(25,128,194,.28)] hover:opacity-90 transition-opacity h-auto"
                 >
-                  Send Message →
+                  {contact.submit}
                 </Button>
                 <p style={{ fontSize: 11, color: "rgba(15,42,69,.42)", textAlign: "center" }}>
-                  Or email us at{" "}
-                  <a href="mailto:hello@mad.studio" style={{ color: "#1980c2", fontWeight: 600 }}>hello@mad.studio</a>
+                  {contact.emailPrefix}{" "}
+                  <a href={`mailto:${brand.email}`} style={{ color: "#1980c2", fontWeight: 600 }}>{brand.email}</a>
                 </p>
               </motion.div>
             )}
@@ -427,6 +436,46 @@ export default function Contact() {
 
           {/* RIGHT — phone */}
           <div className="phone-sticky order-1 md:order-2 flex justify-center md:block">
+            {/* Animated AI chat signage */}
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 16,
+            }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "linear-gradient(135deg,#1980c2,#45b3f5)",
+                  borderRadius: 99,
+                  padding: "8px 16px 8px 10px",
+                  boxShadow: "0 4px 20px rgba(25,128,194,.4)",
+                  cursor: "pointer",
+                  animation: "signagePulse 2.4s ease-in-out infinite",
+                }}
+                onClick={() => {/* signage click - just decorative */}}
+              >
+                <div style={{
+                  width: 24, height: 24, borderRadius: "50%",
+                  background: "rgba(255,255,255,.25)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  animation: "signageBob 1.2s ease-in-out infinite",
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
+                  Chat with MAD AI →
+                </span>
+                <div style={{
+                  width: 6, height: 6, borderRadius: "50%", background: "#34d399",
+                  animation: "liveDot 1.4s ease-in-out infinite",
+                }} />
+              </div>
+            </div>
+
             <div style={{ width: "min(300px, calc(100vw - 48px))", background: "#080808", borderRadius: 44, padding: 10, border: "1px solid rgba(255,255,255,.08)", boxShadow: "0 40px 80px rgba(15,42,69,.22),0 16px 40px rgba(15,42,69,.14),0 0 0 1px rgba(255,255,255,.04)" }}>
               {/* Notch */}
               <div style={{ width: 90, height: 26, background: "#080808", borderRadius: "0 0 18px 18px", margin: "0 auto", position: "relative", zIndex: 4 }}>

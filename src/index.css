@@ -20,19 +20,43 @@
   }
 
   body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background: #ffffff;
     color: #181817;
   }
 }
 
 @layer utilities {
-  .font-montserrat {
-    font-family: "Montserrat", sans-serif;
+  .section-sticky-title {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgba(248, 251, 252, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(25, 128, 194, 0.08);
   }
-  .font-helvetica {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  .section-sticky-title--dark {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgba(12, 12, 14, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: clamp(40px, 5.5vw, 72px);
+    padding-bottom: clamp(20px, 2.5vw, 32px);
   }
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(25, 128, 194, 0); }
+  50% { box-shadow: 0 0 0 8px rgba(25, 128, 194, 0.08); }
 }
 
 @keyframes pulse {

@@ -4,6 +4,7 @@ import Hero from "../components/home/Hero";
 import WhatWeDo from "../components/home/WhatWeDo";
 import ServicesInMotion from "../components/home/ServicesInMotion";
 import Experience from "../components/home/Experience";
+import WorkShowcase from "../components/home/WorkShowcase";
 import Beyond from "../components/home/Beyond";
 import Contact from "../components/home/Contact";
 import Footer from "../components/home/Footer";
@@ -15,7 +16,7 @@ function injectCSS() {
   s.id = "_mad";
   s.textContent = `
  *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff;color:#181817;overflow-x:hidden}
+    body{background:#ffffff;color:#181817;overflow-x:hidden}
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
     .sh{animation:shimmer 1.8s linear infinite}
     @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -65,8 +66,9 @@ export default function MADLandingPage() {
       <Nav />
       <Hero />
       <WhatWeDo />
-      <ServicesInMotion />
+      {/* <ServicesInMotion /> */}
       <Experience />
+      <WorkShowcase />
       <Beyond />
       <Contact />
       <Footer />
