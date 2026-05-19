@@ -496,38 +496,17 @@ export default function Contact() {
 
           {/* RIGHT — phone, scroll reveal */}
           <motion.div
-            className="phone-sticky order-1 md:order-2 flex flex-col items-center md:block pt-8 md:pt-0"
+            className="phone-sticky   order-1 md:order-2 flex flex-col items-center md:block pt-10"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Signage badge */}
-            <div className="flex justify-center mb-4">
-              <div
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                  background: "linear-gradient(135deg,#1980c2,#45b3f5)",
-                  borderRadius: 99, padding: "8px 16px 8px 10px",
-                  boxShadow: "0 4px 20px rgba(25,128,194,.4)", cursor: "pointer",
-                  animation: "signagePulse 2.4s ease-in-out infinite",
-                }}
-              >
-                <div style={{ width: 24, height: 24, borderRadius: "50%", background: "rgba(255,255,255,.25)", display: "flex", alignItems: "center", justifyContent: "center", animation: "signageBob 1.2s ease-in-out infinite" }}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-                  </svg>
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
-                  Chat with MAD AI →
-                </span>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399", animation: "liveDot 1.4s ease-in-out infinite" }} />
-              </div>
-            </div>
+        
 
             {/* Phone shell */}
             <div
-              className="w-full md:w-[300px]"
+              className="w-full  md:w-[300px]"
               style={{
                 background: "#080808", borderRadius: 44, padding: 10,
                 border: "1px solid rgba(255,255,255,.08)",
