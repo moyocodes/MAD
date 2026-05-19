@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
 
 const content = homeCms.whatWeDo;
@@ -39,38 +39,28 @@ const ease = [0.16, 1, 0.3, 1];
 export default function WhatWeDo() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [collapse, setCollapse] = useState(0); // 0–1, drives top-right clip
   const rootRef = useRef(null);
   const next = useCallback(() => setCur((c) => (c + 1) % WWD.length), []);
+
+  // Atelier entry reveals — driven by scroll entry, no extra scroll room needed
+  const { scrollYProgress } = useScroll({
+    target: rootRef,
+    offset: ["start end", "start start"],
+  });
+  const leftOp  = useTransform(scrollYProgress, [0, 0.5], [0.3, 1]);
+  const introY  = useTransform(scrollYProgress, [0,   0.6], [20, 0]);
+  const introOp = useTransform(scrollYProgress, [0,   0.6], [0, 1]);
+  const svcY    = useTransform(scrollYProgress, [0.2, 1],   [24, 0]);
+  const svcOp   = useTransform(scrollYProgress, [0.2, 1],   [0, 1]);
+
   const svc = WWD[cur];
 
-  // Scroll-driven collapse of top-right panel
-  useEffect(() => {
-    const onScroll = () => {
-      if (!rootRef.current) return;
-      const { top, height } = rootRef.current.getBoundingClientRect();
-      const scrolled = -top;
-      const maxScroll = height - window.innerHeight;
-      const progress = Math.min(Math.max(scrolled / maxScroll, 0), 1);
-      // Phase 2 starts at 65% of scroll
-      const phase2 = Math.max((progress - 0.65) / 0.35, 0);
-      setCollapse(phase2);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const clipPct = Math.round((1 - collapse) * 100);
-  const trOpacity = collapse < 0.8 ? 1 : 1 - (collapse - 0.8) / 0.2;
-
   return (
-    <section ref={rootRef} className="relative min-h-[200dvh]">
-      <div className="sticky top-0 overflow-hidden h-[100dvh]" style={{ zIndex: 1 }}>
+    <section ref={rootRef} className="relative h-[100dvh]">
+      <div className="overflow-hidden h-full" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
           {/* ── Left full-height on desktop, 60dvh on mobile ── */}
-          <div
-            className="md:row-span-2 relative overflow-hidden h-[60dvh] md:h-full"
-          >
+          <motion.div style={{ opacity: leftOp }} className="md:row-span-2 relative overflow-hidden h-[60dvh] md:h-full">
             {WWD.map((sv, i) => (
               <motion.img
                 key={i}
@@ -133,17 +123,12 @@ export default function WhatWeDo() {
                 </motion.span>
               </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
           {/* ── Top-right: hidden on mobile (no colored bg), collapses on scroll exit on desktop ── */}
           <div
             className="hidden md:block relative overflow-hidden border-b border-azure-500/20"
-            style={{
-              minHeight: "50dvh",
-              clipPath: `inset(0 0 ${100 - clipPct}% 0)`,
-              opacity: trOpacity,
-              transition: "clip-path .05s linear, opacity .05s linear",
-            }}
+            style={{ minHeight: "50dvh" }}
           >
             {WWD.map((sv, i) => (
               <motion.img
@@ -207,9 +192,9 @@ export default function WhatWeDo() {
           {/* ── Bottom-right: 2 cards ── */}
           <div className="grid grid-cols-2 gap-0 h-[40dvh] md:h-auto">
             {/* Intro card — azure-800 bg */}
-            <div
+            <motion.div
+              style={{ y: introY, opacity: introOp, minHeight: "40dvh" }}
               className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20 p-3 md:p-8"
-              style={{ minHeight: "40dvh" }}
             >
               <div>
                 <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-3 font-bold">
@@ -235,12 +220,12 @@ export default function WhatWeDo() {
               <button className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]">
                 {content.cta}
               </button>
-            </div>
+            </motion.div>
 
             {/* Service card — azure-900 bg */}
-            <div
+            <motion.div
+              style={{ y: svcY, opacity: svcOp, minHeight: "40dvh" }}
               className="bg-azure-900 flex flex-col justify-between p-3 md:p-8"
-              style={{ minHeight: "40dvh" }}
             >
               <div>
                 <AnimatePresence mode="wait">
@@ -341,12 +326,11 @@ export default function WhatWeDo() {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
 
-      <div className="h-[30px] pointer-events-none" />
     </section>
   );
 }

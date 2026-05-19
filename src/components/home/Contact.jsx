@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { homeCms } from "@/data/homeCms";
 
@@ -299,240 +299,216 @@ function PhoneScreen() {
 }
 
 export default function Contact() {
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { once: false, margin: "-80px" });
   const [form, setForm] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
   const titleLines = contact.title.split("\n");
 
-  const inputBase = {
-    background: "rgba(255,255,255,0.88)",
-    border: "1.5px solid rgba(25,128,194,.18)",
-    color: "#181817",
-    padding: "12px 14px",
-    fontSize: 13,
-    borderRadius: 8,
-    outline: "none",
-    width: "100%",
-    fontFamily: "inherit",
-    transition: "border-color 0.2s, background 0.2s",
-  };
-
   return (
-    <section
-      style={{
-        paddingBottom: 0,
-        background: "linear-gradient(135deg, #dff0fb 0%, #fff8f5 98%, #fdeadb 48%, #e8f5fb 68%, #fff4ef 84%, #e0f0fb 100%)",
-      }}
-    >
+    <section ref={sectionRef} className="relative">
       <style>{`
         @keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
         @keyframes ringOut{0%{transform:translate(-50%,-50%) scale(1);opacity:.5}100%{transform:translate(-50%,-50%) scale(2.2);opacity:0}}
         .mad-scroll::-webkit-scrollbar{display:none}
-        .c-input::placeholder{color:rgba(24,24,23,.32)}
-        .c-input:focus{border-color:rgba(25,128,194,.45)!important;background:#fff!important}
-        @keyframes signagePulse{0%,100%{transform:scale(1);box-shadow:0 4px 20px rgba(25,128,194,.4)}50%{transform:scale(1.03);box-shadow:0 8px 32px rgba(25,128,194,.6)}}
-        @keyframes signageBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-        @keyframes liveDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.7)}}
-        @media(min-width:768px){
-          .phone-sticky{
-            position:sticky;
-            top:24px;
-            align-self:start;
-          }
-        }
+        .c-input::placeholder{color:rgba(25,128,194,.35)}
+        .c-input:focus{border-color:rgba(25,128,194,.5)!important;background:rgba(25,128,194,.06)!important}
       `}</style>
 
-      <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
 
-          {/* LEFT — form, never hidden */}
-          <div className="order-2 md:order-1 pt-12 md:pt-24 pb-20">
+        {/* ── LEFT — form ── */}
+        <div className="order-2 md:order-1 bg-gradient-to-br from-white via-azure-50 to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
 
-            {/* Header block — plain div, NO sticky, NO whileInView clipping */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-8"
+          {/* looping blob */}
+          <motion.div
+            className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, -22, 0], opacity: [0.3, 0.55, 0.3] } : { opacity: 0 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-azure-200/25 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, 18, 0], opacity: [0.2, 0.45, 0.2] } : { opacity: 0 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          />
+
+          <div className="relative z-10 max-w-md w-full">
+            {/* Eyebrow */}
+            <motion.p
+              className="text-xs font-mono font-bold tracking-[0.28em] uppercase text-azure-500/60 mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.5 }}
             >
-              <p
-                style={{
-                  fontSize: 9, fontWeight: 700, letterSpacing: "0.28em",
-                  textTransform: "uppercase", color: "rgba(25,128,194,.6)", marginBottom: 12,
-                }}
-              >
-                {contact.eyebrow}
-              </p>
-              <h2
-                className="text-3xl md:text-5xl"
-                style={{ fontWeight: 800, lineHeight: 1.05, letterSpacing: -0.8, color: "#0f2a45", marginBottom: 16 }}
-              >
-                {titleLines.map((line, index) => (
-                  <span key={line}>
-                    {line}
-                    {index < titleLines.length - 1 && <br />}
-                  </span>
-                ))}
-              </h2>
-              <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(15,42,69,.55)", marginBottom: 8, maxWidth: 400 }}>
-                {contact.body}
-              </p>
-              <p style={{ fontSize: 13, lineHeight: 1.65, color: "rgba(15,42,69,.4)", maxWidth: 400 }}>
-                {contact.subbody}
-              </p>
-            </motion.div>
+              {contact.eyebrow}
+            </motion.p>
 
-            {/* Principles — scroll reveal is fine here, they're below the fold */}
-            <motion.div
-              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-40px" }}
-              style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 36 }}
+            {/* Headline */}
+            <motion.h2
+              className="text-2xl md:text-4xl font-black leading-tight tracking-tight text-azure-900 mb-4"
+              initial={{ opacity: 0, y: 18 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.07 }}
             >
-              {contact.principles.map(([num, title, sub]) => (
-                <motion.div
-                  key={num}
-                  variants={{
-                    hidden: { opacity: 0, x: -16 },
-                    show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-                  }}
-                  style={{ display: "flex", gap: 14, alignItems: "flex-start" }}
-                >
-                  <span style={{ fontFamily: "monospace", fontSize: 8, fontWeight: 700, color: "rgba(25,128,194,.45)", paddingTop: 3, minWidth: 18 }}>
-                    {num}
-                  </span>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0f2a45", marginBottom: 2 }}>{title}</div>
-                    <div style={{ fontSize: 12, color: "rgba(15,42,69,.5)", lineHeight: 1.55 }}>{sub}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+              {titleLines.map((line, i) => <span key={i} className="block">{line}</span>)}
+            </motion.h2>
 
-            {/* Form — always rendered, animate on mount not on scroll */}
+            {/* Body */}
+            <motion.p
+              className="text-sm md:text-base text-azure-700/55 leading-relaxed mb-7"
+              initial={{ opacity: 0, y: 12 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            >
+              {contact.body}
+            </motion.p>
+
+            {/* Form */}
             <motion.div
               id="contact-form"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-              style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              className="flex flex-col gap-2.5 mb-8"
+              initial={{ opacity: 0, y: 14 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
             >
-              {/* Success banner — slides in above form, form stays visible */}
               <AnimatePresence>
                 {sent && (
                   <motion.div
-                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    animate={{ opacity: 1, height: "auto", marginBottom: 8 }}
-                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    style={{
-                      background: "rgba(52,211,153,.1)",
-                      border: "1.5px solid rgba(52,211,153,.35)",
-                      borderRadius: 10,
-                      padding: "14px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      overflow: "hidden",
-                    }}
+                    className="flex items-center gap-3 bg-green-50 border border-green-200/60 rounded-xl px-4 py-3 overflow-hidden"
                   >
-                    <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(52,211,153,.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
                     <div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: "#0f2a45", marginBottom: 2 }}>{contact.successTitle}</div>
-                      <div style={{ fontSize: 11, color: "rgba(15,42,69,.5)" }}>{contact.successBody}</div>
+                      <div className="text-xs font-bold text-azure-900">{contact.successTitle}</div>
+                      <div className="text-xs text-azure-700/50">{contact.successBody}</div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input
-                  className="c-input"
-                  type="text"
-                  placeholder={contact.fields.name}
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  style={inputBase}
-                />
-                <input
-                  className="c-input"
-                  type="email"
-                  placeholder={contact.fields.email}
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  style={inputBase}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
+                  type="text" placeholder={contact.fields.name}
+                  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
+                  type="email" placeholder={contact.fields.email}
+                  value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
-              <textarea
-                className="c-input"
+              <textarea className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none resize-none transition-colors h-24"
                 placeholder={contact.fields.message}
-                value={form.msg}
-                onChange={(e) => setForm({ ...form, msg: e.target.value })}
-                style={{ ...inputBase, height: 100, resize: "none" }}
-              />
+                value={form.msg} onChange={(e) => setForm({ ...form, msg: e.target.value })} />
               <Button
-                onClick={() => {
-                  if (form.name && form.email) {
-                    setSent(true);
-                    setTimeout(() => setSent(false), 5000);
-                  }
-                }}
-                className="w-full bg-gradient-to-r from-[#1980c2] to-[#45b3f5] text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-[0_4px_20px_rgba(25,128,194,.28)] hover:opacity-90 transition-opacity h-auto"
+                onClick={() => { if (form.name && form.email) { setSent(true); setTimeout(() => setSent(false), 5000); } }}
+                className="w-full bg-azure-500 hover:bg-azure-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-azure-400/25 hover:shadow-azure-500/35 transition-all h-auto"
               >
                 {contact.submit}
               </Button>
-              <p style={{ fontSize: 11, color: "rgba(15,42,69,.42)", textAlign: "center" }}>
+              <p className="text-xs text-azure-700/40 text-center">
                 {contact.emailPrefix}{" "}
-                <a href={`mailto:${brand.email}`} style={{ color: "#1980c2", fontWeight: 600 }}>
-                  {brand.email}
-                </a>
+                <a href={`mailto:${brand.email}`} className="text-azure-500 font-semibold hover:text-azure-600 transition-colors">{brand.email}</a>
               </p>
             </motion.div>
+
+            {/* Principles */}
+            <motion.div
+              className="flex flex-col gap-3.5"
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+              initial="hidden"
+              animate={inView ? "show" : "hidden"}
+            >
+              {contact.principles.map(([num, title, sub]) => (
+                <motion.div
+                  key={num}
+                  className="flex gap-3 items-start"
+                  variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } } }}
+                >
+                  <span className="font-mono text-[8px] font-bold text-azure-400/60 pt-0.5 min-w-[16px]">{num}</span>
+                  <div>
+                    <div className="text-xs font-bold text-azure-900 mb-0.5">{title}</div>
+                    <div className="text-xs text-azure-700/45 leading-relaxed">{sub}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── RIGHT — sticky phone panel ── */}
+        <div
+          className="order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 flex items-center justify-center px-8 py-16 md:py-0 relative min-h-[65vh] md:min-h-0"
+          style={{ position: "sticky", top: 0, height: "100vh", overflow: "visible" }}
+        >
+          {/* Background elements contained within panel */}
+          <div className="absolute inset-0 overflow-hidden rounded-none pointer-events-none">
+            <motion.div
+              className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl"
+              animate={inView ? { y: [0, -28, 0], scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] } : { opacity: 0 }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-azure-700/25 blur-3xl"
+              animate={inView ? { y: [0, 22, 0], opacity: [0.25, 0.5, 0.25] } : { opacity: 0 }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-azure-200/20 blur-2xl"
+              animate={inView ? { x: [0, 16, 0], y: [0, -12, 0], opacity: [0.15, 0.4, 0.15] } : { opacity: 0 }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+            />
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+            />
           </div>
 
-          {/* RIGHT — phone, scroll reveal */}
+          {/* Phone — floats at the seam edge, sticks while form scrolls */}
           <motion.div
-            className="phone-sticky   order-1 md:order-2 flex flex-col items-center md:block pt-10"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 md:-mt-20"
+            initial={{ opacity: 0, y: 50, scale: 0.92 }}
+            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
           >
-        
-
-            {/* Phone shell */}
-            <div
-              className="w-full  md:w-[300px]"
-              style={{
-                background: "#080808", borderRadius: 44, padding: 10,
-                border: "1px solid rgba(255,255,255,.08)",
-                boxShadow: "0 40px 80px rgba(15,42,69,.22),0 16px 40px rgba(15,42,69,.14),0 0 0 1px rgba(255,255,255,.04)",
-              }}
+            <motion.div
+              animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
+              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+              className="w-[260px]"
             >
-              <div style={{ width: 90, height: 26, background: "#080808", borderRadius: "0 0 18px 18px", margin: "0 auto", position: "relative", zIndex: 4 }}>
-                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 9, height: 9, borderRadius: "50%", background: "#181818", border: "1px solid rgba(255,255,255,.08)" }} />
-              </div>
-              <div style={{ background: "#111", borderRadius: 36, overflow: "hidden", height: 520, display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 18px", fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,.4)", flexShrink: 0 }}>
-                  <span>9:41</span>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.4)">
-                    <rect x="0" y="4" width="2" height="6" rx=".5" />
-                    <rect x="3" y="2" width="2" height="8" rx=".5" />
-                    <rect x="6" y="0" width="2" height="10" rx=".5" />
-                  </svg>
+              <div className="bg-[#080808] rounded-[44px] p-2.5 border border-white/10"
+                style={{ boxShadow: "0 40px 80px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.05)" }}>
+                <div className="w-20 h-6 bg-[#080808] rounded-b-[18px] mx-auto relative z-[4]">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
                 </div>
-                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <PhoneScreen />
+                <div className="bg-[#111] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
+                  <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
+                    <span className="text-[9px] font-bold text-white/40">9:41</span>
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.4)">
+                      <rect x="0" y="4" width="2" height="6" rx=".5" />
+                      <rect x="3" y="2" width="2" height="8" rx=".5" />
+                      <rect x="6" y="0" width="2" height="10" rx=".5" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-h-0 flex flex-col">
+                    <PhoneScreen />
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
 
+            <motion.div
+              className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none"
+              animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
+              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
         </div>
+
       </div>
     </section>
   );

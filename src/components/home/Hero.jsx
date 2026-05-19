@@ -579,6 +579,7 @@ export default function Hero() {
               View Our Work
             </button>
           </div>
+
         </div>
 
         {/* Trusted by */}
@@ -592,7 +593,7 @@ export default function Hero() {
             pointerEvents: "none",
             padding: "48px 32px 20px",
             background: "transparent",
-            opacity: Math.max(0, 1 - phase1v * 2.5),
+            opacity: Math.min(1, Math.max(0, 1 - phase1v * 2.5) + Math.max(0, collapseT * 3 - 2)),
           }}
         >
           <p

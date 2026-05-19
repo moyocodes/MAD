@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
 
 // ─── Typing animation ─────────────────────────────────────────────────────────
@@ -2820,6 +2820,17 @@ export default function Experience() {
     offset: ["start start", "end end"],
   });
 
+  // Atelier entry reveals — drives content in as section scrolls into view
+  const { scrollYProgress: entryProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "start 0.2"],
+  });
+  const entryOp  = useTransform(entryProgress, [0, 1], [0, 1]);
+  const headlineY = useTransform(entryProgress, [0, 1], [24, 0]);
+  const leftX    = useTransform(entryProgress, [0.1, 1], [-28, 0]);
+  const rightX   = useTransform(entryProgress, [0.1, 1], [28, 0]);
+  const ctaY     = useTransform(entryProgress, [0.2, 1], [16, 0]);
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v > 0.01) setHasEntered(true);
     // First 10% = headline entrance, remaining 90% mapped to stages
@@ -2856,11 +2867,7 @@ export default function Experience() {
         <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
           {/* ── Headline row ── */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-3 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease }}
-            >
+            <motion.div style={{ opacity: entryOp, y: headlineY }}>
               <p
                 style={{
                   fontSize: 8,
@@ -2906,9 +2913,7 @@ export default function Experience() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              style={{ opacity: entryOp, y: ctaY }}
               className="flex-shrink-0 sm:max-w-[210px]"
             >
               <button
@@ -2933,13 +2938,7 @@ export default function Experience() {
           <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3">
             {/* LEFT — Need + Approach: below laptop on mobile, left on desktop */}
             <motion.div
-              initial={{ opacity: 0, x: -28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-                delay: 0.3,
-              }}
+              style={{ opacity: entryOp, x: leftX }}
               className="col-span-1 order-3 md:order-1"
             >
               <NeedApproachPanel
@@ -2955,13 +2954,7 @@ export default function Experience() {
 
             {/* RIGHT — Solution: below laptop on mobile, right on desktop */}
             <motion.div
-              initial={{ opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-                delay: 0.4,
-              }}
+              style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
               <SolutionPanel activeSolutionIdx={activeSolutionIdx} />

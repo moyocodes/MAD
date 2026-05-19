@@ -1485,6 +1485,7 @@ export function SvcCard({ config, startDelay, isActive }) {
 export default function ServicesInMotion() {
   const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
+  const [expandP, setExpandP] = useState(0);
   const G = 16;
   const [cardW, setCardW] = useState(() =>
     typeof window !== "undefined"
@@ -1520,8 +1521,17 @@ export default function ServicesInMotion() {
       const rect = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
       if (total <= 0) return;
-      const p = Math.min(1, Math.max(0, -rect.top / total));
-      setActive(Math.min(max, Math.max(0, Math.round(p * max))));
+      const extraPx = window.innerHeight * 0.8;
+      const normalTotal = total - extraPx;
+      const scrolled = -rect.top;
+      if (scrolled <= normalTotal) {
+        const p = Math.min(1, Math.max(0, scrolled / Math.max(1, normalTotal)));
+        setActive(Math.min(max, Math.max(0, Math.round(p * max))));
+        setExpandP(0);
+      } else {
+        setActive(max);
+        setExpandP(Math.min(1, Math.max(0, (scrolled - normalTotal) / extraPx)));
+      }
     };
     fn();
     window.addEventListener("scroll", fn, { passive: true });
@@ -1554,7 +1564,7 @@ export default function ServicesInMotion() {
   };
 
   const isMobile = window.innerWidth < 640;
-  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 280}px)` : `calc(100vh + ${CARDS.length * 260}px)`;
+  const sectionHeight = isMobile ? `calc(100vh + ${CARDS.length * 280}px + 80vh)` : `calc(100vh + ${CARDS.length * 260}px + 80vh)`;
 
   return (
     <section
@@ -1563,7 +1573,7 @@ export default function ServicesInMotion() {
         position: "relative",
         height: sectionHeight,
         paddingBottom: 0,
-        background: "#f4f4f2",
+        background: "linear-gradient(160deg, #daf0ff 0%, #c6e6ff 55%, #b8ddf8 100%)",
       }}
     >
       <div
@@ -1588,7 +1598,8 @@ export default function ServicesInMotion() {
             alignItems: "flex-end",
             justifyContent: "space-between",
             flexShrink: 0,
-            background: "linear-gradient(to bottom, rgba(244,244,242,0.96) 0%, rgba(244,244,242,0.9) 100%)",
+            background: "linear-gradient(to bottom, rgba(218,240,255,0.97) 0%, rgba(198,230,255,0.88) 100%)",
+            opacity: Math.max(0, 1 - expandP * 3),
           }}
         >
           <div>
@@ -1671,6 +1682,7 @@ export default function ServicesInMotion() {
               alignItems: "flex-start",
               paddingTop: 24,
               gap: G,
+              opacity: Math.max(0, 1 - expandP * 2),
             }}
             animate={{ x: -active * STEP }}
             transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
@@ -1686,6 +1698,25 @@ export default function ServicesInMotion() {
           </motion.div>
         </div>
 
+        {/* Expansion overlay — last card grows to fill viewport */}
+        {expandP > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              width: cardW,
+              height: 460,
+              top: "50%",
+              left: "50%",
+              transform: `translate(-50%, -50%) scaleX(${1 + expandP * (window.innerWidth / cardW - 1)}) scaleY(${1 + expandP * (window.innerHeight / 460 - 1)})`,
+              borderRadius: Math.round(20 * (1 - expandP)),
+              background: "linear-gradient(160deg, #daf0ff 0%, #c6e6ff 55%, #b8ddf8 100%)",
+              opacity: Math.min(1, expandP * 3),
+              zIndex: 20,
+              pointerEvents: "none",
+            }}
+          />
+        )}
+
         {/* Dots */}
         <div
           style={{
@@ -1694,6 +1725,7 @@ export default function ServicesInMotion() {
             gap: 8,
             padding: "10px 0 18px",
             flexShrink: 0,
+            opacity: Math.max(0, 1 - expandP * 3),
           }}
         >
           {CARDS.map((_, i) => (

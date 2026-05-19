@@ -33,7 +33,6 @@ export default function MADLandingPage() {
   useEffect(() => {
     injectCSS();
 
-    // Restore last scroll position after render settles
     const saved = sessionStorage.getItem("mad_scroll");
     if (saved) {
       requestAnimationFrame(() =>
@@ -41,7 +40,6 @@ export default function MADLandingPage() {
       );
     }
 
-    // Save scroll position continuously
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
@@ -54,6 +52,7 @@ export default function MADLandingPage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
   return (
     <main
       style={{
@@ -64,14 +63,29 @@ export default function MADLandingPage() {
     >
       <Nav />
       <Hero />
-      <WhatWeDo />
-      {/* <ServicesInMotion /> */}
-      <Experience />
-      {/* <WorkShowcase /> */}
-          <ServicesInMotion />
-      <Beyond />
-      <Contact />
-      <Footer />
+      {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
+      <div style={{ position: "relative" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
+          <WhatWeDo />
+        </div>
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <Experience />
+        </div>
+      </div>
+      {/* Everything else sits naturally after the block above */}
+      <div style={{ position: "relative", zIndex: 3 }}>
+        <ServicesInMotion />
+        {/* Beyond pinned, Contact slides over it with phone bridging the seam */}
+        <div style={{ position: "relative" }}>
+          <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
+            <Beyond />
+          </div>
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <Contact />
+          </div>
+        </div>
+        <Footer />
+      </div>
     </main>
   );
 }
