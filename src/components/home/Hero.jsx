@@ -16,13 +16,13 @@ export default function Hero() {
   const [rawPct, setRawPct] = useState(0);
   const [notif, setNotif] = useState(false);
   const [notifMsg, setNotifMsg] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
+  const [isSmall, setIsSmall] = useState(false);
   const prevPhaseRef = useRef(-1);
   const notifRevealTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 640);
+    const check = () => setIsSmall(window.innerWidth < 640);
     check();
     window.addEventListener("resize", check, { passive: true });
     return () => window.removeEventListener("resize", check);
@@ -30,7 +30,6 @@ export default function Hero() {
 
   const NOTIFS = hero.notifications;
 
-  // Slide auto-play
   useEffect(() => {
     const DUR = 3000;
     const tick = (ts) => {
@@ -55,7 +54,6 @@ export default function Hero() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  // Scroll tracking
   useEffect(() => {
     const fn = () => {
       if (!wrapRef.current) return;
@@ -95,23 +93,11 @@ export default function Hero() {
   const ns = SLIDES[(slide + 1) % SLIDES.length];
   const frameToPanelT = Math.min(1, Math.max(0, (collapseT - 0.78) / 0.22));
 
-  const collapsePanels = THUMBS.map((thumb) => ({
-    src: thumb.src,
-    fit: "contain",
-  })).slice(0, 10);
-
-  // ── easing helper
-  const ease = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+  const collapsePanels = THUMBS.map((thumb) => ({ src: thumb.src, fit: "contain" })).slice(0, 10);
+  const panelGap = isSmall ? 86 : 225;
 
   return (
-    <div
-      ref={wrapRef}
-      style={{
-        height: "180vh",
-        position: "relative",
-        background: "transparent",
-      }}
-    >
+    <div ref={wrapRef} className="relative bg-transparent h-[180vh]">
       <style>{`
         @keyframes notifIn {
           from { opacity: 0; transform: translateY(-12px) scale(.96); }
@@ -127,66 +113,43 @@ export default function Hero() {
         }
       `}</style>
 
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100dvh",
-          overflow: "hidden",
-        }}
-      >
-        {/* ── Collapse background — clean white-to-azure-50 ── */}
+      <div className="sticky top-0 overflow-hidden h-[100dvh]">
+
+        {/* Collapse background */}
         <div
+          className="absolute inset-0 z-0"
           style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 0,
-            background:
-              "linear-gradient(160deg, #f0f8ff 0%, #e4f3fc 60%, #d4ecf7 100%)",
+            background: "linear-gradient(160deg, #f0f8ff 0%, #e4f3fc 60%, #d4ecf7 100%)",
             opacity: collapseT,
           }}
         />
 
-        {/* ── Subtle grid texture (appears with collapse) ── */}
+        {/* Grid texture */}
         <div
+          className="absolute inset-0 z-[1] pointer-events-none"
           style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 1,
             opacity: collapseT * 0.35,
             backgroundImage:
               "linear-gradient(rgba(25,128,194,.08) 1px,transparent 1px), linear-gradient(90deg,rgba(25,128,194,.08) 1px,transparent 1px)",
             backgroundSize: "48px 48px",
-            pointerEvents: "none",
           }}
         />
 
-        {/* ── Spotlight ── */}
+        {/* Spotlight */}
         <div
+          className="absolute -translate-x-1/2 w-[560px] h-[560px] z-[2] pointer-events-none transition-opacity duration-500"
           style={{
-            position: "absolute",
             top: "-8%",
             left: "50%",
-            transform: "translateX(-50%)",
-            width: 560,
-            height: 560,
-            zIndex: 2,
-            background:
-              "radial-gradient(ellipse 55% 55% at 50% 0%, rgba(25,128,194,.15) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse 55% 55% at 50% 0%, rgba(25,128,194,.15) 0%, transparent 70%)",
             opacity: collapseT,
-            pointerEvents: "none",
-            transition: "opacity .6s",
           }}
         />
 
-        {/* ════════════════════════════════════════════════════
-            MAIN VIEWPORT FRAME
-        ════════════════════════════════════════════════════ */}
+        {/* ── Main viewport frame ── */}
         <div
+          className="absolute z-20 overflow-hidden transition-shadow duration-300"
           style={{
-            position: "absolute",
-            zIndex: 20,
-            overflow: "hidden",
             left: `${collapseT * 43}%`,
             right: `${collapseT * 43}%`,
             top: `${collapseT * 11}%`,
@@ -197,54 +160,40 @@ export default function Hero() {
               collapseT > 0.02
                 ? `0 ${8 + collapseT * 24}px ${32 + collapseT * 80}px rgba(5,28,46,${0.08 + collapseT * 0.14}), 0 0 0 1px rgba(25,128,194,${collapseT * 0.12})`
                 : "none",
-            transition: "box-shadow .3s",
           }}
         >
-          <div style={{ position: "absolute", inset: 0, display: "flex" }}>
-            {/* ── LEFT PANEL ── */}
-            <div
-              style={{
-                width: "42%",
-                flexShrink: 0,
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
+          <div className="absolute inset-0 flex">
+
+            {/* ── Left panel ── */}
+            <div className="relative overflow-hidden shrink-0" style={{ width: "42%" }}>
               {SLIDES.map((sl, i) => (
                 <img
                   key={i}
                   src={sl.left}
                   alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
                     opacity:
-                      i === slide
-                        ? 1 - cardOut
-                        : i === (slide + 1) % SLIDES.length
-                          ? cardOut
-                          : 0,
+                      i === slide ? 1 - cardOut
+                        : i === (slide + 1) % SLIDES.length ? cardOut : 0,
                     transition: "opacity .05s",
                   }}
                 />
               ))}
-              {/* Refined left scrim — narrower, more luminous */}
+
+              {/* Left scrim */}
               <div
+                className="absolute inset-0"
                 style={{
-                  position: "absolute",
-                  inset: 0,
                   background:
                     "linear-gradient(to right, rgba(5,28,46,.22) 0%, transparent 55%), linear-gradient(to bottom, rgba(5,28,46,.08) 0%, rgba(5,28,46,.42) 100%)",
                 }}
               />
 
-              {/* ── Pantone card ── */}
+              {/* Pantone card */}
               <div
+                className="absolute"
                 style={{
-                  position: "absolute",
                   top: "50%",
                   left: "50%",
                   width: "min(276px,86%)",
@@ -257,102 +206,39 @@ export default function Hero() {
                 ].map(({ data, op, ty }, i) => (
                   <div
                     key={i}
+                    className="absolute bg-white rounded-[10px] overflow-hidden w-full"
                     style={{
-                      position: "absolute",
-                      background: "#fff",
-                      borderRadius: 10,
-                      overflow: "hidden",
                       transform: `translate(-50%, calc(-50% + ${ty}px))`,
                       opacity: op,
-                      width: "100%",
                       boxShadow:
                         "0 20px 60px rgba(5,28,46,.28), 0 4px 12px rgba(5,28,46,.12), 0 0 0 0.5px rgba(255,255,255,.18)",
                     }}
                   >
-                    <img
-                      src={data.cardImg}
-                      alt=""
-                      style={{
-                        width: "100%",
-                        height: 175,
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                    {/* Thin shimmer stripe on image */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: 175,
-                        overflow: "hidden",
-                        pointerEvents: "none",
-                      }}
-                    >
+                    <img src={data.cardImg} alt="" className="w-full h-[175px] object-cover block" />
+                    <div className="absolute top-0 left-0 right-0 h-[175px] overflow-hidden pointer-events-none">
                       <div
+                        className="absolute inset-0"
                         style={{
-                          position: "absolute",
-                          inset: 0,
                           background:
                             "linear-gradient(105deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%)",
                           animation: "shimmerSlide 3.2s ease-in-out infinite",
                         }}
                       />
                     </div>
-                    <div style={{ padding: "14px 16px 16px" }}>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 900,
-                          marginBottom: 6,
-                          letterSpacing: -0.3,
-                          color: "#0f1a2e",
-                        }}
-                      >
+                    <div className="px-4 pt-[14px] pb-4">
+                      <div className="text-[13px] font-black mb-[6px] tracking-[-0.3px] text-[#0f1a2e]">
                         {data.card}
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                          paddingTop: 8,
-                          borderTop: "0.5px solid rgba(25,128,194,.12)",
-                        }}
-                      >
+                      <div className="flex items-center gap-[6px] pt-2 border-t-[0.5px] border-azure-500/[12%]">
                         <div
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: "50%",
-                            background: "#1980c2",
-                            animation: "dotPulse 2.4s ease-in-out infinite",
-                          }}
+                          className="w-[6px] h-[6px] rounded-full bg-azure-500 shrink-0"
+                          style={{ animation: "dotPulse 2.4s ease-in-out infinite" }}
                         />
                         <div>
-                          <div
-                            style={{
-                              fontSize: 6.5,
-                              fontWeight: 700,
-                              color: "#aaa",
-                              letterSpacing: "0.22em",
-                              textTransform: "uppercase",
-                              marginBottom: 1,
-                            }}
-                          >
+                          <div className="text-[6.5px] font-bold text-[#aaa] tracking-[0.22em] uppercase mb-[1px]">
                             {brand.serviceByLabel}
                           </div>
-                          <div
-                            style={{
-                              fontSize: 9.5,
-                              fontWeight: 900,
-                              letterSpacing: "0.1em",
-                              textTransform: "uppercase",
-                              color: "#0f1a2e",
-                            }}
-                          >
+                          <div className="text-[9.5px] font-black tracking-[0.1em] uppercase text-[#0f1a2e]">
                             {brand.name}™
                           </div>
                         </div>
@@ -362,43 +248,25 @@ export default function Hero() {
                 ))}
               </div>
 
-              {/* ── Slide indicators — refined ── */}
+              {/* Slide indicators */}
               <div
-                style={{
-                  position: "absolute",
-                  bottom: 22,
-                  left: 22,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 7,
-                  opacity: Math.max(0, 1 - phase1v * 2),
-                }}
+                className="absolute bottom-[22px] left-[22px] flex flex-col gap-[7px]"
+                style={{ opacity: Math.max(0, 1 - phase1v * 2) }}
               >
                 {SLIDES.map((_, i) => (
-                  <div
-                    key={i}
-                    style={{ display: "flex", alignItems: "center", gap: 7 }}
-                  >
+                  <div key={i} className="flex items-center gap-[7px]">
                     <div
+                      className="h-[1.5px] rounded-[1px]"
                       style={{
-                        height: 1.5,
                         width: i === slide ? 22 : 8,
-                        borderRadius: 1,
-                        background:
-                          i === slide ? "#ffffff" : "rgba(255,255,255,.28)",
+                        background: i === slide ? "#ffffff" : "rgba(255,255,255,.28)",
                         transition: "width .35s cubic-bezier(.22,1,.36,1)",
                       }}
                     />
                     <span
+                      className="font-mono font-bold text-[7px] tracking-[0.05em]"
                       style={{
-                        fontSize: 7,
-                        fontWeight: 700,
-                        fontFamily: "monospace",
-                        letterSpacing: "0.05em",
-                        color:
-                          i === slide
-                            ? "rgba(255,255,255,.82)"
-                            : "rgba(255,255,255,.22)",
+                        color: i === slide ? "rgba(255,255,255,.82)" : "rgba(255,255,255,.22)",
                         transition: "color .35s",
                       }}
                     >
@@ -409,251 +277,99 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* ── RIGHT PANEL ── */}
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+            {/* ── Right panel ── */}
+            <div className="flex-1 relative overflow-hidden">
               {SLIDES.map((sl, i) => (
                 <img
                   key={i}
                   src={sl.right}
                   alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
                     opacity:
-                      i === slide
-                        ? 1 - cardOut
-                        : i === (slide + 1) % SLIDES.length
-                          ? cardOut
-                          : 0,
+                      i === slide ? 1 - cardOut
+                        : i === (slide + 1) % SLIDES.length ? cardOut : 0,
                     transition: "opacity .05s",
                   }}
                 />
               ))}
-              {/* Richer directional scrim */}
+
+              {/* Right scrim */}
               <div
+                className="absolute inset-0"
                 style={{
-                  position: "absolute",
-                  inset: 0,
                   background:
                     "linear-gradient(to top, rgba(5,28,46,.72) 0%, rgba(5,28,46,.18) 48%, transparent 72%), linear-gradient(to left, transparent 60%, rgba(5,28,46,.14) 100%)",
                 }}
               />
 
-              {/* ── Notification toast — sharper ── */}
+              {/* Notification toast */}
               <div
+                className="absolute z-[80] pointer-events-none backdrop-blur-[20px] rounded-xl top-[82px] right-6 bg-[rgba(238,247,253,.92)] border-[0.5px] border-azure-500/[18%] px-[14px] py-3"
                 style={{
-                  position: "absolute",
-                  top: 82,
-                  right: 24,
                   width: "min(300px, calc(58vw - 20px))",
-                  zIndex: 80,
-                  background: "rgba(238,247,253,.92)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: 12,
-                  border: "0.5px solid rgba(25,128,194,.18)",
-                  padding: "12px 14px",
-                  transform: notif
-                    ? "translateY(0) scale(1)"
-                    : "translateY(-16px) scale(.96)",
+                  transform: notif ? "translateY(0) scale(1)" : "translateY(-16px) scale(.96)",
                   opacity: notif ? 1 : 0,
-                  transition:
-                    "transform .4s cubic-bezier(.22,1,.36,1), opacity .28s",
-                  pointerEvents: "none",
-                  boxShadow:
-                    "0 8px 32px rgba(5,28,46,.12), 0 1px 0 rgba(255,255,255,.6) inset",
+                  transition: "transform .4s cubic-bezier(.22,1,.36,1), opacity .28s",
+                  boxShadow: "0 8px 32px rgba(5,28,46,.12), 0 1px 0 rgba(255,255,255,.6) inset",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 7,
-                      background: "#1980c2",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 2px 8px rgba(25,128,194,.35)",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 6.5,
-                        fontWeight: 900,
-                        letterSpacing: 0.5,
-                        color: "#fff",
-                      }}
-                    >
+                <div className="flex items-center gap-[10px]">
+                  <div className="w-[30px] h-[30px] rounded-[7px] bg-azure-500 flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(25,128,194,.35)]">
+                    <span className="text-[6.5px] font-black tracking-[0.5px] text-white">
                       {brand.name}
                     </span>
                   </div>
                   <div>
-                    <div
-                      style={{
-                        fontSize: 7,
-                        fontWeight: 700,
-                        color: "#1468a0",
-                        letterSpacing: "0.14em",
-                        textTransform: "uppercase",
-                        marginBottom: 2,
-                      }}
-                    >
+                    <div className="text-[7px] font-bold text-[#1468a0] tracking-[0.14em] uppercase mb-[2px]">
                       New update
                     </div>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: "#0c447c",
-                        lineHeight: 1.45,
-                      }}
-                    >
+                    <span className="text-[11px] font-semibold text-[#0c447c] leading-[1.45]">
                       {notifMsg}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* ── Hero copy — refined spacing & type ── */}
+              {/* Hero copy */}
               <div
-                style={{
-                  position: "absolute",
-                  bottom: isMobile ? 138 : 44,
-                  right: 28,
-                  left: 24,
-                  maxWidth: 480,
-                  opacity: Math.max(0, 1 - phase1v * 2),
-                }}
+                className="absolute right-7 left-6 max-w-[480px] bottom-[138px] sm:bottom-11"
+                style={{ opacity: Math.max(0, 1 - phase1v * 2) }}
               >
                 {/* Eyebrow */}
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 7,
-                    marginBottom: 14,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 18,
-                      height: 1.5,
-                      background: "rgba(93,167,230,.85)",
-                      borderRadius: 1,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 8,
-                      fontWeight: 700,
-                      letterSpacing: "0.28em",
-                      textTransform: "uppercase",
-                      color: "rgba(255,255,255,.52)",
-                      fontFamily: "monospace",
-                    }}
-                  >
+                <div className="inline-flex items-center gap-[7px] mb-[14px]">
+                  <div className="w-[18px] h-[1.5px] bg-[rgba(93,167,230,.85)] rounded-[1px]" />
+                  <span className="text-[8px] font-bold tracking-[0.28em] uppercase text-white/50 font-mono">
                     {brand.name}
                   </span>
                 </div>
 
-                <h1
-                  style={{
-                    color: "#fff",
-                    fontSize: isMobile ? 22 : "clamp(28px,3.8vw,46px)",
-                    lineHeight: 1.04,
-                    letterSpacing: "-.03em",
-                    fontWeight: 800,
-                    whiteSpace: "pre-line",
-                    marginBottom: 14,
-                  }}
-                >
+                <h1 className="text-white font-extrabold leading-[1.04] tracking-[-0.03em] whitespace-pre-line mb-[14px] text-[22px] sm:text-[30px] md:text-[38px] xl:text-[46px]">
                   {s.h1}
                 </h1>
-                <p
-                  style={{
-                    color: "rgba(255,255,255,.52)",
-                    fontSize: isMobile ? 9 : 11,
-                    fontWeight: 500,
-                    letterSpacing: "0.04em",
-                    lineHeight: 1.65,
-                    marginBottom: 24,
-                    maxWidth: 340,
-                  }}
-                >
+                <p className="text-white/50 font-medium tracking-[0.04em] leading-[1.65] mb-6 max-w-[340px] text-[9px] sm:text-[11px]">
                   {s.sub}
                 </p>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                  <button
-                    style={{
-                      background: "#fff",
-                      border: "none",
-                      padding: isMobile ? "8px 20px" : "10px 26px",
-                      fontWeight: 700,
-                      fontSize: isMobile ? 7 : 8.5,
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase",
-                      borderRadius: 99,
-                      color: "#0f1a2e",
-                      cursor: "pointer",
-                    }}
-                  >
+                <div className="flex flex-wrap gap-[10px]">
+                  <button className="bg-white border-none font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-[#0f1a2e] cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px]">
                     {hero.cta}
                   </button>
-                  <button
-                    style={{
-                      background: "rgba(255,255,255,.07)",
-                      border: "0.5px solid rgba(255,255,255,.32)",
-                      padding: isMobile ? "8px 20px" : "10px 26px",
-                      fontWeight: 700,
-                      fontSize: isMobile ? 7 : 8.5,
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase",
-                      borderRadius: 99,
-                      color: "rgba(255,255,255,.82)",
-                      cursor: "pointer",
-                      backdropFilter: "blur(6px)",
-                    }}
-                  >
+                  <button className="bg-white/[7%] border-[0.5px] border-white/30 font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-white/80 cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px] backdrop-blur-sm">
                     View Our Work
                   </button>
                 </div>
               </div>
 
-              {/* ── Progress bar — refined ── */}
+              {/* Progress bar */}
               <div
-                style={{
-                  position: "absolute",
-                  bottom: isMobile ? 108 : 18,
-                  left: 0,
-                  right: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 12,
-                  opacity: Math.max(0, 1 - phase1v * 2),
-                }}
+                className="absolute left-0 right-0 flex items-center justify-center gap-3 bottom-[108px] sm:bottom-[18px]"
+                style={{ opacity: Math.max(0, 1 - phase1v * 2) }}
               >
-                <div
-                  style={{
-                    height: 1.5,
-                    width: isMobile ? 70 : 120,
-                    borderRadius: 1,
-                    background: "rgba(255,255,255,.15)",
-                    overflow: "hidden",
-                  }}
-                >
+                <div className="h-[1.5px] rounded-[1px] bg-white/[15%] overflow-hidden w-[70px] sm:w-[120px]">
                   <div
-                    style={{
-                      height: "100%",
-                      width: `${prog}%`,
-                      background: "linear-gradient(to right, #5aa7e6, #3da0e4)",
-                      transition: "width .1s linear",
-                    }}
+                    className="h-full bg-gradient-to-r from-[#5aa7e6] to-[#3da0e4]"
+                    style={{ width: `${prog}%`, transition: "width .1s linear" }}
                   />
                 </div>
                 <button
@@ -661,20 +377,7 @@ export default function Hero() {
                     slideRef.current.paused = !slideRef.current.paused;
                     setPaused((p) => !p);
                   }}
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: "50%",
-                    background: "transparent",
-                    border: "0.5px solid rgba(255,255,255,.3)",
-                    color: "rgba(255,255,255,.7)",
-                    fontSize: 7.5,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    transition: "border-color .2s, color .2s",
-                  }}
+                  className="w-[26px] h-[26px] rounded-full bg-transparent border-[0.5px] border-white/30 text-white/70 text-[7.5px] flex items-center justify-center cursor-pointer transition-[border-color,color] duration-200"
                 >
                   {paused ? "▶" : "⏸"}
                 </button>
@@ -682,221 +385,94 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Thin border ring on the frame ── */}
+          {/* Frame border ring */}
           <div
+            className="absolute inset-0 z-[5] pointer-events-none"
             style={{
-              position: "absolute",
-              inset: 0,
               borderRadius: collapseT * 14,
               border: `0.5px solid rgba(255,255,255,${collapseT * 0.15})`,
-              pointerEvents: "none",
-              zIndex: 5,
             }}
           />
         </div>
 
-        {/* ════════════════════════════════════════════════════
-            COLLAPSED THUMBNAIL PANELS
-        ════════════════════════════════════════════════════ */}
+        {/* ── Collapsed thumbnail panels ── */}
         {collapsePanels.map((t, i) => {
           const rowIndex = i % 5;
           const centerOffset = rowIndex - 2;
           const isTopRow = i < 5;
-          const panelGap = isMobile ? 86 : 225;
           const startScale = 0.1;
-          const endScale = isMobile ? 0.68 : 0.86;
+          const endScale = isSmall ? 0.68 : 0.86;
           const sc = startScale + collapseT * (endScale - startScale);
           return (
             <div
               key={i}
+              className="absolute z-[22] pointer-events-none overflow-hidden rounded-[10px] mix-blend-multiply w-[120px] h-[104px] sm:w-[185px] sm:h-[160px]"
               style={{
-                position: "absolute",
-                zIndex: 22,
-                pointerEvents: "none",
-                width: isMobile ? 120 : 185,
-                height: isMobile ? 104 : 160,
                 left: `calc(50% + ${centerOffset * panelGap}px)`,
                 top: isTopRow ? "24%" : "72%",
                 transform: `translate(-50%,-50%) scale(${sc})`,
-                opacity: Math.max(
-                  0,
-                  Math.min(1, collapseT * 1.45 - 0.18 - i * 0.015),
-                ),
-                borderRadius: 10,
-                overflow: "hidden",
-                mixBlendMode: "multiply",
+                opacity: Math.max(0, Math.min(1, collapseT * 1.45 - 0.18 - i * 0.015)),
                 boxShadow: "0 4px 20px rgba(5,28,46,.10)",
               }}
             >
-              <img
-                src={t.src}
-                alt=""
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: t.fit,
-                  display: "block",
-                }}
-              />
+              <img src={t.src} alt="" className="w-full h-full object-contain block" />
             </div>
           );
         })}
 
-        {/* ════════════════════════════════════════════════════
-            FINAL CTA OVERLAY
-        ════════════════════════════════════════════════════ */}
+        {/* ── Final CTA overlay ── */}
         <div
+          className="absolute z-[30] text-center w-[96vw] max-w-[1180px]"
           style={{
-            position: "absolute",
-            zIndex: 30,
             top: "50%",
             left: "50%",
             transform: `translate(-50%,-50%) translateY(${(1 - collapseT) * 18}px)`,
             opacity: Math.max(0, collapseT * 3 - 2),
             pointerEvents: collapseT > 0.85 ? "all" : "none",
-            textAlign: "center",
-            width: "96vw",
-            maxWidth: 1180,
           }}
         >
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: 8.5,
-              fontWeight: 700,
-              letterSpacing: "0.32em",
-              textTransform: "uppercase",
-              color: "rgba(20,104,160,.5)",
-              marginBottom: 14,
-            }}
-          >
+          <p className="font-mono font-bold tracking-[0.32em] uppercase text-[8.5px] text-[rgba(20,104,160,.5)] mb-[14px]">
             Making A Difference
           </p>
-          <h2
-            style={{
-              fontSize: "clamp(28px,5vw,58px)",
-              fontWeight: 800,
-              lineHeight: 1.0,
-              letterSpacing: "-.04em",
-              color: "#0c447c",
-              marginBottom: 32,
-            }}
-          >
+          <h2 className="font-extrabold leading-none tracking-[-0.04em] text-[#0c447c] mb-8 text-[28px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[58px]">
             Structure changes{" "}
-            <span style={{ color: "#1980c2" }}>everything.</span>
+            <span className="text-azure-500">everything.</span>
           </h2>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: 12,
-            }}
-          >
-            <button
-              style={{
-                background: "#1980c2",
-                border: "none",
-                padding: "12px 32px",
-                fontSize: 8.5,
-                fontWeight: 700,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                borderRadius: 99,
-                color: "#fff",
-                cursor: "pointer",
-                boxShadow: "0 4px 24px rgba(25,128,194,.32)",
-              }}
-            >
+          <div className="flex flex-wrap justify-center gap-3">
+            <button className="bg-azure-500 border-none py-3 px-8 text-[8.5px] font-bold tracking-[0.18em] uppercase rounded-full text-white cursor-pointer shadow-[0_4px_24px_rgba(25,128,194,.32)]">
               {hero.cta}
             </button>
-            <button
-              style={{
-                background: "rgba(255,255,255,.6)",
-                border: "0.5px solid rgba(15,79,122,.16)",
-                padding: "12px 32px",
-                fontSize: 8.5,
-                fontWeight: 700,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                borderRadius: 99,
-                color: "#1468a0",
-                cursor: "pointer",
-                backdropFilter: "blur(10px)",
-              }}
-            >
+            <button className="bg-white/60 border-[0.5px] border-[rgba(15,79,122,.16)] py-3 px-8 text-[8.5px] font-bold tracking-[0.18em] uppercase rounded-full text-[#1468a0] cursor-pointer backdrop-blur-[10px]">
               View Our Work
             </button>
           </div>
         </div>
 
-        {/* ════════════════════════════════════════════════════
-            TRUSTED BY — marquee
-        ════════════════════════════════════════════════════ */}
+        {/* ── Trusted by marquee ── */}
         <div
+          className="absolute bottom-0 left-0 right-0 z-[70] pointer-events-none pt-[40px] px-8 pb-[22px]"
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 70,
-            pointerEvents: "none",
-            padding: "40px 32px 22px",
             opacity: Math.min(
               1,
               Math.max(0, 1 - phase1v * 2.5) + Math.max(0, collapseT * 3 - 2),
             ),
           }}
         >
-          <p
-            style={{
-              fontSize: 9,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              marginBottom: 12,
-              color: "#1468a0",
-            }}
-          >
+          <p className="text-[9px] tracking-[0.22em] uppercase font-bold mb-3 text-[#1468a0]">
             Trusted by
           </p>
-          <div style={{ overflow: "hidden", width: "min(560px, 85vw)" }}>
-            <div
-              className="animate-marquee"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 40,
-                width: "max-content",
-              }}
-            >
+          <div className="overflow-hidden w-[85vw] max-w-[560px]">
+            <div className="mq flex items-center gap-[40px] w-max">
               {[
-                "/log1.png",
-                "/log2.png",
-                "/log3.png",
-                "/log4.png",
-                "/log5.png",
-                "/log1.png",
-                "/log2.png",
-                "/log3.png",
-                "/log4.png",
-                "/log5.png",
+                "/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png",
+                "/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png",
               ].map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt=""
-                  style={{
-                    height: 52,
-                    width: "auto",
-                    objectFit: "contain",
-                    flexShrink: 0,
-                  }}
-                />
+                <img key={i} src={src} alt="" className="h-[52px] w-auto object-contain shrink-0" />
               ))}
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Nav from "../components/home/Nav";
 import Hero from "../components/home/Hero";
 import WhatWeDo from "../components/home/WhatWeDo";
@@ -30,6 +30,8 @@ function injectCSS() {
 }
 
 export default function MADLandingPage() {
+  const contactContainerRef = useRef(null);
+
   useEffect(() => {
     injectCSS();
 
@@ -72,20 +74,26 @@ export default function MADLandingPage() {
           <Experience />
         </div>
       </div>
-      {/* Everything else sits naturally after the block above */}
+      {/* ServicesInMotion sticky — context ends at Contact so Footer is never behind it */}
       <div style={{ position: "relative", zIndex: 3 }}>
-        <ServicesInMotion />
-        {/* Beyond pinned, Contact slides over it with phone bridging the seam */}
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
+          <ServicesInMotion />
+        </div>
+        {/* Beyond pinned, Contact slides over it then sticks for phone scroll */}
+        <div style={{ position: "relative", zIndex: 2 }}>
           <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
             <Beyond />
           </div>
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <Contact />
+          {/* 200vh container gives the phone 100vh of scroll travel while Contact stays pinned */}
+          <div ref={contactContainerRef} style={{ position: "relative", zIndex: 2, minHeight: "200vh" }}>
+            <div style={{ position: "sticky", top: 0 }}>
+              <Contact scrollRef={contactContainerRef} />
+            </div>
           </div>
         </div>
-        <Footer />
       </div>
+      {/* Footer outside sticky context — renders cleanly on its own */}
+      <Footer />
     </main>
   );
 }

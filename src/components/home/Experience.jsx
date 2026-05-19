@@ -2843,6 +2843,31 @@ export default function Experience() {
   const activeApproachIdx = stageData.approachIdx;
   const activeSolutionIdx = stageData.solutionIdx;
 
+  // Quick-scan entrance: cycle bullets 3× fast before handing off to scroll
+  const [scanIdx, setScanIdx] = useState(-1);
+  const scanDoneRef = useRef(false);
+  useEffect(() => {
+    if (!hasEntered || scanDoneRef.current) return;
+    scanDoneRef.current = true;
+    const PASSES = 3;
+    const COUNT = SOLUTION_BULLETS.length;
+    const STEP_MS = 140;
+    let step = 0;
+    setScanIdx(0);
+    const t = setInterval(() => {
+      step++;
+      if (step < PASSES * COUNT) {
+        setScanIdx(step % COUNT);
+      } else {
+        clearInterval(t);
+        setScanIdx(-1);
+      }
+    }, STEP_MS);
+    return () => clearInterval(t);
+  }, [hasEntered]);
+
+  const displaySolutionIdx = scanIdx >= 0 ? scanIdx : activeSolutionIdx;
+
   return (
     // Height = (stages + 1) viewports for smooth per-stage scrolling
     <div
@@ -2902,7 +2927,7 @@ export default function Experience() {
                 <span>{content.productSuffix}</span>
               </h2>
               <p
-                className="max-w-full sm:max-w-[380px] text-gray-700 font-bold text-[12px]"
+                className="max-w-full sm:max-w-[380px] text-gray-600 font-bold text-[12px]"
                 style={{
                  
                   lineHeight: 1.65,
@@ -2958,7 +2983,7 @@ export default function Experience() {
               style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
-              <SolutionPanel activeSolutionIdx={activeSolutionIdx} />
+              <SolutionPanel activeSolutionIdx={displaySolutionIdx} />
             </motion.div>
           </div>
 

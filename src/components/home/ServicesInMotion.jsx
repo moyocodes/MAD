@@ -1,10 +1,10 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, animate, useInView } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
 
 const content = homeCms.servicesInMotion;
 
-// ─── Shared primitives (unchanged from original) ──────────────────────────────
+// ─── Shared primitives (original, unchanged) ──────────────────────────────────
 
 function Chip({ label }) {
   return (
@@ -246,7 +246,7 @@ function C1S2() {
 function C1S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/web.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/1.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Product & Digital" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -335,7 +335,7 @@ function C2S2() {
 function C2S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/soc.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/2.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Marketing & Comms" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -446,7 +446,7 @@ function C3S2() {
 function C3S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/brandd.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/3.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Brand & Identity" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -525,7 +525,7 @@ function C4S2() {
 function C4S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/strategy.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/4.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Strategy" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -575,7 +575,7 @@ function C5S2() {
         <span style={{ fontSize: 6, color: "#1980c2", background: "rgba(25,128,194,.15)", padding: "2px 6px", borderRadius: 3 }}>00:42</span>
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: 8, gap: 5 }}>
-        {[["Logo Reveal","#1980c2","70%"],["Text Anim","#3da0e4","45%"],["BG Motion","#0f4f7a","88%"],["Sound","#38bdf8","60%"]].map(([l, c, w], i) => (
+        {[["Logo Reveal","#1980c2","70%"],["Text Anim","#3da0e4","45%"],["BG Motion","#0f4f7a","88%"],["Sound","#38bdf8","60%"]].map(([l, c, w]) => (
           <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 60, fontSize: 6, color: "rgba(255,255,255,.4)", textAlign: "right" }}>{l}</div>
             <div style={{ flex: 1, height: 12, background: "rgba(255,255,255,.05)", borderRadius: 2, position: "relative", overflow: "hidden" }}>
@@ -606,7 +606,7 @@ function C5S2() {
 function C5S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/motion.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/5.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Motion & Film" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -635,10 +635,10 @@ function C6S1() {
             <div style={{ fontSize: 6.5, color: "#aaa", marginBottom: 5 }}>User Flow — Checkout</div>
             <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
               {["Cart","Details","Payment","Done"].map((s, i) => (
-                <>
-                  <div key={s} style={{ flex: 1, background: i === 0 ? "#1980c2" : i === 1 ? "rgba(25,128,194,.2)" : "#f0f0f0", borderRadius: 3, padding: "3px 0", textAlign: "center", fontSize: 5.5, color: i === 0 ? "#fff" : i === 1 ? "#1980c2" : "#ccc", fontWeight: 600 }}>{s}</div>
-                  {i < 3 && <div key={`a${i}`} style={{ fontSize: 7, color: i < 1 ? "#1980c2" : "#ddd" }}>›</div>}
-                </>
+                <div key={s} style={{ display: "contents" }}>
+                  <div style={{ flex: 1, background: i === 0 ? "#1980c2" : i === 1 ? "rgba(25,128,194,.2)" : "#f0f0f0", borderRadius: 3, padding: "3px 0", textAlign: "center", fontSize: 5.5, color: i === 0 ? "#fff" : i === 1 ? "#1980c2" : "#ccc", fontWeight: 600 }}>{s}</div>
+                  {i < 3 && <div style={{ fontSize: 7, color: i < 1 ? "#1980c2" : "#ddd" }}>›</div>}
+                </div>
               ))}
             </div>
           </div>
@@ -697,7 +697,7 @@ function C6S2() {
 function C6S3() {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/ux.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src="/brand.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="UX & Interface" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -723,7 +723,6 @@ export const STAGE_SETS = {
   ux:        [C6S1, C6S2, C6S3],
 };
 
-// Pull from CMS if available, otherwise fall back to hardcoded
 const CMS_CARDS = content?.cards ?? [
   { id: "product",   stageSet: "product",   title: "Product & Digital",  sub: "E-commerce storefronts, web apps, and digital products built to perform." },
   { id: "marketing", stageSet: "marketing", title: "Marketing & Comms",  sub: "Content calendars, campaigns, and social strategies built for reach." },
@@ -743,13 +742,46 @@ export const CARDS = CMS_CARDS.map((card) => ({
 const S1 = 2000, S2 = 2000, S3 = 90000;
 const LOOP = S1 + S2 + S3;
 
-// ─── SvcCard (original design, unchanged) ─────────────────────────────────────
+// ─── Glare layer — own component so hooks are never conditional ───────────────
 
-export function SvcCard({ config, startDelay, isActive }) {
+function GlareLayer({ mouseX, mouseY }) {
+  const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
+  const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
+  const background = useTransform(
+    [glareX, glareY],
+    ([gx, gy]) => `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.16) 0%, transparent 62%)`
+  );
+  return (
+    <motion.div
+      style={{
+        position: "absolute", inset: 0, zIndex: 50,
+        pointerEvents: "none", borderRadius: 18, background,
+      }}
+    />
+  );
+}
+
+// ─── SvcCard with 3D spotlight ────────────────────────────────────────────────
+
+export function SvcCard({ config, startDelay, isActive, index, activeIndex, cardW: propCardW }) {
   const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
   const rafRef = useRef(null);
   const timerRef = useRef(null);
+  const cardRef = useRef(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 280, damping: 28 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { stiffness: 280, damping: 28 });
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const r = cardRef.current.getBoundingClientRect();
+    mouseX.set((e.clientX - r.left) / r.width - 0.5);
+    mouseY.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const handleMouseLeave = () => { mouseX.set(0); mouseY.set(0); };
 
   const runCycle = useCallback(() => {
     const pf = fillRef.current;
@@ -777,31 +809,54 @@ export function SvcCard({ config, startDelay, isActive }) {
   const { stages, title, sub } = config;
   const [S1c, S2c, S3c] = stages;
 
+  const dist = index - activeIndex;
+  const absD = Math.abs(dist);
+  const isLeft = dist < 0;
+
+  const cardW = propCardW ?? 380;
+  const cardH = Math.round(cardW * (13 / 9));
+
   return (
-    <div
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",
-        gap: 12,
-        position: "relative",
-        width: "min(560px,calc(100vw - 24px))",
-        paddingBottom: 8,
-        paddingRight: 8,
+        gap: 14,
+        width: cardW,
+        perspective: 1000,
       }}
+      animate={{
+        scale: isActive ? 1 : Math.max(0.84, 1 - absD * 0.07),
+        opacity: isActive ? 1 : Math.max(0.38, 1 - absD * 0.26),
+        rotateY: isActive ? 0 : (isLeft ? 10 : -10),
+        filter: isActive ? "none" : `blur(${Math.min(absD * 1.5, 5)}px)`,
+      }}
+      transition={{ duration: 0.42, ease: [0.23, 1, 0.32, 1] }}
     >
-      <div className="bg-azure-500/[7%]" style={{ position: "absolute", top: 10, left: 10, right: 0, height: 460, borderRadius: 18, zIndex: 0 }} />
-      <div className="bg-azure-500/10" style={{ position: "absolute", top: 5, left: 5, right: -5, height: 460, border: "1px solid rgba(25,128,194,.18)", borderRadius: 18, zIndex: 1 }} />
-      <div
+      <motion.div
         style={{
-          position: "relative", width: "100%", height: 460, borderRadius: 18, overflow: "hidden", zIndex: 2,
-          border: "1px solid rgba(25,128,194,.25)",
+          position: "relative",
+          width: "100%",
+          height: cardH,
+          borderRadius: 18,
+          overflow: "hidden",
+          border: isActive ? "1px solid rgba(25,128,194,.3)" : "1px solid rgba(25,128,194,.12)",
           boxShadow: isActive
-            ? "0 0 0 1.5px rgba(15,23,42,.18), 0 32px 80px rgba(15,23,42,.22), 0 8px 24px rgba(25,128,194,.10)"
+            ? "0 0 0 1px rgba(15,23,42,.1), 0 40px 90px rgba(15,23,42,.2), 0 8px 24px rgba(25,128,194,.12)"
             : "0 4px 16px rgba(0,0,0,.06)",
-          transition: "box-shadow .5s",
+          transformStyle: "preserve-3d",
+          rotateX: isActive ? rotateX : 0,
+          rotateY: isActive ? rotateY : 0,
         }}
+        transition={{ duration: 0.42, ease: [0.23, 1, 0.32, 1] }}
       >
+        {/* Glare always mounted on active card — own component, no conditional hook */}
+        {isActive && <GlareLayer mouseX={mouseX} mouseY={mouseY} />}
+
         <AnimatePresence>
           {stage === 0 && (
             <motion.div key="s1" style={{ position: "absolute", inset: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.45 }}>
@@ -819,99 +874,139 @@ export function SvcCard({ config, startDelay, isActive }) {
             </motion.div>
           )}
         </AnimatePresence>
+
         {/* Stage dots */}
         <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 5, zIndex: 30 }}>
           {[0, 1, 2].map((i) => (
             <motion.div key={i} animate={{ width: i === stage ? 12 : 4, background: i === stage ? "rgba(255,255,255,.85)" : "rgba(255,255,255,.22)" }} transition={{ duration: 0.2 }} style={{ height: 5, borderRadius: 2.5 }} />
           ))}
         </div>
+
         {/* Progress bar */}
         <div className="bg-black/[6%]" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2.5, zIndex: 30 }}>
           <div ref={fillRef} className="bg-azure-500/75" style={{ height: "100%", width: "0%" }} />
         </div>
-      </div>
-      <motion.div animate={{ opacity: isActive ? 1 : 0.4, y: isActive ? 0 : 3 }} transition={{ duration: 0.3 }} style={{ paddingLeft: 2 }}>
-        <div className="text-dark-900" style={{ fontSize: 17, lineHeight: 1.2, marginBottom: 3, fontWeight: 700 }}>{title}</div>
-        <div className="text-dark-900/[52%]" style={{ fontSize: 11, lineHeight: 1.55 }}>{sub}</div>
       </motion.div>
-    </div>
+
+      {/* Text below card */}
+      <motion.div
+        animate={{ opacity: isActive ? 1 : 0.4, y: isActive ? 0 : 3 }}
+        transition={{ duration: 0.3 }}
+        style={{ paddingLeft: 2 }}
+      >
+        <div className="text-dark-900" style={{ fontSize: "clamp(15px,2.2vw,17px)", lineHeight: 1.2, marginBottom: 3, fontWeight: 700 }}>{title}</div>
+        <div className="text-dark-900/[52%]" style={{ fontSize: "clamp(11px,1.5vw,13px)", lineHeight: 1.55 }}>{sub}</div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 // ─── Main section ─────────────────────────────────────────────────────────────
 
 export default function ServicesInMotion() {
-  const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
-  const G = 16;
-  const [cardW, setCardW] = useState(() =>
-    typeof window !== "undefined"
-      ? window.innerWidth < 640 ? Math.max(280, window.innerWidth - 24) : 560
-      : 560
-  );
-  const STEP = cardW + G;
+  const trackRef = useRef(null);
+  const touchX = useRef(null);
+
   const max = CARDS.length - 1;
 
+  // Responsive card width + gap — viewport-height aware so cards never overflow screen
+  const getCardW = () => {
+    if (typeof window === "undefined") return 380;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const overhead = 310; // header + label text + dots + section padding
+    const maxH = Math.max(200, vh - overhead);
+    const maxWFromH = Math.floor(maxH * 9 / 13);
+    if (vw < 480) return Math.min(vw - 36, 260, maxWFromH);
+    if (vw < 768) return Math.min(vw - 64, 310, maxWFromH);
+    return Math.min(400, maxWFromH);
+  };
+  const [cardW, setCardW] = useState(getCardW);
+  const GAP = 24;
+
+  // Entrance animation
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const titleAccent = content?.titleAccent ?? "make.";
+  const titleWords = (content?.title?.replace(titleAccent, "") ?? "What we ").trim().split(" ").filter(Boolean);
+
   useEffect(() => {
-    const update = () => setCardW(window.innerWidth < 640 ? Math.max(280, window.innerWidth - 24) : 560);
-    window.addEventListener("resize", update, { passive: true });
-    return () => window.removeEventListener("resize", update);
+    const u = () => setCardW(getCardW());
+    window.addEventListener("resize", u, { passive: true });
+    return () => window.removeEventListener("resize", u);
   }, []);
 
-  // Scroll-driven active card
-  useEffect(() => {
-    const fn = () => {
-      if (!wrapRef.current) return;
-      const rect = wrapRef.current.getBoundingClientRect();
-      const total = wrapRef.current.offsetHeight - window.innerHeight;
-      if (total <= 0) return;
-      const extraPx = window.innerHeight * 0.8;
-      const normalTotal = total - extraPx;
-      const scrolled = -rect.top;
-      if (scrolled <= normalTotal) {
-        const p = Math.min(1, Math.max(0, scrolled / Math.max(1, normalTotal)));
-        setActive(Math.min(max, Math.max(0, Math.round(p * max))));
-      } else {
-        setActive(max);
-      }
-    };
-    fn();
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
+  const autoTimerRef = useRef(null);
+  const startLoop = useCallback(() => {
+    clearInterval(autoTimerRef.current);
+    autoTimerRef.current = setInterval(() => {
+      if (!spotHovered.current) setActive((a) => (a >= max ? 0 : a + 1));
+    }, 3800);
   }, [max]);
 
-  const touchX = useRef(null);
+  useEffect(() => {
+    startLoop();
+    return () => clearInterval(autoTimerRef.current);
+  }, [startLoop]);
+
+  const prev = () => { setActive((a) => Math.max(0, a - 1)); startLoop(); };
+  const next = () => { setActive((a) => Math.min(max, a + 1)); startLoop(); };
+
+  // Autonomous spotlight
+  const spotHovered = useRef(false);
+  const spotX = useMotionValue(50);
+  const spotY = useMotionValue(30);
+  const spotTransX = useTransform(spotX, [0, 100], ["-300px", "300px"]);
+  const spotTransY = useTransform(spotY, [0, 100], ["-200px", "200px"]);
+  useEffect(() => {
+    const pts = [[35,22],[65,42],[48,16],[72,36],[26,50],[55,20],[40,58],[68,28]];
+    let idx = 0;
+    let stopped = false;
+    let retryTimer = null;
+    const step = () => {
+      if (stopped) return;
+      if (spotHovered.current) { retryTimer = setTimeout(step, 120); return; }
+      const [tx, ty] = pts[idx % pts.length];
+      idx++;
+      animate(spotX, tx, { duration: 3, ease: "easeInOut" });
+      animate(spotY, ty, { duration: 3, ease: "easeInOut", onComplete: step });
+    };
+    step();
+    return () => { stopped = true; clearTimeout(retryTimer); };
+  }, []);
+
+  // scroll no longer controls carousel
+
+  // scroll no longer drives the carousel — auto-loop handles advancement
+
   const onTouchStart = (e) => { touchX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
     if (touchX.current === null) return;
     const dx = touchX.current - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 40) setActive((a) => dx > 0 ? Math.min(max, a + 1) : Math.max(0, a - 1));
+    if (Math.abs(dx) > 36) { dx > 0 ? next() : prev(); startLoop(); }
     touchX.current = null;
   };
 
-  const wAcc = useRef(0);
-  const onWheel = (e) => {
-    e.preventDefault();
-    wAcc.current += e.deltaY;
-    if (wAcc.current > 60) { setActive((a) => Math.min(max, a + 1)); wAcc.current = 0; }
-    else if (wAcc.current < -60) { setActive((a) => Math.max(0, a - 1)); wAcc.current = 0; }
-  };
-
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const sectionHeight = isMobile
-    ? `calc(100vh + ${CARDS.length * 280}px)`
-    : `calc(100vh + ${CARDS.length * 260}px)`;
+  // Centre active card; clamp edges so no empty track visible at start/end
+  const containerW = typeof window !== "undefined" ? window.innerWidth : 1200;
+  const centreX = containerW / 2 - cardW / 2;
+  const PAD = 40;
+  const rawOffset = centreX - active * (cardW + GAP);
+  const maxOffset = PAD;
+  const minOffset = containerW - PAD - cardW - max * (cardW + GAP);
+  const offsetX = Math.min(maxOffset, Math.max(minOffset, rawOffset));
 
   return (
     <section
-      ref={wrapRef}
-      style={{
-        position: "relative",
-        height: sectionHeight,
-        paddingBottom: 0,
-        background: "linear-gradient(160deg, #daf0ff 0%, #c6e6ff 55%, #b8ddf8 100%)",
-      }}
+      ref={sectionRef}
+      style={{ background: "transparent", paddingBottom: 48, position: "relative" }}
+      onMouseEnter={() => { spotHovered.current = true; }}
+      onMouseLeave={() => { spotHovered.current = false; }}
     >
+      {/* Edge blends */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 120, background: "linear-gradient(to bottom, rgba(224,238,248,0.55), transparent)", pointerEvents: "none", zIndex: 10 }} />
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 120, background: "linear-gradient(to top, rgba(212,232,244,0.45), transparent)", pointerEvents: "none", zIndex: 10 }} />
       <style>{`
         .sh { animation: shimmer 2.2s ease-in-out infinite; }
         @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
@@ -919,105 +1014,133 @@ export default function ServicesInMotion() {
         @keyframes growBar { from{width:0} }
       `}</style>
 
-      <div
-        style={{
-          position: "sticky", top: 0, height: "100vh", overflow: "hidden",
-          display: "flex", flexDirection: "column", background: "transparent", zIndex: 3,
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.12)",
-        }}
-      >
-        {/* Spotlight overlays */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-          {/* Primary drifting spotlight */}
-          <div style={{
-            position: "absolute", top: "-10%", left: "50%", transform: "translateX(-50%)",
-            width: 600, height: 600,
-            background: "radial-gradient(ellipse 50% 55% at 50% 0%, rgba(25,128,194,.18) 0%, transparent 70%)",
-            animation: "spotDrift 9s ease-in-out infinite alternate",
-          }} />
-          {/* Secondary accent */}
-          <div style={{
-            position: "absolute", top: 0, right: "-5%",
-            width: 340, height: 340,
-            background: "radial-gradient(ellipse at 70% 0%, rgba(61,160,228,.14) 0%, transparent 60%)",
-            animation: "spotDrift2 13s ease-in-out infinite alternate",
-          }} />
-          {/* Warm bottom glow */}
-          <div style={{
-            position: "absolute", bottom: 0, left: "20%",
-            width: 400, height: 300,
-            background: "radial-gradient(ellipse at 50% 100%, rgba(25,128,194,.08) 0%, transparent 60%)",
-          }} />
-        </div>
-
-        <style>{`
-          @keyframes spotDrift { from{left:36%;opacity:.6} to{left:64%;opacity:1} }
-          @keyframes spotDrift2 { from{opacity:.3} to{opacity:.85} }
-        `}</style>
-
-        {/* Header */}
-        <div
-          className="section-sticky-title"
-          style={{
-            padding: "72px 32px 8px", display: "flex", alignItems: "flex-end",
-            justifyContent: "space-between", flexShrink: 0,
-            background: "linear-gradient(to bottom, rgba(218,240,255,0.97) 0%, rgba(198,230,255,0.88) 100%)",
-            position: "relative", zIndex: 2,
-          }}
-        >
-          <div>
-            <p style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", fontWeight: 600, marginBottom: 6, color: "rgba(160,168,180,.75)" }}>
-              {content?.eyebrow ?? "Services"}
-            </p>
-            <h2 className="text-dark-900" style={{ fontSize: "clamp(26px,3.8vw,44px)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-.04em" }}>
-              {content?.title?.replace(content?.titleAccent, "") ?? "What we "}
-              <span className="text-azure-500">{content?.titleAccent ?? "make."}</span>
-            </h2>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {[{ d: "M14 6L8 12l6 6", fn: () => setActive((a) => Math.max(0, a - 1)) }, { d: "M10 6l6 6-6 6", fn: () => setActive((a) => Math.min(max, a + 1)) }].map(({ d, fn }, i) => (
-              <button key={i} onClick={fn} className="bg-transparent flex items-center justify-center" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(24,24,23,.14)" }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(15,23,42,.45)" strokeWidth="2" strokeLinecap="round"><path d={d} /></svg>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Card strip */}
-        <div
-          className="pl-4 sm:pl-8"
-          style={{ flex: 1, overflow: "hidden", position: "relative", zIndex: 2 }}
-          onWheel={onWheel}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <motion.div
-            style={{ display: "flex", height: "100%", alignItems: "flex-start", paddingTop: 24, gap: G }}
-            animate={{ x: -active * STEP }}
-            transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
+      {/* Header */}
+      <div style={{ padding: "64px 32px 40px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto" }}>
+        <div>
+          <motion.p
+            style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", fontWeight: 600, marginBottom: 8, color: "rgba(160,168,180,.75)" }}
+            initial={{ opacity: 0, x: -24 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            {CARDS.map((c, i) => (
-              <SvcCard key={c.id} config={c} isActive={i === active} startDelay={i * 600} />
+            {content?.eyebrow ?? "Services"}
+          </motion.p>
+          <h2
+            className="text-dark-900"
+            style={{ fontSize: "clamp(26px,3.8vw,44px)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-.04em", perspective: "600px" }}
+          >
+            {titleWords.map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 38, rotateX: 50 }}
+                animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+                transition={{ duration: 0.65, delay: 0.12 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+                style={{ display: "inline-block", marginRight: "0.22em", transformOrigin: "bottom center" }}
+              >
+                {word}
+              </motion.span>
             ))}
-          </motion.div>
+            <motion.span
+              className="text-azure-500"
+              initial={{ opacity: 0, y: 38, rotateX: 50 }}
+              animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+              transition={{ duration: 0.65, delay: 0.12 + titleWords.length * 0.09, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: "inline-block", transformOrigin: "bottom center" }}
+            >
+              {titleAccent}
+            </motion.span>
+          </h2>
         </div>
-
-        {/* Dots */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, padding: "10px 0 18px", flexShrink: 0, position: "relative", zIndex: 2 }}>
-          {CARDS.map((_, i) => (
+        <div style={{ display: "flex", gap: 8 }}>
+          {[{ d: "M14 6L8 12l6 6", fn: prev }, { d: "M10 6l6 6-6 6", fn: next }].map(({ d, fn }, i) => (
             <motion.button
-              key={i}
-              onClick={() => setActive(i)}
-              animate={{ width: i === active ? 16 : 5, background: i === active ? "rgba(15,23,42,.52)" : "rgba(15,23,42,.16)" }}
-              transition={{ duration: 0.2 }}
-              style={{ height: 5, borderRadius: 2.5, border: "none", padding: 0 }}
-            />
+              key={i} onClick={fn}
+              className="bg-transparent flex items-center justify-center"
+              style={{ width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(24,24,23,.14)", cursor: "pointer" }}
+              initial={{ opacity: 0, scale: 0.2, rotate: i === 0 ? 45 : -45 }}
+              animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+              transition={{ type: "spring", stiffness: 420, damping: 18, delay: 0.55 + i * 0.1 }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(15,23,42,.45)" strokeWidth="2" strokeLinecap="round">
+                <path d={d} />
+              </svg>
+            </motion.button>
           ))}
         </div>
       </div>
 
-      {/* Bottom fade */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 120, pointerEvents: "none", background: "linear-gradient(to bottom, transparent, rgba(242,101,34,.12))" }} />
+      {/* Spotlight + cards */}
+      <div style={{ position: "relative" }}>
+        <motion.div
+          style={{
+            position: "absolute", top: "50%", left: "50%",
+            width: 700, height: 500, pointerEvents: "none", zIndex: 0,
+            translateX: "-50%", translateY: "-50%",
+            x: spotTransX, y: spotTransY,
+            background: "radial-gradient(ellipse 60% 55% at 50% 50%, rgba(25,128,194,.11) 0%, transparent 70%)",
+          }}
+          initial={{ opacity: 0, scale: 0.3 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        />
+
+        {/* Card strip — entrance wrapper + wheel handler */}
+        <motion.div
+          initial={{ opacity: 0, y: 64 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div
+            ref={trackRef}
+            style={{ overflow: "hidden", position: "relative", zIndex: 1, paddingTop: 12, paddingBottom: 40 }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <motion.div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: GAP,
+                willChange: "transform",
+                perspective: 1400,
+                perspectiveOrigin: "50% 35%",
+              }}
+              animate={{ x: offsetX }}
+              transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            >
+              {CARDS.map((c, i) => (
+                <SvcCard
+                  key={c.id}
+                  config={c}
+                  index={i}
+                  activeIndex={active}
+                  isActive={i === active}
+                  startDelay={i * 600}
+                  cardW={cardW}
+                />
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Dots */}
+      <motion.div
+        style={{ display: "flex", justifyContent: "center", gap: 8, paddingTop: 4 }}
+        initial={{ opacity: 0, y: 14 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {CARDS.map((_, i) => (
+          <motion.button
+            key={i}
+            onClick={() => { setActive(i); startLoop(); }}
+            animate={{ width: i === active ? 16 : 5, background: i === active ? "rgba(15,23,42,.52)" : "rgba(15,23,42,.16)" }}
+            transition={{ duration: 0.2 }}
+            style={{ height: 5, borderRadius: 2.5, border: "none", padding: 0, cursor: "pointer" }}
+          />
+        ))}
+      </motion.div>
     </section>
   );
 }

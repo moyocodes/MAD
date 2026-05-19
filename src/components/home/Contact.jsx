@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView, useScroll, useTransform, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { homeCms } from "@/data/homeCms";
 
@@ -72,7 +72,7 @@ function TypingText({ texts, inView, delay = 0, className = "" }) {
       {displayed}
       {!done && (
         <span
-          className="inline-block bg-blue-500 ml-0.5 align-middle"
+          className="inline-block bg-azure-500 ml-0.5 align-middle"
           style={{
             width: 2,
             height: "0.85em",
@@ -92,7 +92,7 @@ function MadAvatar({ size = "sm" }) {
     size === "lg" ? "text-2xl" : size === "md" ? "text-sm" : "text-[8px]";
   return (
     <div
-      className={`${dim} rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-lg shadow-sky-900/40`}
+      className={`${dim} rounded-xl bg-gradient-to-br from-sky-500 to-azure-600 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-lg shadow-sky-900/40`}
     >
       <img
         src={LOGO_SRC}
@@ -174,7 +174,7 @@ function Bubble({ role, text }) {
       <div
         className={`px-3 py-2 text-[11px] leading-relaxed text-white max-w-[82%] ${
           isUser
-            ? "bg-gradient-to-br from-sky-500 to-blue-600 rounded-[14px_14px_4px_14px]"
+            ? "bg-gradient-to-br from-sky-500 to-azure-600 rounded-[14px_14px_4px_14px]"
             : "bg-white/10 rounded-[14px_14px_14px_4px]"
         }`}
       >
@@ -192,7 +192,7 @@ function Notification({ email, onHide }) {
 
   return (
     <div className="absolute top-2 left-2 right-2 z-50 bg-black/90 backdrop-blur-xl rounded-2xl p-2.5 flex items-center gap-2.5 pointer-events-none shadow-2xl animate-[slideDown_.4s_cubic-bezier(.16,1,.3,1)_both]">
-      <div className="w-8 h-8 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
+      <div className="w-8 h-8 rounded-xl bg-azure-500 flex items-center justify-center flex-shrink-0">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="white">
           <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
         </svg>
@@ -219,7 +219,7 @@ function CallingScreen({ onAnswer, onDecline }) {
           Incoming call
         </p>
         <p className="text-base font-extrabold text-white leading-none mb-1">
-          Mad AI
+          MAD AI
         </p>
         <p className="text-[10px] text-white/40">Assistant · Online</p>
       </div>
@@ -227,7 +227,7 @@ function CallingScreen({ onAnswer, onDecline }) {
       <div className="relative flex items-center justify-center w-24 h-24">
         <div className="absolute inset-0 rounded-full border border-sky-400/40 animate-[ringOut_2s_ease-out_infinite]" />
         <div className="absolute inset-0 rounded-full border border-sky-300/20 animate-[ringOut_2s_ease-out_.7s_infinite]" />
-        <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center overflow-hidden shadow-xl shadow-sky-900/50 z-10">
+        <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-sky-500 to-azure-600 flex items-center justify-center overflow-hidden shadow-xl shadow-sky-900/50 z-10">
           <img
             src={LOGO_SRC}
             alt="Mad"
@@ -251,7 +251,15 @@ function CallingScreen({ onAnswer, onDecline }) {
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
               <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.01l-2.2 2.21z" />
-              <line x1="22" y1="2" x2="2" y2="22" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line
+                x1="22"
+                y1="2"
+                x2="2"
+                y2="22"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
           <span className="text-[9px] text-white/35">Decline</span>
@@ -279,7 +287,15 @@ function DeclinedScreen({ onCallback }) {
       <div className="w-14 h-14 rounded-full bg-red-500/15 flex items-center justify-center">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#ef4444">
           <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.01l-2.2 2.21z" />
-          <line x1="22" y1="2" x2="2" y2="22" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" />
+          <line
+            x1="22"
+            y1="2"
+            x2="2"
+            y2="22"
+            stroke="#ef4444"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
       <p className="text-[13px] font-bold text-white">Call ended</p>
@@ -290,7 +306,7 @@ function DeclinedScreen({ onCallback }) {
       </p>
       <button
         onClick={onCallback}
-        className="mt-2 bg-gradient-to-br from-sky-500 to-blue-600 border-none rounded-full px-6 py-2.5 text-[11px] text-white font-bold cursor-pointer hover:opacity-90 transition-opacity active:scale-95"
+        className="mt-2 bg-gradient-to-br from-sky-500 to-azure-600 border-none rounded-full px-6 py-2.5 text-[11px] text-white font-bold cursor-pointer hover:opacity-90 transition-opacity active:scale-95"
       >
         Call back
       </button>
@@ -403,7 +419,7 @@ function ChatScreen() {
       <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-black/30 border-b border-white/5 flex-shrink-0">
         <div className="relative w-8 h-8 flex-shrink-0">
           <div className="absolute inset-0 rounded-full border border-sky-400/50 animate-[ringOut_2.2s_ease-out_infinite]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center z-10 overflow-hidden shadow-lg shadow-sky-900/50">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-azure-600 flex items-center justify-center z-10 overflow-hidden shadow-lg shadow-sky-900/50">
             <img
               src={LOGO_SRC}
               alt="Mad"
@@ -462,7 +478,7 @@ function ChatScreen() {
               >
                 <button
                   onClick={() => confirmTransfer(true)}
-                  className="bg-gradient-to-br from-sky-500 to-blue-600 border-none rounded-full px-3.5 py-2 text-[10.5px] text-white font-bold cursor-pointer hover:opacity-90 transition-opacity active:scale-95"
+                  className="bg-gradient-to-br from-sky-500 to-azure-600 border-none rounded-full px-3.5 py-2 text-[10.5px] text-white font-bold cursor-pointer hover:opacity-90 transition-opacity active:scale-95"
                 >
                   Yes, connect me
                 </button>
@@ -516,7 +532,7 @@ function ChatScreen() {
                 disabled={phase === "sending"}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.94 }}
-                className={`w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center cursor-pointer transition-all duration-200 shadow-lg shadow-sky-500/20 ${
+                className={`w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-azure-600 flex items-center justify-center cursor-pointer transition-all duration-200 shadow-lg shadow-sky-500/20 ${
                   phase === "sending"
                     ? "opacity-40 cursor-default"
                     : "hover:shadow-sky-500/40 hover:shadow-lg"
@@ -559,6 +575,19 @@ function ChatScreen() {
 
 function PhoneShell() {
   const [callPhase, setCallPhase] = useState("calling");
+  const [time, setTime] = useState(() => {
+    const n = new Date();
+    return `${n.getHours()}:${String(n.getMinutes()).padStart(2, "0")}`;
+  });
+
+  useEffect(() => {
+    const tick = () => {
+      const n = new Date();
+      setTime(`${n.getHours()}:${String(n.getMinutes()).padStart(2, "0")}`);
+    };
+    const id = setInterval(tick, 10000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div
@@ -579,9 +608,14 @@ function PhoneShell() {
       <div className="bg-[#0d0d12] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
         <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
           <span className="text-[9px] font-bold text-white/35 font-mono">
-            9:41
+            {time}
           </span>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.35)">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="rgba(255,255,255,.35)"
+          >
             <rect x="0" y="4" width="2" height="6" rx=".5" />
             <rect x="3" y="2" width="2" height="8" rx=".5" />
             <rect x="6" y="0" width="2" height="10" rx=".5" />
@@ -606,15 +640,21 @@ function PhoneShell() {
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export default function MadPhoneChatWithForm() {
+export default function MadPhoneChatWithForm({ scrollRef }) {
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: false, margin: "-80px" });
   const [formData, setFormData] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
   const titleLines = contact.title.split("\n");
 
+  // Scroll-driven phone Y — tracks the 200vh outer container from Home1.jsx
+  const phoneTarget = scrollRef ?? sectionRef;
+  const { scrollYProgress } = useScroll({ target: phoneTarget, offset: ["start start", "end end"] });
+  const phoneRawY = useTransform(scrollYProgress, [0, 0.4, 1], [55, 0, -110]);
+  const phoneSmoothY = useSpring(phoneRawY, { stiffness: 90, damping: 20, restDelta: 0.001 });
+
   // Words that cycle in the "Talk to" heading inside the left form panel
-  const MAD_TEXTS = ["MAD", "the future", "Mad AI"];
+  const MAD_TEXTS = ["MAD", "the future", "MAD AI"];
 
   return (
     <section ref={sectionRef} className="relative">
@@ -644,6 +684,11 @@ export default function MadPhoneChatWithForm() {
           0%, 100% { opacity: .85; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.06); }
         }
+        @keyframes cBlob1{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-22px);opacity:.55}}
+        @keyframes cBlob2{0%,100%{transform:translateY(0);opacity:.2}50%{transform:translateY(18px);opacity:.45}}
+        @keyframes cBlob3{0%,100%{transform:translateY(0) scale(1);opacity:.35}50%{transform:translateY(-28px) scale(1.1);opacity:.6}}
+        @keyframes cBlob4{0%,100%{transform:translateY(0);opacity:.25}50%{transform:translateY(22px);opacity:.5}}
+        @keyframes cBlob5{0%,100%{transform:translate(0,0);opacity:.15}50%{transform:translate(16px,-12px);opacity:.4}}
         .contact-grid { overflow: visible !important; }
         @media(min-width:768px){
           .right-panel-sticky {
@@ -662,48 +707,45 @@ export default function MadPhoneChatWithForm() {
       `}</style>
 
       <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
-
         {/* ── LEFT — form column ── */}
-        <div className="order-2 md:order-1 bg-white md:bg-gradient-to-br md:from-white md:via-blue-50 md:to-blue-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
-          <motion.div
-            className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-blue-300/20 blur-3xl pointer-events-none"
-            animate={inView ? { y: [0, -22, 0], opacity: [0.3, 0.55, 0.3] } : { opacity: 0 }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-blue-200/25 blur-3xl pointer-events-none"
-            animate={inView ? { y: [0, 18, 0], opacity: [0.2, 0.45, 0.2] } : { opacity: 0 }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          />
+        <div className="order-2 md:order-1 bg-white md:bg-gradient-to-br md:from-white md:via-azure-50 md:to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
+          <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none" style={{ animation: "cBlob1 8s ease-in-out infinite" }} />
+          <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-azure-200/25 blur-3xl pointer-events-none" style={{ animation: "cBlob2 10s ease-in-out 3s infinite" }} />
 
           <div className="relative z-10 max-w-md w-full">
-         
-
             {/* ── "Talk to MAD" with TruBilling TypingText ── */}
             <motion.div
               className="mb-5"
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.07 }}
+              transition={{
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.07,
+              }}
             >
-              <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-blue-400/60 mb-1">
+              <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-azure-400/60 mb-1">
                 Talk to
               </p>
-              <h2 className="text-3xl md:text-5xl font-black leading-none tracking-tight text-blue-900">
+              <h2 className="text-3xl md:text-5xl font-black leading-none tracking-tight text-azure-900">
                 <TypingText
                   texts={MAD_TEXTS}
                   inView={inView}
                   delay={0.4}
-                  className="text-blue-700/80"
+                  className="text-azure-700/80"
                 />
               </h2>
             </motion.div>
 
             <motion.h3
-              className="text-lg md:text-2xl font-black leading-tight tracking-tight text-blue-900 mb-4"
+              className="text-lg md:text-2xl font-black leading-tight tracking-tight text-azure-900 mb-4"
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
+              transition={{
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.12,
+              }}
             >
               {titleLines.map((line, i) => (
                 <span key={i} className="block">
@@ -713,10 +755,14 @@ export default function MadPhoneChatWithForm() {
             </motion.h3>
 
             <motion.p
-              className="text-sm md:text-base text-blue-700/55 leading-relaxed mb-7"
+              className="text-sm md:text-base text-azure-700/55 leading-relaxed mb-7"
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+              transition={{
+                duration: 0.6,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.15,
+              }}
             >
               {contact.body}
             </motion.p>
@@ -726,7 +772,11 @@ export default function MadPhoneChatWithForm() {
               className="flex flex-col gap-2.5 mb-8"
               initial={{ opacity: 0, y: 14 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
+              transition={{
+                duration: 0.55,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.22,
+              }}
             >
               <AnimatePresence>
                 {sent && (
@@ -739,17 +789,23 @@ export default function MadPhoneChatWithForm() {
                   >
                     <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                       <svg
-                        width="12" height="12" viewBox="0 0 24 24" fill="none"
-                        stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#22c55e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-blue-900">
+                      <div className="text-xs font-bold text-azure-900">
                         {contact.successTitle}
                       </div>
-                      <div className="text-xs text-blue-700/50">
+                      <div className="text-xs text-azure-700/50">
                         {contact.successBody}
                       </div>
                     </div>
@@ -759,25 +815,31 @@ export default function MadPhoneChatWithForm() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <input
-                  className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none transition-colors"
+                  className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
                   type="text"
                   placeholder={contact.fields.name}
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                 />
                 <input
-                  className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none transition-colors"
+                  className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
                   type="email"
                   placeholder={contact.fields.email}
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
               <textarea
-                className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none resize-none transition-colors h-24"
+                className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none resize-none transition-colors h-24"
                 placeholder={contact.fields.message}
                 value={formData.msg}
-                onChange={(e) => setFormData({ ...formData, msg: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, msg: e.target.value })
+                }
               />
               <Button
                 onClick={() => {
@@ -786,15 +848,15 @@ export default function MadPhoneChatWithForm() {
                     setTimeout(() => setSent(false), 5000);
                   }
                 }}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-blue-400/25 hover:shadow-blue-500/35 transition-all h-auto"
+                className="w-full bg-azure-500 hover:bg-azure-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-azure-400/25 hover:shadow-azure-500/35 transition-all h-auto"
               >
                 {contact.submit}
               </Button>
-              <p className="text-xs text-blue-700/40 text-center">
+              <p className="text-xs text-azure-700/40 text-center">
                 {contact.emailPrefix}{" "}
                 <a
                   href={`mailto:${brand.email}`}
-                  className="text-blue-500 font-semibold hover:text-blue-600 transition-colors"
+                  className="text-azure-500 font-semibold hover:text-azure-600 transition-colors"
                 >
                   {brand.email}
                 </a>
@@ -823,14 +885,14 @@ export default function MadPhoneChatWithForm() {
                     },
                   }}
                 >
-                  <span className="font-mono text-[8px] font-bold text-blue-500/60 pt-0.5 min-w-[16px]">
+                  <span className="font-mono text-[8px] font-bold text-azure-500/60 pt-0.5 min-w-[16px]">
                     {num}
                   </span>
                   <div>
-                    <div className="text-xs font-bold text-blue-900 mb-0.5">
+                    <div className="text-xs font-bold text-azure-900 mb-0.5">
                       {title}
                     </div>
-                    <div className="text-xs text-blue-500/45 leading-relaxed">
+                    <div className="text-xs text-azure-500/45 leading-relaxed">
                       {sub}
                     </div>
                   </div>
@@ -840,9 +902,8 @@ export default function MadPhoneChatWithForm() {
           </div>
         </div>
 
-        {/* ── RIGHT — sticky blue panel with phone ── */}
-        <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-blue-400/80 via-blue-500/70 to-blue-600/80 relative min-h-[65vh] md:min-h-0">
-
+        {/* ── RIGHT — sticky azure panel with phone ── */}
+        <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 relative min-h-[65vh] md:min-h-0">
           {/* Mobile "Talk to MAD" header — also uses TypingText */}
           <motion.div
             className="md:hidden absolute top-0 left-0 right-0 z-20 pt-6 px-6 text-center"
@@ -850,36 +911,23 @@ export default function MadPhoneChatWithForm() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="text-sm text-white/70 font-medium mb-1">Talk to</div>
+            <div className="text-sm text-white/70 font-medium mb-1">
+              Talk to
+            </div>
             <div className="text-3xl font-black text-white tracking-tight">
-              <TypingText
-                texts={MAD_TEXTS}
-                inView={inView}
-                delay={0.5}
-              />
+              <TypingText texts={MAD_TEXTS} inView={inView} delay={0.5} />
             </div>
           </motion.div>
 
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-blue-300/30 blur-3xl"
-              animate={inView ? { y: [0, -28, 0], scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] } : { opacity: 0 }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-blue-700/25 blur-3xl"
-              animate={inView ? { y: [0, 22, 0], opacity: [0.25, 0.5, 0.25] } : { opacity: 0 }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
-            />
-            <motion.div
-              className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-blue-200/20 blur-2xl"
-              animate={inView ? { x: [0, 16, 0], y: [0, -12, 0], opacity: [0.15, 0.4, 0.15] } : { opacity: 0 }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-            />
+            <div className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl" style={{ animation: "cBlob3 7s ease-in-out infinite" }} />
+            <div className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-azure-700/25 blur-3xl" style={{ animation: "cBlob4 9s ease-in-out 2.5s infinite" }} />
+            <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-azure-200/20 blur-2xl" style={{ animation: "cBlob5 6s ease-in-out 1.2s infinite" }} />
             <div
               className="absolute inset-0 opacity-30"
               style={{
-                backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
+                backgroundImage:
+                  "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
                 backgroundSize: "32px 32px",
               }}
             />
@@ -889,20 +937,16 @@ export default function MadPhoneChatWithForm() {
           <motion.div
             className="hidden md:flex items-center justify-center w-full h-full py-16"
             initial={{ opacity: 0, y: 50, scale: 0.92 }}
-            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
+            animate={
+              inView
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 0, y: 50, scale: 0.92 }
+            }
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
           >
-            <motion.div
-              animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
-              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              style={{ position: "relative" }}
-            >
+            <motion.div style={{ position: "relative", y: phoneSmoothY }}>
               <PhoneShell />
-              <motion.div
-                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-blue-900/40 blur-xl pointer-events-none"
-                animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
-                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              />
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none opacity-40" />
             </motion.div>
           </motion.div>
 
@@ -910,19 +954,23 @@ export default function MadPhoneChatWithForm() {
           <div className="md:hidden flex items-center justify-center w-full h-full pt-24 pb-8 px-8">
             <motion.div
               initial={{ opacity: 0, y: 50, scale: 0.92 }}
-              animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
+              animate={
+                inView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 50, scale: 0.92 }
+              }
+              transition={{
+                duration: 0.9,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.12,
+              }}
             >
-              <motion.div
-                animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
-                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <motion.div style={{ y: phoneSmoothY }}>
                 <PhoneShell />
               </motion.div>
             </motion.div>
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -56,6 +56,9 @@ export const homeCms = {
     ],
     notifications: [
       "New inquiry from Kova Group",
+       "TruBilling shipped ✓ — Product launch confirmed",
+      "Meridian campaign went live today",
+           "New inquiry from Kova Group",
       "TruBilling shipped ✓ — Product launch confirmed",
       "Meridian campaign went live today",
     ],
