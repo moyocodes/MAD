@@ -172,7 +172,7 @@ export default function Beyond() {
    
 
         {/* ── Two-column grid ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(32px,4vw,72px)", alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "4fr 1fr", gap: "clamp(32px,4vw,72px)", alignItems: "center" }}>
 
           {/* ── LEFT column ── */}
           <div style={{ perspective: 800 }}>
@@ -224,7 +224,11 @@ export default function Beyond() {
               Let's build something that performs.
             </motion.p>
 
-            {/* CTAs */}
+          
+          </div>
+      <div>
+
+  {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -258,119 +262,8 @@ export default function Beyond() {
                 See our work
               </motion.button>
             </motion.div>
-          </div>
-
-          {/* ── RIGHT: pillar cards ── */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            style={{ display: "flex", flexDirection: "column", gap: 16, perspective: 900 }}
-          >
-            {pillars.map((p, i) => (
-              <motion.div
-                key={i}
-                variants={cardVariants}
-                onHoverStart={() => setHoveredCard(i)}
-                onHoverEnd={() => setHoveredCard(null)}
-                whileHover={{ scale: 1.025, rotateY: 2, rotateX: -1, y: -6, boxShadow: "0 20px 52px rgba(25,128,194,0.18)" }}
-                style={{
-                  background: "rgba(255,255,255,0.78)",
-                  border: "1px solid rgba(25,128,194,0.18)",
-                  borderRadius: 18,
-                  padding: "22px 24px",
-                  display: "flex", alignItems: "flex-start", gap: 18,
-                  backdropFilter: "blur(6px)",
-                  cursor: "default",
-                  transformStyle: "preserve-3d",
-                  boxShadow: "0 4px 20px rgba(25,128,194,0.08)",
-                  transition: "box-shadow 0.25s",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Card shimmer on hover */}
-                <AnimatePresence>
-                  {hoveredCard === i && (
-                    <motion.div
-                      initial={{ x: "-100%", opacity: 0.6 }}
-                      animate={{ x: "200%", opacity: 0 }}
-                      exit={{}}
-                      transition={{ duration: 0.6, ease: "easeIn" }}
-                      style={{
-                        position: "absolute", top: 0, left: 0, width: "50%", height: "100%",
-                        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)",
-                        pointerEvents: "none", zIndex: 10,
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
-
-                {/* Icon */}
-                <motion.div
-                  animate={hoveredCard === i ? { rotate: [0, -10, 10, 0], scale: [1, 1.2, 1] } : {}}
-                  transition={{ duration: 0.4 }}
-                  style={{
-                    width: 44, height: 44, minWidth: 44,
-                    borderRadius: 12,
-                    background: "rgba(25,128,194,0.12)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 22,
-                  }}
-                >
-                  {p.icon}
-                </motion.div>
-
-                <div style={{ flex: 1 }}>
-                  <motion.div
-                    style={{
-                      fontFamily: "'Montserrat', sans-serif",
-                      fontSize: 14, fontWeight: 700,
-                      color: "#0a3654", letterSpacing: "-0.01em", marginBottom: 6,
-                    }}
-                  >
-                    {p.label}
-                  </motion.div>
-                  <div style={{ fontSize: 13, color: "#1468a0", lineHeight: 1.65, marginBottom: 12 }}>
-                    {p.desc}
-                  </div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                    {p.badges.map((b, bi) => (
-                      <motion.span
-                        key={bi}
-                        initial={{ opacity: 0, scale: 0.7 }}
-                        animate={inView ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ delay: 0.6 + i * 0.15 + bi * 0.07, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        whileHover={{ scale: 1.1, y: -1 }}
-                        style={{
-                          background: "rgba(25,128,194,0.10)",
-                          color: "#1468a0",
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontSize: 10, fontWeight: 700,
-                          letterSpacing: "0.07em", textTransform: "uppercase",
-                          padding: "4px 10px", borderRadius: 100,
-                          border: "1px solid rgba(25,128,194,0.20)",
-                          cursor: "default",
-                        }}
-                      >
-                        {b}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hover arrow */}
-                <motion.div
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={hoveredCard === i ? { opacity: 1, x: 0 } : { opacity: 0, x: -6 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ fontSize: 18, color: "#1980c2", alignSelf: "center" }}
-                >
-                  →
-                </motion.div>
-              </motion.div>
-            ))}
-          </motion.div>
+      </div>
+   
         </div>
       </div>
     </section>
