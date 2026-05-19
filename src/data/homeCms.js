@@ -125,24 +125,24 @@ export const homeCms = {
         sub: "Logo, type, colour, and brand systems that bring clarity.",
         stageSet: "brand",
       },
-      // {
-      //   id: "c4",
-      //   title: "Brand & Identity",
-      //   sub: "Logo, type, colour, and brand systems that bring clarity.",
-      //   stageSet: "brand",
-      // },
-      // {
-      //   id: "c5",
-      //   title: "Marketing & Comms",
-      //   sub: "Campaigns and content that reach the right audience.",
-      //   stageSet: "marketing",
-      // },
-      // {
-      //   id: "c6",
-      //   title: "Brand & Identity",
-      //   sub: "Logo, type, colour, and brand systems that bring clarity.",
-      //   stageSet: "brand",
-      // },
+      {
+        id: "c4",
+        title: "Brand & Identity",
+        sub: "Logo, type, colour, and brand systems that bring clarity.",
+        stageSet: "brand",
+      },
+      {
+        id: "c5",
+        title: "Marketing & Comms",
+        sub: "Campaigns and content that reach the right audience.",
+        stageSet: "marketing",
+      },
+      {
+        id: "c6",
+        title: "Brand & Identity",
+        sub: "Logo, type, colour, and brand systems that bring clarity.",
+        stageSet: "brand",
+      },
     ],
   },
   experience: {
