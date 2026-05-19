@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { homeCms } from "@/data/homeCms";
 
-// ─── Replace with your logo URL ───
 const LOGO_SRC = "YOUR_LOGO_URL_HERE";
 
 const { brand, contact } = homeCms;
@@ -22,10 +20,8 @@ const COPY = {
     "No worries! Feel free to come back anytime. Have a great day! 👋",
 };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// ─── Avatar ──────────────────────────────────────────────────────────────────
 function MadAvatar({ size = "sm" }) {
   const dim =
     size === "lg" ? "w-16 h-16" : size === "md" ? "w-8 h-8" : "w-6 h-6";
@@ -53,7 +49,6 @@ function MadAvatar({ size = "sm" }) {
   );
 }
 
-// ─── Typing bubble with character-by-character animation ─────────────────────
 function TypingBubble({ text }) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
@@ -87,7 +82,6 @@ function TypingBubble({ text }) {
   );
 }
 
-// ─── Dots indicator (while waiting before typing starts) ─────────────────────
 function TypingDots() {
   return (
     <div className="flex items-end gap-1.5 animate-[fadeUp_.2s_ease_both]">
@@ -105,7 +99,6 @@ function TypingDots() {
   );
 }
 
-// ─── Chat Bubble ─────────────────────────────────────────────────────────────
 function Bubble({ role, text }) {
   const isUser = role === "user";
   return (
@@ -128,7 +121,6 @@ function Bubble({ role, text }) {
   );
 }
 
-// ─── Notification ────────────────────────────────────────────────────────────
 function Notification({ email, onHide }) {
   useEffect(() => {
     const t = setTimeout(onHide, 4500);
@@ -156,11 +148,9 @@ function Notification({ email, onHide }) {
   );
 }
 
-// ─── Calling Screen ───────────────────────────────────────────────────────────
 function CallingScreen({ onAnswer, onDecline }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-between px-6 py-8 bg-gradient-to-b from-[#0a1628] to-[#0d0d12]">
-      {/* Top label */}
       <div className="text-center animate-[fadeUp_.6s_ease_both]">
         <p className="text-[10px] text-white/35 tracking-[.2em] uppercase mb-2">
           Incoming call
@@ -171,7 +161,6 @@ function CallingScreen({ onAnswer, onDecline }) {
         <p className="text-[10px] text-white/40">Assistant · Online</p>
       </div>
 
-      {/* Avatar with rings */}
       <div className="relative flex items-center justify-center w-24 h-24">
         <div className="absolute inset-0 rounded-full border border-sky-400/40 animate-[ringOut_2s_ease-out_infinite]" />
         <div className="absolute inset-0 rounded-full border border-sky-300/20 animate-[ringOut_2s_ease-out_.7s_infinite]" />
@@ -191,9 +180,7 @@ function CallingScreen({ onAnswer, onDecline }) {
         </div>
       </div>
 
-      {/* Action buttons */}
       <div className="flex gap-10 items-center justify-center w-full">
-        {/* Decline */}
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={onDecline}
@@ -215,7 +202,6 @@ function CallingScreen({ onAnswer, onDecline }) {
           <span className="text-[9px] text-white/35">Decline</span>
         </div>
 
-        {/* Answer */}
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={onAnswer}
@@ -232,7 +218,6 @@ function CallingScreen({ onAnswer, onDecline }) {
   );
 }
 
-// ─── Declined Screen ──────────────────────────────────────────────────────────
 function DeclinedScreen({ onCallback }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-3 px-8 text-center animate-[fadeUp_.4s_ease_both]">
@@ -266,7 +251,6 @@ function DeclinedScreen({ onCallback }) {
   );
 }
 
-// ─── Chat Screen ──────────────────────────────────────────────────────────────
 function ChatScreen() {
   const [phase, setPhase] = useState("greeting-start");
   const [messages, setMessages] = useState([]);
@@ -300,7 +284,6 @@ function ChatScreen() {
       setShowDots(false);
       setTypingText(text);
       setTyping(true);
-      // wait for typing animation to roughly finish
       await wait(Math.max(text.length * 26 + 400, delayMs * 0.6));
       setTyping(false);
       setTypingText("");
@@ -368,10 +351,8 @@ function ChatScreen() {
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
-      {/* Notification */}
       {notif && <Notification email={notif} onHide={() => setNotif(null)} />}
 
-      {/* Header */}
       <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-black/30 border-b border-white/5 flex-shrink-0">
         <div className="relative w-8 h-8 flex-shrink-0">
           <div className="absolute inset-0 rounded-full border border-sky-400/50 animate-[ringOut_2.2s_ease-out_infinite]" />
@@ -403,7 +384,6 @@ function ChatScreen() {
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={chatRef}
         className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 flex flex-col gap-2.5 min-h-0 [scrollbar-width:none]"
@@ -456,7 +436,6 @@ function ChatScreen() {
         <div className="h-px" />
       </div>
 
-      {/* Input Bar */}
       <div className="px-3 pb-3 pt-1.5 bg-black/20 border-t border-white/5 flex-shrink-0">
         {phase === "email" || phase === "sending" ? (
           <div
@@ -507,9 +486,8 @@ function ChatScreen() {
   );
 }
 
-// ─── Phone Shell ──────────────────────────────────────────────────────────────
 function PhoneShell() {
-  const [callPhase, setCallPhase] = useState("calling"); // calling | declined | chat
+  const [callPhase, setCallPhase] = useState("calling");
 
   return (
     <div
@@ -523,14 +501,11 @@ function PhoneShell() {
           "0 48px 96px rgba(0,0,0,.6), 0 16px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.05), 0 0 60px rgba(14,165,233,.12)",
       }}
     >
-      {/* Notch */}
       <div className="w-20 h-6 bg-[#060608] rounded-b-[18px] mx-auto relative z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
       </div>
 
-      {/* Screen */}
       <div className="bg-[#0d0d12] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
-        {/* Status bar */}
         <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
           <span className="text-[9px] font-bold text-white/35 font-mono">
             9:41
@@ -547,7 +522,6 @@ function PhoneShell() {
           </svg>
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-h-0 flex flex-col">
           {callPhase === "calling" && (
             <CallingScreen
@@ -565,10 +539,15 @@ function PhoneShell() {
   );
 }
 
-// ─── Main Export ──────────────────────────────────────────────────────────────
-export default function MadPhoneChat() {
+export default function MadPhoneChatWithForm() {
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { once: false, margin: "-80px" });
+  const [formData, setFormData] = useState({ name: "", email: "", msg: "" });
+  const [sent, setSent] = useState(false);
+  const titleLines = contact.title.split("\n");
+
   return (
-    <>
+    <section ref={sectionRef} className="relative">
       <style>{`
         @keyframes dotPulse {
           0%, 100% { opacity: .3; transform: scale(.85); }
@@ -602,25 +581,315 @@ export default function MadPhoneChat() {
           0%, 100% { opacity: .85; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.06); }
         }
+        .contact-grid {
+          overflow: visible !important;
+        }
+        @media(min-width:768px){
+          .right-panel-sticky {
+            position: sticky !important;
+            top: 0 !important;
+            height: 100vh !important;
+            align-self: start !important;
+            overflow: visible !important;
+          }
+        }
+        .c-input::placeholder {
+          color: rgba(25, 128, 194, 0.35);
+        }
+        .c-input:focus {
+          border-color: rgba(25, 128, 194, 0.5) !important;
+          background: rgba(25, 128, 194, 0.06) !important;
+        }
       `}</style>
 
-      <div className="flex justify-center items-center py-8 min-h-[520px]">
-        <div
-          className="relative"
-          style={{ animation: "bob 4s ease-in-out infinite" }}
-        >
-          <PhoneShell />
-          {/* Ground shadow */}
-          <div
-            className="absolute -bottom-5 w-44 h-5 rounded-full blur-xl pointer-events-none"
-            style={{
-              left: "50%",
-              background: "rgba(7,30,60,.55)",
-              animation: "shadowPulse 4s ease-in-out infinite",
-            }}
+      <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
+        {/* ── LEFT — form column ── */}
+        <div className="order-2 md:order-1 bg-white md:bg-gradient-to-br md:from-white md:via-blue-50 md:to-blue-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
+          <motion.div
+            className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-blue-300/20 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, -22, 0], opacity: [0.3, 0.55, 0.3] } : { opacity: 0 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
+          <motion.div
+            className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-blue-200/25 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, 18, 0], opacity: [0.2, 0.45, 0.2] } : { opacity: 0 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          />
+
+          <div className="relative z-10 max-w-md w-full">
+            <motion.p
+              className="text-xs font-mono font-bold tracking-[0.28em] uppercase text-blue-500/60 mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.5 }}
+            >
+              {contact.eyebrow}
+            </motion.p>
+
+            <motion.h2
+              className="text-2xl md:text-4xl font-black leading-tight tracking-tight text-blue-900 mb-4"
+              initial={{ opacity: 0, y: 18 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.07 }}
+            >
+              {titleLines.map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
+            </motion.h2>
+
+            <motion.p
+              className="text-sm md:text-base text-blue-700/55 leading-relaxed mb-7"
+              initial={{ opacity: 0, y: 12 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            >
+              {contact.body}
+            </motion.p>
+
+            <motion.div
+              id="contact-form"
+              className="flex flex-col gap-2.5 mb-8"
+              initial={{ opacity: 0, y: 14 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              transition={{
+                duration: 0.55,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.22,
+              }}
+            >
+              <AnimatePresence>
+                {sent && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-center gap-3 bg-green-50 border border-green-200/60 rounded-xl px-4 py-3 overflow-hidden"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#22c55e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-blue-900">
+                        {contact.successTitle}
+                      </div>
+                      <div className="text-xs text-blue-700/50">
+                        {contact.successBody}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input
+                  className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none transition-colors"
+                  type="text"
+                  placeholder={contact.fields.name}
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+                <input
+                  className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none transition-colors"
+                  type="email"
+                  placeholder={contact.fields.email}
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <textarea
+                className="c-input w-full rounded-xl border border-blue-200/70 bg-white/70 text-blue-900 px-4 py-3 text-sm outline-none resize-none transition-colors h-24"
+                placeholder={contact.fields.message}
+                value={formData.msg}
+                onChange={(e) =>
+                  setFormData({ ...formData, msg: e.target.value })
+                }
+              />
+              <Button
+                onClick={() => {
+                  if (formData.name && formData.email) {
+                    setSent(true);
+                    setTimeout(() => setSent(false), 5000);
+                  }
+                }}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-blue-400/25 hover:shadow-blue-500/35 transition-all h-auto"
+              >
+                {contact.submit}
+              </Button>
+              <p className="text-xs text-blue-700/40 text-center">
+                {contact.emailPrefix}{" "}
+                <a
+                  href={`mailto:${brand.email}`}
+                  className="text-blue-500 font-semibold hover:text-blue-600 transition-colors"
+                >
+                  {brand.email}
+                </a>
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="flex flex-col gap-3.5"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.1 } },
+              }}
+              initial="hidden"
+              animate={inView ? "show" : "hidden"}
+            >
+              {contact.principles.map(([num, title, sub]) => (
+                <motion.div
+                  key={num}
+                  className="flex gap-3 items-start"
+                  variants={{
+                    hidden: { opacity: 0, x: -12 },
+                    show: {
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        duration: 0.5,
+                        ease: [0.16, 1, 0.3, 1],
+                      },
+                    },
+                  }}
+                >
+                  <span className="font-mono text-[8px] font-bold text-blue-400/60 pt-0.5 min-w-[16px]">
+                    {num}
+                  </span>
+                  <div>
+                    <div className="text-xs font-bold text-blue-900 mb-0.5">
+                      {title}
+                    </div>
+                    <div className="text-xs text-blue-700/45 leading-relaxed">
+                      {sub}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── RIGHT — sticky blue panel ── */}
+        <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-blue-400/80 via-blue-500/70 to-blue-600/80 relative min-h-[65vh] md:min-h-0">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <motion.div
+              className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-blue-300/30 blur-3xl"
+              animate={inView ? { y: [0, -28, 0], scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] } : { opacity: 0 }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-blue-700/25 blur-3xl"
+              animate={inView ? { y: [0, 22, 0], opacity: [0.25, 0.5, 0.25] } : { opacity: 0 }}
+              transition={{
+                duration: 9,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2.5,
+              }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-blue-200/20 blur-2xl"
+              animate={inView ? { x: [0, 16, 0], y: [0, -12, 0], opacity: [0.15, 0.4, 0.15] } : { opacity: 0 }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1.2,
+              }}
+            />
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+          </div>
+
+          {/* Phone - Desktop */}
+          <motion.div
+            className="hidden md:flex items-center justify-center w-full h-full py-16"
+            initial={{ opacity: 0, y: 50, scale: 0.92 }}
+            animate={
+              inView
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 0, y: 50, scale: 0.92 }
+            }
+            transition={{
+              duration: 0.9,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.12,
+            }}
+          >
+            <motion.div
+              animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
+              transition={{
+                duration: 3.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{ position: "relative" }}
+            >
+              <PhoneShell />
+              <motion.div
+                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-blue-900/40 blur-xl pointer-events-none"
+                animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
+                transition={{
+                  duration: 3.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </motion.div>
+          </motion.div>
+
+          {/* Phone - Mobile */}
+          <div className="md:hidden flex items-center justify-center w-full h-full py-16 px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.92 }}
+              animate={
+                inView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 50, scale: 0.92 }
+              }
+              transition={{
+                duration: 0.9,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.12,
+              }}
+            >
+              <motion.div
+                animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
+                transition={{
+                  duration: 3.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <PhoneShell />
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
-    </>
+    </section>
   );
 }
