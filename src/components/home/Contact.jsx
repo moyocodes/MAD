@@ -6,47 +6,29 @@ import { homeCms } from "@/data/homeCms";
 const { brand, contact } = homeCms;
 const SERVICES = contact.ai.services;
 
+/* ─── Avatar ─── */
 const MadAvatar = () => (
-  <div
-    style={{
-      width: 24,
-      height: 24,
-      borderRadius: 8,
-      background: "linear-gradient(135deg,#1980c2,#45b3f5)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexShrink: 0,
-    }}
-  >
-    <span style={{ fontSize: 8.5, fontWeight: 900, color: "#fff" }}>M</span>
+  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-sky-900/40">
+    <span className="text-[8.5px] font-black text-white">M</span>
   </div>
 );
 
+/* ─── Chat bubble ─── */
 function Bubble({ role, text }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        display: "flex",
-        alignItems: "flex-end",
-        gap: 6,
-        justifyContent: role === "user" ? "flex-end" : "flex-start",
-      }}
+      className={`flex items-end gap-1.5 ${role === "user" ? "justify-end" : "justify-start"}`}
     >
       {role === "mad" && <MadAvatar />}
       <div
-        style={{
-          background: role === "user" ? "linear-gradient(135deg,#1980c2,#45b3f5)" : "#1e1e1e",
-          borderRadius: role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-          padding: "9px 12px",
-          fontSize: 11,
-          color: "#fff",
-          lineHeight: 1.6,
-          maxWidth: "82%",
-        }}
+        className={`px-3 py-2 text-[11px] leading-relaxed text-white max-w-[82%] ${
+          role === "user"
+            ? "bg-gradient-to-br from-sky-500 to-blue-600 rounded-[14px_14px_4px_14px]"
+            : "bg-white/10 rounded-[14px_14px_14px_4px]"
+        }`}
       >
         {text}
       </div>
@@ -54,6 +36,7 @@ function Bubble({ role, text }) {
   );
 }
 
+/* ─── Typing dots ─── */
 function TypingDots() {
   return (
     <motion.div
@@ -61,29 +44,15 @@ function TypingDots() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      style={{ display: "flex", alignItems: "flex-end", gap: 6 }}
+      className="flex items-end gap-1.5"
     >
       <MadAvatar />
-      <div
-        style={{
-          background: "#1e1e1e",
-          borderRadius: "14px 14px 14px 4px",
-          padding: "10px 14px",
-          display: "flex",
-          gap: 4,
-          alignItems: "center",
-        }}
-      >
+      <div className="bg-white/10 rounded-[14px_14px_14px_4px] px-3.5 py-2.5 flex gap-1 items-center">
         {[0, 0.22, 0.44].map((d, i) => (
           <div
             key={i}
-            style={{
-              width: 5,
-              height: 5,
-              borderRadius: "50%",
-              background: "#45b3f5",
-              animation: `dotPulse 1.2s ${d}s infinite`,
-            }}
+            className="w-1.5 h-1.5 rounded-full bg-sky-400"
+            style={{ animation: `dotPulse 1.2s ${d}s infinite` }}
           />
         ))}
       </div>
@@ -91,6 +60,7 @@ function TypingDots() {
   );
 }
 
+/* ─── Phone screen ─── */
 function PhoneScreen() {
   const [phase, setPhase] = useState("idle");
   const [messages, setMessages] = useState([]);
@@ -108,7 +78,10 @@ function PhoneScreen() {
 
   const push = (role, content) =>
     new Promise((res) =>
-      setMessages((prev) => { res(); return [...prev, { role, content, id: Date.now() + Math.random() }]; })
+      setMessages((prev) => {
+        res();
+        return [...prev, { role, content, id: Date.now() + Math.random() }];
+      })
     );
 
   const wait = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -158,18 +131,25 @@ function PhoneScreen() {
 
   const submitEmail = async () => {
     const email = emailVal.trim();
-    if (!email || !/\S+@\S+\.\S+/.test(email)) { setEmailErr(true); return; }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setEmailErr(true);
+      return;
+    }
     setEmailErr(false);
     setPhase("sending");
     await push("user", email);
     setEmailVal("");
     await typeAndSay(`${contact.ai.donePrefix} ${email} ${contact.ai.doneSuffix}`, 1400);
     setPhase("done");
-    setTimeout(() => { setNotif(true); setTimeout(() => setNotif(false), 4500); }, 700);
+    setTimeout(() => {
+      setNotif(true);
+      setTimeout(() => setNotif(false), 4500);
+    }, 700);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden" }}>
+    <div className="flex flex-col h-full relative overflow-hidden">
+      {/* Notification */}
       <AnimatePresence>
         {notif && (
           <motion.div
@@ -178,60 +158,64 @@ function PhoneScreen() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -90, opacity: 0 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            style={{
-              position: "absolute", top: 8, left: 8, right: 8, zIndex: 60,
-              background: "rgba(20,20,28,0.95)", backdropFilter: "blur(20px)",
-              borderRadius: 14, padding: "10px 12px", display: "flex",
-              alignItems: "center", gap: 10, pointerEvents: "none",
-              boxShadow: "0 8px 32px rgba(0,0,0,.4)",
-            }}
+            className="absolute top-2 left-2 right-2 z-50 bg-black/90 backdrop-blur-xl rounded-2xl p-2.5 flex items-center gap-2.5 pointer-events-none shadow-2xl"
           >
-            <div style={{ width: 32, height: 32, borderRadius: 9, background: "#0a84ff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div className="w-8 h-8 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="white">
                 <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
               </svg>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>Mail</span>
-                <span style={{ fontSize: 9, color: "rgba(255,255,255,.35)" }}>now</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between mb-0.5">
+                <span className="text-[11px] font-bold text-white">Mail</span>
+                <span className="text-[9px] text-white/35">now</span>
               </div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,.55)", marginBottom: 1 }}>{contact.ai.notificationTitle}</div>
-              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.75)", lineHeight: 1.35, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{contact.ai.notificationBody}</div>
+              <div className="text-[10px] text-white/50 mb-0.5">{contact.ai.notificationTitle}</div>
+              <div className="text-[10.5px] text-white/70 leading-snug truncate">{contact.ai.notificationBody}</div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "#111", borderBottom: "1px solid rgba(255,255,255,.05)", flexShrink: 0 }}>
-        <div style={{ position: "relative", width: 34, height: 34, flexShrink: 0 }}>
-          <div style={{ position: "absolute", top: "50%", left: "50%", width: "100%", height: "100%", borderRadius: "50%", border: "1px solid rgba(25,128,194,.5)", animation: "ringOut 2.2s ease-out infinite", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#1980c2,#45b3f5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 900, color: "#fff" }}>M</span>
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-black/30 border-b border-white/5 flex-shrink-0">
+        <div className="relative w-8 h-8 flex-shrink-0">
+          <div
+            className="absolute top-1/2 left-1/2 w-full h-full rounded-full border border-sky-400/50 pointer-events-none"
+            style={{ animation: "ringOut 2.2s ease-out infinite" }}
+          />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center z-10 shadow-lg shadow-sky-900/50">
+            <span className="text-xs font-black text-white">M</span>
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1, marginBottom: 3 }}>{contact.ai.name}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399" }} />
-            <span style={{ fontSize: 9, color: "rgba(255,255,255,.38)", fontWeight: 500 }}>{contact.ai.status}</span>
+          <div className="text-[13px] font-bold text-white leading-none mb-1">{contact.ai.name}</div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="text-[9px] text-white/40 font-medium">{contact.ai.status}</span>
           </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div ref={chatRef} className="mad-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "12px", display: "flex", flexDirection: "column", gap: 9, minHeight: 0 }}>
+      <div
+        ref={chatRef}
+        className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 flex flex-col gap-2.5 min-h-0"
+        style={{ scrollbarWidth: "none" }}
+      >
         {phase === "idle" ? (
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: "24px 12px", textAlign: "center" }}>
-            <div style={{ width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg,#1980c2,#45b3f5)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 8px 24px rgba(25,128,194,.4)" }}>
-              <span style={{ fontSize: 20, fontWeight: 900, color: "#fff" }}>M</span>
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 px-3 py-6 text-center">
+            <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-xl shadow-sky-900/40">
+              <span className="text-xl font-black text-white">M</span>
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 5 }}>{contact.ai.idleTitle}</div>
-              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.38)", lineHeight: 1.55, maxWidth: 180 }}>{contact.ai.idleBody}</div>
+              <div className="text-[13px] font-bold text-white mb-1.5">{contact.ai.idleTitle}</div>
+              <div className="text-[10.5px] text-white/40 leading-relaxed max-w-[180px]">{contact.ai.idleBody}</div>
             </div>
-            <button onClick={startChat} style={{ background: "linear-gradient(135deg,#1980c2,#45b3f5)", color: "#fff", border: "none", borderRadius: 20, padding: "10px 22px", fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", cursor: "pointer", boxShadow: "0 4px 18px rgba(25,128,194,.4)" }}>
+            <button
+              onClick={startChat}
+              className="bg-gradient-to-br from-sky-500 to-blue-600 text-white border-none rounded-full px-5 py-2.5 text-[11px] font-bold tracking-wider cursor-pointer shadow-lg shadow-sky-900/40 hover:opacity-90 transition-opacity"
+            >
               {contact.ai.start}
             </button>
           </div>
@@ -240,12 +224,18 @@ function PhoneScreen() {
             {messages.map((msg) => {
               if (msg.role === "mad-services")
                 return (
-                  <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28 }} style={{ display: "flex", flexDirection: "column", gap: 5, paddingLeft: 30 }}>
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.28 }}
+                    className="flex flex-col gap-1.5 pl-7"
+                  >
                     {SERVICES.map((svc) => (
-                      <button key={svc.id} onClick={() => pickService(svc)}
-                        style={{ background: "rgba(25,128,194,.12)", border: "1px solid rgba(25,128,194,.3)", borderRadius: 10, padding: "8px 12px", fontSize: 10.5, color: "#45b3f5", fontWeight: 600, textAlign: "left", cursor: "pointer", transition: "background .15s" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(25,128,194,.22)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(25,128,194,.12)")}
+                      <button
+                        key={svc.id}
+                        onClick={() => pickService(svc)}
+                        className="bg-sky-500/10 border border-sky-500/25 rounded-xl px-3 py-2 text-[10.5px] text-sky-300 font-semibold text-left cursor-pointer hover:bg-sky-500/20 transition-colors"
                       >
                         {svc.icon} {svc.label}
                       </button>
@@ -254,41 +244,84 @@ function PhoneScreen() {
                 );
               if (msg.role === "mad-transfer")
                 return (
-                  <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28 }} style={{ paddingLeft: 30, display: "flex", gap: 6 }}>
-                    <button onClick={() => confirmTransfer(true)} style={{ background: "linear-gradient(135deg,#1980c2,#45b3f5)", border: "none", borderRadius: 20, padding: "8px 14px", fontSize: 10.5, color: "#fff", fontWeight: 700, cursor: "pointer" }}>Yes, connect me</button>
-                    <button onClick={() => confirmTransfer(false)} style={{ background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 20, padding: "8px 14px", fontSize: 10.5, color: "rgba(255,255,255,.45)", cursor: "pointer" }}>Not now</button>
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.28 }}
+                    className="pl-7 flex gap-2"
+                  >
+                    <button
+                      onClick={() => confirmTransfer(true)}
+                      className="bg-gradient-to-br from-sky-500 to-blue-600 border-none rounded-full px-3.5 py-2 text-[10.5px] text-white font-bold cursor-pointer hover:opacity-90 transition-opacity"
+                    >
+                      Yes, connect me
+                    </button>
+                    <button
+                      onClick={() => confirmTransfer(false)}
+                      className="bg-white/5 border border-white/10 rounded-full px-3.5 py-2 text-[10.5px] text-white/45 cursor-pointer hover:bg-white/10 transition-colors"
+                    >
+                      Not now
+                    </button>
                   </motion.div>
                 );
               return <Bubble key={msg.id} role={msg.role} text={msg.content} />;
             })}
             <AnimatePresence>{typing && <TypingDots key="typing" />}</AnimatePresence>
-            <div style={{ height: 1 }} />
+            <div className="h-px" />
           </>
         )}
       </div>
 
       {/* Input bar */}
-      <div style={{ padding: "7px 12px 12px", background: "#111", borderTop: "1px solid rgba(255,255,255,.05)", flexShrink: 0 }}>
+      <div className="px-3 pb-3 pt-1.5 bg-black/20 border-t border-white/5 flex-shrink-0">
         {phase === "email" || phase === "sending" ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: emailErr ? "rgba(239,68,68,.12)" : "#1d1d1d", border: emailErr ? "1px solid rgba(239,68,68,.4)" : "1px solid transparent", borderRadius: 24, padding: "6px 6px 6px 14px", transition: "all .2s" }}>
-            <input ref={inputRef} type="text" value={emailVal} disabled={phase === "sending"}
-              onChange={(e) => { setEmailVal(e.target.value); setEmailErr(false); }}
+          <div
+            className={`flex items-center gap-2 rounded-3xl px-3.5 py-1.5 transition-all ${
+              emailErr ? "bg-red-500/10 border border-red-500/40" : "bg-white/8 border border-white/5"
+            }`}
+          >
+            <input
+              ref={inputRef}
+              type="text"
+              value={emailVal}
+              disabled={phase === "sending"}
+              onChange={(e) => {
+                setEmailVal(e.target.value);
+                setEmailErr(false);
+              }}
               onKeyDown={(e) => e.key === "Enter" && submitEmail()}
               placeholder="your@email.com"
-              style={{ flex: 1, fontSize: 11, color: "#fff", background: "transparent", border: "none", outline: "none", minWidth: 0 }}
+              className="flex-1 text-[11px] text-white bg-transparent border-none outline-none min-w-0 placeholder:text-white/25"
             />
-            <div onClick={submitEmail} style={{ width: 26, height: 26, borderRadius: "50%", background: "linear-gradient(135deg,#1980c2,#45b3f5)", display: "flex", alignItems: "center", justifyContent: "center", cursor: phase === "sending" ? "default" : "pointer", opacity: phase === "sending" ? 0.5 : 1 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z" /></svg>
+            <div
+              onClick={submitEmail}
+              className={`w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center cursor-pointer transition-opacity ${
+                phase === "sending" ? "opacity-50 cursor-default" : "hover:opacity-90"
+              }`}
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+              </svg>
             </div>
           </div>
         ) : (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#1d1d1d", borderRadius: 24, padding: "6px 6px 6px 14px" }}>
-            <span style={{ flex: 1, fontSize: 11, color: "rgba(255,255,255,.2)" }}>
-              {phase === "idle" ? "Tap to start chatting…" : phase === "done" ? "Conversation complete ✓" : "Choose an option above…"}
+          <div className="flex items-center gap-2 bg-white/5 rounded-3xl px-3.5 py-1.5">
+            <span className="flex-1 text-[11px] text-white/20">
+              {phase === "idle"
+                ? "Tap to start chatting…"
+                : phase === "done"
+                ? "Conversation complete ✓"
+                : "Choose an option above…"}
             </span>
             {phase === "idle" && (
-              <div onClick={startChat} style={{ width: 26, height: 26, borderRadius: "50%", background: "linear-gradient(135deg,#1980c2,#45b3f5)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z" /></svg>
+              <div
+                onClick={startChat}
+                className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                  <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+                </svg>
               </div>
             )}
           </div>
@@ -298,6 +331,43 @@ function PhoneScreen() {
   );
 }
 
+/* ─── Phone shell ─── */
+function PhoneShell() {
+  return (
+    <div
+      className="w-[260px] relative"
+      style={{
+        background: "#060608",
+        borderRadius: 44,
+        padding: 10,
+        border: "1px solid rgba(255,255,255,.12)",
+        boxShadow:
+          "0 48px 96px rgba(0,0,0,.6), 0 16px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.05), 0 0 60px rgba(14,165,233,.12)",
+      }}
+    >
+      {/* Notch */}
+      <div className="w-20 h-6 bg-[#060608] rounded-b-[18px] mx-auto relative z-10">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
+      </div>
+      {/* Screen */}
+      <div className="bg-[#0d0d12] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
+        <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
+          <span className="text-[9px] font-bold text-white/35">9:41</span>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.35)">
+            <rect x="0" y="4" width="2" height="6" rx=".5" />
+            <rect x="3" y="2" width="2" height="8" rx=".5" />
+            <rect x="6" y="0" width="2" height="10" rx=".5" />
+          </svg>
+        </div>
+        <div className="flex-1 min-h-0 flex flex-col">
+          <PhoneScreen />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Contact section ─── */
 export default function Contact() {
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: false, margin: "-80px" });
@@ -306,93 +376,44 @@ export default function Contact() {
   const titleLines = contact.title.split("\n");
 
   return (
-    <section ref={sectionRef} className="relative">
+    <section ref={sectionRef} className="relative w-full">
       <style>{`
-        @keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
-        @keyframes ringOut{0%{transform:translate(-50%,-50%) scale(1);opacity:.5}100%{transform:translate(-50%,-50%) scale(2.2);opacity:0}}
-        .mad-scroll::-webkit-scrollbar{display:none}
-        .c-input::placeholder{color:rgba(25,128,194,.35)}
-        .c-input:focus{border-color:rgba(25,128,194,.5)!important;background:rgba(25,128,194,.06)!important}
-
-        /*
-         * The outer grid row must NOT clip its children so the phone
-         * can bleed leftward out of the right panel across the seam.
-         */
-        .contact-grid {
-          overflow: visible !important;
+        @keyframes dotPulse {
+          0%, 100% { opacity: .3; transform: scale(.85); }
+          50%       { opacity: 1; transform: scale(1); }
         }
-
-        /*
-         * ── Right panel: full-bleed azure column, sticky ──
-         *
-         * position:sticky + top:0 + height:100vh pins the panel while
-         * the left form column scrolls. align-self:start is required so
-         * the sticky element doesn't stretch to match the taller left column.
-         *
-         * overflow:visible lets the phone bleed out to the left.
-         */
-        @media(min-width:768px){
-          .right-panel-sticky {
-            position: sticky !important;
-            top: 0 !important;
-            height: 100vh !important;
-            align-self: start !important;
-            overflow: visible !important;
-          }
-        }
-
-        /*
-         * ── Phone: straddling the left edge of the right panel ──
-         *
-         * left:0 anchors to the panel's left boundary.
-         * translateX(-42%) pulls roughly half the phone width into the
-         * left (form) column — giving the "floating on the seam" look.
-         * top:50% + translateY(-50%) centres vertically.
-         *
-         * z-index:30 ensures it renders above the left panel's content.
-         */
-        @media(min-width:768px){
-          .phone-seam {
-            position: absolute !important;
-            left: 0 !important;
-            top: 50% !important;
-            transform: translate(-42%, -50%) !important;
-            z-index: 30 !important;
-          }
-          /* Override Framer Motion inline transform with a CSS var trick:
-             we wrap the bob animation inside the seam container */
-          .phone-seam-inner {
-            /* bob handled by Framer animate on this element */
-          }
+        @keyframes ringOut {
+          0%   { transform: translate(-50%, -50%) scale(1); opacity: .5; }
+          100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
         }
       `}</style>
 
       {/*
-       * The grid wrapper must allow overflow so the phone can cross the
-       * column boundary. Tailwind's default overflow:hidden on grid is
-       * overridden via the .contact-grid class above.
+       * TWO-COLUMN GRID
+       * Left  = scrollable form content
+       * Right = sticky azure panel, phone floats at its top edge
        */}
-      <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 md:items-start overflow-visible">
 
-        {/* ── LEFT — form column ── */}
-        <div className="order-2 md:order-1 bg-gradient-to-br from-white via-azure-50 to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
+        {/* ── LEFT: scrollable form ── */}
+        <div className="order-2 md:order-1 bg-gradient-to-br from-slate-50 via-sky-50 to-blue-100/60 flex flex-col justify-start px-8 md:px-14 py-16 md:py-28 relative overflow-hidden md:min-h-screen">
 
-          {/* looping blobs */}
+          {/* Ambient blobs */}
           <motion.div
-            className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none"
-            animate={inView ? { y: [0, -22, 0], opacity: [0.3, 0.55, 0.3] } : { opacity: 0 }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-sky-300/20 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, -24, 0], opacity: [0.25, 0.5, 0.25] } : { opacity: 0 }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-azure-200/25 blur-3xl pointer-events-none"
-            animate={inView ? { y: [0, 18, 0], opacity: [0.2, 0.45, 0.2] } : { opacity: 0 }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+            className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full bg-blue-200/25 blur-3xl pointer-events-none"
+            animate={inView ? { y: [0, 20, 0], opacity: [0.2, 0.4, 0.2] } : { opacity: 0 }}
+            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 3 }}
           />
 
           <div className="relative z-10 max-w-md w-full">
             {/* Eyebrow */}
             <motion.p
-              className="text-xs font-mono font-bold tracking-[0.28em] uppercase text-azure-500/60 mb-4"
+              className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-sky-500/70 mb-5"
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               transition={{ duration: 0.5 }}
@@ -402,17 +423,19 @@ export default function Contact() {
 
             {/* Headline */}
             <motion.h2
-              className="text-2xl md:text-4xl font-black leading-tight tracking-tight text-azure-900 mb-4"
+              className="text-3xl md:text-[2.6rem] font-black leading-tight tracking-tight text-slate-900 mb-5"
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
               transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.07 }}
             >
-              {titleLines.map((line, i) => <span key={i} className="block">{line}</span>)}
+              {titleLines.map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))}
             </motion.h2>
 
             {/* Body */}
             <motion.p
-              className="text-sm md:text-base text-azure-700/55 leading-relaxed mb-7"
+              className="text-sm md:text-[15px] text-slate-500 leading-relaxed mb-8"
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
@@ -423,7 +446,7 @@ export default function Contact() {
             {/* Form */}
             <motion.div
               id="contact-form"
-              className="flex flex-col gap-2.5 mb-8"
+              className="flex flex-col gap-3 mb-10"
               initial={{ opacity: 0, y: 14 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
@@ -435,47 +458,65 @@ export default function Contact() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex items-center gap-3 bg-green-50 border border-green-200/60 rounded-xl px-4 py-3 overflow-hidden"
+                    className="flex items-center gap-3 bg-emerald-50 border border-emerald-200/60 rounded-2xl px-4 py-3 overflow-hidden"
                   >
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-azure-900">{contact.successTitle}</div>
-                      <div className="text-xs text-azure-700/50">{contact.successBody}</div>
+                      <div className="text-xs font-bold text-slate-800">{contact.successTitle}</div>
+                      <div className="text-xs text-slate-500">{contact.successBody}</div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <input className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
-                  type="text" placeholder={contact.fields.name}
-                  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                <input className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none transition-colors"
-                  type="email" placeholder={contact.fields.email}
-                  value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input
+                  className="w-full rounded-2xl border border-sky-200/70 bg-white/80 text-slate-800 px-4 py-3 text-sm outline-none transition-all placeholder:text-sky-300/60 focus:border-sky-400/60 focus:bg-sky-50/50"
+                  type="text"
+                  placeholder={contact.fields.name}
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
+                <input
+                  className="w-full rounded-2xl border border-sky-200/70 bg-white/80 text-slate-800 px-4 py-3 text-sm outline-none transition-all placeholder:text-sky-300/60 focus:border-sky-400/60 focus:bg-sky-50/50"
+                  type="email"
+                  placeholder={contact.fields.email}
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
               </div>
-              <textarea className="c-input w-full rounded-xl border border-azure-200/70 bg-white/70 text-azure-900 px-4 py-3 text-sm outline-none resize-none transition-colors h-24"
+              <textarea
+                className="w-full rounded-2xl border border-sky-200/70 bg-white/80 text-slate-800 px-4 py-3 text-sm outline-none resize-none transition-all placeholder:text-sky-300/60 focus:border-sky-400/60 focus:bg-sky-50/50 h-28"
                 placeholder={contact.fields.message}
-                value={form.msg} onChange={(e) => setForm({ ...form, msg: e.target.value })} />
+                value={form.msg}
+                onChange={(e) => setForm({ ...form, msg: e.target.value })}
+              />
               <Button
-                onClick={() => { if (form.name && form.email) { setSent(true); setTimeout(() => setSent(false), 5000); } }}
-                className="w-full bg-azure-500 hover:bg-azure-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-azure-400/25 hover:shadow-azure-500/35 transition-all h-auto"
+                onClick={() => {
+                  if (form.name && form.email) {
+                    setSent(true);
+                    setTimeout(() => setSent(false), 5000);
+                  }
+                }}
+                className="w-full bg-gradient-to-br from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white border-none rounded-full py-3 text-[11px] font-bold tracking-widest uppercase shadow-lg shadow-sky-400/30 hover:shadow-sky-500/40 transition-all h-auto"
               >
                 {contact.submit}
               </Button>
-              <p className="text-xs text-azure-700/40 text-center">
+              <p className="text-xs text-slate-400 text-center">
                 {contact.emailPrefix}{" "}
-                <a href={`mailto:${brand.email}`} className="text-azure-500 font-semibold hover:text-azure-600 transition-colors">{brand.email}</a>
+                <a href={`mailto:${brand.email}`} className="text-sky-500 font-semibold hover:text-sky-600 transition-colors">
+                  {brand.email}
+                </a>
               </p>
             </motion.div>
 
             {/* Principles */}
             <motion.div
-              className="flex flex-col gap-3.5"
+              className="flex flex-col gap-4"
               variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
               initial="hidden"
               animate={inView ? "show" : "hidden"}
@@ -484,12 +525,15 @@ export default function Contact() {
                 <motion.div
                   key={num}
                   className="flex gap-3 items-start"
-                  variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } } }}
+                  variants={{
+                    hidden: { opacity: 0, x: -12 },
+                    show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+                  }}
                 >
-                  <span className="font-mono text-[8px] font-bold text-azure-400/60 pt-0.5 min-w-[16px]">{num}</span>
+                  <span className="font-mono text-[8px] font-bold text-sky-400/60 pt-0.5 min-w-[16px]">{num}</span>
                   <div>
-                    <div className="text-xs font-bold text-azure-900 mb-0.5">{title}</div>
-                    <div className="text-xs text-azure-700/45 leading-relaxed">{sub}</div>
+                    <div className="text-xs font-bold text-slate-800 mb-0.5">{title}</div>
+                    <div className="text-xs text-slate-500/70 leading-relaxed">{sub}</div>
                   </div>
                 </motion.div>
               ))}
@@ -497,135 +541,82 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* ── RIGHT — sticky azure panel ── */}
+        {/* ── RIGHT: sticky azure panel ── */}
         <div
-          className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 relative min-h-[65vh] md:min-h-0"
+          className="order-1 md:order-2 relative overflow-visible"
+          style={{
+            /* sticky pinned at section top */
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            alignSelf: "start",
+            /* deep, fully opaque azure — no transparency on mobile */
+            background: "linear-gradient(155deg, #0c4a7a 0%, #0e6bab 40%, #1982c4 70%, #1d4ed8 100%)",
+          }}
         >
-          {/* Background decoration — clipped inside the panel */}
+          {/* Subtle grid texture */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.08]"
+            style={{
+              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+
+          {/* Depth orbs — clipped inside panel */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <motion.div
-              className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl"
-              animate={inView ? { y: [0, -28, 0], scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] } : { opacity: 0 }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-16 -right-16 w-96 h-96 rounded-full blur-3xl"
+              style={{ background: "radial-gradient(circle, rgba(56,189,248,.18) 0%, transparent 70%)" }}
+              animate={inView ? { y: [0, -30, 0], scale: [1, 1.08, 1], opacity: [0.6, 1, 0.6] } : { opacity: 0 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
-              className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-azure-700/25 blur-3xl"
-              animate={inView ? { y: [0, 22, 0], opacity: [0.25, 0.5, 0.25] } : { opacity: 0 }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
-            />
-            <motion.div
-              className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-azure-200/20 blur-2xl"
-              animate={inView ? { x: [0, 16, 0], y: [0, -12, 0], opacity: [0.15, 0.4, 0.15] } : { opacity: 0 }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-            />
-            <div
-              className="absolute inset-0 opacity-30"
-              style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+              className="absolute -bottom-12 -left-12 w-72 h-72 rounded-full blur-3xl"
+              style={{ background: "radial-gradient(circle, rgba(30,64,175,.45) 0%, transparent 70%)" }}
+              animate={inView ? { y: [0, 24, 0], opacity: [0.5, 0.9, 0.5] } : { opacity: 0 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
             />
           </div>
 
           {/*
-           * ── Phone: desktop — absolute, straddling the left seam ──
+           * ── Phone: centred in the panel, peeking above the top edge ──
            *
-           * .phone-seam positions it: left:0, top:50%, translateX(-42%) translateY(-50%)
-           * so ~42% of the phone width bleeds into the form column.
-           * The motion wrapper handles the entrance animation; the inner
-           * motion.div handles the continuous bob.
-           *
-           * On mobile this is hidden; a centred version renders below.
+           * On desktop: positioned near the top of the sticky panel so it
+           * appears to "float" above the section fold.
+           * On mobile: centred in the full-height panel.
            */}
-          <motion.div
-            className="phone-seam hidden md:block"
-            initial={{ opacity: 0, y: 50, scale: 0.92 }}
-            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
-          >
-            {/* Bob animation wrapper */}
+          <div className="absolute inset-0 flex items-start justify-center pt-8 md:pt-6 pointer-events-none">
             <motion.div
-              animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
-              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              style={{ position: "relative" }}
+              initial={{ opacity: 0, y: -40, scale: 0.92 }}
+              animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: -40, scale: 0.92 }}
+              transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+              className="pointer-events-auto"
             >
-              {/* Phone shell */}
-              <div
-                className="w-[260px]"
-                style={{
-                  background: "#080808",
-                  borderRadius: 44,
-                  padding: 10,
-                  border: "1px solid rgba(255,255,255,.1)",
-                  boxShadow: [
-                    "0 40px 80px rgba(0,0,0,.45)",
-                    "0 12px 32px rgba(0,0,0,.3)",
-                    "0 0 0 1px rgba(255,255,255,.05)",
-                    /* Left-side glow so it reads well over the form column */
-                    "-20px 0 60px rgba(25,128,194,.18)",
-                  ].join(", "),
-                }}
-              >
-                {/* Notch */}
-                <div className="w-20 h-6 bg-[#080808] rounded-b-[18px] mx-auto relative z-[4]">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
-                </div>
-
-                {/* Screen */}
-                <div className="bg-[#111] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
-                  <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
-                    <span className="text-[9px] font-bold text-white/40">9:41</span>
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.4)">
-                      <rect x="0" y="4" width="2" height="6" rx=".5" />
-                      <rect x="3" y="2" width="2" height="8" rx=".5" />
-                      <rect x="6" y="0" width="2" height="10" rx=".5" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-h-0 flex flex-col">
-                    <PhoneScreen />
-                  </div>
-                </div>
-              </div>
-
-              {/* Ground shadow */}
+              {/* Bob wrapper */}
               <motion.div
-                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none"
-                animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
-                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </motion.div>
-          </motion.div>
-
-          {/* ── Mobile: phone centred inside the azure panel ── */}
-          <div className="md:hidden flex items-center justify-center w-full h-full py-16 px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.92 }}
-              animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
-            >
-              <motion.div
-                animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
-                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-                className="w-[260px]"
+                animate={inView ? { y: [0, -14, 0] } : { y: 0 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                style={{ position: "relative" }}
               >
-                <div className="bg-[#080808] rounded-[44px] p-2.5 border border-white/10"
-                  style={{ boxShadow: "0 40px 80px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.05)" }}>
-                  <div className="w-20 h-6 bg-[#080808] rounded-b-[18px] mx-auto relative z-[4]">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
-                  </div>
-                  <div className="bg-[#111] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
-                    <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
-                      <span className="text-[9px] font-bold text-white/40">9:41</span>
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.4)">
-                        <rect x="0" y="4" width="2" height="6" rx=".5" />
-                        <rect x="3" y="2" width="2" height="8" rx=".5" />
-                        <rect x="6" y="0" width="2" height="10" rx=".5" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-h-0 flex flex-col">
-                      <PhoneScreen />
-                    </div>
-                  </div>
-                </div>
+                <PhoneShell />
+                {/* Ground shadow */}
+                <motion.div
+                  className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-44 h-5 rounded-full blur-xl pointer-events-none"
+                  style={{ background: "rgba(7,30,60,.55)" }}
+                  animate={inView ? { scaleX: [1, 0.72, 1], opacity: [0.6, 0.3, 0.6] } : { opacity: 0 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                />
               </motion.div>
             </motion.div>
+          </div>
+
+          {/* Panel label at bottom */}
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-semibold tracking-wider text-white/40 uppercase">{contact.ai.status}</span>
+            </div>
           </div>
         </div>
 
