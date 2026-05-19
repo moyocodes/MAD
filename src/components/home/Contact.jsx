@@ -313,14 +313,71 @@ export default function Contact() {
         .mad-scroll::-webkit-scrollbar{display:none}
         .c-input::placeholder{color:rgba(25,128,194,.35)}
         .c-input:focus{border-color:rgba(25,128,194,.5)!important;background:rgba(25,128,194,.06)!important}
+
+        /*
+         * The outer grid row must NOT clip its children so the phone
+         * can bleed leftward out of the right panel across the seam.
+         */
+        .contact-grid {
+          overflow: visible !important;
+        }
+
+        /*
+         * ── Right panel: full-bleed azure column, sticky ──
+         *
+         * position:sticky + top:0 + height:100vh pins the panel while
+         * the left form column scrolls. align-self:start is required so
+         * the sticky element doesn't stretch to match the taller left column.
+         *
+         * overflow:visible lets the phone bleed out to the left.
+         */
+        @media(min-width:768px){
+          .right-panel-sticky {
+            position: sticky !important;
+            top: 0 !important;
+            height: 100vh !important;
+            align-self: start !important;
+            overflow: visible !important;
+          }
+        }
+
+        /*
+         * ── Phone: straddling the left edge of the right panel ──
+         *
+         * left:0 anchors to the panel's left boundary.
+         * translateX(-42%) pulls roughly half the phone width into the
+         * left (form) column — giving the "floating on the seam" look.
+         * top:50% + translateY(-50%) centres vertically.
+         *
+         * z-index:30 ensures it renders above the left panel's content.
+         */
+        @media(min-width:768px){
+          .phone-seam {
+            position: absolute !important;
+            left: 0 !important;
+            top: 50% !important;
+            transform: translate(-42%, -50%) !important;
+            z-index: 30 !important;
+          }
+          /* Override Framer Motion inline transform with a CSS var trick:
+             we wrap the bob animation inside the seam container */
+          .phone-seam-inner {
+            /* bob handled by Framer animate on this element */
+          }
+        }
       `}</style>
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
+      {/*
+       * The grid wrapper must allow overflow so the phone can cross the
+       * column boundary. Tailwind's default overflow:hidden on grid is
+       * overridden via the .contact-grid class above.
+       */}
+      <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
 
-        {/* ── LEFT — form ── */}
+        {/* ── LEFT — form column ── */}
         <div className="order-2 md:order-1 bg-gradient-to-br from-white via-azure-50 to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
 
-          {/* looping blob */}
+          {/* looping blobs */}
           <motion.div
             className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none"
             animate={inView ? { y: [0, -22, 0], opacity: [0.3, 0.55, 0.3] } : { opacity: 0 }}
@@ -440,13 +497,12 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* ── RIGHT — sticky phone panel ── */}
+        {/* ── RIGHT — sticky azure panel ── */}
         <div
-          className="order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 flex items-center justify-center px-8 py-16 md:py-0 relative min-h-[65vh] md:min-h-0"
-          style={{ position: "sticky", top: 0, height: "100vh", overflow: "visible" }}
+          className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 relative min-h-[65vh] md:min-h-0"
         >
-          {/* Background elements contained within panel */}
-          <div className="absolute inset-0 overflow-hidden rounded-none pointer-events-none">
+          {/* Background decoration — clipped inside the panel */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <motion.div
               className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl"
               animate={inView ? { y: [0, -28, 0], scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] } : { opacity: 0 }}
@@ -468,23 +524,51 @@ export default function Contact() {
             />
           </div>
 
-          {/* Phone — floats at the seam edge, sticks while form scrolls */}
+          {/*
+           * ── Phone: desktop — absolute, straddling the left seam ──
+           *
+           * .phone-seam positions it: left:0, top:50%, translateX(-42%) translateY(-50%)
+           * so ~42% of the phone width bleeds into the form column.
+           * The motion wrapper handles the entrance animation; the inner
+           * motion.div handles the continuous bob.
+           *
+           * On mobile this is hidden; a centred version renders below.
+           */}
           <motion.div
-            className="relative z-10 md:-mt-20"
+            className="phone-seam hidden md:block"
             initial={{ opacity: 0, y: 50, scale: 0.92 }}
             animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
           >
+            {/* Bob animation wrapper */}
             <motion.div
               animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
               transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-              className="w-[260px]"
+              style={{ position: "relative" }}
             >
-              <div className="bg-[#080808] rounded-[44px] p-2.5 border border-white/10"
-                style={{ boxShadow: "0 40px 80px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.05)" }}>
+              {/* Phone shell */}
+              <div
+                className="w-[260px]"
+                style={{
+                  background: "#080808",
+                  borderRadius: 44,
+                  padding: 10,
+                  border: "1px solid rgba(255,255,255,.1)",
+                  boxShadow: [
+                    "0 40px 80px rgba(0,0,0,.45)",
+                    "0 12px 32px rgba(0,0,0,.3)",
+                    "0 0 0 1px rgba(255,255,255,.05)",
+                    /* Left-side glow so it reads well over the form column */
+                    "-20px 0 60px rgba(25,128,194,.18)",
+                  ].join(", "),
+                }}
+              >
+                {/* Notch */}
                 <div className="w-20 h-6 bg-[#080808] rounded-b-[18px] mx-auto relative z-[4]">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
                 </div>
+
+                {/* Screen */}
                 <div className="bg-[#111] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
                   <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
                     <span className="text-[9px] font-bold text-white/40">9:41</span>
@@ -499,14 +583,50 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-            </motion.div>
 
-            <motion.div
-              className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none"
-              animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
-              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-            />
+              {/* Ground shadow */}
+              <motion.div
+                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none"
+                animate={inView ? { scaleX: [1, 0.75, 1], opacity: [0.5, 0.25, 0.5] } : { opacity: 0 }}
+                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </motion.div>
           </motion.div>
+
+          {/* ── Mobile: phone centred inside the azure panel ── */}
+          <div className="md:hidden flex items-center justify-center w-full h-full py-16 px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.92 }}
+              animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.92 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
+            >
+              <motion.div
+                animate={inView ? { y: [0, -13, 0] } : { y: 0 }}
+                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+                className="w-[260px]"
+              >
+                <div className="bg-[#080808] rounded-[44px] p-2.5 border border-white/10"
+                  style={{ boxShadow: "0 40px 80px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.05)" }}>
+                  <div className="w-20 h-6 bg-[#080808] rounded-b-[18px] mx-auto relative z-[4]">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#1a1a1a] border border-white/10" />
+                  </div>
+                  <div className="bg-[#111] rounded-[34px] overflow-hidden h-[500px] flex flex-col">
+                    <div className="flex justify-between items-center px-4 py-1 flex-shrink-0">
+                      <span className="text-[9px] font-bold text-white/40">9:41</span>
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.4)">
+                        <rect x="0" y="4" width="2" height="6" rx=".5" />
+                        <rect x="3" y="2" width="2" height="8" rx=".5" />
+                        <rect x="6" y="0" width="2" height="10" rx=".5" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-h-0 flex flex-col">
+                      <PhoneScreen />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
 
       </div>
