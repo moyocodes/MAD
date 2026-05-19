@@ -144,15 +144,14 @@ export default function Hero() {
           <div style={{ position: "absolute", inset: 0, display: "flex" }}>
 
             {/* Left panel */}
-            {!isMobile && (
-              <div
-                style={{
-                  width: "42%",
-                  flexShrink: 0,
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
+            <div
+              style={{
+                width: "42%",
+                flexShrink: 0,
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
                 {SLIDES.map((sl, i) => (
                   <img
                     key={i}
@@ -294,13 +293,11 @@ export default function Hero() {
                   ))}
                 </div>
               </div>
-            )}
 
             {/* Right panel */}
             <div
               style={{
-                flex: isMobile ? undefined : 1,
-                width: isMobile ? "100%" : undefined,
+                flex: 1,
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -334,78 +331,13 @@ export default function Hero() {
                 }}
               />
 
-              {/* Mobile Pantone card */}
-              {isMobile && (
-                <div
-                  className="bg-white"
-                  style={{
-                    position: "absolute",
-                    top: 72,
-                    left: 16,
-                    width: 150,
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    opacity: Math.max(0, 1 - phase1v * 2),
-                    zIndex: 30,
-                    pointerEvents: "none",
-                  }}
-                >
-                  <img
-                    src={s.cardImg}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: 100,
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                  <div style={{ padding: "8px 10px" }}>
-                    <div
-                      className="text-dark-900"
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 900,
-                        marginBottom: 4,
-                        letterSpacing: -0.2,
-                      }}
-                    >
-                      {s.card}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 6.5,
-                        fontWeight: 700,
-                        color: "#aaa",
-                        letterSpacing: "0.2em",
-                        textTransform: "uppercase",
-                        marginBottom: 2,
-                      }}
-                    >
-                      {brand.serviceByLabel}
-                    </div>
-                    <div
-                      className="text-dark-900"
-                      style={{
-                        fontSize: 9,
-                        fontWeight: 900,
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {brand.name}™
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Notification — azure-50 bg, azure-800 text */}
               <div
                 style={{
                   position: "absolute",
                   top: 82,
                   right: 24,
-                  width: "min(300px, calc(100vw - 32px))",
+                  width: "min(300px, calc(58vw - 20px))",
                   zIndex: 80,
                   background: "rgba(238,247,253,.94)",
                   backdropFilter: "blur(18px)",
@@ -445,8 +377,8 @@ export default function Hero() {
                     </span>
                   </div>
                   <span
-                    className="text-azure-800 leading-[1.4]"
-                    style={{ fontSize: 12.5, fontWeight: 700 }}
+                    className="text-azure-800 leading-[1.4] text-[9px] md:text-xs"
+                    style={{ fontWeight: 700 }}
                   >
                     {notifMsg}
                   </span>
@@ -457,7 +389,7 @@ export default function Hero() {
               <div
                 style={{
                   position: "absolute",
-                  bottom: isMobile ? 96 : 36,
+                  bottom: isMobile ? 138 : 36,
                   right: 28,
                   left: 20,
                   maxWidth: 460,
@@ -465,9 +397,8 @@ export default function Hero() {
                 }}
               >
                 <h1
-                  className="text-white"
+                  className="text-white text-sm md:text-4xl"
                   style={{
-                    fontSize: "clamp(22px,5.5vw,48px)",
                     lineHeight: 1.05,
                     letterSpacing: "-.02em",
                     whiteSpace: "pre-line",
@@ -477,9 +408,8 @@ export default function Hero() {
                   {s.h1}
                 </h1>
                 <p
-                  className="text-white/60"
+                  className="text-white/60 text-[8px] md:text-[11px]"
                   style={{
-                    fontSize: 11,
                     fontWeight: 500,
                     letterSpacing: "0.04em",
                     marginBottom: 20,
@@ -487,13 +417,12 @@ export default function Hero() {
                 >
                   {s.sub}
                 </p>
-                <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                   <button
-                    className="bg-white text-dark-900"
+                    className="bg-white text-dark-900 text-[7px] md:text-[9px]"
                     style={{
                       border: "none",
                       padding: "9px 22px",
-                      fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
@@ -503,12 +432,11 @@ export default function Hero() {
                     {hero.cta}
                   </button>
                   <button
-                    className="text-white"
+                    className="text-white text-[7px] md:text-[9px]"
                     style={{
                       background: "transparent",
                       border: "1px solid rgba(255,255,255,.45)",
                       padding: "9px 22px",
-                      fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: "0.14em",
                       textTransform: "uppercase",
@@ -524,7 +452,7 @@ export default function Hero() {
               <div
                 style={{
                   position: "absolute",
-                  bottom: isMobile ? 175 : 16,
+                  bottom: isMobile ? 108 : 16,
                   left: 0,
                   right: 0,
                   display: "flex",
@@ -535,9 +463,8 @@ export default function Hero() {
                 }}
               >
                 <div
-                  className="bg-white/20 overflow-hidden"
+                  className="bg-white/20 overflow-hidden w-[70px] md:w-[120px]"
                   style={{
-                    width: "clamp(70px,8vw,120px)",
                     height: 1.5,
                     borderRadius: 1,
                   }}
@@ -634,7 +561,7 @@ export default function Hero() {
           <p className="mb-3.5 font-mono text-xs font-bold uppercase tracking-[0.28em] text-azure-700/55">
             Making A Difference
           </p>
-          <h2 className="mb-7 whitespace-nowrap font-display font-black leading-none tracking-tight text-azure-800 text-[clamp(28px,5vw,60px)]">
+          <h2 className="mb-7 font-display font-black leading-none tracking-tight text-azure-800 text-2xl md:text-5xl">
             Structure changes{" "}
             <span className="text-azure-500">everything.</span>
           </h2>
@@ -670,7 +597,7 @@ export default function Hero() {
         >
           <p
             style={{
-              fontSize: 14,
+              fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               fontWeight: 700,

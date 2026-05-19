@@ -65,20 +65,28 @@ export default function WhatWeDo() {
 
   return (
     <section ref={rootRef} className="relative min-h-[200dvh]">
-      <div className="sticky top-0 overflow-hidden h-[100dvh]">
+      <div className="sticky top-0 overflow-hidden h-[100dvh]" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
-
-          {/* ── Left full-height ── */}
-          <div className="md:row-span-2 relative overflow-hidden" style={{ minHeight: "100dvh" }}>
+          {/* ── Left full-height on desktop, 60dvh on mobile ── */}
+          <div
+            className="md:row-span-2 relative overflow-hidden h-[60dvh] md:h-full"
+          >
             {WWD.map((sv, i) => (
               <motion.img
                 key={i}
                 src={sv.wide}
                 alt=""
                 animate={i === cur ? { scale: [1, 1.05, 1] } : { scale: 1 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="absolute inset-0 w-full h-full object-cover"
-                style={{ opacity: i === cur ? 1 : 0, transition: "opacity .9s" }}
+                style={{
+                  opacity: i === cur ? 1 : 0,
+                  transition: "opacity .9s",
+                }}
               />
             ))}
             {/* deep azure gradient */}
@@ -97,10 +105,10 @@ export default function WhatWeDo() {
                   <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-2 font-bold">
                     {svc.tag} / 03
                   </p>
-                  <p className="text-white font-black mb-2 leading-[1.05] tracking-[-0.04em] text-[clamp(20px,2.6vw,34px)]">
+                  <p className="text-white font-black mb-2 leading-[1.05] tracking-[-0.04em] text-xl md:text-[34px]">
                     {svc.label}
                   </p>
-                  <p className="text-white/50 mb-5 leading-relaxed text-[clamp(10px,1.1vw,13px)]">
+                  <p className="text-white/50 mb-5 leading-relaxed text-[10px] md:text-[13px]">
                     {svc.tagline}
                   </p>
                 </motion.div>
@@ -127,7 +135,7 @@ export default function WhatWeDo() {
             </div>
           </div>
 
-          {/* ── Top-right: collapses on scroll exit ── */}
+          {/* ── Top-right: hidden on mobile (no colored bg), collapses on scroll exit on desktop ── */}
           <div
             className="hidden md:block relative overflow-hidden border-b border-azure-500/20"
             style={{
@@ -143,9 +151,17 @@ export default function WhatWeDo() {
                 src={sv.top}
                 alt=""
                 animate={i === cur ? { scale: [1, 1.04, 1] } : { scale: 1 }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1.2,
+                }}
                 className="absolute inset-0 w-full h-full object-cover object-[center_40%]"
-                style={{ opacity: i === cur ? 1 : 0, transition: "opacity .9s" }}
+                style={{
+                  opacity: i === cur ? 1 : 0,
+                  transition: "opacity .9s",
+                }}
               />
             ))}
             <div className="absolute inset-0 bg-azure-900/70" />
@@ -160,9 +176,13 @@ export default function WhatWeDo() {
                   transition={{ duration: 0.35, ease }}
                   className="flex items-center gap-2"
                 >
-                  <span className="text-white font-black text-[clamp(16px,2.3vw,22px)] tracking-[-0.04em]">MAD</span>
-                  <span className="text-white/30 font-light text-[clamp(12px,2vw,18px)]">×</span>
-                  <span className="text-azure-400 font-black tracking-[0.1em] uppercase text-[clamp(10px,1.6vw,14px)]">
+                  <span className="text-white font-black text-base md:text-[22px] tracking-[-0.04em]">
+                    MAD
+                  </span>
+                  <span className="text-white/30 font-light text-xs md:text-lg">
+                    ×
+                  </span>
+                  <span className="text-azure-400 font-black tracking-[0.1em] uppercase text-[10px] md:text-sm">
                     {svc.label.split(" ")[0]}
                   </span>
                 </motion.div>
@@ -185,39 +205,42 @@ export default function WhatWeDo() {
           </div>
 
           {/* ── Bottom-right: 2 cards ── */}
-          <div className="hidden md:grid md:grid-cols-2 gap-0">
+          <div className="grid grid-cols-2 gap-0 h-[40dvh] md:h-auto">
             {/* Intro card — azure-800 bg */}
             <div
-              className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20"
-              style={{ minHeight: "50dvh", padding: "clamp(22px,2.8vw,36px)" }}
+              className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20 p-3 md:p-8"
+              style={{ minHeight: "40dvh" }}
             >
               <div>
                 <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-3 font-bold">
                   {content.eyebrow}
                 </p>
                 <h3
-                  className="text-white font-black leading-[1.08] mb-3"
-                  style={{ fontSize: "clamp(18px,2vw,28px)", letterSpacing: "-1px" }}
+                  className="text-white font-black leading-[1.08] mb-3 text-sm md:text-2xl"
+                  style={{ letterSpacing: "-1px" }}
                 >
                   We help businesses become{" "}
-                  <span className="text-azure-400">{content.highlightedWords.better}</span>{" "}
+                  <span className="text-azure-400">
+                    {content.highlightedWords.better}
+                  </span>{" "}
                   than they were{" "}
-                  <span className="text-tangerine-500">{content.highlightedWords.yesterday}</span>
+                  <span className="text-tangerine-500">
+                    {content.highlightedWords.yesterday}
+                  </span>
                 </h3>
-                <p className="text-white/50 leading-[1.75]" style={{ fontSize: "clamp(10px,1vw,12.5px)" }}>
+                <p className="text-white/50 leading-[1.75] text-[10px] md:text-xs">
                   {content.body}
                 </p>
               </div>
-              <button className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none"
-                style={{ fontSize: "clamp(9px,0.85vw,11px)", padding: "10px 22px" }}>
+              <button className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]">
                 {content.cta}
               </button>
             </div>
 
             {/* Service card — azure-900 bg */}
             <div
-              className="bg-azure-900 flex flex-col justify-between"
-              style={{ minHeight: "50dvh", padding: "clamp(22px,2.8vw,36px)" }}
+              className="bg-azure-900 flex flex-col justify-between p-3 md:p-8"
+              style={{ minHeight: "40dvh" }}
             >
               <div>
                 <AnimatePresence mode="wait">
@@ -228,15 +251,16 @@ export default function WhatWeDo() {
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.35, ease }}
                   >
-                    <p className="text-azure-400 font-mono font-bold tracking-[0.28em] uppercase mb-2"
-                      style={{ fontSize: "clamp(7px,0.7vw,9px)" }}>
+                    <p className="text-azure-400 font-mono font-bold tracking-[0.28em] uppercase mb-2 text-[7px] md:text-[9px]">
                       {svc.tag} / {String(WWD.length).padStart(2, "0")}
                     </p>
-                    <h4 className="text-white font-black leading-[1.1] mb-2"
-                      style={{ fontSize: "clamp(14px,1.8vw,22px)", letterSpacing: "-0.04em" }}>
+                    <h4
+                      className="text-white font-black leading-[1.1] mb-2 text-sm md:text-xl"
+                      style={{ letterSpacing: "-0.04em" }}
+                    >
                       {svc.label}
                     </h4>
-                    <p className="text-white/40 leading-[1.65]" style={{ fontSize: "clamp(9px,.95vw,12px)" }}>
+                    <p className="text-white/40 leading-[1.65] text-[9px] md:text-xs">
                       {svc.tagline}
                     </p>
                   </motion.div>
@@ -248,23 +272,50 @@ export default function WhatWeDo() {
                   <div key={i} className="flex items-center gap-2 mb-[7px]">
                     <span
                       className="font-mono text-[7px] font-bold min-w-[14px]"
-                      style={{ color: i === cur ? "#5aa7e6" : i < cur ? "rgba(90,167,230,.45)" : "rgba(90,167,230,.2)" }}
+                      style={{
+                        color:
+                          i === cur
+                            ? "#5aa7e6"
+                            : i < cur
+                              ? "rgba(90,167,230,.45)"
+                              : "rgba(90,167,230,.2)",
+                      }}
                     >
                       {sv.tag}
                     </span>
                     <div className="flex-1">
                       {i === cur ? (
-                        <ProgressBar duration={5500} running={!paused} onComplete={next} key={`pb-${cur}`} />
+                        <ProgressBar
+                          duration={5500}
+                          running={!paused}
+                          onComplete={next}
+                          key={`pb-${cur}`}
+                        />
                       ) : (
-                        <div className="h-px" style={{ background: i < cur ? "rgba(90,167,230,.45)" : "rgba(255,255,255,.08)" }} />
+                        <div
+                          className="h-px"
+                          style={{
+                            background:
+                              i < cur
+                                ? "rgba(90,167,230,.45)"
+                                : "rgba(255,255,255,.08)",
+                          }}
+                        />
                       )}
                     </div>
                   </div>
                 ))}
                 <div className="flex gap-[5px] mt-2.5">
                   {[
-                    { fn: () => setCur((c) => (c - 1 + WWD.length) % WWD.length), d: "M14 6L8 12l6 6" },
-                    { fn: () => setCur((c) => (c + 1) % WWD.length), d: "M10 6l6 6-6 6" },
+                    {
+                      fn: () =>
+                        setCur((c) => (c - 1 + WWD.length) % WWD.length),
+                      d: "M14 6L8 12l6 6",
+                    },
+                    {
+                      fn: () => setCur((c) => (c + 1) % WWD.length),
+                      d: "M10 6l6 6-6 6",
+                    },
                   ].map(({ fn, d }, i) => (
                     <button
                       key={i}
@@ -272,7 +323,13 @@ export default function WhatWeDo() {
                       className="w-[22px] h-[22px] rounded-full bg-transparent border border-azure-400/30 flex items-center justify-center"
                     >
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                        <path d={d} stroke="rgba(90,167,230,.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          d={d}
+                          stroke="rgba(90,167,230,.6)"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </button>
                   ))}
@@ -286,7 +343,6 @@ export default function WhatWeDo() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 

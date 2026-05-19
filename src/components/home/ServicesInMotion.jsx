@@ -1575,6 +1575,8 @@ export default function ServicesInMotion() {
           display: "flex",
           flexDirection: "column",
           background: "transparent",
+          zIndex: 3,
+          boxShadow: "0 -8px 40px rgba(0,0,0,0.12)",
         }}
       >
         {/* Header */}

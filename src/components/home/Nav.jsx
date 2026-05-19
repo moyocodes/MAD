@@ -14,7 +14,7 @@ export default function Nav() {
       setSolid(y > 20);
       setHidden(
         (y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) ||
-          (y > window.innerHeight * 4.2 && y < window.innerHeight * 7.5),
+          (y > window.innerHeight * 3.7 && y < window.innerHeight * 11),
       );
     };
     fn();

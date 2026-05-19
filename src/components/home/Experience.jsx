@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
 
 // ─── Typing animation ─────────────────────────────────────────────────────────
@@ -103,28 +103,12 @@ const STAGES = [
     url: "trubilling.com/dashboard",
   },
   {
-    needIdx: 0,
-    approachIdx: 0,
-    solutionIdx: 0,
-    navLabel: "Invoice",
-    pageKey: "newInvoice",
-    url: "trubilling.com/invoice/new",
-  },
-  {
     needIdx: 1,
     approachIdx: 1,
     solutionIdx: 1,
     navLabel: "Invoice",
-    pageKey: "invoiceItem",
-    url: "trubilling.com/invoice/new#item",
-  },
-  {
-    needIdx: 2,
-    approachIdx: 2,
-    solutionIdx: 2,
-    navLabel: "Invoice",
-    pageKey: "addItem",
-    url: "trubilling.com/invoice/new#product",
+    pageKey: "newInvoice",
+    url: "trubilling.com/invoice/new",
   },
   {
     needIdx: 3,
@@ -148,22 +132,21 @@ const NEED_ITEMS = [
   "Unstructured billing processes",
   "Difficulty tracking payments and invoices",
   "Lack of financial visibility in real time",
-  "Over-reliance on manual and fragmented tools",
+  "Over-reliance on manual tools and fragmented systems",
 ];
 
 const APPROACH_ITEMS = [
   "Simplify financial workflows",
-  "Clean, intuitive user experience",
-  "Scalable for growing businesses",
-  "Function balanced with ease of use",
+  "Create a clean, intuitive user experience",
+  "Ensure scalability for growing businesses",
+  "Balance functionality with ease of use",
 ];
 
 const SOLUTION_BULLETS = [
   "Create and manage invoices easily",
-  "Add items with full detail and pricing",
-  "Select products and set categories",
   "Track payments in real time",
-  "Maintain complete financial visibility",
+  "Maintain clear financial records",
+  "Operate with improved financial visibility",
 ];
 
 const ease = [0.22, 1, 0.36, 1];
@@ -2409,12 +2392,27 @@ function TruBillingDashboard({ stage }) {
 // ─── Laptop frame ─────────────────────────────────────────────────────────────
 function LaptopFrame({ stage }) {
   const url = STAGES[stage]?.url ?? "trubilling.com/dashboard";
+  const frameRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const update = () => {
+      if (!frameRef.current) return;
+      const w = frameRef.current.offsetWidth;
+      setScale(Math.min(1, w / 620));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (frameRef.current) ro.observe(frameRef.current);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <motion.div
+      ref={frameRef}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-      style={{ width: "100%", maxWidth: 620, position: "relative", zIndex: 10 }}
+      className="w-full max-w-full md:max-w-[620px] relative z-10"
     >
       <style>{`@keyframes urlTextIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}`}</style>
       {/* Lid */}
@@ -2507,7 +2505,9 @@ function LaptopFrame({ stage }) {
             overflow: "hidden",
           }}
         >
-          <TruBillingDashboard stage={stage} />
+          <div style={{ width: `${100 / scale}%`, height: `${100 / scale}%`, transformOrigin: "top left", transform: `scale(${scale})` }}>
+            <TruBillingDashboard stage={stage} />
+          </div>
           {/* MAD badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -2597,38 +2597,38 @@ function LaptopFrame({ stage }) {
 }
 
 // ─── Reusable bullet row ──────────────────────────────────────────────────────
-function BulletRow({ text, isActive, shown, fontSize = 10 }) {
+function BulletRow({ text, isActive }) {
   return (
     <motion.div
-      animate={
-        shown ? { opacity: isActive ? 1 : 0.32, x: 0 } : { opacity: 0, x: -8 }
-      }
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 6,
-        marginBottom: 5,
-      }}
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: isActive ? 1 : 0.38 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      style={{ overflow: "hidden" }}
     >
-      <motion.div
-        animate={{
-          width: isActive ? 14 : 7,
-          background: isActive ? "#F26522" : "rgba(242,101,34,.28)",
-        }}
-        transition={{ duration: 0.28 }}
-        style={{ height: 1.5, borderRadius: 99, marginTop: 7, flexShrink: 0 }}
-      />
-      <span
-        style={{
-          fontSize,
-          color: isActive ? "#181817" : "#666",
-          fontWeight: isActive ? 700 : 400,
-          lineHeight: 1.5,
-        }}
-      >
-        {text}
-      </span>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 6, marginBottom: 5 }}>
+        <div
+          style={{
+            width: isActive ? 14 : 7,
+            height: 1.5,
+            borderRadius: 99,
+            marginTop: 7,
+            flexShrink: 0,
+            background: isActive ? "#F26522" : "rgba(242,101,34,.28)",
+            transition: "width 0.28s, background 0.28s",
+          }}
+        />
+        <span
+          style={{
+            fontSize: 10,
+            color: isActive ? "#181817" : "#666",
+            fontWeight: isActive ? 700 : 400,
+            lineHeight: 1.5,
+          }}
+        >
+          {text}
+        </span>
+      </div>
     </motion.div>
   );
 }
@@ -2671,14 +2671,13 @@ function PanelSectionHead({ title, icon }) {
 function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
   return (
     <div
+      className="rounded-xl md:rounded-[14px] p-3 md:p-[12px_14px]"
       style={{
         background: "rgba(255,255,255,0.94)",
         backdropFilter: "blur(16px)",
         border: "0.5px solid rgba(255,255,255,0.85)",
         boxShadow:
           "0 6px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.85)",
-        borderRadius: 14,
-        padding: "12px 14px",
         animation: "floatUp 5s ease-in-out infinite",
       }}
     >
@@ -2701,12 +2700,11 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
         }
       />
       {NEED_ITEMS.map((text, i) => (
-        <BulletRow
-          key={i}
-          text={text}
-          isActive={i === activeNeedIdx}
-          shown={activeNeedIdx >= 0 && i <= activeNeedIdx}
-        />
+        <AnimatePresence key={i}>
+          {activeNeedIdx >= 0 && i <= activeNeedIdx && (
+            <BulletRow text={text} isActive={i === activeNeedIdx} />
+          )}
+        </AnimatePresence>
       ))}
 
       {/* Divider */}
@@ -2731,12 +2729,11 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
         }
       />
       {APPROACH_ITEMS.map((text, i) => (
-        <BulletRow
-          key={i}
-          text={text}
-          isActive={i === activeApproachIdx}
-          shown={activeApproachIdx >= 0 && i <= activeApproachIdx}
-        />
+        <AnimatePresence key={i}>
+          {activeApproachIdx >= 0 && i <= activeApproachIdx && (
+            <BulletRow text={text} isActive={i === activeApproachIdx} />
+          )}
+        </AnimatePresence>
       ))}
     </div>
   );
@@ -2746,14 +2743,13 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
 function SolutionPanel({ activeSolutionIdx }) {
   return (
     <div
+      className="rounded-xl md:rounded-[14px] p-3 md:p-[12px_14px]"
       style={{
         background: "rgba(255,255,255,0.94)",
         backdropFilter: "blur(16px)",
         border: "0.5px solid rgba(242,101,34,.22)",
         boxShadow:
           "0 6px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.85)",
-        borderRadius: 14,
-        padding: "12px 14px",
         animation: "floatUp 5s ease-in-out 0.5s infinite",
       }}
     >
@@ -2774,48 +2770,39 @@ function SolutionPanel({ activeSolutionIdx }) {
         }
       />
       {SOLUTION_BULLETS.map((text, i) => (
-        <BulletRow
-          key={i}
-          text={text}
-          isActive={i === activeSolutionIdx}
-          shown={activeSolutionIdx >= 0 && i <= activeSolutionIdx}
-        />
+        <AnimatePresence key={i}>
+          {activeSolutionIdx >= 0 && i <= activeSolutionIdx && i < SOLUTION_BULLETS.length && (
+            <BulletRow text={text} isActive={i === activeSolutionIdx} />
+          )}
+        </AnimatePresence>
       ))}
 
-      {/* Divider */}
-      <div
-        style={{ borderTop: "1px solid rgba(0,0,0,.07)", margin: "8px 0 10px" }}
-      />
-
-      {/* — Outcome chip — */}
-      <PanelSectionHead
-        title="Outcome"
-        icon={
-          <svg
-            width="8"
-            height="8"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#F26522"
-            strokeWidth="2.5"
+      {/* Outcome — only visible at the very last stage (solutionIdx overflows bullet count) */}
+      <AnimatePresence>
+        {activeSolutionIdx >= SOLUTION_BULLETS.length && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            style={{ overflow: "hidden" }}
           >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-            <polyline points="22 4 12 14.01 9 11.01" />
-          </svg>
-        }
-      />
-      <p
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          color: "#444",
-          lineHeight: 1.55,
-          margin: 0,
-        }}
-      >
-        A structured, efficient, and scalable approach to business billing and
-        financial management.
-      </p>
+            <div style={{ borderTop: "1px solid rgba(0,0,0,.07)", margin: "8px 0 10px" }} />
+            <PanelSectionHead
+              title="Outcome"
+              icon={
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#F26522" strokeWidth="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              }
+            />
+            <p style={{ fontSize: 10, fontWeight: 600, color: "#444", lineHeight: 1.55, margin: 0 }}>
+              A more structured, efficient, and scalable approach to business billing and financial management.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -2823,7 +2810,7 @@ function SolutionPanel({ activeSolutionIdx }) {
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function Experience() {
   const sectionRef = useRef(null);
-  const TOTAL_STAGES = STAGES.length; // 6
+  const TOTAL_STAGES = STAGES.length; // 4 (3 scroll steps)
 
   const [stage, setStage] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
@@ -2856,36 +2843,19 @@ export default function Experience() {
       }}
     >
       <div
+        className="flex items-start md:items-center justify-center pt-4 md:pt-0 overflow-y-auto md:overflow-hidden"
         style={{
           position: "sticky",
           top: 0,
           height: "100vh",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          zIndex: 2,
         }}
       >
         <style>{`@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}`}</style>
 
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 clamp(12px,2.5vw,32px)",
-          }}
-        >
+        <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
           {/* ── Headline row ── */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              marginBottom: "clamp(10px,1.4vh,16px)",
-              gap: 16,
-            }}
-          >
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-3 gap-4">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2904,8 +2874,8 @@ export default function Experience() {
                 {content.eyebrow}
               </p>
               <h2
+                className="text-lg md:text-[30px]"
                 style={{
-                  fontSize: "clamp(18px,2.4vw,30px)",
                   fontWeight: 900,
                   lineHeight: 1.1,
                   letterSpacing: -0.5,
@@ -2924,12 +2894,11 @@ export default function Experience() {
                 <span>{content.productSuffix}</span>
               </h2>
               <p
+                className="max-w-full sm:max-w-[380px] text-[10px] md:text-xs"
                 style={{
-                  fontSize: "clamp(10px,0.95vw,12px)",
                   color: "rgba(24,24,23,.5)",
                   lineHeight: 1.65,
                   marginTop: 4,
-                  maxWidth: 380,
                 }}
               >
                 {content.intro}
@@ -2940,7 +2909,7 @@ export default function Experience() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              style={{ flexShrink: 0, maxWidth: 210 }}
+              className="flex-shrink-0 sm:max-w-[210px]"
             >
               <button
                 className="bg-tangerine-500 text-white border-none rounded-full cursor-pointer"
@@ -2961,14 +2930,8 @@ export default function Experience() {
           </div>
 
           {/* ── 3-column: Need+Approach | Laptop | Solution ── */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "clamp(8px,1vw,16px)",
-            }}
-          >
-            {/* LEFT — Need + Approach */}
+          <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3">
+            {/* LEFT — Need + Approach: below laptop on mobile, left on desktop */}
             <motion.div
               initial={{ opacity: 0, x: -28 }}
               animate={{ opacity: 1, x: 0 }}
@@ -2977,7 +2940,7 @@ export default function Experience() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.3,
               }}
-              style={{ width: "clamp(155px,14.5vw,195px)", flexShrink: 0 }}
+              className="col-span-1 order-3 md:order-1"
             >
               <NeedApproachPanel
                 activeNeedIdx={activeNeedIdx}
@@ -2985,19 +2948,12 @@ export default function Experience() {
               />
             </motion.div>
 
-            {/* CENTER — Laptop */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "center",
-                minWidth: 0,
-              }}
-            >
+            {/* CENTER — Laptop: full width on mobile (spans 2 cols), center on desktop */}
+            <div className="col-span-2 md:col-span-1 order-1 md:order-2 flex justify-center min-w-0">
               <LaptopFrame stage={stage} />
             </div>
 
-            {/* RIGHT — Solution */}
+            {/* RIGHT — Solution: below laptop on mobile, right on desktop */}
             <motion.div
               initial={{ opacity: 0, x: 28 }}
               animate={{ opacity: 1, x: 0 }}
@@ -3006,41 +2962,61 @@ export default function Experience() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.4,
               }}
-              style={{ width: "clamp(155px,14.5vw,195px)", flexShrink: 0 }}
+              className="col-span-1 order-4 md:order-3"
             >
               <SolutionPanel activeSolutionIdx={activeSolutionIdx} />
             </motion.div>
           </div>
 
           {/* ── Progress dots + scroll hint ── */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              marginTop: "clamp(8px,1.1vh,13px)",
-            }}
-          >
-            {STAGES.map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{
-                  width: i === stage ? 18 : 5,
-                  background: i === stage ? "#F26522" : "rgba(194,65,29,.22)",
+          <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center gap-1.5">
+              {STAGES.map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    width: i === stage ? 18 : 5,
+                    background: i === stage ? "#F26522" : "rgba(194,65,29,.22)",
+                  }}
+                  transition={{ duration: 0.28 }}
+                  style={{ height: 5, borderRadius: 99 }}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Animated mouse icon */}
+              <div
+                style={{
+                  width: 18,
+                  height: 26,
+                  borderRadius: 9,
+                  border: "2px solid rgba(242,101,34,.6)",
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: 4,
+                  flexShrink: 0,
                 }}
-                transition={{ duration: 0.28 }}
-                style={{ height: 5, borderRadius: 99 }}
-              />
-            ))}
-            <span
-              style={{
-                fontSize: 8.5,
-                color: "rgba(24,24,23,.32)",
-                marginLeft: 3,
-              }}
-            >
-              Scroll to explore
-            </span>
+              >
+                <motion.div
+                  animate={{ y: [0, 7, 0] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  style={{
+                    width: 3,
+                    height: 6,
+                    borderRadius: 99,
+                    background: "#F26522",
+                  }}
+                />
+              </div>
+              <div>
+                <p style={{ fontSize: 9, fontWeight: 800, color: "#F26522", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
+                  Scroll to explore
+                </p>
+                <p style={{ fontSize: 8, color: "rgba(24,24,23,.4)", margin: 0 }}>
+                  Each scroll reveals the next step
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

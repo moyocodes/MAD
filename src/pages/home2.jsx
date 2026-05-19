@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Nav from "../components/home/Nav";
 import Hero from "../components/home/Hero";
-import WhatWeDo from "../components/home/WhatWeDo";
+import WhatWeDoCore from "../components/home/WhatWeDoCore";
 import ServicesInMotion from "../components/home/ServicesInMotion";
 import Experience from "../components/home/Experience";
 import Beyond from "../components/home/Beyond";
@@ -64,7 +64,7 @@ export default function MADLandingPage() {
     >
       <Nav />
       <Hero />
-      <WhatWeDo />
+      <WhatWeDoCore />
       <ServicesInMotion />
       <Experience />
       <Beyond />

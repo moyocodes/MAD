@@ -4,7 +4,6 @@ import Hero from "../components/home/Hero";
 import WhatWeDo from "../components/home/WhatWeDo";
 import ServicesInMotion from "../components/home/ServicesInMotion";
 import Experience from "../components/home/Experience";
-import WorkShowcase from "../components/home/WorkShowcase";
 import Beyond from "../components/home/Beyond";
 import Contact from "../components/home/Contact";
 import Footer from "../components/home/Footer";
@@ -68,7 +67,8 @@ export default function MADLandingPage() {
       <WhatWeDo />
       {/* <ServicesInMotion /> */}
       <Experience />
-      <WorkShowcase />
+      {/* <WorkShowcase /> */}
+          <ServicesInMotion />
       <Beyond />
       <Contact />
       <Footer />
