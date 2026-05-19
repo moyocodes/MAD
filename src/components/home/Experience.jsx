@@ -2070,7 +2070,7 @@ function TruBillingDashboard({ stage }) {
       style={{
         width: "100%",
         height: "100%",
-        background: "#fafaf8",
+        background: "#ffffff",
         display: "flex",
         fontFamily: "system-ui,sans-serif",
       }}
@@ -2654,7 +2654,7 @@ function PanelSectionHead({ title, icon }) {
       </div>
       <span
         style={{
-          fontSize: 7,
+          fontSize: 9,
           fontWeight: 800,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
@@ -2847,10 +2847,11 @@ export default function Experience() {
     // Height = (stages + 1) viewports for smooth per-stage scrolling
     <div
       ref={sectionRef}
+      className="bg-azure-200/75 backdrop-blur-sm"
       style={{
         position: "relative",
         height: `${(TOTAL_STAGES + 1) * 100}vh`,
-        background: "#f5f1eb",
+        // background: "#f5f1eb",
       }}
     >
       <div
@@ -2881,7 +2882,7 @@ export default function Experience() {
                 {content.eyebrow}
               </p>
               <h2
-                className="text-lg md:text-[30px]"
+                className="text-xl md:text-3xl "
                 style={{
                   fontWeight: 900,
                   lineHeight: 1.1,
@@ -2901,9 +2902,9 @@ export default function Experience() {
                 <span>{content.productSuffix}</span>
               </h2>
               <p
-                className="max-w-full sm:max-w-[380px] text-[10px] md:text-xs"
+                className="max-w-full sm:max-w-[380px] text-gray-700 font-bold text-[12px]"
                 style={{
-                  color: "rgba(24,24,23,.5)",
+                 
                   lineHeight: 1.65,
                   marginTop: 4,
                 }}
