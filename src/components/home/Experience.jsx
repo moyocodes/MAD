@@ -2983,7 +2983,7 @@ export default function Experience() {
               style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
-              <SolutionPanel activeSolutionIdx={displaySolutionIdx} />
+              <SolutionPanel activeSolutionIdx={activeSolutionIdx} />
             </motion.div>
           </div>
 

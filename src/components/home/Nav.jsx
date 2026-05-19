@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { homeCms } from "@/data/homeCms";
-
-const { brand, nav } = homeCms;
+import { useCms } from "@/context/CmsContext";
 
 export default function Nav() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const { brand, nav } = cmsData;
   const [solid, setSolid] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,6 +22,30 @@ export default function Nav() {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (menuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+    } else {
+      const scrollY = parseInt(document.body.style.top || "0", 10);
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      window.scrollTo(0, -scrollY);
+    }
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+    };
+  }, [menuOpen]);
 
   const isPill = solid && !hidden;
   const links = nav.links;
@@ -126,6 +150,11 @@ export default function Nav() {
       </motion.button>
 
       <Hamburger open={menuOpen} />
+      {isEditMode && (
+        <button onClick={() => openPanel("nav")} style={{ background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "4px 10px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", flexShrink: 0 }}>
+          ✏ Edit
+        </button>
+      )}
     </>
   );
 
@@ -335,20 +364,7 @@ export default function Nav() {
                 {nav.cta}
               </motion.button>
 
-              {/* Bottom tagline */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.44, duration: 0.4 }}
-                style={{
-                  marginTop: 20, textAlign: "center",
-                  fontSize: 10, color: "rgba(255,255,255,.22)",
-                  letterSpacing: "0.1em", fontFamily: "monospace",
-                  textTransform: "uppercase",
-                }}
-              >
-                {brand.name} · Studio
-              </motion.p>
+            
             </div>
           </motion.div>
         )}

@@ -1,9 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { homeCms } from "@/data/homeCms";
-
-const content = homeCms.whatWeDo;
-const WWD = content.services;
+import { useCms } from "@/context/CmsContext";
 
 function ProgressBar({ duration, running, onComplete }) {
   const fillRef = useRef(null);
@@ -37,12 +34,15 @@ function ProgressBar({ duration, running, onComplete }) {
 const ease = [0.16, 1, 0.3, 1];
 
 export default function WhatWeDo() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const content = cmsData.whatWeDo;
+  const WWD = content.services;
+
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
   const rootRef = useRef(null);
-  const next = useCallback(() => setCur((c) => (c + 1) % WWD.length), []);
+  const next = useCallback(() => setCur((c) => (c + 1) % WWD.length), [WWD.length]);
 
-  // Atelier entry reveals — driven by scroll entry, no extra scroll room needed
   const { scrollYProgress } = useScroll({
     target: rootRef,
     offset: ["start end", "start start"],
@@ -57,6 +57,11 @@ export default function WhatWeDo() {
 
   return (
     <section ref={rootRef} className="relative h-[100dvh]">
+      {isEditMode && (
+        <button onClick={() => openPanel("whatWeDo")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
+          ✏ Edit
+        </button>
+      )}
       <div className="overflow-hidden h-full" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
           {/* ── Left full-height on desktop, 60dvh on mobile ── */}
@@ -161,12 +166,7 @@ export default function WhatWeDo() {
                   transition={{ duration: 0.35, ease }}
                   className="flex items-center gap-2"
                 >
-                  <span className="text-white font-black text-base md:text-[22px] tracking-[-0.04em]">
-                    MAD
-                  </span>
-                  <span className="text-white/30 font-light text-xs md:text-lg">
-                    ×
-                  </span>
+                 
                   <span className="text-azure-400 font-black tracking-[0.1em] uppercase text-[10px] md:text-sm">
                     {svc.label.split(" ")[0]}
                   </span>

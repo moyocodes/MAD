@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { homeCms } from "@/data/homeCms";
-
-const { brand, hero } = homeCms;
-const SLIDES = hero.slides;
-const THUMBS = hero.thumbs;
+import { useCms } from "@/context/CmsContext";
 
 export default function Hero() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const { brand, hero } = cmsData;
+  const SLIDES = hero.slides;
+  const THUMBS = hero.thumbs;
   const wrapRef = useRef(null);
   const rafRef = useRef(null);
   const lastTs = useRef(null);
@@ -114,6 +114,11 @@ export default function Hero() {
       `}</style>
 
       <div className="sticky top-0 overflow-hidden h-[100dvh]">
+        {isEditMode && (
+          <button onClick={() => openPanel("hero")} style={{ position: "absolute", top: 12, right: 12, zIndex: 200, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.3)" }}>
+            ✏ Edit
+          </button>
+        )}
 
         {/* Collapse background */}
         <div

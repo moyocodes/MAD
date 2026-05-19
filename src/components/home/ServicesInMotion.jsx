@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, animate, useInView } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
-
-const content = homeCms.servicesInMotion;
+import { useCms } from "@/context/CmsContext";
 
 // ─── Shared primitives (original, unchanged) ──────────────────────────────────
 
@@ -243,10 +242,10 @@ function C1S2() {
   );
 }
 
-function C1S3() {
+function C1S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/1.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/1.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Product & Digital" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -332,10 +331,10 @@ function C2S2() {
   );
 }
 
-function C2S3() {
+function C2S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/2.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/2.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Marketing & Comms" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -443,10 +442,10 @@ function C3S2() {
   );
 }
 
-function C3S3() {
+function C3S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/3.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/3.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Brand & Identity" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -522,10 +521,10 @@ function C4S2() {
   );
 }
 
-function C4S3() {
+function C4S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/4.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/4.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Strategy" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -603,10 +602,10 @@ function C5S2() {
   );
 }
 
-function C5S3() {
+function C5S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/5.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/5.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="Motion & Film" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -694,10 +693,10 @@ function C6S2() {
   );
 }
 
-function C6S3() {
+function C6S3({ src }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <img src="/brand.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={src || "/brand.png"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)" }} />
       <Chip label="UX & Interface" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.8 }}
@@ -723,7 +722,7 @@ export const STAGE_SETS = {
   ux:        [C6S1, C6S2, C6S3],
 };
 
-const CMS_CARDS = content?.cards ?? [
+const DEFAULT_CARDS = [
   { id: "product",   stageSet: "product",   title: "Product & Digital",  sub: "E-commerce storefronts, web apps, and digital products built to perform." },
   { id: "marketing", stageSet: "marketing", title: "Marketing & Comms",  sub: "Content calendars, campaigns, and social strategies built for reach." },
   { id: "brand",     stageSet: "brand",     title: "Brand & Identity",   sub: "Logos, palettes, and type hierarchies that hold across every surface." },
@@ -732,10 +731,17 @@ const CMS_CARDS = content?.cards ?? [
   { id: "ux",        stageSet: "ux",        title: "UX & Interface",     sub: "Research-led design — flows, wireframes, and UI systems ready for dev." },
 ];
 
-export const CARDS = CMS_CARDS.map((card) => ({
-  ...card,
-  stages: STAGE_SETS[card.stageSet] ?? STAGE_SETS.product,
-}));
+function buildCards(content) {
+  const cmsCards = content?.cards ?? DEFAULT_CARDS;
+  const stageImgs = content?.stageImages ?? homeCms.servicesInMotion.stageImages ?? {};
+  return cmsCards.map((card) => ({
+    ...card,
+    stages: STAGE_SETS[card.stageSet] ?? STAGE_SETS.product,
+    stageImage: stageImgs[card.stageSet] ?? null,
+  }));
+}
+
+export const CARDS = buildCards(homeCms.servicesInMotion);
 
 // ─── Timing constants ─────────────────────────────────────────────────────────
 
@@ -870,7 +876,7 @@ export function SvcCard({ config, startDelay, isActive, index, activeIndex, card
           )}
           {stage === 2 && (
             <motion.div key="s3" style={{ position: "absolute", inset: 0 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.55 }}>
-              <S3c />
+              <S3c src={config.stageImage} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -904,18 +910,21 @@ export function SvcCard({ config, startDelay, isActive, index, activeIndex, card
 // ─── Main section ─────────────────────────────────────────────────────────────
 
 export default function ServicesInMotion() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const content = cmsData.servicesInMotion;
+  const LIVE_CARDS = buildCards(content);
+
   const [active, setActive] = useState(0);
   const trackRef = useRef(null);
   const touchX = useRef(null);
 
-  const max = CARDS.length - 1;
+  const max = LIVE_CARDS.length - 1;
 
-  // Responsive card width + gap — viewport-height aware so cards never overflow screen
   const getCardW = () => {
     if (typeof window === "undefined") return 380;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const overhead = 310; // header + label text + dots + section padding
+    const overhead = 310;
     const maxH = Math.max(200, vh - overhead);
     const maxWFromH = Math.floor(maxH * 9 / 13);
     if (vw < 480) return Math.min(vw - 36, 260, maxWFromH);
@@ -925,7 +934,6 @@ export default function ServicesInMotion() {
   const [cardW, setCardW] = useState(getCardW);
   const GAP = 24;
 
-  // Entrance animation
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
   const titleAccent = content?.titleAccent ?? "make.";
@@ -1004,6 +1012,11 @@ export default function ServicesInMotion() {
       onMouseEnter={() => { spotHovered.current = true; }}
       onMouseLeave={() => { spotHovered.current = false; }}
     >
+      {isEditMode && (
+        <button onClick={() => openPanel("servicesInMotion")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
+          ✏ Edit
+        </button>
+      )}
       {/* Edge blends */}
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 120, background: "linear-gradient(to bottom, rgba(224,238,248,0.55), transparent)", pointerEvents: "none", zIndex: 10 }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 120, background: "linear-gradient(to top, rgba(212,232,244,0.45), transparent)", pointerEvents: "none", zIndex: 10 }} />
@@ -1108,7 +1121,7 @@ export default function ServicesInMotion() {
               animate={{ x: offsetX }}
               transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
             >
-              {CARDS.map((c, i) => (
+              {LIVE_CARDS.map((c, i) => (
                 <SvcCard
                   key={c.id}
                   config={c}
@@ -1131,7 +1144,7 @@ export default function ServicesInMotion() {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
       >
-        {CARDS.map((_, i) => (
+        {LIVE_CARDS.map((_, i) => (
           <motion.button
             key={i}
             onClick={() => { setActive(i); startLoop(); }}

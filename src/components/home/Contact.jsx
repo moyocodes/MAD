@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useCms } from "@/context/CmsContext";
 import { homeCms } from "@/data/homeCms";
 
 const LOGO_SRC = "YOUR_LOGO_URL_HERE";
-
-const { brand, contact } = homeCms;
-const SERVICES = contact.ai.services;
+const SERVICES = homeCms.contact.ai.services;
 
 const COPY = {
   greeting:
@@ -641,6 +640,8 @@ function PhoneShell() {
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function MadPhoneChatWithForm({ scrollRef }) {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const { brand, contact } = cmsData;
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: false, margin: "-80px" });
   const [formData, setFormData] = useState({ name: "", email: "", msg: "" });
@@ -658,6 +659,11 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
 
   return (
     <section ref={sectionRef} className="relative">
+      {isEditMode && (
+        <button onClick={() => openPanel("contact")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
+          ✏ Edit
+        </button>
+      )}
       <style>{`
         @keyframes madBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes dotPulse {

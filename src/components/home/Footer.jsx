@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
+import { useCms } from "@/context/CmsContext";
 
 export default function Footer() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const f = cmsData.footer;
   return (
-    <footer className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14  bg-dark-100/20">
+    <footer className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 bg-dark-100/20 relative">
       <motion.div
         variants={{
           hidden: {},
@@ -40,8 +43,7 @@ export default function Footer() {
               fontWeight: 400,
             }}
           >
-            Product, marketing &amp; design firm creating systems that help
-            organizations grow stronger and perform over time.
+            {f.description}
           </p>
           <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
             {[<i class="fa fa-instagram" aria-hidden="true"></i>, <i class="fa fa-twitter" aria-hidden="true"></i>, <i class="fa fa-linkedin" aria-hidden="true"></i>].map((s, index) => (
@@ -168,10 +170,15 @@ export default function Footer() {
           margin: "0 auto",
         }}
       >
+        {isEditMode && (
+          <button onClick={() => openPanel("footer")} style={{ background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer" }}>
+            ✏ Edit Footer
+          </button>
+        )}
         <p
           style={{ fontSize: 14, color: "rgba(15,42,69,.38)", fontWeight: 500 }}
         >
-          © 2025 MAD. All rights reserved.
+          {f.copyright}
         </p>
         {/* <p style={{ fontSize: 14, color: "rgba(25,128,194,.45)", fontStyle: "italic", fontWeight: 500 }}>
           Structure changes everything.

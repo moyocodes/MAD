@@ -109,6 +109,14 @@ export const homeCms = {
     eyebrow: "Services in motion · scroll to explore",
     title: "Systems for growth.",
     titleAccent: "growth.",
+    stageImages: {
+      product:   "/1.png",
+      marketing: "/2.png",
+      brand:     "/3.png",
+      strategy:  "/4.png",
+      motion:    "/5.png",
+      ux:        "/brand.png",
+    },
     cards: [
       {
         id: "c1",
