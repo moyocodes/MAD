@@ -733,7 +733,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
               <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-azure-400/60 mb-1">
                 Talk to
               </p>
-              <h2 className="text-3xl md:text-5xl font-black pt-0 leading-none tracking-tight text-azure-900">
+              <h2 className="text-3xl md:text-5xl font-black leading-none tracking-tight text-azure-900">
                 <TypingText
                   texts={MAD_TEXTS}
                   inView={inView}
