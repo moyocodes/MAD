@@ -1,6 +1,14 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+  useInView,
+} from "framer-motion";
 import { homeCms } from "@/data/homeCms";
+import { useCms } from "@/context/CmsContext";
 
 // ─── Typing animation ─────────────────────────────────────────────────────────
 function TypingText({ text, inView, delay = 0, className = "" }) {
@@ -148,9 +156,8 @@ const SOLUTION_BULLETS = [
   "Maintain clear financial records",
   "Operate with improved financial visibility",
 ];
-
-const ease = [0.22, 1, 0.36, 1];
 const content = homeCms.experience;
+const ease = [0.22, 1, 0.36, 1];
 const TB = "#C2411D";
 
 // ─── Static data ──────────────────────────────────────────────────────────────
@@ -2505,7 +2512,14 @@ function LaptopFrame({ stage }) {
             overflow: "hidden",
           }}
         >
-          <div style={{ width: `${100 / scale}%`, height: `${100 / scale}%`, transformOrigin: "top left", transform: `scale(${scale})` }}>
+          <div
+            style={{
+              width: `${100 / scale}%`,
+              height: `${100 / scale}%`,
+              transformOrigin: "top left",
+              transform: `scale(${scale})`,
+            }}
+          >
             <TruBillingDashboard stage={stage} />
           </div>
           {/* MAD badge */}
@@ -2606,7 +2620,14 @@ function BulletRow({ text, isActive }) {
       transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       style={{ overflow: "hidden" }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 6, marginBottom: 5 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 6,
+          marginBottom: 5,
+        }}
+      >
         <div
           style={{
             width: isActive ? 14 : 7,
@@ -2771,9 +2792,11 @@ function SolutionPanel({ activeSolutionIdx }) {
       />
       {SOLUTION_BULLETS.map((text, i) => (
         <AnimatePresence key={i}>
-          {activeSolutionIdx >= 0 && i <= activeSolutionIdx && i < SOLUTION_BULLETS.length && (
-            <BulletRow text={text} isActive={i === activeSolutionIdx} />
-          )}
+          {activeSolutionIdx >= 0 &&
+            i <= activeSolutionIdx &&
+            i < SOLUTION_BULLETS.length && (
+              <BulletRow text={text} isActive={i === activeSolutionIdx} />
+            )}
         </AnimatePresence>
       ))}
 
@@ -2787,18 +2810,39 @@ function SolutionPanel({ activeSolutionIdx }) {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ borderTop: "1px solid rgba(0,0,0,.07)", margin: "8px 0 10px" }} />
+            <div
+              style={{
+                borderTop: "1px solid rgba(0,0,0,.07)",
+                margin: "8px 0 10px",
+              }}
+            />
             <PanelSectionHead
               title="Outcome"
               icon={
-                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#F26522" strokeWidth="2.5">
+                <svg
+                  width="8"
+                  height="8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#F26522"
+                  strokeWidth="2.5"
+                >
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
               }
             />
-            <p style={{ fontSize: 10, fontWeight: 600, color: "#444", lineHeight: 1.55, margin: 0 }}>
-              A more structured, efficient, and scalable approach to business billing and financial management.
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                color: "#444",
+                lineHeight: 1.55,
+                margin: 0,
+              }}
+            >
+              A more structured, efficient, and scalable approach to business
+              billing and financial management.
             </p>
           </motion.div>
         )}
@@ -2809,64 +2853,45 @@ function SolutionPanel({ activeSolutionIdx }) {
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function Experience() {
+  const { cmsData, isEditMode, openPanel } = useCms();
+  const content = cmsData.experience;
   const sectionRef = useRef(null);
-  const TOTAL_STAGES = STAGES.length; // 4 (3 scroll steps)
+  const TOTAL_STAGES = STAGES.length; // 4
 
   const [stage, setStage] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  const inView = useInView(sectionRef, { once: false, margin: "-120px" });
 
-  // Atelier entry reveals — drives content in as section scrolls into view
+  // Entry reveal motion values
   const { scrollYProgress: entryProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "start 0.2"],
   });
-  const entryOp  = useTransform(entryProgress, [0, 1], [0, 1]);
+  const entryOp = useTransform(entryProgress, [0, 1], [0, 1]);
   const headlineY = useTransform(entryProgress, [0, 1], [24, 0]);
-  const leftX    = useTransform(entryProgress, [0.1, 1], [-28, 0]);
-  const rightX   = useTransform(entryProgress, [0.1, 1], [28, 0]);
-  const ctaY     = useTransform(entryProgress, [0.2, 1], [16, 0]);
+  const leftX = useTransform(entryProgress, [0.1, 1], [-28, 0]);
+  const rightX = useTransform(entryProgress, [0.1, 1], [28, 0]);
+  const ctaY = useTransform(entryProgress, [0.2, 1], [16, 0]);
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v > 0.01) setHasEntered(true);
-    // First 10% = headline entrance, remaining 90% mapped to stages
-    const adjusted = Math.max(0, (v - 0.1) / 0.9);
-    setStage(Math.min(TOTAL_STAGES - 1, Math.floor(adjusted * TOTAL_STAGES)));
-  });
+  // Auto-advance stages when section is in view (2.5 s each)
+  useEffect(() => {
+    if (!inView) {
+      setStage(0);
+      return;
+    }
+    const timers = [];
+    for (let i = 1; i < TOTAL_STAGES; i++) {
+      timers.push(setTimeout(() => setStage(i), i * 2500));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [inView, TOTAL_STAGES]);
 
   const stageData = STAGES[stage] ?? STAGES[0];
   const activeNeedIdx = stageData.needIdx;
   const activeApproachIdx = stageData.approachIdx;
   const activeSolutionIdx = stageData.solutionIdx;
-
-  // Quick-scan entrance: cycle bullets 3× fast before handing off to scroll
-  const [scanIdx, setScanIdx] = useState(-1);
-  const scanDoneRef = useRef(false);
-  useEffect(() => {
-    if (!hasEntered || scanDoneRef.current) return;
-    scanDoneRef.current = true;
-    const PASSES = 3;
-    const COUNT = SOLUTION_BULLETS.length;
-    const STEP_MS = 140;
-    let step = 0;
-    setScanIdx(0);
-    const t = setInterval(() => {
-      step++;
-      if (step < PASSES * COUNT) {
-        setScanIdx(step % COUNT);
-      } else {
-        clearInterval(t);
-        setScanIdx(-1);
-      }
-    }, STEP_MS);
-    return () => clearInterval(t);
-  }, [hasEntered]);
-
-  const displaySolutionIdx = scanIdx >= 0 ? scanIdx : activeSolutionIdx;
+  const displaySolutionIdx = activeSolutionIdx;
 
   return (
     // Height = (stages + 1) viewports for smooth per-stage scrolling
@@ -2879,6 +2904,30 @@ export default function Experience() {
         // background: "#f5f1eb",
       }}
     >
+      {isEditMode && (
+        <button
+          onClick={() => openPanel("experience")}
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 100,
+            background: "#0b457b",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            padding: "5px 12px",
+            fontSize: 9,
+            fontWeight: 800,
+            letterSpacing: ".15em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
+          }}
+        >
+          ✏ Edit
+        </button>
+      )}
       <div
         className="flex items-start md:items-center justify-center pt-4 md:pt-0 overflow-y-auto md:overflow-hidden"
         style={{
@@ -2929,7 +2978,6 @@ export default function Experience() {
               <p
                 className="max-w-full sm:max-w-[380px] text-gray-600 font-bold text-[12px]"
                 style={{
-                 
                   lineHeight: 1.65,
                   marginTop: 4,
                 }}
@@ -2983,7 +3031,7 @@ export default function Experience() {
               style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
-              <SolutionPanel activeSolutionIdx={activeSolutionIdx} />
+              <SolutionPanel activeSolutionIdx={displaySolutionIdx} />
             </motion.div>
           </div>
 
@@ -3018,7 +3066,11 @@ export default function Experience() {
               >
                 <motion.div
                   animate={{ y: [0, 7, 0] }}
-                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   style={{
                     width: 3,
                     height: 6,
@@ -3028,10 +3080,21 @@ export default function Experience() {
                 />
               </div>
               <div>
-                <p style={{ fontSize: 9, fontWeight: 800, color: "#F26522", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 800,
+                    color: "#F26522",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    margin: 0,
+                  }}
+                >
                   Scroll to explore
                 </p>
-                <p style={{ fontSize: 8, color: "rgba(24,24,23,.4)", margin: 0 }}>
+                <p
+                  style={{ fontSize: 8, color: "rgba(24,24,23,.4)", margin: 0 }}
+                >
                   Each scroll reveals the next step
                 </p>
               </div>
