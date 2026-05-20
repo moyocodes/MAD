@@ -12,10 +12,19 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          "react-vendor": ["react", "react-dom"],
-          router: ["react-router-dom"],
-          ui: ["framer-motion", "lucide-react"],
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) {
+              return "react-vendor";
+            }
+            if (id.includes("react-router-dom")) {
+              return "router";
+            }
+            if (id.includes("framer-motion") || id.includes("lucide-react")) {
+              return "ui";
+            }
+            return "vendor";
+          }
         },
       },
     },
