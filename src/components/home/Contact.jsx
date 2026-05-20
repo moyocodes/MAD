@@ -730,7 +730,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                 delay: 0.07,
               }}
             >
-              <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-azure-400/60 mb-1">
+              <p className="text-[10px] font-semibold pt-0 tracking-[0.22em] uppercase text-azure-400/60 mb-1">
                 Talk to
               </p>
               <h2 className="text-3xl md:text-5xl font-black leading-none tracking-tight text-azure-900">
