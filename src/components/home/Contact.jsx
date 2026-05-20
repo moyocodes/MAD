@@ -242,6 +242,22 @@ function CallingScreen({ onAnswer, onDecline }) {
         </div>
       </div>
 
+      {/* Pick-up prompt on screen */}
+      <div className="flex flex-col items-center gap-1 animate-[fadeUp_.7s_ease_.3s_both]">
+        <div style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: 99,
+          padding: "6px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+        }}>
+          <span style={{ fontSize: 13, animation: "phoneFloat 1.8s ease-in-out infinite", display: "inline-block" }}>👇</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.75)", letterSpacing: "0.04em" }}>Pick up & chat with MAD AI</span>
+        </div>
+      </div>
+
       <div className="flex gap-10 items-center justify-center w-full">
         <div className="flex flex-col items-center gap-2">
           <button
@@ -250,15 +266,7 @@ function CallingScreen({ onAnswer, onDecline }) {
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
               <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.01l-2.2 2.21z" />
-              <line
-                x1="22"
-                y1="2"
-                x2="2"
-                y2="22"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <line x1="22" y1="2" x2="2" y2="22" stroke="white" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
           <span className="text-[9px] text-white/35">Decline</span>
@@ -658,7 +666,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
   const MAD_TEXTS = ["MAD", "the future", "MAD AI"];
 
   return (
-    <section ref={sectionRef} className="relative">
+    <section id="contact" ref={sectionRef} className="relative">
       {isEditMode && (
         <button onClick={() => openPanel("contact")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
           ✏ Edit
@@ -673,6 +681,18 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
         @keyframes ringOut {
           0% { transform: translate(-50%, -50%) scale(1); opacity: .6; }
           100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+        }
+        @keyframes phoneFloat {
+          0%, 100% { transform: translateY(0px) rotate(-4deg); }
+          50% { transform: translateY(-8px) rotate(-4deg); }
+        }
+        @keyframes tapPulse {
+          0%, 100% { transform: scale(1); opacity: 0.9; }
+          50% { transform: scale(1.18); opacity: 1; }
+        }
+        @keyframes pickupRing {
+          0% { transform: scale(1); opacity: 0.5; }
+          100% { transform: scale(2.8); opacity: 0; }
         }
         @keyframes blink {
           0%, 100% { opacity: 1; }
@@ -925,6 +945,83 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
               }}
             />
           </div>
+
+          {/* ── Pick-up indicator ── */}
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
+            style={{
+              position: "absolute",
+              top: 22,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 20,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 8,
+              pointerEvents: "none",
+            }}
+          >
+            {/* Glowing ring badge */}
+            <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {/* Expanding rings */}
+              {[0, 0.55, 1.1].map((delay, i) => (
+                <div
+                  key={i}
+                  style={{
+                    position: "absolute",
+                    width: 56,
+                    height: 56,
+                    borderRadius: "50%",
+                    border: "1.5px solid rgba(255,255,255,0.55)",
+                    animation: `pickupRing 2.2s ease-out ${delay}s infinite`,
+                  }}
+                />
+              ))}
+              {/* Phone icon pill */}
+              <div style={{
+                background: "rgba(255,255,255,0.18)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
+                border: "1px solid rgba(255,255,255,0.32)",
+                borderRadius: 99,
+                padding: "12px 22px 12px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.28)",
+              }}>
+                <span style={{ fontSize: 26, animation: "phoneFloat 1.8s ease-in-out infinite", display: "inline-block" }}>
+                  📱
+                </span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", letterSpacing: "0.04em", lineHeight: 1.2 }}>
+                    Pick up the phone
+                  </div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", fontWeight: 500, lineHeight: 1.4 }}>
+                    Chat with MAD AI →
+                  </div>
+                </div>
+                {/* Live dot */}
+                <div style={{ position: "relative", width: 10, height: 10, flexShrink: 0 }}>
+                  <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#4ade80", animation: "tapPulse 1.4s ease-in-out infinite" }} />
+                  <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#4ade80" }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Arrow pointing down */}
+            <motion.div
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              </svg>
+            </motion.div>
+          </motion.div>
 
           {/* Phone — Desktop */}
           <motion.div

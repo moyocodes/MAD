@@ -56,7 +56,7 @@ export default function WhatWeDo() {
   const svc = WWD[cur];
 
   return (
-    <section ref={rootRef} className="relative h-[100dvh]">
+    <section id="services" ref={rootRef} className="relative h-[100dvh]">
       {isEditMode && (
         <button onClick={() => openPanel("whatWeDo")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
           ✏ Edit
@@ -108,7 +108,7 @@ export default function WhatWeDo() {
                   </p>
                 </motion.div>
               </AnimatePresence>
-              <button className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md">
+              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md">
                 {content.cta}
               </button>
             </div>
@@ -217,7 +217,7 @@ export default function WhatWeDo() {
                   {content.body}
                 </p>
               </div>
-              <button className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]">
+              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]">
                 {content.cta}
               </button>
             </motion.div>

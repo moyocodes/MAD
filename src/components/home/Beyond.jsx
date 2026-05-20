@@ -10,6 +10,7 @@ export default function Beyond() {
 
   return (
     <section
+      id="about"
       ref={ref}
       className="relative overflow-hidden flex items-center min-h-[85vh] md:min-h-screen"
       style={{ background: "linear-gradient(135deg, rgba(238,247,253,0.82) 0%, rgba(214,236,248,0.75) 50%, rgba(188,220,240,0.68) 100%)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
@@ -133,6 +134,7 @@ export default function Beyond() {
           transition={{ type: "spring", stiffness: 380, damping: 20, delay: 0.86 }}
         >
           <motion.button
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
             className="bg-azure-500 text-white text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-full border-none cursor-pointer shadow-lg shadow-azure-400/30"
             whileHover={{ scale: 1.07, y: -4, boxShadow: "0 14px 38px rgba(25,128,194,.42)" }}
             whileTap={{ scale: 0.93 }}

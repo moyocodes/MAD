@@ -2599,7 +2599,7 @@ export default function ServicesInMotion() {
     clearInterval(autoTimerRef.current);
     autoTimerRef.current = setInterval(() => {
       if (!spotHovered.current) setActive((a) => (a >= max ? 0 : a + 1));
-    }, 3800);
+    }, 2000);
   }, [max]);
 
   useEffect(() => {

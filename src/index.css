@@ -17,9 +17,9 @@
 
         scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
+    /* -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; */
   }
 
   body {

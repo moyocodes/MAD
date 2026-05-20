@@ -4,7 +4,6 @@ import {
   AnimatePresence,
   useScroll,
   useTransform,
-  useMotionValueEvent,
   useInView,
 } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
@@ -156,7 +155,6 @@ const SOLUTION_BULLETS = [
   "Maintain clear financial records",
   "Operate with improved financial visibility",
 ];
-const content = homeCms.experience;
 const ease = [0.22, 1, 0.36, 1];
 const TB = "#C2411D";
 
@@ -2397,7 +2395,7 @@ function TruBillingDashboard({ stage }) {
 }
 
 // ─── Laptop frame ─────────────────────────────────────────────────────────────
-function LaptopFrame({ stage }) {
+function LaptopFrame({ stage, badge }) {
   const url = STAGES[stage]?.url ?? "trubilling.com/dashboard";
   const frameRef = useRef(null);
   const [scale, setScale] = useState(1);
@@ -2565,7 +2563,7 @@ function LaptopFrame({ stage }) {
                 color: "rgba(255,255,255,0.75)",
               }}
             >
-              {content.badge}
+              {badge}
             </span>
           </motion.div>
         </div>
@@ -2863,11 +2861,6 @@ export default function Experience() {
 
   const inView = useInView(sectionRef, { once: false, margin: "-120px" });
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
   // Atelier entry reveals — drives content in as section scrolls into view
   const { scrollYProgress: entryProgress } = useScroll({
     target: sectionRef,
@@ -2878,22 +2871,17 @@ export default function Experience() {
   const leftX = useTransform(entryProgress, [0.1, 1], [-28, 0]);
   const rightX = useTransform(entryProgress, [0.1, 1], [28, 0]);
   const ctaY = useTransform(entryProgress, [0.2, 1], [16, 0]);
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v > 0.01) setHasEntered(true);
-    // First 10% = headline entrance, remaining 90% mapped to stages
-    const adjusted = Math.max(0, (v - 0.1) / 0.9);
-    setStage(Math.min(TOTAL_STAGES - 1, Math.floor(adjusted * TOTAL_STAGES)));
-  });
-  // Auto-advance stages when section is in view (2.5 s each)
+  // Auto-advance stages when section is in view (2 s each)
   useEffect(() => {
     if (!inView) {
       setStage(0);
+      setHasEntered(false);
       return;
     }
-
+    setHasEntered(true);
     const timers = [];
     for (let i = 1; i < TOTAL_STAGES; i++) {
-      timers.push(setTimeout(() => setStage(i), i * 1500));
+      timers.push(setTimeout(() => setStage(i), 1000 + (i - 1) * 2000));
     }
     return () => timers.forEach(clearTimeout);
   }, [inView, TOTAL_STAGES]);
@@ -2905,15 +2893,11 @@ export default function Experience() {
   const displaySolutionIdx = activeSolutionIdx;
 
   return (
-    // Height = (stages + 1) viewports for smooth per-stage scrolling
     <div
+      id="work"
       ref={sectionRef}
       className="bg-azure-200/75 backdrop-blur-sm"
-      style={{
-        position: "relative",
-        height: `${(TOTAL_STAGES + 1) * 50}vh`,
-        // background: "#f5f1eb",
-      }}
+      style={{ position: "relative" }}
     >
       {isEditMode && (
         <button
@@ -2940,11 +2924,9 @@ export default function Experience() {
         </button>
       )}
       <div
-        className="flex items-start md:items-center justify-center pt-4 md:pt-0 overflow-y-auto md:overflow-hidden"
+        className="flex items-start md:items-center justify-center pt-4 pb-10 md:pt-0 overflow-hidden"
         style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
+          minHeight: "100dvh",
           zIndex: 2,
         }}
       >
@@ -3002,6 +2984,7 @@ export default function Experience() {
               className="flex-shrink-0 sm:max-w-[210px]"
             >
               <button
+                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                 className="bg-tangerine-500 text-white border-none rounded-full cursor-pointer"
                 style={{
                   padding: "10px 22px",
@@ -3034,7 +3017,7 @@ export default function Experience() {
 
             {/* CENTER — Laptop: full width on mobile (spans 2 cols), center on desktop */}
             <div className="col-span-2 md:col-span-1 order-1 md:order-2 flex justify-center min-w-0">
-              <LaptopFrame stage={stage} />
+              <LaptopFrame stage={stage} badge={content.badge} />
             </div>
 
             {/* RIGHT — Solution: below laptop on mobile, right on desktop */}
@@ -3101,12 +3084,12 @@ export default function Experience() {
                     margin: 0,
                   }}
                 >
-                  Scroll to explore
+                  Auto-advancing
                 </p>
                 <p
                   style={{ fontSize: 8, color: "rgba(24,24,23,.4)", margin: 0 }}
                 >
-                  Each scroll reveals the next step
+                  Each step reveals as you watch
                 </p>
               </div>
             </div>

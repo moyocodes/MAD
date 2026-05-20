@@ -50,6 +50,12 @@ export default function Nav() {
   const isPill = solid && !hidden;
   const links = nav.links;
 
+  const NAV_TARGETS = { Work: "work", Services: "services", About: "about", Journal: "contact" };
+  const scrollTo = (id) => {
+    setMenuOpen(false);
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 60);
+  };
+
   const Hamburger = ({ open }) => (
     <button
       className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-[5.5px] rounded-xl border-none"
@@ -96,6 +102,7 @@ export default function Nav() {
           <motion.a
             key={l}
             href="#"
+            onClick={(e) => { e.preventDefault(); scrollTo(NAV_TARGETS[l] ?? "contact"); }}
             className="text-[11px] tracking-[0.14em] uppercase font-semibold"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -123,6 +130,7 @@ export default function Nav() {
 
       {/* Desktop CTA */}
       <motion.button
+        onClick={() => scrollTo("contact")}
         className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none"
         initial={{ opacity: 0, scale: 0.82 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -297,7 +305,7 @@ export default function Nav() {
                     initial={{ opacity: 0, y: 22 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.06 + i * 0.07, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => scrollTo(NAV_TARGETS[l] ?? "contact")}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -338,6 +346,7 @@ export default function Nav() {
 
               {/* CTA */}
               <motion.button
+                onClick={() => scrollTo("contact")}
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.32, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
