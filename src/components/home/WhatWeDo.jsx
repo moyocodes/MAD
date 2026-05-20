@@ -1,5 +1,10 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useCms } from "@/context/CmsContext";
 
 function ProgressBar({ duration, running, onComplete }) {
@@ -41,31 +46,56 @@ export default function WhatWeDo() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
   const rootRef = useRef(null);
-  const next = useCallback(() => setCur((c) => (c + 1) % WWD.length), [WWD.length]);
+  const next = useCallback(
+    () => setCur((c) => (c + 1) % WWD.length),
+    [WWD.length],
+  );
 
   const { scrollYProgress } = useScroll({
     target: rootRef,
     offset: ["start end", "start start"],
   });
-  const leftOp  = useTransform(scrollYProgress, [0, 0.5], [0.3, 1]);
-  const introY  = useTransform(scrollYProgress, [0,   0.6], [20, 0]);
-  const introOp = useTransform(scrollYProgress, [0,   0.6], [0, 1]);
-  const svcY    = useTransform(scrollYProgress, [0.2, 1],   [24, 0]);
-  const svcOp   = useTransform(scrollYProgress, [0.2, 1],   [0, 1]);
+  const leftOp = useTransform(scrollYProgress, [0, 0.5], [0.3, 1]);
+  const introY = useTransform(scrollYProgress, [0, 0.6], [20, 0]);
+  const introOp = useTransform(scrollYProgress, [0, 0.6], [0, 1]);
+  const svcY = useTransform(scrollYProgress, [0.2, 1], [24, 0]);
+  const svcOp = useTransform(scrollYProgress, [0.2, 1], [0, 1]);
 
   const svc = WWD[cur];
 
   return (
-    <section id="services" ref={rootRef} className="relative h-[100dvh]">
+    <section id="work" ref={rootRef} className="relative h-[100dvh]">
       {isEditMode && (
-        <button onClick={() => openPanel("whatWeDo")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
+        <button
+          onClick={() => openPanel("whatWeDo")}
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 100,
+            background: "#0b457b",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            padding: "5px 12px",
+            fontSize: 9,
+            fontWeight: 800,
+            letterSpacing: ".15em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
+          }}
+        >
           ✏ Edit
         </button>
       )}
       <div className="overflow-hidden h-full" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
           {/* ── Left full-height on desktop, 60dvh on mobile ── */}
-          <motion.div style={{ opacity: leftOp }} className="md:row-span-2 relative overflow-hidden h-[60dvh] md:h-full">
+          <motion.div
+            style={{ opacity: leftOp }}
+            className="md:row-span-2 relative overflow-hidden h-[60dvh] md:h-full"
+          >
             {WWD.map((sv, i) => (
               <motion.img
                 key={i}
@@ -108,7 +138,14 @@ export default function WhatWeDo() {
                   </p>
                 </motion.div>
               </AnimatePresence>
-              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md">
+              <button
+                onClick={() =>
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md"
+              >
                 {content.cta}
               </button>
             </div>
@@ -155,38 +192,6 @@ export default function WhatWeDo() {
               />
             ))}
             <div className="absolute inset-0 bg-azure-900/70" />
-
-            <div className="absolute inset-0 flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={cur}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.35, ease }}
-                  className="flex items-center gap-2"
-                >
-                 
-                  <span className="text-azure-400 font-black tracking-[0.1em] uppercase text-[10px] md:text-sm">
-                    {svc.label.split(" ")[0]}
-                  </span>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <div className="absolute top-3 right-3 flex gap-[5px]">
-              {WWD.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCur(i)}
-                  className="w-3.5 h-3.5 rounded-full cursor-pointer"
-                  style={{
-                    border: `1.5px solid ${i === cur ? "#ffffff" : "rgba(90,167,230,.3)"}`,
-                    background: i === cur ? "#ffffff" : "transparent",
-                  }}
-                />
-              ))}
-            </div>
           </div>
 
           {/* ── Bottom-right: 2 cards ── */}
@@ -217,7 +222,14 @@ export default function WhatWeDo() {
                   {content.body}
                 </p>
               </div>
-              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]">
+              <button
+                onClick={() =>
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]"
+              >
                 {content.cta}
               </button>
             </motion.div>
@@ -330,7 +342,6 @@ export default function WhatWeDo() {
           </div>
         </div>
       </div>
-
     </section>
   );
 }

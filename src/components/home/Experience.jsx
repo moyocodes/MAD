@@ -79,6 +79,86 @@ function TypingText({ text, inView, delay = 0, className = "" }) {
   );
 }
 
+function TypingTexts({
+  text,
+  inView,
+  delay = 0,
+  className = "",
+  chunkSize = 1,
+}) {
+  const texts = Array.isArray(text) ? text : [text];
+
+  // Build chunks of chunkSize items joined by ", "
+  const chunks = [];
+  for (let i = 0; i < texts.length; i += chunkSize) {
+    chunks.push(texts.slice(i, i + chunkSize).join(", "));
+  }
+
+  const [chunkIdx, setChunkIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (!inView) {
+      setDisplayed("");
+      setDone(false);
+      setChunkIdx(0);
+      return;
+    }
+
+    let charIndex = 0;
+    let charTimer = null;
+    let startTimer = null;
+
+    const startTyping = () => {
+      const current = chunks[chunkIdx] ?? "";
+      setDisplayed("");
+      setDone(false);
+      charIndex = 0;
+
+      charTimer = setInterval(() => {
+        charIndex += 1;
+        setDisplayed(current.slice(0, charIndex));
+        if (charIndex >= current.length) {
+          clearInterval(charTimer);
+          setDone(true);
+          startTimer = setTimeout(() => {
+            setChunkIdx((prev) => (prev + 1) % chunks.length);
+          }, 1200);
+        }
+      }, 55);
+    };
+
+    startTimer = setTimeout(startTyping, delay * 1000);
+
+    return () => {
+      clearTimeout(startTimer);
+      clearInterval(charTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, chunkIdx]);
+
+  return (
+    <span className={className}>
+      {displayed}
+      {!done && (
+        <span
+          style={{
+            display: "inline-block",
+            width: 2,
+            height: "0.85em",
+            background: "currentColor",
+            marginLeft: 2,
+            verticalAlign: "text-bottom",
+            animation: "blink 0.75s step-end infinite",
+          }}
+        />
+      )}
+      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}`}</style>
+    </span>
+  );
+}
+
 // ─── Count-up hook (triggers on mount — fires each time DashboardPage appears) ─
 function useCountUp(end, duration = 1600) {
   const [val, setVal] = useState(0);
@@ -2666,7 +2746,12 @@ function PanelSectionHead({ title, icon }) {
 }
 
 // ─── LEFT panel: The Need + Our Approach (stacked) ────────────────────────────
-function NeedApproachPanel({ activeNeedIdx, activeApproachIdx, needItems, approachItems }) {
+function NeedApproachPanel({
+  activeNeedIdx,
+  activeApproachIdx,
+  needItems,
+  approachItems,
+}) {
   return (
     <div
       className="rounded-xl md:rounded-[14px] p-3 md:p-[12px_14px]"
@@ -2872,9 +2957,10 @@ export default function Experience() {
 
   return (
     <div
-      id="work"
+      id="trubilling"
       ref={sectionRef}
-      className="bg-azure-200/75 backdrop-blur-sm"
+
+      className="bg-gradient-to-tr from-tangerine-50 to-white relative overflow-hidden       py-12"
       style={{ position: "relative" }}
     >
       {isEditMode && (
@@ -2946,7 +3032,16 @@ export default function Experience() {
                 />
                 <span>{content.productSuffix}</span>
               </h2>
-              <p
+              <TypingTexts
+                text={content.productTypedsub[0]
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean)}
+                inView={hasEntered}
+                chunkSize={3}
+                className="text-xl py-2"
+              />
+              {/* <p
                 className="max-w-full sm:max-w-[380px] text-gray-600 font-bold text-[12px]"
                 style={{
                   lineHeight: 1.65,
@@ -2954,7 +3049,7 @@ export default function Experience() {
                 }}
               >
                 {content.intro}
-              </p>
+              </p> */}
             </motion.div>
 
             <motion.div
@@ -2962,7 +3057,11 @@ export default function Experience() {
               className="flex-shrink-0 sm:max-w-[210px]"
             >
               <button
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="bg-tangerine-500 text-white border-none rounded-full cursor-pointer"
                 style={{
                   padding: "10px 22px",
@@ -2981,7 +3080,7 @@ export default function Experience() {
           </div>
 
           {/* ── 3-column: Need+Approach | Laptop | Solution ── */}
-          <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3 pt-10">
             {/* LEFT — Need + Approach: below laptop on mobile, left on desktop */}
             <motion.div
               style={{ opacity: entryOp, x: leftX }}

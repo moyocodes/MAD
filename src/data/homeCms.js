@@ -6,7 +6,7 @@ export const homeCms = {
     serviceByLabel: "Service by",
   },
   nav: {
-    links: ["Work", "Services", "About", "Journal"],
+    links: ["Work", "Trubilling", "Services", "Contact"],
     cta: "Work With Us",
   },
   hero: {
@@ -56,9 +56,9 @@ export const homeCms = {
     ],
     notifications: [
       "New inquiry from Kova Group",
-       "TruBilling shipped ✓ — Product launch confirmed",
+      "TruBilling shipped ✓ — Product launch confirmed",
       "Meridian campaign went live today",
-           "New inquiry from Kova Group",
+      "New inquiry from Kova Group",
       "TruBilling shipped ✓ — Product launch confirmed",
       "Meridian campaign went live today",
     ],
@@ -121,12 +121,12 @@ export const homeCms = {
     titleAccent: "growth.",
     cta: "Start a Project →",
     stageImages: {
-      product:   "/1.png",
+      product: "/1.png",
       marketing: "/2.png",
-      brand:     "/3.png",
-      strategy:  "/4.png",
-      motion:    "/5.png",
-      ux:        "/brand.png",
+      brand: "/3.png",
+      strategy: "/4.png",
+      motion: "/5.png",
+      ux: "/brand.png",
     },
     cards: [
       {
@@ -172,8 +172,11 @@ export const homeCms = {
     kicker:
       "Struggling to track where your money goes? Tired of chasing unpaid invoices?",
     productPrefix: "tru",
-    productTyped: ["billing", "invoicing", "payments"],
-    productSuffix: ".",
+    productTyped: ["billing"],
+    productTypedsub: [
+      "invoicing, expenses, payments, quotes, negotiator, inventory ,task manager, analytics, tax calculator",
+    ],
+    productSuffix: "",
     intro:
       "TruBilling is a financial management platform designed to help small and growing businesses manage billing, track payments, and maintain financial clarity in one structured system. The goal was to simplify how businesses handle day-to-day financial operations without overwhelming them with complexity.",
     dashboardUrl: "trubilling.com/dashboard",
@@ -334,7 +337,7 @@ export const homeCms = {
         links: [
           ["About MAD", "#"],
           ["Our Work", "#"],
-          ["Journal", "#"],
+          ["Contact", "#"],
           ["Careers", "#"],
         ],
       },

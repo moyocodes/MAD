@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCms } from "@/context/CmsContext";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Nav() {
   const { cmsData, isEditMode, openPanel } = useCms();
+  const { dark, toggle } = useTheme();
   const { brand, nav } = cmsData;
   const [solid, setSolid] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -13,10 +15,7 @@ export default function Nav() {
     const fn = () => {
       const y = window.scrollY;
       setSolid(y > 20);
-      setHidden(
-        (y > window.innerHeight * 0.9 && y < window.innerHeight * 3.6) ||
-          (y > window.innerHeight * 3.7 && y < window.innerHeight * 11),
-      );
+     
     };
     fn();
     window.addEventListener("scroll", fn, { passive: true });
@@ -40,9 +39,10 @@ export default function Nav() {
 
   const NAV_TARGETS = {
     Work: "work",
-    Services: "services",
-    About: "about",
-    Journal: "contact",
+  
+    Trubilling: "trubilling",
+      Services: "services",
+    contact: "contact",
   };
   const scrollTo = (id) => {
     setMenuOpen(false);
@@ -153,7 +153,34 @@ export default function Nav() {
         ))}
       </div>
 
-      {/* Desktop CTA */}
+      {/* Dark mode toggle */}
+      {/* <button
+        onClick={toggle}
+        aria-label="Toggle dark mode"
+        style={{
+          width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(11,69,123,.18)",
+          background: dark ? "rgba(255,255,255,.08)" : "rgba(11,69,123,.06)",
+          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0, transition: "background .2s",
+        }}
+      >
+        {dark ? (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e2eaf5" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        ) : (
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(11,69,123,.7)" strokeWidth="2" strokeLinecap="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        )}
+      </button> */}
+
+      <Hamburger open={menuOpen} />
+
+      {/* Desktop CTA — extreme right end */}
       <motion.button
         onClick={() => scrollTo("contact")}
         className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none"
@@ -182,7 +209,6 @@ export default function Nav() {
         {nav.cta}
       </motion.button>
 
-      <Hamburger open={menuOpen} />
       {isEditMode && (
         <button
           onClick={() => openPanel("nav")}
@@ -209,7 +235,7 @@ export default function Nav() {
   return (
     <>
       <AnimatePresence mode="wait">
-        {hidden ? null : isPill ? (
+
           <motion.nav
             key="pill"
             initial={{ scaleY: 0.45, opacity: 0, y: -18 }}
@@ -223,9 +249,9 @@ export default function Nav() {
               right: 0,
               margin: "0 auto",
               width: "fit-content",
-              minWidth: "min(92vw, 580px)",
+              minWidth: "min(102vw, 1200px)",
               maxWidth: 780,
-              borderRadius: 50,
+              borderRadius: 15,
               backdropFilter: "blur(22px)",
               WebkitBackdropFilter: "blur(22px)",
               background: "rgba(237,246,255,0.93)",
@@ -244,33 +270,8 @@ export default function Nav() {
           >
             {inner()}
           </motion.nav>
-        ) : (
-          <motion.nav
-            key="flat"
-            initial={{ y: -72, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -72, opacity: 0 }}
-            transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 300,
-              height: 68,
-              background: "rgba(237,246,255,0.93)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              borderBottom: "1px solid rgba(11,69,123,.12)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "0 40px",
-            }}
-          >
-            {inner()}
-          </motion.nav>
-        )}
+ 
+       
       </AnimatePresence>
 
       {/* Mobile overlay */}

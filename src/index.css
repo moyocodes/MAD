@@ -118,6 +118,41 @@ textarea:focus {
 
 a { text-decoration: none; }
 
+/* ── Dark mode ────────────────────────────────────────────────────────────── */
+html.dark body { background: #080e1c; color: #e2eaf5; }
+
+/* Page gradient override (targets the <main> element) */
+html.dark main[data-page="home"] {
+  background: linear-gradient(180deg,
+    #070d1b 0%, #090f1e 12%, #0b1222 25%,
+    #0d1526 40%, #0e1828 58%, #0c1523 75%, #080d19 100%) !important;
+}
+
+/* Nav */
+html.dark nav {
+  background: rgba(6, 11, 24, 0.96) !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Section surface overrides */
+html.dark #about   { background: linear-gradient(135deg, rgba(8,20,42,0.92) 0%, rgba(10,24,50,0.88) 50%, rgba(11,26,55,0.82) 100%) !important; }
+html.dark #work    { background: rgba(7,13,28,0.85) !important; }
+html.dark footer   { background: transparent !important; }
+html.dark footer p,
+html.dark footer a,
+html.dark footer span { color: rgba(200,215,235,0.65) !important; }
+html.dark footer h4,
+html.dark footer h3 { color: rgba(220,232,248,0.9) !important; }
+
+/* Text: muted blues → light on dark */
+html.dark .text-azure-800\/55 { color: rgba(180,205,230,0.6) !important; }
+
+/* Pill nav dark */
+html.dark nav[style*="border-radius: 50px"] {
+  background: rgba(6,12,26,0.96) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
 @keyframes slideDown { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:none } }
 @keyframes popInRight { from { opacity:0; transform:translateX(10px) } to { opacity:1; transform:none } }
 @keyframes growBar { from { width:0 } }

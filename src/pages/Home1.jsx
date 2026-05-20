@@ -8,6 +8,7 @@ import Beyond from "../components/home/Beyond";
 import Contact from "../components/home/Contact";
 import Footer from "../components/home/Footer";
 import { CmsProvider } from "../context/CmsContext";
+import { ThemeProvider } from "../context/ThemeContext";
 import AdminBar from "../components/cms/AdminBar";
 import CmsPanel from "../components/cms/CmsPanel";
 
@@ -60,8 +61,10 @@ export default function MADLandingPage() {
   }, []);
 
   return (
+    <ThemeProvider>
     <CmsProvider>
       <main
+        data-page="home"
         style={{
           background:
             "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
@@ -103,5 +106,6 @@ export default function MADLandingPage() {
       <AdminBar />
       <CmsPanel />
     </CmsProvider>
+    </ThemeProvider>
   );
 }
