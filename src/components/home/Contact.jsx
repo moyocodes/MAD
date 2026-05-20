@@ -910,20 +910,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
 
         {/* ── RIGHT — sticky azure panel with phone ── */}
         <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 relative min-h-[65vh] md:min-h-0">
-          {/* Mobile "Talk to MAD" header — also uses TypingText */}
-          <motion.div
-            className="md:hidden absolute top-0 left-0 right-0 z-20 pt-6 px-6 text-center"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="text-sm text-white/70 font-medium mb-1">
-              Talk to
-            </div>
-            <div className="text-3xl font-black text-white tracking-tight">
-              <TypingText texts={MAD_TEXTS} inView={inView} delay={0.5} />
-            </div>
-          </motion.div>
+       
 
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl" style={{ animation: "cBlob3 7s ease-in-out infinite" }} />

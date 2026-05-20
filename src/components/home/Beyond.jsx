@@ -12,7 +12,7 @@ export default function Beyond() {
     <section
       ref={ref}
       className="relative overflow-hidden flex items-center min-h-[85vh] md:min-h-screen"
-      style={{ background: "linear-gradient(135deg, rgba(238,247,253,0.82) 0%, rgba(214,236,248,0.75) 50%, rgba(188,220,240,0.68) 100%)", backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)" }}
+      style={{ background: "linear-gradient(135deg, rgba(238,247,253,0.82) 0%, rgba(214,236,248,0.75) 50%, rgba(188,220,240,0.68) 100%)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
     >
       <style>{`
         @keyframes bBlob1{0%,100%{transform:translateY(0) scale(1);opacity:.4}50%{transform:translateY(-32px) scale(1.1);opacity:.7}}

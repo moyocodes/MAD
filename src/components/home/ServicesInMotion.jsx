@@ -1128,7 +1128,7 @@ export default function ServicesInMotion() {
                   index={i}
                   activeIndex={active}
                   isActive={i === active}
-                  startDelay={i * 600}
+                  startDelay={i * 10}
                   cardW={cardW}
                 />
               ))}

@@ -5,10 +5,8 @@ import {
   useScroll,
   useTransform,
   useMotionValueEvent,
-  useInView,
 } from "framer-motion";
 import { homeCms } from "@/data/homeCms";
-import { useCms } from "@/context/CmsContext";
 
 // ─── Typing animation ─────────────────────────────────────────────────────────
 function TypingText({ text, inView, delay = 0, className = "" }) {
@@ -156,8 +154,9 @@ const SOLUTION_BULLETS = [
   "Maintain clear financial records",
   "Operate with improved financial visibility",
 ];
-const content = homeCms.experience;
+
 const ease = [0.22, 1, 0.36, 1];
+const content = homeCms.experience;
 const TB = "#C2411D";
 
 // ─── Static data ──────────────────────────────────────────────────────────────
@@ -2853,15 +2852,11 @@ function SolutionPanel({ activeSolutionIdx }) {
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 export default function Experience() {
-  const { cmsData, isEditMode, openPanel } = useCms();
-  const content = cmsData.experience;
   const sectionRef = useRef(null);
-  const TOTAL_STAGES = STAGES.length; // 4
+  const TOTAL_STAGES = STAGES.length; // 4 (3 scroll steps)
 
   const [stage, setStage] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
-
-  const inView = useInView(sectionRef, { once: false, margin: "-120px" });
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -2878,31 +2873,43 @@ export default function Experience() {
   const leftX = useTransform(entryProgress, [0.1, 1], [-28, 0]);
   const rightX = useTransform(entryProgress, [0.1, 1], [28, 0]);
   const ctaY = useTransform(entryProgress, [0.2, 1], [16, 0]);
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v > 0.01) setHasEntered(true);
     // First 10% = headline entrance, remaining 90% mapped to stages
     const adjusted = Math.max(0, (v - 0.1) / 0.9);
     setStage(Math.min(TOTAL_STAGES - 1, Math.floor(adjusted * TOTAL_STAGES)));
   });
-  // Auto-advance stages when section is in view (2.5 s each)
-  useEffect(() => {
-    if (!inView) {
-      setStage(0);
-      return;
-    }
-
-    const timers = [];
-    for (let i = 1; i < TOTAL_STAGES; i++) {
-      timers.push(setTimeout(() => setStage(i), i * 1500));
-    }
-    return () => timers.forEach(clearTimeout);
-  }, [inView, TOTAL_STAGES]);
 
   const stageData = STAGES[stage] ?? STAGES[0];
   const activeNeedIdx = stageData.needIdx;
   const activeApproachIdx = stageData.approachIdx;
   const activeSolutionIdx = stageData.solutionIdx;
-  const displaySolutionIdx = activeSolutionIdx;
+
+  // Quick-scan entrance: cycle bullets 3× fast before handing off to scroll
+  const [scanIdx, setScanIdx] = useState(-1);
+  const scanDoneRef = useRef(false);
+  useEffect(() => {
+    if (!hasEntered || scanDoneRef.current) return;
+    scanDoneRef.current = true;
+    const PASSES = 3;
+    const COUNT = SOLUTION_BULLETS.length;
+    const STEP_MS = 140;
+    let step = 0;
+    setScanIdx(0);
+    const t = setInterval(() => {
+      step++;
+      if (step < PASSES * COUNT) {
+        setScanIdx(step % COUNT);
+      } else {
+        clearInterval(t);
+        setScanIdx(-1);
+      }
+    }, STEP_MS);
+    return () => clearInterval(t);
+  }, [hasEntered]);
+
+  const displaySolutionIdx = scanIdx >= 0 ? scanIdx : activeSolutionIdx;
 
   return (
     // Height = (stages + 1) viewports for smooth per-stage scrolling
@@ -2911,34 +2918,10 @@ export default function Experience() {
       className="bg-azure-200/75 backdrop-blur-sm"
       style={{
         position: "relative",
-        height: `${(TOTAL_STAGES + 1) * 50}vh`,
+        height: `${(TOTAL_STAGES + 1) * 100}vh`,
         // background: "#f5f1eb",
       }}
     >
-      {isEditMode && (
-        <button
-          onClick={() => openPanel("experience")}
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 100,
-            background: "#0b457b",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "5px 12px",
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
-          }}
-        >
-          ✏ Edit
-        </button>
-      )}
       <div
         className="flex items-start md:items-center justify-center pt-4 md:pt-0 overflow-y-auto md:overflow-hidden"
         style={{
@@ -2982,7 +2965,7 @@ export default function Experience() {
                 <TypingText
                   text={content.productTyped}
                   inView={hasEntered}
-                  // delay={0.1}
+                  delay={0.3}
                 />
                 <span>{content.productSuffix}</span>
               </h2>
@@ -3042,7 +3025,7 @@ export default function Experience() {
               style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
-              <SolutionPanel activeSolutionIdx={displaySolutionIdx} />
+              <SolutionPanel activeSolutionIdx={activeSolutionIdx} />
             </motion.div>
           </div>
 
