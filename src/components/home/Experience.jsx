@@ -135,26 +135,6 @@ const STAGES = [
   },
 ];
 
-const NEED_ITEMS = [
-  "Unstructured billing processes",
-  "Difficulty tracking payments and invoices",
-  "Lack of financial visibility in real time",
-  "Over-reliance on manual tools and fragmented systems",
-];
-
-const APPROACH_ITEMS = [
-  "Simplify financial workflows",
-  "Create a clean, intuitive user experience",
-  "Ensure scalability for growing businesses",
-  "Balance functionality with ease of use",
-];
-
-const SOLUTION_BULLETS = [
-  "Create and manage invoices easily",
-  "Track payments in real time",
-  "Maintain clear financial records",
-  "Operate with improved financial visibility",
-];
 const ease = [0.22, 1, 0.36, 1];
 const TB = "#C2411D";
 
@@ -2077,7 +2057,6 @@ function TruBillingDashboard({ stage }) {
         height: "100%",
         background: "#ffffff",
         display: "flex",
-        fontFamily: "system-ui,sans-serif",
       }}
     >
       <style>{`
@@ -2687,7 +2666,7 @@ function PanelSectionHead({ title, icon }) {
 }
 
 // ─── LEFT panel: The Need + Our Approach (stacked) ────────────────────────────
-function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
+function NeedApproachPanel({ activeNeedIdx, activeApproachIdx, needItems, approachItems }) {
   return (
     <div
       className="rounded-xl md:rounded-[14px] p-3 md:p-[12px_14px]"
@@ -2718,7 +2697,7 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
           </svg>
         }
       />
-      {NEED_ITEMS.map((text, i) => (
+      {needItems.map((text, i) => (
         <AnimatePresence key={i}>
           {activeNeedIdx >= 0 && i <= activeNeedIdx && (
             <BulletRow text={text} isActive={i === activeNeedIdx} />
@@ -2747,7 +2726,7 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
           </svg>
         }
       />
-      {APPROACH_ITEMS.map((text, i) => (
+      {approachItems.map((text, i) => (
         <AnimatePresence key={i}>
           {activeApproachIdx >= 0 && i <= activeApproachIdx && (
             <BulletRow text={text} isActive={i === activeApproachIdx} />
@@ -2759,7 +2738,7 @@ function NeedApproachPanel({ activeNeedIdx, activeApproachIdx }) {
 }
 
 // ─── RIGHT panel: The Solution ────────────────────────────────────────────────
-function SolutionPanel({ activeSolutionIdx }) {
+function SolutionPanel({ activeSolutionIdx, solutionBullets, outcome }) {
   return (
     <div
       className="rounded-xl md:rounded-[14px] p-3 md:p-[12px_14px]"
@@ -2788,11 +2767,11 @@ function SolutionPanel({ activeSolutionIdx }) {
           </svg>
         }
       />
-      {SOLUTION_BULLETS.map((text, i) => (
+      {solutionBullets.map((text, i) => (
         <AnimatePresence key={i}>
           {activeSolutionIdx >= 0 &&
             i <= activeSolutionIdx &&
-            i < SOLUTION_BULLETS.length && (
+            i < solutionBullets.length && (
               <BulletRow text={text} isActive={i === activeSolutionIdx} />
             )}
         </AnimatePresence>
@@ -2800,7 +2779,7 @@ function SolutionPanel({ activeSolutionIdx }) {
 
       {/* Outcome — only visible at the very last stage (solutionIdx overflows bullet count) */}
       <AnimatePresence>
-        {activeSolutionIdx >= SOLUTION_BULLETS.length && (
+        {activeSolutionIdx >= solutionBullets.length && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -2839,8 +2818,7 @@ function SolutionPanel({ activeSolutionIdx }) {
                 margin: 0,
               }}
             >
-              A more structured, efficient, and scalable approach to business
-              billing and financial management.
+              {outcome}
             </p>
           </motion.div>
         )}
@@ -3012,6 +2990,8 @@ export default function Experience() {
               <NeedApproachPanel
                 activeNeedIdx={activeNeedIdx}
                 activeApproachIdx={activeApproachIdx}
+                needItems={content.needs ?? []}
+                approachItems={content.approach ?? []}
               />
             </motion.div>
 
@@ -3025,7 +3005,11 @@ export default function Experience() {
               style={{ opacity: entryOp, x: rightX }}
               className="col-span-1 order-4 md:order-3"
             >
-              <SolutionPanel activeSolutionIdx={displaySolutionIdx} />
+              <SolutionPanel
+                activeSolutionIdx={displaySolutionIdx}
+                solutionBullets={content.solutions ?? []}
+                outcome={content.outcome ?? ""}
+              />
             </motion.div>
           </div>
 

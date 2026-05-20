@@ -56,6 +56,14 @@ function TextArea({ label, value, onChange, rows = 3, placeholder }) {
 }
 
 function ImageField({ label, value, onChange }) {
+  function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => onChange(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div style={{ marginBottom: 14 }}>
       <Label>{label}</Label>
@@ -66,6 +74,21 @@ function ImageField({ label, value, onChange }) {
         placeholder="https://... or /local.png"
         style={{ ...inputBase, fontFamily: "monospace", fontSize: 10, marginBottom: 6 }}
       />
+      <label
+        style={{
+          display: "flex", alignItems: "center", gap: 7, cursor: "pointer",
+          background: "rgba(11,69,123,.07)", border: "1px dashed rgba(11,69,123,.22)",
+          borderRadius: 8, padding: "7px 12px", marginBottom: value ? 6 : 0,
+        }}
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(11,69,123,.6)" strokeWidth="2" strokeLinecap="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(11,69,123,.6)" }}>Upload from device</span>
+        <input type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} />
+      </label>
       {value && (
         <img
           src={value}
@@ -247,8 +270,7 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   const s = cmsData.servicesInMotion;
   const cards = s.cards ?? [];
   const stageImgs = s.stageImages ?? {};
-  const cardTabs = cards.map((_, i) => `Card ${i + 1}`);
-  const TABS = ["General", ...cardTabs, "Stage Images"];
+  const TABS = ["General", ...cards.map((_, i) => `Card ${i + 1}`)];
 
   if (tab === 0) {
     return (
@@ -256,26 +278,7 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
         <Tabs tabs={TABS} active={tab} onSelect={setTab} />
         <TextField label="Eyebrow" value={s.eyebrow} onChange={(v) => updateCms("servicesInMotion.eyebrow", v)} />
         <TextField label="Title" value={s.title} onChange={(v) => updateCms("servicesInMotion.title", v)} />
-      </>
-    );
-  }
-
-  if (tab === TABS.length - 1) {
-    const keys = Object.keys(stageImgs);
-    return (
-      <>
-        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
-        <p style={{ fontSize: 11, color: "rgba(11,69,123,.4)", marginBottom: 14, lineHeight: 1.5 }}>
-          These are the final "showcase" images displayed in stage 3 of each service card.
-        </p>
-        {keys.map((key) => (
-          <ImageField
-            key={key}
-            label={key.charAt(0).toUpperCase() + key.slice(1)}
-            value={stageImgs[key]}
-            onChange={(v) => updateCms(`servicesInMotion.stageImages.${key}`, v)}
-          />
-        ))}
+        <TextField label="CTA Button" value={s.cta} onChange={(v) => updateCms("servicesInMotion.cta", v)} />
       </>
     );
   }
@@ -283,11 +286,19 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   const cIdx = tab - 1;
   const card = cards[cIdx] ?? {};
   const base = `servicesInMotion.cards.${cIdx}`;
+  const imgKey = card.stageSet;
   return (
     <>
       <Tabs tabs={TABS} active={tab} onSelect={setTab} />
       <TextField label="Title" value={card.title} onChange={(v) => updateCms(`${base}.title`, v)} />
       <TextArea label="Subtitle" value={card.sub} onChange={(v) => updateCms(`${base}.sub`, v)} rows={2} />
+      {imgKey && (
+        <ImageField
+          label="Stage Image"
+          value={stageImgs[imgKey]}
+          onChange={(v) => updateCms(`servicesInMotion.stageImages.${imgKey}`, v)}
+        />
+      )}
     </>
   );
 }
@@ -296,12 +307,53 @@ function ExperienceForm({ cmsData, updateCms }) {
   const e = cmsData.experience;
   return (
     <>
-      <TextArea label="Kicker" value={e.kicker} onChange={(v) => updateCms("experience.kicker", v)} rows={2} />
+      <TextField label="Eyebrow" value={e.eyebrow} onChange={(v) => updateCms("experience.eyebrow", v)} />
+      <Divider />
+      <Label>Product Name</Label>
+      <TextField label="Prefix (coloured)" value={e.productPrefix} onChange={(v) => updateCms("experience.productPrefix", v)} />
+      <div style={{ marginBottom: 14 }}>
+        <Label>Typed Words (one per line)</Label>
+        <textarea
+          value={(e.productTyped ?? []).join("\n")}
+          onChange={(ev) => updateCms("experience.productTyped", ev.target.value.split("\n"))}
+          rows={3}
+          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+        />
+      </div>
+      <TextField label="Suffix" value={e.productSuffix} onChange={(v) => updateCms("experience.productSuffix", v)} />
+      <Divider />
       <TextArea label="Intro Paragraph" value={e.intro} onChange={(v) => updateCms("experience.intro", v)} rows={4} />
       <TextField label="CTA Button" value={e.cta} onChange={(v) => updateCms("experience.cta", v)} />
       <TextField label="Badge Text" value={e.badge} onChange={(v) => updateCms("experience.badge", v)} />
       <Divider />
-      <ImageField label="Screen / Dashboard Image" value={e.screenImage} onChange={(v) => updateCms("experience.screenImage", v)} />
+      <div style={{ marginBottom: 14 }}>
+        <Label>The Need (one per line)</Label>
+        <textarea
+          value={(e.needs ?? []).join("\n")}
+          onChange={(ev) => updateCms("experience.needs", ev.target.value.split("\n"))}
+          rows={4}
+          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+        />
+      </div>
+      <div style={{ marginBottom: 14 }}>
+        <Label>Our Approach (one per line)</Label>
+        <textarea
+          value={(e.approach ?? []).join("\n")}
+          onChange={(ev) => updateCms("experience.approach", ev.target.value.split("\n"))}
+          rows={4}
+          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+        />
+      </div>
+      <div style={{ marginBottom: 14 }}>
+        <Label>The Solution (one per line)</Label>
+        <textarea
+          value={(e.solutions ?? []).join("\n")}
+          onChange={(ev) => updateCms("experience.solutions", ev.target.value.split("\n"))}
+          rows={4}
+          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+        />
+      </div>
+      <TextArea label="Outcome" value={e.outcome} onChange={(v) => updateCms("experience.outcome", v)} rows={2} />
     </>
   );
 }

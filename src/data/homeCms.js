@@ -2,7 +2,7 @@ export const homeCms = {
   brand: {
     name: "MAD",
     logo: "/ma.png",
-    email: "hello@mad.studio",
+    email: "hello@madesign.studio",
     serviceByLabel: "Service by",
   },
   nav: {
@@ -119,6 +119,7 @@ export const homeCms = {
     eyebrow: "Services in motion · scroll to explore",
     title: "Systems for growth.",
     titleAccent: "growth.",
+    cta: "Start a Project →",
     stageImages: {
       product:   "/1.png",
       marketing: "/2.png",
@@ -272,7 +273,7 @@ export const homeCms = {
         "Perfect. What email address should I send your project summary to?",
       donePrefix: "✓ Done! A project summary is heading to",
       doneSuffix: "now. Our team will follow up within 24 hours.",
-      notificationTitle: "MAD Studio",
+      notificationTitle: "Madesign",
       notificationBody: "Your project summary is ready — let's build.",
       services: [
         {
@@ -342,7 +343,7 @@ export const homeCms = {
         links: [
           ["LinkedIn", "#"],
           ["Instagram", "#"],
-          ["hello@mad.studio", "mailto:hello@mad.studio"],
+          ["hello@madesign.studio", "mailto:hello@madesign.studio"],
         ],
       },
     ],

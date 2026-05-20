@@ -654,7 +654,6 @@ function C2S1() {
               fontSize: 14,
               color: "#262626",
               flex: 1,
-              fontFamily: "serif",
             }}
           >
             Instagram
@@ -687,9 +686,9 @@ function C2S1() {
             M
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 10, color: "#262626" }}>mad.studio</div>
+            <div style={{ fontSize: 10, color: "#262626" }}>madesign</div>
             <div style={{ fontSize: 8.5, color: "#8e8e8e" }}>
-              @mad.studio · Creative Agency
+              @madesign · Creative Agency
             </div>
           </div>
           <div
@@ -774,7 +773,6 @@ function C2S2() {
             fontSize: 13,
             color: "#262626",
             flex: 1,
-            fontFamily: "serif",
           }}
         >
           Instagram
@@ -799,7 +797,7 @@ function C2S2() {
             }}
           />
           <span style={{ fontSize: 9, color: "#262626", flex: 1 }}>
-            mad.studio
+            madesign
           </span>
         </div>
         <div
@@ -836,7 +834,7 @@ function C2S2() {
             lineHeight: 1.55,
           }}
         >
-          <strong>mad.studio</strong> Campaigns that connect — content built to
+          <strong>madesign</strong> Campaigns that connect — content built to
           reach the right people.
         </div>
         <div
@@ -1277,7 +1275,6 @@ function C3S2() {
                 border: v.bg === "#ffffff" ? "1px solid #eee" : "none",
                 animation: "popIn 0.38s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: v.delay,
-                fontFamily: "sans-serif",
               }}
             >
               {v.label}
@@ -2682,6 +2679,7 @@ export default function ServicesInMotion() {
 
   return (
     <section
+      id="services"
       ref={sectionRef}
       style={{
         background: "transparent",
@@ -2972,6 +2970,33 @@ export default function ServicesInMotion() {
             }}
           />
         ))}
+      </motion.div>
+
+      {/* CTA */}
+      <motion.div
+        style={{ display: "flex", justifyContent: "center", paddingTop: 32 }}
+        initial={{ opacity: 0, y: 14 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <button
+          onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+          style={{
+            background: "#0b457b",
+            color: "#fff",
+            border: "none",
+            borderRadius: 999,
+            padding: "12px 32px",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(11,69,123,.35)",
+          }}
+        >
+          {content.cta}
+        </button>
       </motion.div>
     </section>
   );

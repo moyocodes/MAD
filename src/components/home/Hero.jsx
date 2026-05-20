@@ -363,7 +363,7 @@ export default function Hero() {
                   <button onClick={() => scrollTo("contact")} className="bg-white border-none font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-[#0f1a2e] cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px]">
                     {hero.cta}
                   </button>
-                  <button onClick={() => scrollTo("work")} className="bg-white/[7%] border-[0.5px] border-white/30 font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-white/80 cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px] backdrop-blur-sm">
+                  <button onClick={() => scrollTo("services")} className="bg-white/[7%] border-[0.5px] border-white/30 font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-white/80 cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px] backdrop-blur-sm">
                     View Our Work
                   </button>
                 </div>
@@ -450,7 +450,7 @@ export default function Hero() {
             <button onClick={() => scrollTo("contact")} className="bg-azure-500 border-none py-3 px-8 text-[8.5px] font-bold tracking-[0.18em] uppercase rounded-full text-white cursor-pointer shadow-[0_4px_24px_rgba(25,128,194,.32)]">
               {hero.cta}
             </button>
-            <button onClick={() => scrollTo("work")} className="bg-white/60 border-[0.5px] border-[rgba(15,79,122,.16)] py-3 px-8 text-[8.5px] font-bold tracking-[0.18em] uppercase rounded-full text-[#1468a0] cursor-pointer backdrop-blur-[10px]">
+            <button onClick={() => scrollTo("services")} className="bg-white/60 border-[0.5px] border-[rgba(15,79,122,.16)] py-3 px-8 text-[8.5px] font-bold tracking-[0.18em] uppercase rounded-full text-[#1468a0] cursor-pointer backdrop-blur-[10px]">
               View Our Work
             </button>
           </div>
