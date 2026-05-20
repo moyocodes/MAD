@@ -63,6 +63,16 @@ export const homeCms = {
       "Meridian campaign went live today",
     ],
     cta: "Work With Us",
+    collapse: {
+      kicker: "Making A Difference",
+      headline: "Structure changes",
+      headlineAccent: "everything.",
+      viewWork: "View Our Work",
+    },
+    trustedBy: {
+      label: "Trusted by",
+      logos: ["/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png"],
+    },
   },
   whatWeDo: {
     eyebrow: "What We Do",

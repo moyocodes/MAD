@@ -186,6 +186,27 @@ function HeroForm({ cmsData, updateCms }) {
           style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
         />
       </div>
+      <Divider />
+      <Label>Collapse Overlay Text</Label>
+      <TextField label="Kicker" value={h.collapse?.kicker ?? ""} onChange={(v) => updateCms("hero.collapse.kicker", v)} />
+      <TextField label="Headline" value={h.collapse?.headline ?? ""} onChange={(v) => updateCms("hero.collapse.headline", v)} />
+      <TextField label="Headline Accent" value={h.collapse?.headlineAccent ?? ""} onChange={(v) => updateCms("hero.collapse.headlineAccent", v)} />
+      <TextField label="View Work Button" value={h.collapse?.viewWork ?? ""} onChange={(v) => updateCms("hero.collapse.viewWork", v)} />
+      <Divider />
+      <Label>Trusted By</Label>
+      <TextField label="Label" value={h.trustedBy?.label ?? ""} onChange={(v) => updateCms("hero.trustedBy.label", v)} />
+      {(h.trustedBy?.logos ?? []).map((src, i) => (
+        <ImageField
+          key={i}
+          label={`Logo ${i + 1}`}
+          value={src}
+          onChange={(v) => {
+            const next = [...(h.trustedBy?.logos ?? [])];
+            next[i] = v;
+            updateCms("hero.trustedBy.logos", next);
+          }}
+        />
+      ))}
     </>
   );
 }
@@ -310,11 +331,54 @@ function ContactForm({ cmsData, updateCms }) {
 }
 
 function FooterForm({ cmsData, updateCms }) {
+  const [tab, setTab] = useState(0);
   const f = cmsData.footer;
+  const cols = f.columns ?? [];
+  const TABS = ["General", ...cols.map((c) => c.title)];
+
+  if (tab === 0) {
+    return (
+      <>
+        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+        <TextArea label="Description" value={f.description} onChange={(v) => updateCms("footer.description", v)} rows={3} />
+        <TextField label="Copyright" value={f.copyright} onChange={(v) => updateCms("footer.copyright", v)} />
+      </>
+    );
+  }
+
+  const cIdx = tab - 1;
+  const col = cols[cIdx] ?? { title: "", links: [] };
+  const base = `footer.columns.${cIdx}`;
   return (
     <>
-      <TextArea label="Description" value={f.description} onChange={(v) => updateCms("footer.description", v)} rows={3} />
-      <TextField label="Copyright" value={f.copyright} onChange={(v) => updateCms("footer.copyright", v)} />
+      <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+      <TextField label="Column Title" value={col.title} onChange={(v) => updateCms(`${base}.title`, v)} />
+      <Divider />
+      <Label>Links (label + URL)</Label>
+      {(col.links ?? []).map(([label, href], i) => (
+        <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => {
+              const next = col.links.map((link, j) => j === i ? [e.target.value, link[1]] : link);
+              updateCms(`${base}.links`, next);
+            }}
+            placeholder="Label"
+            style={{ ...inputBase, flex: 2 }}
+          />
+          <input
+            type="text"
+            value={href}
+            onChange={(e) => {
+              const next = col.links.map((link, j) => j === i ? [link[0], e.target.value] : link);
+              updateCms(`${base}.links`, next);
+            }}
+            placeholder="URL"
+            style={{ ...inputBase, flex: 3, fontFamily: "monospace", fontSize: 10 }}
+          />
+        </div>
+      ))}
     </>
   );
 }

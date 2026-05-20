@@ -101,9 +101,73 @@ export default {
           "0%":   { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        dotPulse: {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.5)", opacity: ".6" },
+        },
+        dotBreathe: {
+          "0%, 100%": { transform: "scale(.85)", opacity: ".3" },
+          "50%": { transform: "scale(1)", opacity: "1" },
+        },
+        shimmerSlide: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
+        notifIn: {
+          from: { opacity: "0", transform: "translateY(-12px) scale(.96)" },
+          to: { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        bBlob1: {
+          "0%, 100%": { transform: "translateY(0) scale(1)", opacity: ".4" },
+          "50%": { transform: "translateY(-32px) scale(1.1)", opacity: ".7" },
+        },
+        bBlob2: {
+          "0%, 100%": { transform: "translateY(0) scale(1)", opacity: ".3" },
+          "50%": { transform: "translateY(28px) scale(1.12)", opacity: ".6" },
+        },
+        bBlob3: {
+          "0%, 100%": { transform: "translate(0,0)", opacity: ".25" },
+          "50%": { transform: "translate(24px,-20px)", opacity: ".5" },
+        },
+        madBlink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+        phoneFloat: {
+          "0%, 100%": { transform: "translateY(0px) rotate(-4deg)" },
+          "50%": { transform: "translateY(-8px) rotate(-4deg)" },
+        },
+        tapPulse: {
+          "0%, 100%": { transform: "scale(1)", opacity: ".9" },
+          "50%": { transform: "scale(1.18)", opacity: "1" },
+        },
+        pickupRing: {
+          "0%": { transform: "scale(1)", opacity: ".5" },
+          "100%": { transform: "scale(2.8)", opacity: "0" },
+        },
+        ringOut: {
+          "0%": { transform: "translate(-50%, -50%) scale(1)", opacity: ".6" },
+          "100%": { transform: "translate(-50%, -50%) scale(2.4)", opacity: "0" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
       },
       animation: {
         marquee: "marquee 25s linear infinite",
+        "dot-pulse": "dotPulse 2.4s ease-in-out infinite",
+        "dot-breathe": "dotBreathe 1.6s ease-in-out infinite",
+        "shimmer-slide": "shimmerSlide 3.2s ease-in-out infinite",
+        "blob-1": "bBlob1 8s ease-in-out infinite",
+        "blob-2": "bBlob2 10s ease-in-out 2s infinite",
+        "blob-3": "bBlob3 7s ease-in-out 3.5s infinite",
+        "mad-blink": "madBlink 0.75s step-end infinite",
+        "phone-float": "phoneFloat 1.8s ease-in-out infinite",
+        "tap-pulse": "tapPulse 1.6s ease-in-out infinite",
+        "pickup-ring": "pickupRing 2s ease-out infinite",
+        "ring-out": "ringOut 2s ease-out infinite",
+        blink: "blink 1s step-end infinite",
       },
     },
   },

@@ -15,12 +15,6 @@ export default function Beyond() {
       className="relative overflow-hidden flex items-center min-h-[85vh] md:min-h-screen"
       style={{ background: "linear-gradient(135deg, rgba(238,247,253,0.82) 0%, rgba(214,236,248,0.75) 50%, rgba(188,220,240,0.68) 100%)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
     >
-      <style>{`
-        @keyframes bBlob1{0%,100%{transform:translateY(0) scale(1);opacity:.4}50%{transform:translateY(-32px) scale(1.1);opacity:.7}}
-        @keyframes bBlob2{0%,100%{transform:translateY(0) scale(1);opacity:.3}50%{transform:translateY(28px) scale(1.12);opacity:.6}}
-        @keyframes bBlob3{0%,100%{transform:translate(0,0);opacity:.25}50%{transform:translate(24px,-20px);opacity:.5}}
-      `}</style>
-
       {/* Blobs — scale in on entrance, then CSS-loop */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div

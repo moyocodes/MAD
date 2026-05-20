@@ -18,8 +18,8 @@ function injectCSS() {
   s.id = "_mad";
   s.textContent = `
  *{box-sizing:border-box;margin:0;padding:0}
-    html{overscroll-behavior:none}
-    body{background:#ffffff;color:#181817;overflow-x:hidden;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
+    html{overscroll-behavior:none;overflow-x:clip}
+    body{background:#ffffff;color:#181817;overflow-x:clip;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
     .sh{animation:shimmer 1.8s linear infinite}
     @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}

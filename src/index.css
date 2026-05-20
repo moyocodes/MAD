@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overscroll-behavior: none;
+  overflow-x: clip;
+}
+
+body {
+  overscroll-behavior: none;
+  overflow-x: clip;
+}
+
 @layer base {
   :root {
     --azure: #1980c2;
@@ -94,3 +104,22 @@ input:focus,
 textarea:focus {
   outline: none;
 }
+
+/* Marquee utility — used by .mq class in Hero trusted-by strip */
+.mq { animation: marquee 25s linear infinite; }
+
+/* Shimmer utility — used by ServicesInMotion */
+@keyframes shimmer { from { transform: translateX(-100%) } to { transform: translateX(100%) } }
+.sh { animation: shimmer 1.8s linear infinite; }
+
+/* Fade-up utility */
+@keyframes fadeup { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+.fu { animation: fadeup .6s cubic-bezier(.22,1,.36,1) both; }
+
+a { text-decoration: none; }
+
+@keyframes slideDown { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:none } }
+@keyframes popInRight { from { opacity:0; transform:translateX(10px) } to { opacity:1; transform:none } }
+@keyframes growBar { from { width:0 } }
+@keyframes urlTextIn { from{opacity:0;transform:translateY(-3px)} to{opacity:1;transform:none} }
+@keyframes floatUp { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
