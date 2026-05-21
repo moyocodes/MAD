@@ -62,50 +62,52 @@ export default function MADLandingPage() {
 
   return (
     <ThemeProvider>
-    <CmsProvider>
-      <main
-        data-page="home"
-        style={{
-          background:
-            "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
-          minHeight: "100vh",
-        }}
-      >
-        <Nav />
-        <Hero />
-        {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
-        <div style={{ position: "relative" }}>
-          <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-            <WhatWeDo />
-          </div>
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <Experience />
-          </div>
-        </div>
-        {/* ServicesInMotion sticky — context ends at Contact so Footer is never behind it */}
-        <div style={{ position: "relative", zIndex: 3 }}>
-          <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-            <ServicesInMotion />
-          </div>
-          {/* Beyond pinned, Contact slides over it then sticks for phone scroll */}
-          <div style={{ position: "relative", zIndex: 2 }}>
+      <CmsProvider>
+        <main
+          data-page="home"
+          style={{
+            background:
+              "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
+            minHeight: "100vh",
+          }}
+        >
+          <Nav />
+          <Hero />
+          {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
+          <div style={{ position: "relative" }}>
             <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-              <Beyond />
+              <WhatWeDo />
             </div>
-            {/* 200vh container gives the phone 100vh of scroll travel while Contact stays pinned */}
-            <div ref={contactContainerRef} style={{ position: "relative", zIndex: 2, minHeight: "200vh" }}>
-              <div style={{ position: "sticky", top: 0 }}>
-                <Contact scrollRef={contactContainerRef} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <Experience />
+            </div>
+          </div>
+          {/* ServicesInMotion sticky — context ends at Contact so Footer is never behind it */}
+          <div style={{ position: "relative", zIndex: 3 }}>
+            <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
+              <ServicesInMotion />
+            </div>
+            {/* Beyond pinned, Contact slides over it then sticks for phone scroll */}
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <Beyond />
+              <div
+                ref={contactContainerRef}
+                style={{ position: "relative", zIndex: 2, minHeight: "200vh" }}
+              >
+                {/* 200vh container gives the phone 100vh of scroll travel while Contact stays pinned */}
+
+                <div style={{ position: "sticky", top: 0 }}>
+                  <Contact scrollRef={contactContainerRef} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* Footer outside sticky context — renders cleanly on its own */}
-        <Footer />
-      </main>
-      <AdminBar />
-      <CmsPanel />
-    </CmsProvider>
+          {/* Footer outside sticky context — renders cleanly on its own */}
+          <Footer />
+        </main>
+        <AdminBar />
+        <CmsPanel />
+      </CmsProvider>
     </ThemeProvider>
   );
 }
