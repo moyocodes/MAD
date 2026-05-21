@@ -767,45 +767,8 @@ const NAV_ITEMS = [
   { label: "Contacts", d: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M23 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75", badge: "24" },
 ];
 
-// ─── ProjectCardPage ──────────────────────────────────────────────────────────
-function ProjectCardPage() {
-  return (
-    <div style={{ padding: "8px", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", background: "#fafaf8", animation: "pageIn 0.4s ease both" }}>
-      <div style={{ background: "#fff", borderRadius: 12, padding: "12px 12px 10px", boxShadow: "0 2px 20px rgba(0,0,0,.1), 0 0 0 0.5px rgba(0,0,0,.06)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, width: 130 }}>
-        <div style={{ width: 30, height: 30, borderRadius: "50%", background: TB, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 3px 10px ${TB}55` }}>
-          <span style={{ fontSize: 9, fontWeight: 900, color: "#fff", letterSpacing: -0.4 }}>tru</span>
-        </div>
-        <div style={{ fontSize: 10.5, fontWeight: 700, color: "#1c1a18", textAlign: "center", lineHeight: 1.3 }}>Website Build Project</div>
-        <div style={{ width: "100%" }}>
-          <div style={{ fontSize: 6.5, color: "#aaa", marginBottom: 2 }}>Payment type</div>
-          <div style={{ border: "0.5px solid #ddd", borderRadius: 5, padding: "2px 6px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fafaf8" }}>
-            <span style={{ fontSize: 6.5, color: "#333" }}>Installment</span>
-            <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
-          </div>
-        </div>
-        <div style={{ width: "100%", borderTop: "0.5px solid #eee" }} />
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 5 }}>
-          {[{ label: "First Payment", badge: "Received", bg: "#22c55e" }, { label: "Second Payment", badge: "Due", bg: "#ef4444" }].map(({ label, badge, bg }) => (
-            <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 8.5, color: "#333" }}>{label}</span>
-              <span style={{ fontSize: 7, fontWeight: 700, color: "#fff", background: bg, borderRadius: 3, padding: "1px 4px", whiteSpace: "nowrap" }}>{badge}</span>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 5, background: "#fff5ef", border: "0.5px solid rgba(194,65,29,.3)", borderRadius: 20, padding: "3px 9px", color: TB, fontSize: 8, fontWeight: 600 }}>
-          <div style={{ width: 11, height: 11, borderRadius: "50%", background: TB, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-          </div>
-          Reminder Sent
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const PAGE_COMPONENTS = {
   dashboard: DashboardPage,
-  projectCard: ProjectCardPage,
   newInvoice: NewInvoicePage,
   invoiceItem: InvoiceItemModalPage,
   addItem: AddItemModalPage,

@@ -1308,6 +1308,16 @@ export function SvcCard({ config, startDelay, isActive }) {
           />
         </div>
       </div>
+
+      {/* Card label */}
+      <div style={{ padding: "14px 4px 0" }}>
+        <p style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", letterSpacing: -0.3, margin: "0 0 4px" }}>
+          {config.title}
+        </p>
+        <p style={{ fontSize: 13, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
+          {config.sub}
+        </p>
+      </div>
     </div>
   );
 }
