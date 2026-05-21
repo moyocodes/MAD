@@ -6,7 +6,7 @@ export default function Footer() {
   const cols = f.columns ?? [];
 
   return (
-    <footer className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 relative">
+    <footer className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 relative bg-azure-800">
       <div
         style={{ maxWidth: 1100, margin: "0 auto", marginBottom: 64 }}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 md:gap-16"
@@ -14,7 +14,7 @@ export default function Footer() {
         {/* Brand column */}
         <div>
           <img src="/ma.png" alt="MAD" style={{ height: 130, width: "auto", opacity: 0.9 }} />
-          <p className="text-azure-800/55 text-[15px] mt-5 leading-relaxed max-w-[260px] font-normal">
+          <p className="text-white/55 text-[15px] mt-5 leading-relaxed max-w-[260px] font-normal">
             {f.description}
           </p>
           <div className="flex gap-[10px] mt-[22px]">
@@ -49,7 +49,7 @@ export default function Footer() {
               <a
                 key={label}
                 href={href}
-                className="block text-[16px] mb-[14px] no-underline font-medium leading-[1.3] text-azure-800/50 transition-colors duration-200"
+                className="block text-[16px] mb-[14px] no-underline font-medium leading-[1.3] text-white/50 transition-colors duration-200"
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#1980c2")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "")}
               >
@@ -73,7 +73,7 @@ export default function Footer() {
             ✏ Edit Footer
           </button>
         )}
-        <p className="text-[14px] text-azure-800/40 font-medium">{f.copyright}</p>
+        <p className="text-[14px] text-white/40 font-medium">{f.copyright}</p>
       </div>
     </footer>
   );

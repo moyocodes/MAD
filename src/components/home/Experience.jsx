@@ -2697,7 +2697,7 @@ function BulletRow({ text, isActive }) {
           }}
         />
         <span
-    className={isActive ? "text-[#181817]" : "text-[#555]"} 
+          className={isActive ? "text-[#181817]" : "text-[#555]"}
           style={{
             fontSize: 10,
             // color: isActive ? "#181817" : "#555",
@@ -2958,9 +2958,8 @@ export default function Experience() {
 
   return (
     <div
-      id="trubilling"
+      id="products"
       ref={sectionRef}
-
       className="bg-gradient-to-tr from-tangerine-50 to-white relative overflow-hidden       py-12"
       style={{ position: "relative" }}
     >

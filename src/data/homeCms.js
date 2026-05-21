@@ -6,7 +6,7 @@ export const homeCms = {
     serviceByLabel: "Service by",
   },
   nav: {
-    links: ["Work", "Trubilling", "Services", "Contact"],
+    links: ["Work", "Our Products", "Services", "Contact"],
     cta: "Work With Us",
   },
   hero: {

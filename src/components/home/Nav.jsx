@@ -40,7 +40,7 @@ export default function Nav() {
   const NAV_TARGETS = {
     Work: "work",
   
-    Trubilling: "trubilling",
+    OurProducts: "products",
       Services: "services",
     contact: "contact",
   };
@@ -183,12 +183,12 @@ export default function Nav() {
       {/* Desktop CTA — extreme right end */}
       <motion.button
         onClick={() => scrollTo("contact")}
-        className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none"
+        className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none bg-azure-500"
         initial={{ opacity: 0, scale: 0.82 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.42, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          background: "#0b457b",
+       
           color: "#fff",
           borderRadius: 7,
           padding: "10px 22px",
@@ -467,10 +467,11 @@ export default function Nav() {
                   duration: 0.4,
                   ease: [0.16, 1, 0.3, 1],
                 }}
+                className="bg-azure-500"
                 style={{
                   marginTop: 28,
                   width: "100%",
-                  background: "#0b457b",
+                  // background: "#0b457b",
                   color: "#fff",
                   border: "none",
                   padding: "16px 32px",

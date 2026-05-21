@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useInView, useScroll, useTransform, useSpring } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useCms } from "@/context/CmsContext";
 import { homeCms } from "@/data/homeCms";
@@ -23,64 +30,48 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ─── TypingText (TruBilling-style) ───────────────────────────────────────────
 function TypingText({ texts, inView, delay = 0, className = "" }) {
-  const [index, setIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
 
   useEffect(() => {
     if (!inView) {
       setDisplayed("");
-      setDone(false);
-      setIndex(0);
+      setTextIndex(0);
       return;
     }
 
     let charIndex = 0;
     let charTimer = null;
-    let startTimer = null;
+    let holdTimer = null;
 
-    const startTyping = () => {
-      const current = texts[index] || "";
-      setDisplayed("");
-      setDone(false);
+    const startTyping = (idx) => {
+      const current = texts[idx];
       charIndex = 0;
+      setDisplayed("");
       charTimer = setInterval(() => {
         charIndex += 1;
         setDisplayed(current.slice(0, charIndex));
         if (charIndex >= current.length) {
           clearInterval(charTimer);
-          setDone(true);
-          startTimer = setTimeout(() => {
-            setIndex((prev) => (prev + 1) % texts.length);
-          }, 1200);
+          holdTimer = setTimeout(() => {
+            const next = (idx + 1) % texts.length;
+            setTextIndex(next);
+            startTyping(next);
+          }, 3000);
         }
       }, 55);
     };
 
-    startTimer = setTimeout(startTyping, delay * 1000);
+    const startTimer = setTimeout(() => startTyping(textIndex), delay * 1000);
 
     return () => {
       clearTimeout(startTimer);
+      clearTimeout(holdTimer);
       clearInterval(charTimer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, index, delay]);
+  }, [inView]);
 
-  return (
-    <span className={className}>
-      {displayed}
-      {!done && (
-        <span
-          className="inline-block bg-azure-500 ml-0.5 align-middle"
-          style={{
-            width: 2,
-            height: "0.85em",
-            animation: "madBlink 0.75s step-end infinite",
-          }}
-        />
-      )}
-    </span>
-  );
+  return <span className={className}>{displayed}</span>;
 }
 
 // ─── Chat sub-components ──────────────────────────────────────────────────────
@@ -244,17 +235,36 @@ function CallingScreen({ onAnswer, onDecline }) {
 
       {/* Pick-up prompt on screen */}
       <div className="flex flex-col items-center gap-1 animate-[fadeUp_.7s_ease_.3s_both]">
-        <div style={{
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: 99,
-          padding: "6px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}>
-          <span style={{ fontSize: 13, animation: "phoneFloat 1.8s ease-in-out infinite", display: "inline-block" }}>👇</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.75)", letterSpacing: "0.04em" }}>Pick up & chat with MAD AI</span>
+        <div
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 99,
+            padding: "6px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 13,
+              animation: "phoneFloat 1.8s ease-in-out infinite",
+              display: "inline-block",
+            }}
+          >
+            👇
+          </span>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "rgba(255,255,255,0.75)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            Pick up & chat with MAD AI
+          </span>
         </div>
       </div>
 
@@ -266,7 +276,15 @@ function CallingScreen({ onAnswer, onDecline }) {
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
               <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.01l-2.2 2.21z" />
-              <line x1="22" y1="2" x2="2" y2="22" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line
+                x1="22"
+                y1="2"
+                x2="2"
+                y2="22"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
           <span className="text-[9px] text-white/35">Decline</span>
@@ -658,17 +676,43 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
 
   // Scroll-driven phone Y — tracks the 200vh outer container from Home1.jsx
   const phoneTarget = scrollRef ?? sectionRef;
-  const { scrollYProgress } = useScroll({ target: phoneTarget, offset: ["start start", "end end"] });
+  const { scrollYProgress } = useScroll({
+    target: phoneTarget,
+    offset: ["start start", "end end"],
+  });
   const phoneRawY = useTransform(scrollYProgress, [0, 0.4, 1], [55, 0, -110]);
-  const phoneSmoothY = useSpring(phoneRawY, { stiffness: 90, damping: 20, restDelta: 0.001 });
+  const phoneSmoothY = useSpring(phoneRawY, {
+    stiffness: 90,
+    damping: 20,
+    restDelta: 0.001,
+  });
 
   // Words that cycle in the "Talk to" heading inside the left form panel
-  const MAD_TEXTS = ["MAD", "the future", "MAD AI"];
+  const MAD_TEXTS = ["Not sure what comes next?", "Talk to MAD"];
 
   return (
     <section id="contact" ref={sectionRef} className="relative">
       {isEditMode && (
-        <button onClick={() => openPanel("contact")} style={{ position: "absolute", top: 12, right: 12, zIndex: 100, background: "#0b457b", color: "#fff", border: "none", borderRadius: 6, padding: "5px 12px", fontSize: 9, fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)" }}>
+        <button
+          onClick={() => openPanel("contact")}
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 100,
+            background: "#0b457b",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            padding: "5px 12px",
+            fontSize: 9,
+            fontWeight: 800,
+            letterSpacing: ".15em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
+          }}
+        >
           ✏ Edit
         </button>
       )}
@@ -735,13 +779,19 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
       <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
         {/* ── LEFT — form column ── */}
         <div className="order-2 md:order-1 bg-white md:bg-gradient-to-br md:from-white md:via-azure-50 md:to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
-          <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none" style={{ animation: "cBlob1 8s ease-in-out infinite" }} />
-          <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-azure-200/25 blur-3xl pointer-events-none" style={{ animation: "cBlob2 10s ease-in-out 3s infinite" }} />
+          <div
+            className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-azure-300/20 blur-3xl pointer-events-none"
+            style={{ animation: "cBlob1 8s ease-in-out infinite" }}
+          />
+          <div
+            className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-azure-200/25 blur-3xl pointer-events-none"
+            style={{ animation: "cBlob2 10s ease-in-out 3s infinite" }}
+          />
 
           <div className="relative z-10 max-w-md w-full">
             {/* ── "Talk to MAD" with TruBilling TypingText ── */}
             <motion.div
-              className="mb-5"
+              className="mb-2"
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
               transition={{
@@ -750,21 +800,11 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                 delay: 0.07,
               }}
             >
-              <p className="text-[10px] font-semibold pt-0 tracking-[0.22em] uppercase text-azure-400/60 mb-1">
-                Talk to
+              <p className="text-[10px] font-semibold pt-0 tracking-[0.22em] uppercase text-azure-400/60 mb-2">
+              CONTACT
               </p>
-              <h2 className="text-3xl md:text-5xl font-black leading-none tracking-tight text-azure-900">
-                <TypingText
-                  texts={MAD_TEXTS}
-                  inView={inView}
-                  delay={0.4}
-                  className="text-azure-700/80"
-                />
-              </h2>
-            </motion.div>
-
-            <motion.h3
-              className="text-lg md:text-2xl font-black leading-tight tracking-tight text-azure-900 mb-4"
+               <motion.h3
+              className="text-lg md:text-2xl leading-tight tracking-tight text-azure-700/80"
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
               transition={{
@@ -773,15 +813,19 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                 delay: 0.12,
               }}
             >
-              {titleLines.map((line, i) => (
-                <span key={i} className="block">
-                  {line}
-                </span>
-              ))}
+              <TypingText
+                texts={["Not sure what comes next?", "Talk to MAD."]}
+                inView={inView}
+                delay={0.1}
+                className="text-azure-700/80 "
+              />
             </motion.h3>
+            </motion.div>
+
+         
 
             <motion.p
-              className="text-sm md:text-base text-azure-700/55 leading-relaxed mb-7"
+              className="text-sm md:text-base text-azure-700/80 leading-relaxed mb-5"
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{
@@ -881,10 +925,10 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
               <p className="text-xs text-azure-700/40 text-center">
                 {contact.emailPrefix}{" "}
                 <a
-                  href={`mailto:${brand.email}`}
+                  href={`mailto:contact@mindfullyarticulated.com`}
                   className="text-azure-500 font-semibold hover:text-azure-600 transition-colors"
                 >
-                  {brand.email}
+          contact@mindfullyarticulated.com
                 </a>
               </p>
             </motion.div>
@@ -911,14 +955,14 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                     },
                   }}
                 >
-                  <span className="font-mono text-[8px] font-bold text-azure-500/60 pt-0.5 min-w-[16px]">
+                  <span className="font-mono text-[8px] font-bold text-azure-700/80 pt-0.5 min-w-[16px]">
                     {num}
                   </span>
                   <div>
                     <div className="text-xs font-bold text-azure-900 mb-0.5">
                       {title}
                     </div>
-                    <div className="text-xs text-azure-500/45 leading-relaxed">
+                    <div className="text-xs text-azure-700/80 leading-relaxed">
                       {sub}
                     </div>
                   </div>
@@ -929,13 +973,20 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
         </div>
 
         {/* ── RIGHT — sticky azure panel with phone ── */}
-        <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400/80 via-azure-500/70 to-azure-600/80 relative min-h-[65vh] md:min-h-0">
-       
-
+        <div className="right-panel-sticky order-1 md:order-2 bg-gradient-to-br from-azure-400 via-azure-500 to-azure-600 relative min-h-[65vh] md:min-h-0">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl" style={{ animation: "cBlob3 7s ease-in-out infinite" }} />
-            <div className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-azure-700/25 blur-3xl" style={{ animation: "cBlob4 9s ease-in-out 2.5s infinite" }} />
-            <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-azure-200/20 blur-2xl" style={{ animation: "cBlob5 6s ease-in-out 1.2s infinite" }} />
+            <div
+              className="absolute -top-12 -right-12 w-80 h-80 rounded-full bg-azure-300/30 blur-3xl"
+              style={{ animation: "cBlob3 7s ease-in-out infinite" }}
+            />
+            <div
+              className="absolute -bottom-8 -left-8 w-64 h-64 rounded-full bg-azure-700/25 blur-3xl"
+              style={{ animation: "cBlob4 9s ease-in-out 2.5s infinite" }}
+            />
+            <div
+              className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-azure-200/20 blur-2xl"
+              style={{ animation: "cBlob5 6s ease-in-out 1.2s infinite" }}
+            />
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -953,7 +1004,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
             style={{
               position: "absolute",
-              top: 22,
+              top: 180,
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 20,
@@ -965,7 +1016,14 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
             }}
           >
             {/* Glowing ring badge */}
-            <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {/* Expanding rings */}
               {[0, 0.55, 1.1].map((delay, i) => (
                 <div
@@ -981,33 +1039,78 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                 />
               ))}
               {/* Phone icon pill */}
-              <div style={{
-                background: "rgba(255,255,255,0.18)",
-                backdropFilter: "blur(14px)",
-                WebkitBackdropFilter: "blur(14px)",
-                border: "1px solid rgba(255,255,255,0.32)",
-                borderRadius: 99,
-                padding: "12px 22px 12px 14px",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                boxShadow: "0 8px 32px rgba(0,0,0,0.28)",
-              }}>
-                <span style={{ fontSize: 26, animation: "phoneFloat 1.8s ease-in-out infinite", display: "inline-block" }}>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.18)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  border: "1px solid rgba(255,255,255,0.32)",
+                  borderRadius: 99,
+                  padding: "12px 22px 12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.28)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 26,
+                    animation: "phoneFloat 1.8s ease-in-out infinite",
+                    display: "inline-block",
+                  }}
+                >
                   📱
                 </span>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", letterSpacing: "0.04em", lineHeight: 1.2 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 800,
+                      color: "#fff",
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.2,
+                    }}
+                  >
                     Pick up the phone
                   </div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", fontWeight: 500, lineHeight: 1.4 }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(255,255,255,0.65)",
+                      fontWeight: 500,
+                      lineHeight: 1.4,
+                    }}
+                  >
                     Chat with MAD AI →
                   </div>
                 </div>
                 {/* Live dot */}
-                <div style={{ position: "relative", width: 10, height: 10, flexShrink: 0 }}>
-                  <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#4ade80", animation: "tapPulse 1.4s ease-in-out infinite" }} />
-                  <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#4ade80" }} />
+                <div
+                  style={{
+                    position: "relative",
+                    width: 10,
+                    height: 10,
+                    flexShrink: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "50%",
+                      background: "#4ade80",
+                      animation: "tapPulse 1.4s ease-in-out infinite",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "50%",
+                      background: "#4ade80",
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -1015,9 +1118,22 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
             {/* Arrow pointing down */}
             <motion.div
               animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 1.1,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(255,255,255,0.5)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 5v14M5 12l7 7 7-7" />
               </svg>
             </motion.div>
