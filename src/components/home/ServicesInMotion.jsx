@@ -3,48 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCms } from "@/context/CmsContext";
 
 
-function Chip({ label }) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 30,
-        padding: "10px 14px 28px",
-        background:
-          "linear-gradient(to bottom,rgba(244,244,242,.95),transparent)",
-      }}
-    >
-      <span
-        className="bg-white/90 inline-flex items-center gap-[5px]"
-        style={{
-          padding: "3px 10px",
-          borderRadius: 99,
-          fontFamily: "monospace",
-          fontSize: 8,
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-          color: "#666",
-          border: "1px solid #ddd",
-          backdropFilter: "blur(6px)",
-        }}
-      >
-        <span
-          className="bg-azure-500"
-          style={{
-            width: 5,
-            height: 5,
-            borderRadius: "50%",
-            display: "inline-block",
-          }}
-        />
-        {label}
-      </span>
-    </div>
-  );
-}
 
 function Shimmer({ delay = 0, style = {} }) {
   return (
@@ -258,7 +216,7 @@ function C1S1() {
             "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
         }}
       />
-      <Chip label="Product & Digital" />
+
       <ReqBubble text="Build a clean e-commerce storefront with hero carousel and product grid." />
     </div>
   );
@@ -441,7 +399,7 @@ function C1S2() {
           </div>
         ))}
       </div>
-      <Chip label="Product & Digital" />
+    
     </div>
   );
 }
@@ -467,8 +425,7 @@ function C1S3() {
           background:
             "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
         }}
-      />
-      <Chip label="Product & Digital" />
+   />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -483,29 +440,7 @@ function C1S3() {
           alignItems: "flex-end",
         }}
       >
-        <div>
-          <div
-            className="text-white/[38%]"
-            style={{
-              fontFamily: "monospace",
-              fontSize: 8,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              marginBottom: 2,
-            }}
-          >
-            Product &amp; Digital
-          </div>
-          <div
-            className="text-white/[88%]"
-            style={{
-              fontSize: 20,
-              lineHeight: 1,
-            }}
-          >
-            MAD Studio.
-          </div>
-        </div>
+        
         <div
           style={{
             width: 7,
@@ -631,7 +566,7 @@ function C2S1() {
             "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
         }}
       />
-      <Chip label="Marketing & Comms" />
+     
       <ReqBubble text="Create a social media content calendar for our spring product launch." />
     </div>
   );
@@ -790,7 +725,7 @@ function C2S2() {
         />
         Campaign live
       </div>
-      <Chip label="Marketing & Comms" />
+  
     </div>
   );
 }
@@ -817,7 +752,7 @@ function C2S3() {
             "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
         }}
       />
-      <Chip label="Marketing & Comms" />
+ 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -832,29 +767,7 @@ function C2S3() {
           alignItems: "flex-end",
         }}
       >
-        <div>
-          <div
-            className="text-white/[38%]"
-            style={{
-              fontFamily: "monospace",
-              fontSize: 8,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              marginBottom: 2,
-            }}
-          >
-            Marketing &amp; Comms
-          </div>
-          <div
-            className="text-white/[88%]"
-            style={{
-              fontSize: 20,
-              lineHeight: 1,
-            }}
-          >
-            MAD Studio.
-          </div>
-        </div>
+       
         <div
           style={{
             width: 7,
@@ -957,7 +870,7 @@ function C3S1() {
             "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
         }}
       />
-      <Chip label="Brand & Identity" />
+
       <ReqBubble text="Design a bold brand identity system with logo, type, and a colour palette." />
     </div>
   );
@@ -1150,7 +1063,7 @@ function C3S2() {
         <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#38bdf8" }} />
         Brand system building…
       </div>
-      <Chip label="Brand & Identity" />
+ 
     </div>
   );
 }
@@ -1177,7 +1090,7 @@ function C3S3() {
             "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
         }}
       />
-      <Chip label="Brand & Identity" />
+    
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -1192,29 +1105,7 @@ function C3S3() {
           alignItems: "flex-end",
         }}
       >
-        <div>
-          <div
-            className="text-white/[38%]"
-            style={{
-              fontFamily: "monospace",
-              fontSize: 8,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              marginBottom: 2,
-            }}
-          >
-            Brand &amp; Identity
-          </div>
-          <div
-            className="text-white/[88%]"
-            style={{
-              fontSize: 20,
-              lineHeight: 1,
-            }}
-          >
-            MAD Studio.
-          </div>
-        </div>
+      
         <div
           style={{
             width: 7,

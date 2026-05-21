@@ -1158,7 +1158,7 @@ function NeedApproachPanel() {
             {[{ label: "First Payment", badge: "Received", bg: "#22c55e" }, { label: "Second Payment", badge: "Due", bg: "#ef4444" }].map(({ label, badge, bg }) => (
               <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: 7, color: "#333" }}>{label}</span>
-                <span style={{ fontSize: 5.5, fontWeight: 700, color: "#fff", background: bg, borderRadius: 3, padding: "1px 4px", whiteSpace: "nowrap" }}>{badge}</span>
+                <span style={{ fontSize: 6.5, fontWeight: 700, color: "#fff", background: bg, borderRadius: 3, padding: "1px 4px", whiteSpace: "nowrap" }}>{badge}</span>
               </div>
             ))}
           </div>
