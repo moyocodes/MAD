@@ -1,7 +1,8 @@
 {
-  "name": "my-app",
+  "name": "mad-landing",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "MAD — Mindfully Articulated Design. Product, marketing & design firm creating systems that help organizations grow.",
   "type": "module",
   "scripts": {
     "dev": "vite",

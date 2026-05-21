@@ -170,26 +170,27 @@ export const homeCms = {
     badge: "Built by MAD",
     cta: "Work With Us Today →",
     needs: [
-      "Unstructured billing processes",
-      "Difficulty tracking payments and invoices",
-      "Lack of financial visibility in real time",
-      "Over-reliance on manual and fragmented tools",
+      { icon: "grid", text: "Unstructured billing processes" },
+      {
+        icon: "messageSquare",
+        text: "Difficulty tracking payments and invoices",
+      },
+      { icon: "bookOpen", text: "Lack of financial visibility in real time" },
+      { icon: "shuffle", text: "Over-reliance on manual and fragmented tools" },
     ],
     approach: [
-      "Simplified financial workflows",
-      "Clean, intuitive user experience",
-      "Built for scalability from day one",
-      "Business, design & tech aligned",
+      { icon: "smartphone", text: "Simplified financial workflows" },
+      { icon: "layout", text: "Clean, intuitive user experience" },
+      { icon: "creditCard", text: "Built for scalability from day one" },
+      { icon: "bell", text: "Business, design & tech aligned" },
     ],
     solutions: [
-      "Create & manage invoices easily",
-      "Track payments in real time",
-      "Maintain clear financial records",
-      "Improved daily financial visibility",
+      { icon: "fileText", text: "Create & manage invoices easily" },
+      { icon: "clock", text: "Track payments in real time" },
+      { icon: "database", text: "Maintain clear financial records" },
+      { icon: "barChart", text: "Improved daily financial visibility" },
     ],
-    outcome:
-      "A more structured, efficient, and scalable approach to business billing.",
-    stats: [
+  outcome: `A more structured, efficient, and\nscalable approach to business billing.`,  stats: [
       { value: "24", label: "Paid", color: "#fff" },
       { value: "70", label: "Pending", color: "#fff" },
       { value: "28", label: "Overdue", color: "#e05a4e" },

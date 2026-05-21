@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KOVA – Built for momentum</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,700;1,400&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --magenta: #e040fb;
+        --magenta-dark: #c62de8;
+        --bg-page: #f5eefc;
+        --text-dark: #1a1a1a;
+        --text-mid: #666;
+        --text-light: #aaa;
+        --border: #e4ddf0;
+        --rust: #b84d26;
+        --sidebar-bg: #ffffff;
+        --header-h: 44px;
+      }
+
+      html,
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: linear-gradient(
+          140deg,
+          #f0e4ff 0%,
+          #fce8f3 55%,
+          #ede4ff 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 24px 64px;
+      }
+
+      .page-wrap {
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      /* ── headline ── */
+      .headline {
+        font-weight: 700;
+        font-size: clamp(22px, 3vw, 32px);
+        color: var(--text-dark);
+        margin-bottom: 28px;
+        letter-spacing: -0.02em;
+      }
+
+      /* ── laptop shell ── */
+      .laptop-wrap {
+        position: relative;
+        width: 100%;
+      }
+
+      .laptop-body {
+        background: #2a2a2e;
+        border-radius: 16px 16px 0 0;
+        padding: 10px 10px 0;
+        box-shadow:
+          0 0 0 1px #1a1a1e,
+          0 30px 80px rgba(0, 0, 0, 0.35),
+          0 10px 30px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+
+      /* camera notch bar */
+      .laptop-notch-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        margin-bottom: 6px;
+      }
+      .laptop-camera {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #444;
+      }
+
+      /* screen bezel */
+      .laptop-screen {
+        background: #000;
+        border-radius: 6px;
+        overflow: hidden;
+        aspect-ratio: 16/10;
+        position: relative;
+      }
+
+      /* base / hinge */
+      .laptop-base {
+        background: linear-gradient(180deg, #3a3a3e 0%, #2c2c30 100%);
+        height: 18px;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+      .laptop-base::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36%;
+        height: 6px;
+        background: #222;
+        border-radius: 0 0 20px 20px;
+      }
+      .laptop-stand {
+        height: 10px;
+        background: linear-gradient(180deg, #1e1e22 0%, #28282c 100%);
+        border-radius: 0 0 8px 8px;
+        width: 92%;
+        margin: 0 auto;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      /* ════════════════════════════════
+     BUILDER UI (inside the screen)
+  ════════════════════════════════ */
+      .builder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: #f0ebe5;
+        font-size: 11px;
+      }
+
+      /* top bar */
+      .b-topbar {
+        height: var(--header-h);
+        background: #1c1c1e;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px;
+        flex-shrink: 0;
+        z-index: 10;
+      }
+      .b-topbar-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        background: var(--magenta);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+        font-size: 12px;
+      }
+      .b-device-btns {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .b-dev-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #777;
+        display: flex;
+        align-items: center;
+        transition: color 0.12s;
+      }
+      .b-dev-btn.active,
+      .b-dev-btn:hover {
+        color: #fff;
+      }
+      .b-dev-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+      .b-publish {
+        background: var(--magenta);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 6px 16px;
+        font-size: 10.5px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      /* main layout */
+      .b-main {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* sidebar */
+      .b-sidebar {
+        width: 170px;
+        flex-shrink: 0;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .b-sidebar-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        padding: 0 10px;
+      }
+      .b-stab {
+        flex: 1;
+        padding: 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        color: var(--text-light);
+      }
+      .b-stab.active {
+        border-color: var(--text-dark);
+        color: var(--text-dark);
+      }
+      .b-stab svg {
+        width: 14px;
+        height: 14px;
+      }
+      .b-section-hdr {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 10px 5px;
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--text-mid);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+      .b-section-hdr svg {
+        width: 9px;
+        height: 9px;
+      }
+      .b-elem-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--border);
+      }
+      .b-elem-card {
+        background: #fff;
+        padding: 8px 6px 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: grab;
+        position: relative;
+        transition: background 0.1s;
+      }
+      .b-elem-card:hover {
+        background: #fafafa;
+      }
+      .b-elem-card svg {
+        width: 16px;
+        height: 16px;
+        color: #777;
+      }
+      .b-elem-card span {
+        font-size: 9px;
+        color: #777;
+        font-weight: 500;
+      }
+      .b-elem-x {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 11px;
+        height: 11px;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.1s;
+      }
+      .b-elem-card:hover .b-elem-x {
+        opacity: 1;
+      }
+      .b-elem-x svg {
+        width: 6px;
+        height: 6px;
+        color: #bbb;
+      }
+
+      /* canvas */
+      .b-canvas {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+      }
+      .b-site {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+      }
+      .b-site::-webkit-scrollbar {
+        width: 4px;
+      }
+      .b-site::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 2px;
+      }
+
+      /* site nav */
+      .s-nav {
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+      .s-logo {
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+      }
+      .s-nav-r {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .s-cart {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+      }
+      .s-ham {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5px;
+        cursor: pointer;
+      }
+      .s-ham span {
+        display: block;
+        width: 14px;
+        height: 1px;
+        background: #222;
+      }
+
+      /* hero */
+      .s-hero {
+        display: flex;
+        height: calc(100% - 36px);
+        min-height: 260px;
+      }
+      .s-hero-left {
+        flex: 1;
+        background: linear-gradient(
+          155deg,
+          #c0522a 0%,
+          #8b3218 70%,
+          #5c2010 100%
+        );
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+      }
+      .s-hero-script {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 52px;
+        color: rgba(255, 255, 255, 0.12);
+        pointer-events: none;
+        white-space: nowrap;
+        line-height: 1;
+      }
+      .s-figure {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-40%);
+        opacity: 0.7;
+      }
+      .s-hero-label {
+        position: absolute;
+        bottom: 14px;
+        right: 14px;
+        text-align: right;
+        color: #fff;
+      }
+      .s-label-sub {
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        opacity: 0.7;
+      }
+      .s-label-name {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      .s-label-price {
+        font-size: 9px;
+        opacity: 0.6;
+      }
+      .s-label-price s {
+        margin-left: 4px;
+      }
+
+      .s-hero-right {
+        flex: 0 0 38%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .s-hr-top {
+        flex: 1;
+        background: linear-gradient(135deg, #c4945a 0%, #9e6e3a 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .s-hr-bot {
+        flex: 0 0 42%;
+        background: linear-gradient(160deg, #3a2820 0%, #1e130e 100%);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .s-product-tag {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 6px;
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 9px;
+      }
+      .s-product-tag-price {
+        font-weight: 700;
+        font-size: 10px;
+      }
+      .s-add-btn {
+        background: none;
+        border: 1px solid #333;
+        border-radius: 3px;
+        padding: 3px 8px;
+        font-size: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      /* floating panels */
+      .f-url {
+        position: absolute;
+        top: 48px;
+        right: 52px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(8px);
+        border-radius: 8px;
+        padding: 7px 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 3px 16px rgba(0, 0, 0, 0.13);
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--text-dark);
+        z-index: 20;
+        pointer-events: none;
+      }
+      .f-url svg {
+        width: 10px;
+        height: 10px;
+        color: #999;
+      }
+
+      .f-ai {
+        position: absolute;
+        top: 130px;
+        right: 14px;
+        width: 210px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.14);
+        padding: 10px 10px 8px;
+        z-index: 25;
+      }
+      .f-ai-hdr {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-bottom: 7px;
+      }
+      .f-ai-hdr svg {
+        width: 12px;
+        height: 12px;
+      }
+      .f-ai-text {
+        font-size: 14px;
+        color: var(--text-dark);
+        line-height: 1.3;
+        margin-bottom: 10px;
+      }
+      .f-ai-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .f-ai-left {
+        display: flex;
+        gap: 8px;
+      }
+      .f-ai-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #999;
+        display: flex;
+      }
+      .f-ai-icon svg {
+        width: 12px;
+        height: 12px;
+      }
+      .f-ai-send {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--magenta);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .f-ai-send svg {
+        width: 10px;
+        height: 10px;
+        color: #fff;
+      }
+
+      .f-a11y {
+        position: absolute;
+        bottom: 12px;
+        right: 14px;
+        width: 200px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.13);
+        overflow: hidden;
+        z-index: 25;
+      }
+      .f-a11y-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .f-a11y-title {
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .f-a11y-ctrls {
+        display: flex;
+        gap: 6px;
+      }
+      .f-a11y-ctrl {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #bbb;
+      }
+      .f-a11y-ctrl svg {
+        width: 11px;
+        height: 11px;
+      }
+      .f-a11y-body {
+        padding: 8px;
+      }
+      .f-a11y-lbl {
+        font-size: 8.5px;
+        font-weight: 600;
+        color: #888;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .f-a11y-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+      }
+      .f-a11y-opt {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 7px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 9px;
+        font-weight: 500;
+        transition: all 0.1s;
+        color: var(--text-dark);
+      }
+      .f-a11y-opt.active {
+        background: var(--magenta);
+        color: #fff;
+        border-color: var(--magenta);
+      }
+      .f-a11y-opt svg {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+      <div class="headline">Built for momentum.</div>
+
+      <div class="laptop-wrap">
+        <!-- Laptop body -->
+        <div class="laptop-body">
+          <div class="laptop-notch-bar">
+            <div class="laptop-camera"></div>
+          </div>
+
+          <!-- THE SCREEN -->
+          <div class="laptop-screen">
+            <div class="builder">
+              <!-- Builder top bar -->
+              <div class="b-topbar">
+                <div class="b-topbar-logo">E</div>
+                <div class="b-device-btns">
+                  <button class="b-dev-btn active">
+                    <svg
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="2" y="3" width="16" height="11" rx="1.5" />
+                      <path d="M7 17h6M10 14v3" />
+                    </svg>
+                  </button>
+                  <button class="b-dev-btn">
+                    <svg
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="4" y="2" width="12" height="16" rx="1.5" />
+                      <circle
+                        cx="10"
+                        cy="15.5"
+                        r=".8"
+                        fill="currentColor"
+                        stroke="none"
+                      />
+                    </svg>
+                  </button>
+                  <button class="b-dev-btn">
+                    <svg
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="6" y="2" width="8" height="16" rx="1.5" />
+                      <circle
+                        cx="10"
+                        cy="15.5"
+                        r=".7"
+                        fill="currentColor"
+                        stroke="none"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <button class="b-publish">Publish</button>
+              </div>
+
+              <!-- Builder main -->
+              <div class="b-main">
+                <!-- Sidebar -->
+                <aside class="b-sidebar">
+                  <div class="b-sidebar-tabs">
+                    <div class="b-stab active">
+                      <svg
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect x="2" y="2" width="7" height="7" rx="1" />
+                        <rect x="11" y="2" width="7" height="7" rx="1" />
+                        <rect x="2" y="11" width="7" height="7" rx="1" />
+                        <rect x="11" y="11" width="7" height="7" rx="1" />
+                      </svg>
+                    </div>
+                    <div class="b-stab">
+                      <svg
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <circle cx="10" cy="10" r="7" />
+                        <path d="M10 3a9 9 0 0 1 0 14M3 10h14" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="b-section-hdr">
+                    <svg
+                      viewBox="0 0 9 9"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <path d="M1.5 3l3 3 3-3" />
+                    </svg>
+                    Atomic Elements
+                  </div>
+                  <div class="b-elem-grid">
+                    <!-- Flexbox -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect
+                          x="1"
+                          y="4"
+                          width="20"
+                          height="14"
+                          rx="2"
+                          stroke-dasharray="2 1.5"
+                        />
+                        <rect x="3" y="7" width="5" height="8" rx="1" />
+                        <rect x="9" y="7" width="5" height="8" rx="1" />
+                        <rect x="15" y="7" width="4" height="8" rx="1" />
+                      </svg>
+                      <span>Flexbox</span>
+                    </div>
+                    <!-- Div Block -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect
+                          x="2"
+                          y="2"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          stroke-dasharray="2 1.5"
+                        />
+                      </svg>
+                      <span>Div Block</span>
+                    </div>
+                    <!-- Heading -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M4 4v14M18 4v14M4 11h14" />
+                      </svg>
+                      <span>Heading</span>
+                    </div>
+                    <!-- Image -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect x="2" y="4" width="18" height="14" rx="2" />
+                        <circle cx="7.5" cy="8.5" r="1.5" />
+                        <path d="M2 15l5-4 4 4 3-3 6 5" />
+                      </svg>
+                      <span>Image</span>
+                    </div>
+                    <!-- Paragraph -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M4 6h14M4 10h14M4 14h10" />
+                      </svg>
+                      <span>Paragraph</span>
+                    </div>
+                    <!-- Button -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect x="3" y="7" width="16" height="8" rx="2" />
+                        <path d="M9 11h4M13 9l2 2-2 2" />
+                      </svg>
+                      <span>Button</span>
+                    </div>
+                    <!-- SVG -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path
+                          d="M4 16l4-8 4 8M6 13h4M14 8v8M14 8c0-2 4-2 4 0s-4 2-4 4 4 2 4 4"
+                        />
+                      </svg>
+                      <span>SVG</span>
+                    </div>
+                    <!-- YouTube -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect x="2" y="5" width="18" height="12" rx="3" />
+                        <path
+                          d="M9 9l5 2-5 2V9z"
+                          fill="currentColor"
+                          stroke="none"
+                          opacity=".6"
+                        />
+                      </svg>
+                      <span>YouTube</span>
+                    </div>
+                    <!-- Divider -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M3 11h16" />
+                      </svg>
+                      <span>Divider</span>
+                    </div>
+                    <!-- Tabs -->
+                    <div class="b-elem-card">
+                      <div class="b-elem-x">
+                        <svg
+                          viewBox="0 0 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path d="M1 1l4 4M5 1L1 5" />
+                        </svg>
+                      </div>
+                      <svg
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M2 9h5V5H2zM8 9h6V5H8z" />
+                        <rect x="2" y="9" width="18" height="10" rx="1" />
+                      </svg>
+                      <span>Tabs</span>
+                    </div>
+                  </div>
+                </aside>
+
+                <!-- Canvas -->
+                <div class="b-canvas">
+                  <div class="b-site">
+                    <!-- Site nav -->
+                    <nav class="s-nav">
+                      <div class="s-logo">KOVA</div>
+                      <div class="s-nav-r">
+                        <span class="s-cart">CART (1)</span>
+                        <div class="s-ham">
+                          <span></span><span></span><span></span>
+                        </div>
+                      </div>
+                    </nav>
+
+                    <!-- Hero -->
+                    <section class="s-hero">
+                      <div class="s-hero-left">
+                        <div class="s-hero-script">Revival</div>
+                        <!-- running figure SVG -->
+                        <svg
+                          class="s-figure"
+                          width="160"
+                          height="240"
+                          viewBox="0 0 160 240"
+                          fill="none"
+                        >
+                          <ellipse
+                            cx="80"
+                            cy="34"
+                            rx="16"
+                            ry="18"
+                            fill="rgba(255,255,255,0.12)"
+                          />
+                          <path
+                            d="M80 52 C68 68 62 90 64 118 C66 136 60 154 54 170 C50 182 46 192 50 202 C54 210 64 212 68 202"
+                            stroke="rgba(255,255,255,0.18)"
+                            stroke-width="11"
+                            stroke-linecap="round"
+                            fill="none"
+                          />
+                          <path
+                            d="M80 52 C92 67 94 88 90 114 C87 132 94 150 100 166 C106 180 110 192 104 202 C98 212 88 210 86 200"
+                            stroke="rgba(255,255,255,0.18)"
+                            stroke-width="11"
+                            stroke-linecap="round"
+                            fill="none"
+                          />
+                          <path
+                            d="M67 80 C56 74 44 68 40 56"
+                            stroke="rgba(255,255,255,0.12)"
+                            stroke-width="9"
+                            stroke-linecap="round"
+                            fill="none"
+                          />
+                          <path
+                            d="M93 80 C104 73 116 66 122 56"
+                            stroke="rgba(255,255,255,0.12)"
+                            stroke-width="9"
+                            stroke-linecap="round"
+                            fill="none"
+                          />
+                        </svg>
+                        <div class="s-hero-label">
+                          <div class="s-label-sub">NOVA STREET</div>
+                          <div class="s-label-name">SNEAKERS</div>
+                          <div class="s-label-price"><s>€264</s></div>
+                        </div>
+                      </div>
+                      <div class="s-hero-right">
+                        <div class="s-hr-top">
+                          <svg
+                            width="120"
+                            height="80"
+                            viewBox="0 0 120 80"
+                            fill="none"
+                          >
+                            <ellipse
+                              cx="60"
+                              cy="48"
+                              rx="40"
+                              ry="20"
+                              fill="rgba(255,255,255,0.07)"
+                            />
+                            <path
+                              d="M20 52 Q50 26 80 36 Q100 44 100 30"
+                              stroke="rgba(255,255,255,0.18)"
+                              stroke-width="2.5"
+                              stroke-linecap="round"
+                              fill="none"
+                            />
+                            <!-- ring hints -->
+                            <circle
+                              cx="52"
+                              cy="38"
+                              r="4"
+                              stroke="rgba(255,255,255,0.3)"
+                              stroke-width="1.5"
+                              fill="none"
+                            />
+                            <circle
+                              cx="66"
+                              cy="34"
+                              r="3"
+                              stroke="rgba(255,255,255,0.25)"
+                              stroke-width="1.5"
+                              fill="none"
+                            />
+                          </svg>
+                        </div>
+                        <div class="s-hr-bot">
+                          <svg
+                            width="120"
+                            height="70"
+                            viewBox="0 0 120 70"
+                            fill="none"
+                          >
+                            <path
+                              d="M10 48 Q36 24 60 32 Q84 40 105 28 Q108 27 106 34 Q100 50 10 54 Z"
+                              fill="rgba(255,255,255,0.1)"
+                            />
+                            <path
+                              d="M10 48 Q36 24 60 32 Q84 40 105 28"
+                              stroke="rgba(255,255,255,0.22)"
+                              stroke-width="1.5"
+                              fill="none"
+                            />
+                          </svg>
+                          <div class="s-product-tag">
+                            <span class="s-product-tag-price">€245</span>
+                            <button class="s-add-btn">Add</button>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+
+                  <!-- Floating URL bar -->
+                  <div class="f-url">
+                    <svg
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <rect x="1" y="3" width="12" height="9" rx="1.5" />
+                      <path d="M4 3V2a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
+                      <circle cx="7" cy="7.5" r="1" />
+                    </svg>
+                    www.kova.com
+                  </div>
+
+                  <!-- AI panel -->
+                  <div class="f-ai">
+                    <div class="f-ai-hdr">
+                      <svg
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path d="M8 1v2M8 13v2M1 8h2M13 8h2" />
+                        <circle cx="8" cy="8" r="3" />
+                      </svg>
+                      Angie
+                    </div>
+                    <div class="f-ai-text">Create a pricing table toggle</div>
+                    <div class="f-ai-actions">
+                      <div class="f-ai-left">
+                        <button class="f-ai-icon">
+                          <svg
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M6 2v8M2 6h8" />
+                          </svg>
+                        </button>
+                        <button class="f-ai-icon">
+                          <svg
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <circle cx="6" cy="6" r="2" />
+                            <path d="M6 1v1M6 10v1M1 6h1M10 6h1" />
+                          </svg>
+                        </button>
+                      </div>
+                      <button class="f-ai-send">
+                        <svg
+                          viewBox="0 0 10 10"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M5 8V2M2 5l3-3 3 3" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Accessibility panel -->
+                  <div class="f-a11y">
+                    <div class="f-a11y-hdr">
+                      <span class="f-a11y-title">Accessibility</span>
+                      <div class="f-a11y-ctrls">
+                        <button class="f-a11y-ctrl">
+                          <svg
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M1 5.5a4.5 4.5 0 1 0 9 0" />
+                            <path d="M9 2v3.5H5.5" />
+                          </svg>
+                        </button>
+                        <button class="f-a11y-ctrl">
+                          <svg
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M5.5 3v5M3 5.5h5" opacity=".5" />
+                          </svg>
+                        </button>
+                        <button class="f-a11y-ctrl">
+                          <svg
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M1.5 3l4 4 4-4" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="f-a11y-body">
+                      <div class="f-a11y-lbl">Text</div>
+                      <div class="f-a11y-grid">
+                        <div class="f-a11y-opt active">
+                          <svg
+                            viewBox="0 0 10 10"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M1 8L5 1l4 7M2.5 5.5h5" />
+                          </svg>
+                          Bigger text
+                        </div>
+                        <div class="f-a11y-opt">
+                          <svg
+                            viewBox="0 0 10 10"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M1 3h8M1 5.5h8M1 8h5" />
+                          </svg>
+                          Line height
+                        </div>
+                        <div class="f-a11y-opt">
+                          <svg
+                            viewBox="0 0 10 10"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <path d="M1 3h8M1 5.5h8M1 8h8" />
+                          </svg>
+                          Text align
+                        </div>
+                        <div class="f-a11y-opt">
+                          <svg
+                            viewBox="0 0 10 10"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
+                            <rect x="1" y="1" width="8" height="8" rx="1" />
+                            <path d="M1 5h8" />
+                          </svg>
+                          Readable font
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /b-canvas -->
+              </div>
+              <!-- /b-main -->
+            </div>
+            <!-- /builder -->
+          </div>
+          <!-- /laptop-screen -->
+        </div>
+        <!-- /laptop-body -->
+
+        <div class="laptop-base"></div>
+        <div class="laptop-stand"></div>
+      </div>
+      <!-- /laptop-wrap -->
+    </div>
+    <!-- /page-wrap -->
+
+    <script>
+      document.querySelectorAll(".b-dev-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".b-dev-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+      document.querySelectorAll(".f-a11y-opt").forEach((o) => {
+        o.addEventListener("click", () => o.classList.toggle("active"));
+      });
+      document.querySelectorAll(".b-stab").forEach((t) => {
+        t.addEventListener("click", () => {
+          document
+            .querySelectorAll(".b-stab")
+            .forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
+HTMLEOF echo "done"

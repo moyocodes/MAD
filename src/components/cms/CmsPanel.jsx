@@ -370,6 +370,37 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   );
 }
 
+const ICON_KEYS = ["alertCircle","search","eyeOff","tool","zap","sparkles","trendUp","target","fileText","clock","database","barChart","checkCircle","layers","users"];
+
+function IconItemList({ label, items, cmsPath, updateCms }) {
+  const safe = (items ?? []).map(it => typeof it === "string" ? { icon: "alertCircle", text: it } : it);
+  const upd = (next) => updateCms(cmsPath, next);
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <Label>{label}</Label>
+      {safe.map((item, i) => (
+        <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8, alignItems: "center" }}>
+          <select
+            value={item.icon ?? "alertCircle"}
+            onChange={(e) => { const n=[...safe]; n[i]={...item,icon:e.target.value}; upd(n); }}
+            style={{ ...inputBase, width: 118, flexShrink: 0, fontFamily: "monospace", fontSize: 9, padding: "9px 5px" }}
+          >
+            {ICON_KEYS.map(k => <option key={k} value={k}>{k}</option>)}
+          </select>
+          <input
+            type="text"
+            value={item.text ?? ""}
+            onChange={(e) => { const n=[...safe]; n[i]={...item,text:e.target.value}; upd(n); }}
+            style={{ ...inputBase, flex: 1 }}
+          />
+          <DelBtn onClick={() => upd(safe.filter((_,j)=>j!==i))} />
+        </div>
+      ))}
+      <AddBtn label="+ Add Item" onClick={() => upd([...safe, { icon: "alertCircle", text: "" }])} />
+    </div>
+  );
+}
+
 function ExperienceForm({ cmsData, updateCms }) {
   const [tab, setTab] = useState(0);
   const e = cmsData.experience;
@@ -413,18 +444,9 @@ function ExperienceForm({ cmsData, updateCms }) {
   return (
     <>
       <Tabs tabs={TABS} active={tab} onSelect={setTab} />
-      <div style={{ marginBottom: 14 }}>
-        <Label>The Need (one per line)</Label>
-        <textarea value={(e.needs ?? []).join("\n")} onChange={(ev) => updateCms("experience.needs", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
-      </div>
-      <div style={{ marginBottom: 14 }}>
-        <Label>Our Approach (one per line)</Label>
-        <textarea value={(e.approach ?? []).join("\n")} onChange={(ev) => updateCms("experience.approach", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
-      </div>
-      <div style={{ marginBottom: 14 }}>
-        <Label>The Solution (one per line)</Label>
-        <textarea value={(e.solutions ?? []).join("\n")} onChange={(ev) => updateCms("experience.solutions", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
-      </div>
+      <IconItemList label="The Need" items={e.needs} cmsPath="experience.needs" updateCms={updateCms} />
+      <IconItemList label="Our Approach" items={e.approach} cmsPath="experience.approach" updateCms={updateCms} />
+      <IconItemList label="The Solution" items={e.solutions} cmsPath="experience.solutions" updateCms={updateCms} />
     </>
   );
 }

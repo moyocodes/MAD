@@ -669,6 +669,29 @@ export default function MadPhoneChatWithForm() {
   const inView = useInView(sectionRef, { once: false, margin: "-80px" });
   const [formData, setFormData] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
+  const formRef = useRef(null);
+  const submittedRef = useRef(false);
+
+  const handleIframeLoad = () => {
+    if (!submittedRef.current) return;
+    submittedRef.current = false;
+    setSent(true);
+    setFormData({ name: "", email: "", msg: "" });
+    setTimeout(() => setSent(false), 5000);
+  };
+
+  const handleSubmit = () => {
+    if (!formData.name || !formData.email) return;
+    const gf = contact.gform ?? {};
+    if (gf.url && !gf.url.includes("YOUR_FORM_ID")) {
+      const form = formRef.current;
+      form.querySelector(`[name="${gf.entryName}"]`).value = formData.name;
+      form.querySelector(`[name="${gf.entryEmail}"]`).value = formData.email;
+      form.querySelector(`[name="${gf.entryMsg}"]`).value = formData.msg;
+      submittedRef.current = true;
+      form.submit();
+    }
+  };
 
   return (
     <section id="contact" ref={sectionRef} className="relative" style={{ minHeight: "100dvh" }}>
@@ -867,27 +890,25 @@ export default function MadPhoneChatWithForm() {
                   setFormData({ ...formData, msg: e.target.value })
                 }
               />
+              <iframe
+                name="gform_iframe"
+                title="form-submit"
+                onLoad={handleIframeLoad}
+                style={{ display: "none" }}
+              />
+              <form
+                ref={formRef}
+                action={contact.gform?.url ?? ""}
+                method="POST"
+                target="gform_iframe"
+                style={{ display: "none" }}
+              >
+                <input type="hidden" name={contact.gform?.entryName ?? "entry_name"} />
+                <input type="hidden" name={contact.gform?.entryEmail ?? "entry_email"} />
+                <input type="hidden" name={contact.gform?.entryMsg ?? "entry_msg"} />
+              </form>
               <Button
-                onClick={() => {
-                  if (formData.name && formData.email) {
-                    const gf = contact.gform ?? {};
-                    if (gf.url && !gf.url.includes("YOUR_FORM_ID")) {
-                      const body = new URLSearchParams({
-                        [gf.entryName]:  formData.name,
-                        [gf.entryEmail]: formData.email,
-                        [gf.entryMsg]:   formData.msg,
-                      });
-                      fetch(gf.url, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: body.toString(),
-                      });
-                    }
-                    setSent(true);
-                    setTimeout(() => setSent(false), 5000);
-                  }
-                }}
+                onClick={handleSubmit}
                 className="w-full bg-azure-500 hover:bg-azure-600 text-white border-none rounded-full py-3 text-xs font-bold tracking-widest uppercase shadow-lg shadow-azure-400/25 hover:shadow-azure-500/35 transition-all h-auto"
               >
                 {contact.submit}
