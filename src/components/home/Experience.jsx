@@ -2672,7 +2672,7 @@ function BulletRow({ text, isActive }) {
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: isActive ? 1 : 0.38 }}
+      animate={{ height: "auto", opacity: isActive ? 1 : 0.78 }}
       exit={{ height: 0, opacity: 0 }}
       transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       style={{ overflow: "hidden" }}
@@ -2697,9 +2697,10 @@ function BulletRow({ text, isActive }) {
           }}
         />
         <span
+    className={isActive ? "text-[#181817]" : "text-[#555]"} 
           style={{
             fontSize: 10,
-            color: isActive ? "#181817" : "#666",
+            // color: isActive ? "#181817" : "#555",
             fontWeight: isActive ? 700 : 400,
             lineHeight: 1.5,
           }}
