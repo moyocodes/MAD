@@ -94,7 +94,7 @@ export default function WhatWeDo() {
             <div className="absolute inset-0 bg-gradient-to-t from-azure-900/95 via-azure-900/30 to-transparent" />
 
             {/* Bottom label */}
-            <div className="absolute bottom-0 left-0 right-0 px-7 pb-8">
+            <div className="absolute bottom-0 left-0 right-0 px-7 pb-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={cur}
@@ -103,13 +103,13 @@ export default function WhatWeDo() {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4, ease }}
                 >
-                  <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-2 font-bold">
+                  <p className="text-azure-400 font-mono text-[9px] tracking-[0.28em] uppercase mb-2 font-bold">
                     {svc.tag} / 03
                   </p>
                   <p className="text-white font-black mb-2 leading-[1.05] tracking-[-0.04em] text-xl md:text-[34px]">
                     {svc.label}
                   </p>
-                  <p className="text-white/50 mb-5 leading-relaxed text-[10px] md:text-[13px]">
+                  <p className="text-white/50 mb-5 leading-relaxed text-[12px] md:text-[16px]">
                     {svc.tagline}
                   </p>
                 </motion.div>
@@ -120,7 +120,7 @@ export default function WhatWeDo() {
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="text-white text-[9px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md"
+                className="text-white text-[11px] font-bold tracking-[0.14em] uppercase px-5 py-[9px] rounded-full bg-white/[10%] border border-white/20 backdrop-blur-md"
               >
                 {content.cta}
               </button>
@@ -135,7 +135,7 @@ export default function WhatWeDo() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3, ease }}
-                  className="bg-azure-500/20 text-azure-300 font-mono text-[7px] font-bold tracking-[0.25em] uppercase border border-azure-400/40 px-[10px] py-[4px] rounded-full backdrop-blur-md inline-block"
+                  className="bg-azure-500/20 text-azure-300 font-mono text-[8.5px] font-bold tracking-[0.25em] uppercase border border-azure-400/40 px-[10px] py-[4px] rounded-full backdrop-blur-md inline-block"
                 >
                   {svc.tag} / 03
                 </motion.span>
@@ -171,14 +171,14 @@ export default function WhatWeDo() {
           </div>
 
           {/* ── Bottom-right: 2 cards ── */}
-          <div className="grid grid-cols-2 gap-0 h-[40dvh] md:h-auto">
+          <div className="grid grid-cols-2 gap-0 h-auto md:h-auto">
             {/* Intro card — azure-800 bg */}
             <motion.div
-              style={{ y: introY, opacity: introOp, minHeight: "40dvh" }}
-              className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20 p-3 md:p-8"
+              style={{ y: introY, opacity: introOp, minHeight: "48dvh" }}
+              className="bg-azure-800 flex flex-col justify-between border-r border-azure-500/20 p-5 md:p-8"
             >
               <div>
-                <p className="text-azure-400 font-mono text-[7.5px] tracking-[0.28em] uppercase mb-3 font-bold">
+                <p className="text-azure-400 font-mono text-[9px] tracking-[0.28em] uppercase mb-3 font-bold">
                   {content.eyebrow}
                 </p>
                 <h3
@@ -194,7 +194,7 @@ export default function WhatWeDo() {
                     {content.highlightedWords.yesterday}
                   </span>
                 </h3>
-                <p className="text-white/50 leading-[1.75] text-[10px] md:text-xs">
+                <p className="text-white/50 leading-[1.75] text-[12px] md:text-[14px]">
                   {content.body}
                 </p>
               </div>
@@ -204,7 +204,7 @@ export default function WhatWeDo() {
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[9px] md:text-[11px] px-[22px] py-[10px]"
+                className="text-white bg-azure-500 self-start mt-4 rounded-full font-bold tracking-[0.12em] uppercase border-none text-[11px] md:text-[13px] px-[28px] py-[13px]"
               >
                 {content.cta}
               </button>
@@ -212,8 +212,8 @@ export default function WhatWeDo() {
 
             {/* Service card — azure-900 bg */}
             <motion.div
-              style={{ y: svcY, opacity: svcOp, minHeight: "40dvh" }}
-              className="bg-azure-900 flex flex-col justify-between p-3 md:p-8"
+              style={{ y: svcY, opacity: svcOp, minHeight: "48dvh" }}
+              className="bg-azure-900 flex flex-col justify-between p-5 md:p-8"
             >
               <div>
                 <AnimatePresence mode="wait">
@@ -224,7 +224,7 @@ export default function WhatWeDo() {
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.35, ease }}
                   >
-                    <p className="text-azure-400 font-mono font-bold tracking-[0.28em] uppercase mb-2 text-[7px] md:text-[9px]">
+                    <p className="text-azure-400 font-mono font-bold tracking-[0.28em] uppercase mb-2 text-[8.5px] md:text-[11px]">
                       {svc.tag} / {String(WWD.length).padStart(2, "0")}
                     </p>
                     <h4
@@ -233,7 +233,7 @@ export default function WhatWeDo() {
                     >
                       {svc.label}
                     </h4>
-                    <p className="text-white/40 leading-[1.65] text-[9px] md:text-xs">
+                    <p className="text-white/40 leading-[1.65] text-[11px] md:text-[14px]">
                       {svc.tagline}
                     </p>
                   </motion.div>
@@ -244,7 +244,7 @@ export default function WhatWeDo() {
                 {WWD.map((sv, i) => (
                   <div key={i} className="flex items-center gap-2 mb-[7px]">
                     <span
-                      className="font-mono text-[7px] font-bold min-w-[14px]"
+                      className="font-mono text-[8.5px] font-bold min-w-[18px]"
                       style={{
                         color:
                           i === cur

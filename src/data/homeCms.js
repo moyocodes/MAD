@@ -156,7 +156,7 @@ export const homeCms = {
     productPrefix: "tru",
     productTyped: ["billing"],
     productTypedsub: [
-      "invoicing, expenses, payments, quotes, negotiator, inventory ,task manager, analytics, tax calculator",
+      "expenses, quotes, products & services, payments, invoicing, analytics, tax calculator",
     ],
     productSuffix: "",
     intro:
@@ -170,27 +170,25 @@ export const homeCms = {
     badge: "Built by MAD",
     cta: "Work With Us Today →",
     needs: [
-      { icon: "grid", text: "Unstructured billing processes" },
-      {
-        icon: "messageSquare",
-        text: "Difficulty tracking payments and invoices",
-      },
-      { icon: "bookOpen", text: "Lack of financial visibility in real time" },
-      { icon: "shuffle", text: "Over-reliance on manual and fragmented tools" },
+      { icon: "grid",          text: "Unstructured billing and expense processes" },
+      { icon: "messageSquare", text: "Difficulty tracking quotes, invoices & payments" },
+      { icon: "bookOpen",      text: "No real-time visibility into financial health" },
+      { icon: "shuffle",       text: "Over-reliance on manual and fragmented tools" },
     ],
     approach: [
-      { icon: "smartphone", text: "Simplified financial workflows" },
-      { icon: "layout", text: "Clean, intuitive user experience" },
-      { icon: "creditCard", text: "Built for scalability from day one" },
-      { icon: "bell", text: "Business, design & tech aligned" },
+      { icon: "smartphone", text: "Unified hub for expenses, quotes & payments" },
+      { icon: "layout",     text: "Clean, intuitive workflows for every module" },
+      { icon: "creditCard", text: "Products & services catalogue built to scale" },
+      { icon: "bell",       text: "Business, design & technology fully aligned" },
     ],
     solutions: [
-      { icon: "fileText", text: "Create & manage invoices easily" },
-      { icon: "clock", text: "Track payments in real time" },
-      { icon: "database", text: "Maintain clear financial records" },
-      { icon: "barChart", text: "Improved daily financial visibility" },
+      { icon: "fileText",    text: "Log and categorise expenses in seconds" },
+      { icon: "clock",       text: "Generate quotes and convert them to invoices" },
+      { icon: "database",    text: "Manage a full products & services catalogue" },
+      { icon: "barChart",    text: "Track payments and analyse income flow live" },
     ],
-  outcome: `A more structured, efficient, and\nscalable approach to business billing.`,  stats: [
+    outcome: `A more structured, efficient, and\nscalable approach to business billing.`,
+    stats: [
       { value: "24", label: "Paid", color: "#fff" },
       { value: "70", label: "Pending", color: "#fff" },
       { value: "28", label: "Overdue", color: "#e05a4e" },

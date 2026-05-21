@@ -209,19 +209,19 @@ export default function Hero() {
               <h1 className="text-white font-extrabold leading-[1.04] tracking-[-0.03em] whitespace-pre-line mb-[14px] text-[22px] sm:text-[30px] md:text-[38px] xl:text-[46px]">
                 {s.h1}
               </h1>
-              <p className="text-white/50 font-medium tracking-[0.04em] leading-[1.65] mb-6 max-w-[340px] text-[9px] sm:text-[11px]">
+              <p className="text-white/50 font-medium tracking-[0.04em] leading-[1.65] mb-6 max-w-[340px] text-[11px] sm:text-[13px]">
                 {s.sub}
               </p>
               <div className="flex flex-wrap gap-[10px]">
                 <button
                   onClick={() => scrollTo("contact")}
-                  className="bg-white border-none font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-[#0f1a2e] cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px]"
+                  className="bg-white border-none font-bold text-[8.5px] sm:text-[10px] tracking-[0.16em] uppercase rounded-full text-[#0f1a2e] cursor-pointer py-3 px-6 sm:py-[12px] sm:px-[30px]"
                 >
                   {hero.cta}
                 </button>
                 <button
                   onClick={() => scrollTo("services")}
-                  className="bg-white/[7%] border-[0.5px] border-white/30 font-bold text-[7px] sm:text-[8.5px] tracking-[0.16em] uppercase rounded-full text-white/80 cursor-pointer py-2 px-5 sm:py-[10px] sm:px-[26px] backdrop-blur-sm"
+                  className="bg-white/[7%] border-[0.5px] border-white/30 font-bold text-[8.5px] sm:text-[10px] tracking-[0.16em] uppercase rounded-full text-white/80 cursor-pointer py-3 px-6 sm:py-[12px] sm:px-[30px] backdrop-blur-sm"
                 >
                   View Our Work
                 </button>
@@ -241,7 +241,7 @@ export default function Hero() {
                   slideRef.current.paused = !slideRef.current.paused;
                   setPaused((p) => !p);
                 }}
-                className="w-[26px] h-[26px] rounded-full bg-transparent border-[0.5px] border-white/30 text-white/70 text-[7.5px] flex items-center justify-center cursor-pointer transition-[border-color,color] duration-200"
+                className="w-[26px] h-[26px] rounded-full bg-transparent border-[0.5px] border-white/30 text-white/70 text-[9px] flex items-center justify-center cursor-pointer transition-[border-color,color] duration-200"
               >
                 {paused ? "▶" : "⏸"}
               </button>
@@ -257,7 +257,7 @@ export default function Hero() {
         className="flex flex-col items-center px-10 md:px-40 py-6 shrink-0 bg-white"
         style={{ height: "20%" }}
       >
-        <p className="text-[9px] tracking-[0.28em] uppercase font-bold text-dark/50 shrink-0 whitespace-nowrap mb-4">
+        <p className="text-[11px] tracking-[0.28em] uppercase font-bold text-dark/50 shrink-0 whitespace-nowrap mb-4">
           {hero.trustedBy.label}
         </p>
         <div className="overflow-hidden flex-1 w-full">

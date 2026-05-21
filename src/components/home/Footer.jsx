@@ -24,7 +24,7 @@ export default function Footer() {
         {/* Brand column */}
         <div>
           <img src="/bgwhi.png" alt="MAD" style={{ height: 70, width: "auto" }} />
-          <p className="text-white/80 text-[15px] mt-5 leading-relaxed max-w-[260px] font-normal">
+          <p className="text-white/80 text-[18px] mt-5 leading-relaxed max-w-[310px] font-normal">
             {f.description}
           </p>
           <div className="flex gap-[10px] mt-[22px]">
@@ -33,7 +33,7 @@ export default function Footer() {
                 key={s.label}
                 href={s.href}
                 aria-label={s.label}
-                className="w-9 h-9 rounded-[9px] flex items-center justify-center text-[11px] font-extrabold no-underline transition-[background,color] duration-200 text-white bg-white/[12%]"
+                className="w-9 h-9 rounded-[9px] flex items-center justify-center text-[13px] font-extrabold no-underline transition-[background,color] duration-200 text-white bg-white/[12%]"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#1980c2";
                   e.currentTarget.style.color = "#fff";
@@ -52,7 +52,7 @@ export default function Footer() {
         {/* CMS-driven nav columns */}
         {cols.map((col) => (
           <div key={col.title}>
-            <h5 className="text-[10.5px] tracking-[0.2em] uppercase mb-[22px] font-extrabold text-white/50">
+            <h5 className="text-[12.5px] tracking-[0.2em] uppercase mb-[22px] font-extrabold text-white/50">
               {col.title}
             </h5>
             {(col.links ?? []).map(([label, href]) => (
@@ -84,7 +84,7 @@ export default function Footer() {
             ✏ Edit Footer
           </button>
         )}
-        <p className="text-[14px] text-white/65 font-medium">{f.copyright}</p>
+        <p className="text-[17px] text-white/65 font-medium">{f.copyright}</p>
       </div>
     </footer>
   );

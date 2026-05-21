@@ -171,9 +171,33 @@ const STAGES = [
     needIdx: 1,
     approachIdx: 1,
     solutionIdx: 1,
-    navLabel: "Invoice",
-    pageKey: "newInvoice",
-    url: "trubilling.com/invoice/new",
+    navLabel: "Expenses",
+    pageKey: "expensesList",
+    url: "trubilling.com/expenses",
+  },
+  {
+    needIdx: 2,
+    approachIdx: 2,
+    solutionIdx: 2,
+    navLabel: "Expenses",
+    pageKey: "newExpense",
+    url: "trubilling.com/expenses/new",
+  },
+  {
+    needIdx: 2,
+    approachIdx: 2,
+    solutionIdx: 2,
+    navLabel: "Quotes",
+    pageKey: "quotesList",
+    url: "trubilling.com/quotes",
+  },
+  {
+    needIdx: 3,
+    approachIdx: 3,
+    solutionIdx: 3,
+    navLabel: "Products & Services",
+    pageKey: "productsList",
+    url: "trubilling.com/products",
   },
   {
     needIdx: 3,
@@ -767,8 +791,314 @@ const NAV_ITEMS = [
   { label: "Contacts", d: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M23 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75", badge: "24" },
 ];
 
+// ─── Expenses List ────────────────────────────────────────────────────────────
+const EXPENSE_ROWS = [
+  ["#E001", "Jan 6, 2022", "Advertising", "Flyer for Lagos state water corps", "Bank Transfer", "52,500,000"],
+  ["#E002", "Jan 6, 2022", "Design", "Water bottle design for Seminar", "Bank Transfer", "52,575,000"],
+  ["#E003", "Jan 5, 2022", "Rent", "Office space monthly rent", "Cash", "1,200,000"],
+  ["#E004", "Jan 5, 2022", "Software", "Monthly SaaS subscriptions", "Card", "89,500"],
+  ["#E005", "Jan 4, 2022", "Advertising", "Social media ad campaign", "Mobile Money", "450,000"],
+  ["#E006", "Jan 4, 2022", "Travel", "Business trip – Abuja", "Cash", "180,000"],
+  ["#E007", "Jan 3, 2022", "Design", "Logo refresh project", "Card", "320,000"],
+];
+
+function ExpensesListPage() {
+  return (
+    <div style={{ padding: "6px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
+      <PageHeader crumb="Expenses" title="Expenses" btnLabel="New Expense" btnIcon="+" />
+      <FilterBar placeholder="Search for Expenses" />
+      <div style={{ background: "#fff", border: "1px solid #eee", borderRadius: 7, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "12px 24px 30px 1fr 34px 42px 18px", padding: "2px 7px", background: "#fafaf8", borderBottom: "1px solid #eee" }}>
+          {["S/N", "Ref.", "Date", "Description", "Category", "Amount", ""].map((h) => (
+            <span key={h} style={{ fontSize: 5, fontWeight: 700, color: TB }}>{h}</span>
+          ))}
+        </div>
+        {EXPENSE_ROWS.map(([ref, date, cat, desc, , amt], i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "12px 24px 30px 1fr 34px 42px 18px", padding: "2px 7px", borderBottom: "1px solid #f5f5f2", alignItems: "center", animation: `rowIn 0.25s ease ${i * 0.04}s both` }}>
+            <span style={{ fontSize: 5, color: "#888" }}>{i + 1}</span>
+            <span style={{ fontSize: 5, fontWeight: 700, color: TB }}>{ref}</span>
+            <span style={{ fontSize: 5, color: "#888" }}>{date.split(",")[0]}</span>
+            <span style={{ fontSize: 5, color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{desc}</span>
+            <span style={{ fontSize: 5, color: "#555", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cat}</span>
+            <span style={{ fontSize: 5, fontWeight: 600, color: "#333" }}>{amt}</span>
+            <div style={{ display: "flex", gap: 2 }}>
+              <span style={{ fontSize: 6.5, color: "#ddd" }}>🗑</span>
+              <span style={{ fontSize: 6.5, color: "#ddd" }}>✏️</span>
+            </div>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 7px", borderTop: "1px solid #eee", background: "#fafaf8" }}>
+          <span style={{ fontSize: 6.5, color: "#888" }}>Page 1 of 10</span>
+          <div style={{ display: "flex", gap: 3 }}>
+            {["← Prev", "Next →"].map((l) => (
+              <div key={l} style={{ border: "1px solid #eee", borderRadius: 5, padding: "1px 6px" }}>
+                <span style={{ fontSize: 6.5, color: "#555" }}>{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── New Expense (with animated calendar) ─────────────────────────────────────
+const CAL_WEEKS = [
+  [null, null, null, null, null, 1, 2],
+  [3, 4, 5, 6, 7, 8, 9],
+  [10, 11, 12, 13, 14, 15, 16],
+  [17, 18, 19, 20, 21, 22, 23],
+  [24, 25, 26, 27, 28, 29, 30],
+  [31, null, null, null, null, null, null],
+];
+const CAL_DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+
+function NewExpensePage() {
+  const [showCal, setShowCal] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShowCal(true), 1400);
+    return () => clearTimeout(t);
+  }, []);
+
+  const ITEMS = [
+    ["Flyer for Lagos state water corps", "250,000", "210", "52,500,000"],
+    ["Water bottle design for Seminar", "350,500", "150", "52,575,000"],
+  ];
+
+  return (
+    <div style={{ padding: "6px 10px", display: "flex", flexDirection: "column", gap: 4, height: "100%", overflowY: "auto" }}>
+      {/* Breadcrumb */}
+      <div style={{ fontSize: 5, color: "#aaa" }}>
+        <span style={{ color: TB }}>Dashboard</span> › <span style={{ color: TB }}>Expenses</span> ›{" "}
+        <span style={{ fontWeight: 700, color: "#333" }}>New Expense</span>
+      </div>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: 11, fontWeight: 900, color: TB }}>New Expense</span>
+        <div style={{ display: "flex", gap: 4 }}>
+          <div style={{ border: "1px solid #e0e0e0", borderRadius: 20, padding: "2px 9px" }}>
+            <span style={{ fontSize: 6, color: "#555" }}>Cancel</span>
+          </div>
+          <div style={{ background: TB, borderRadius: 20, padding: "2px 9px" }}>
+            <span style={{ fontSize: 6, fontWeight: 700, color: "#fff" }}>Submit</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Recurring toggle */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ fontSize: 6.5, color: "#333" }}>Recurring Expense</span>
+        <div style={{ width: 20, height: 11, borderRadius: 99, background: TB, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 2px" }}>
+          <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#fff" }} />
+        </div>
+      </div>
+
+      <div style={{ borderBottom: "1px solid #eee" }} />
+
+      {/* Date field + animated calendar */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 8, alignItems: "flex-start", position: "relative", zIndex: 50 }}>
+        <div style={{ fontSize: 6, fontWeight: 600, color: "#333", paddingTop: 3 }}>Date</div>
+        <div style={{ position: "relative" }}>
+          <div style={{ border: `1px solid ${showCal ? TB : "#e0e0e0"}`, borderRadius: 6, padding: "3px 7px", display: "flex", alignItems: "center", gap: 3, background: "#fff", transition: "border-color .2s" }}>
+            <span style={{ fontSize: 7, color: TB }}>🗓</span>
+            <span style={{ fontSize: 6.5, color: "#333" }}>January 6, 2022</span>
+          </div>
+          <AnimatePresence>
+            {showCal && (
+              <motion.div
+                initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                style={{ position: "absolute", top: "calc(100% + 3px)", left: 0, background: "#fff", border: "1px solid #e8e8e0", borderRadius: 8, padding: "6px 8px", boxShadow: "0 8px 24px rgba(0,0,0,.14)", minWidth: 130 }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                  <span style={{ fontSize: 6, color: "#888", cursor: "pointer" }}>‹</span>
+                  <span style={{ fontSize: 6, fontWeight: 700, color: "#333" }}>January 2022</span>
+                  <span style={{ fontSize: 6, color: "#888", cursor: "pointer" }}>›</span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1, marginBottom: 3 }}>
+                  {CAL_DAYS.map((d) => (
+                    <span key={d} style={{ fontSize: 4.5, color: "#aaa", textAlign: "center", fontWeight: 600 }}>{d}</span>
+                  ))}
+                </div>
+                {CAL_WEEKS.map((week, wi) => (
+                  <div key={wi} style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1 }}>
+                    {week.map((day, di) => (
+                      <div key={di} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 13, height: 13, borderRadius: "50%", background: day === 6 ? TB : "transparent" }}>
+                        <span style={{ fontSize: 4.5, fontWeight: day === 6 ? 700 : 400, color: day === 6 ? "#fff" : day ? "#333" : "transparent" }}>{day ?? ""}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Other form fields */}
+      {[["Currency", true], ["Payment Method", true], ["Select Category", true], ["Tax Type", true]].map(([label, isDropdown]) => (
+        <div key={label} style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 8, alignItems: "center", paddingBottom: 4, borderBottom: "1px solid #f5f5f2" }}>
+          <div style={{ fontSize: 6, fontWeight: 600, color: "#333" }}>{label}</div>
+          <div style={{ border: "1px solid #e0e0e0", borderRadius: 6, padding: "2px 7px", display: "flex", alignItems: "center", gap: 3, background: "#fff" }}>
+            <span style={{ fontSize: 6.5, color: "#bbb", flex: 1 }}>Placeholder</span>
+            {isDropdown && <span style={{ fontSize: 6, color: "#aaa" }}>∨</span>}
+          </div>
+        </div>
+      ))}
+
+      {/* Add item */}
+      <div style={{ border: "1.5px dashed rgba(194,65,29,.35)", borderRadius: 7, padding: "5px", textAlign: "center" }}>
+        <span style={{ fontSize: 6.5, fontWeight: 700, color: TB }}>+ &nbsp; Add an item</span>
+      </div>
+
+      {/* Items table */}
+      <div style={{ background: "#fff", border: "1px solid #eee", borderRadius: 6, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.55fr 0.45fr 0.65fr 0.35fr", padding: "2px 7px", background: "#fafaf8", borderBottom: "1px solid #eee" }}>
+          {["Item Description", "Unit Price", "Quantity", "Amount", "Actions"].map((h) => (
+            <span key={h} style={{ fontSize: 5, fontWeight: 700, color: TB }}>{h}</span>
+          ))}
+        </div>
+        {ITEMS.map(([desc, price, qty, amt], i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 0.55fr 0.45fr 0.65fr 0.35fr", padding: "2px 7px", borderBottom: "1px solid #f5f5f2", alignItems: "center" }}>
+            <span style={{ fontSize: 5, color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{desc}</span>
+            <span style={{ fontSize: 5, color: "#555" }}>{price}</span>
+            <span style={{ fontSize: 5, color: "#555" }}>{qty}</span>
+            <span style={{ fontSize: 5, fontWeight: 600, color: "#333" }}>{amt}</span>
+            <div style={{ display: "flex", gap: 2 }}>
+              <span style={{ fontSize: 6.5, color: "#ccc" }}>🗑</span>
+              <span style={{ fontSize: 6.5, color: "#ccc" }}>✏️</span>
+            </div>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 7px", borderTop: "1px solid #eee", background: "#fafaf8" }}>
+          <span style={{ fontSize: 6.5, fontWeight: 600, color: "#333" }}>Total Amount</span>
+          <span style={{ fontSize: 7, fontWeight: 900, color: "#1c1a18" }}>105,075,000</span>
+        </div>
+      </div>
+
+      {/* Comment */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 8, alignItems: "start" }}>
+        <div style={{ fontSize: 6, fontWeight: 600, color: "#333" }}>Expense Comment</div>
+        <div>
+          <div style={{ border: "1px solid #e0e0e0", borderRadius: 6, padding: "6px 7px", minHeight: 28, background: "#fff" }}>
+            <span style={{ fontSize: 6.5, color: "#bbb" }}>Type your message...</span>
+          </div>
+          <span style={{ fontSize: 5, color: "#aaa" }}>263 characters left</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Quotes List ─────────────────────────────────────────────────────────────
+const QUOTE_ROWS = [
+  ["#Q001", "Jan 6, 2022", "Marvin McKinney", "210.00", "Accepted"],
+  ["#Q002", "Jan 6, 2022", "Jerome Bell", "120,000.00", "Sent"],
+  ["#Q003", "Jan 5, 2022", "Jenny Wilson", "266.00", "Draft"],
+  ["#Q004", "Jan 5, 2022", "Savannah Nguyen", "1,878.50", "Accepted"],
+  ["#Q005", "Jan 4, 2022", "Cameron Williamson", "23.67", "Draft"],
+  ["#Q006", "Jan 4, 2022", "Marvin McKinney", "92.76", "Sent"],
+  ["#Q007", "Jan 3, 2022", "Jerome Bell", "11.38", "Accepted"],
+];
+const QUOTE_BADGE = {
+  Accepted: { color: "#1a7a4a", bg: "rgba(26,122,74,.1)", icon: "✓" },
+  Sent:     { color: "#2563eb", bg: "rgba(37,99,235,.1)",  icon: "→" },
+  Draft:    { color: "#6b7280", bg: "rgba(107,114,128,.1)", icon: "✎" },
+};
+
+function QuotesListPage() {
+  return (
+    <div style={{ padding: "6px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
+      <PageHeader crumb="Quotes" title="Quotes" btnLabel="New Quote" btnIcon="+" />
+      <FilterBar placeholder="Search for Quotes" />
+      <div style={{ background: "#fff", border: "1px solid #eee", borderRadius: 7, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "12px 24px 30px 1fr 40px 28px 18px", padding: "2px 7px", background: "#fafaf8", borderBottom: "1px solid #eee" }}>
+          {["S/N", "Quote", "Date", "Customer", "Amount", "Status", ""].map((h) => (
+            <span key={h} style={{ fontSize: 5, fontWeight: 700, color: TB }}>{h}</span>
+          ))}
+        </div>
+        {QUOTE_ROWS.map(([qn, date, cust, amt, status], i) => {
+          const b = QUOTE_BADGE[status];
+          return (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "12px 24px 30px 1fr 40px 28px 18px", padding: "2px 7px", borderBottom: "1px solid #f5f5f2", alignItems: "center", animation: `rowIn 0.25s ease ${i * 0.04}s both` }}>
+              <span style={{ fontSize: 5, color: "#888" }}>{i + 1}</span>
+              <span style={{ fontSize: 5, fontWeight: 700, color: TB }}>{qn}</span>
+              <span style={{ fontSize: 5, color: "#888" }}>{date.split(",")[0]}</span>
+              <span style={{ fontSize: 5, color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cust}</span>
+              <span style={{ fontSize: 5, fontWeight: 600, color: "#333" }}>{amt}</span>
+              <span style={{ background: b.bg, color: b.color, borderRadius: 99, padding: "1px 5px", fontSize: 5, fontWeight: 700, whiteSpace: "nowrap" }}>{b.icon} {status}</span>
+              <div style={{ display: "flex", gap: 2 }}>
+                <span style={{ fontSize: 6.5, color: "#ddd" }}>🗑</span>
+                <span style={{ fontSize: 6.5, color: "#ddd" }}>✏️</span>
+              </div>
+            </div>
+          );
+        })}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 7px", borderTop: "1px solid #eee", background: "#fafaf8" }}>
+          <span style={{ fontSize: 6.5, color: "#888" }}>Page 1 of 5</span>
+          <div style={{ display: "flex", gap: 3 }}>
+            {["← Prev", "Next →"].map((l) => (
+              <div key={l} style={{ border: "1px solid #eee", borderRadius: 5, padding: "1px 6px" }}>
+                <span style={{ fontSize: 6.5, color: "#555" }}>{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Products & Services ──────────────────────────────────────────────────────
+const PRODUCTS = [
+  ["Application Development", "Service", "210.00 USD", "Development of mobile application and admin dashboard"],
+  ["Website Design", "Service", "350.00 USD", "Full website design and frontend development"],
+  ["Logo Design", "Product", "80.00 USD", "Brand identity logo creation"],
+  ["Social Media Mgmt", "Service", "150.00 USD", "Monthly social media management package"],
+  ["SEO Optimization", "Service", "200.00 USD", "Search engine optimisation and audit"],
+  ["Domain & Hosting", "Product", "15.00 USD/yr", "Annual domain registration and hosting"],
+];
+
+function ProductsListPage() {
+  return (
+    <div style={{ padding: "6px 8px", display: "flex", flexDirection: "column", gap: 4 }}>
+      <PageHeader crumb="Products & Services" title="Products & Services" btnLabel="Add Product" btnIcon="+" />
+      <FilterBar placeholder="Search products or services" />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+        {PRODUCTS.map(([name, type, price, desc], i) => (
+          <div key={i} style={{ background: "#fff", borderRadius: 7, padding: "6px 7px", border: "1px solid #eee", animation: `fadeSlideUp 0.35s ease ${i * 0.06}s both` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 3 }}>
+              <span style={{ background: type === "Service" ? "rgba(194,65,29,.1)" : "rgba(37,99,235,.1)", color: type === "Service" ? TB : "#2563eb", borderRadius: 3, padding: "1px 5px", fontSize: 4.5, fontWeight: 700 }}>
+                {type}
+              </span>
+              <span style={{ fontSize: 6.5, fontWeight: 800, color: "#1c1a18" }}>{price}</span>
+            </div>
+            <div style={{ fontSize: 7, fontWeight: 700, color: "#1c1a18", marginBottom: 1 }}>{name}</div>
+            <div style={{ fontSize: 5.5, color: "#aaa", lineHeight: 1.4, marginBottom: 5 }}>{desc}</div>
+            <div style={{ display: "flex", gap: 3 }}>
+              <div style={{ border: "1px solid #eee", borderRadius: 4, padding: "1px 6px" }}>
+                <span style={{ fontSize: 5.5, color: "#555" }}>Edit</span>
+              </div>
+              <div style={{ border: `1px solid ${TB}55`, borderRadius: 4, padding: "1px 6px" }}>
+                <span style={{ fontSize: 5.5, color: TB, fontWeight: 600 }}>Add to Invoice</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const PAGE_COMPONENTS = {
   dashboard: DashboardPage,
+  expensesList: ExpensesListPage,
+  newExpense: NewExpensePage,
+  quotesList: QuotesListPage,
+  productsList: ProductsListPage,
   newInvoice: NewInvoicePage,
   invoiceItem: InvoiceItemModalPage,
   addItem: AddItemModalPage,
@@ -955,12 +1285,12 @@ const ICON_MAP = {
 function IconRow({ iconKey, text, isActive }) {
   const svgEl = ICON_MAP[iconKey] ?? ICON_MAP.alertCircle;
   return (
-    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: isActive ? 1 : 0.52 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: "hidden" }}>
+    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: isActive ? 1 : 0.78 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-        <div style={{ width: 24, height: 24, borderRadius: 7, flexShrink: 0, background: isActive ? "rgba(242,101,34,.13)" : "rgba(0,0,0,.04)", border: `1px solid ${isActive ? "rgba(242,101,34,.32)" : "rgba(0,0,0,.07)"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background .28s, border-color .28s", boxShadow: isActive ? "0 2px 8px rgba(242,101,34,.15)" : "none" }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={isActive ? "#F26522" : "#bbb"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke .28s" }}>{svgEl}</svg>
+        <div style={{ width: 24, height: 24, borderRadius: 7, flexShrink: 0, background: isActive ? "rgba(242,101,34,.13)" : "rgba(0,0,0,.05)", border: `1px solid ${isActive ? "rgba(242,101,34,.32)" : "rgba(0,0,0,.1)"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background .28s, border-color .28s", boxShadow: isActive ? "0 2px 8px rgba(242,101,34,.15)" : "none" }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={isActive ? "#F26522" : "#888"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke .28s" }}>{svgEl}</svg>
         </div>
-        <span style={{ fontSize: 9.5, lineHeight: 1.4, fontWeight: isActive ? 700 : 400, color: isActive ? "#181817" : "#999", transition: "color .2s" }}>{text}</span>
+        <span style={{ fontSize: 9.5, lineHeight: 1.4, fontWeight: isActive ? 700 : 500, color: isActive ? "#181817" : "#666", transition: "color .2s" }}>{text}</span>
       </div>
     </motion.div>
   );
@@ -1235,7 +1565,7 @@ export default function Experience() {
           {/* ── Headline row ── */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-3 gap-4">
             <motion.div style={{ opacity: entryOp, y: headlineY }}>
-              <p style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: "#F26522", marginBottom: 2 }}>{content.eyebrow}</p>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: "#F26522", marginBottom: 2 }}>{content.eyebrow}</p>
               <h2 className="text-xl md:text-3xl" style={{ fontWeight: 900, lineHeight: 1.1, letterSpacing: -0.5, color: "#181817", margin: 0 }}>
                 <span style={{ color: "#F26522" }}>{content.productPrefix}</span>
                 <TypingText text={content.productTyped} inView={hasEntered} />
@@ -1248,11 +1578,11 @@ export default function Experience() {
               />
             </motion.div>
 
-            <motion.div style={{ opacity: entryOp, y: ctaY }} className="flex-shrink-0 sm:max-w-[210px]">
+            <motion.div style={{ opacity: entryOp, y: ctaY }} className="flex-shrink-0">
               <button
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="bg-tangerine-500 text-white border-none rounded-full cursor-pointer"
-                style={{ padding: "10px 22px", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", boxShadow: "0 6px 20px rgba(242,101,34,.35)", display: "block", marginBottom: 8 }}
+                className="bg-tangerine-500 text-white border-none rounded-full cursor-pointer whitespace-nowrap"
+                style={{ padding: "12px 28px", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", boxShadow: "0 6px 20px rgba(242,101,34,.35)", display: "block", marginBottom: 8 }}
               >
                 {content.cta}
               </button>

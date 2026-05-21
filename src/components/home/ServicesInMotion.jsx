@@ -1485,19 +1485,33 @@ export default function ServicesInMotion() {
           }}
         >
           <div>
-            <p
-              style={{
-                fontFamily: "monospace",
-                fontSize: 9,
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                fontWeight: 600,
-                marginBottom: 6,
-                color: "rgba(160,168,180,.75)",
-              }}
-            >
-              {content.eyebrow}
-            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              {/* Mouse scroll indicator */}
+              <div style={{ position: "relative", width: 18, height: 28, flexShrink: 0 }}>
+                <svg width="18" height="28" viewBox="0 0 18 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1" y="1" width="16" height="26" rx="8" stroke="rgba(160,168,180,.6)" strokeWidth="1.5"/>
+                  <motion.rect
+                    x="7.5" y="5" width="3" height="5" rx="1.5"
+                    fill="rgba(25,128,194,.7)"
+                    animate={{ y: [5, 12, 5], opacity: [1, 0.2, 1] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                </svg>
+              </div>
+              <p
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: 9,
+                  letterSpacing: "0.28em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  color: "rgba(160,168,180,.75)",
+                  margin: 0,
+                }}
+              >
+                {content.eyebrow}
+              </p>
+            </div>
             <h2
               className="text-dark-900"
               style={{

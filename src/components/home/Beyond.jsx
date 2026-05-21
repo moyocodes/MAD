@@ -70,7 +70,7 @@ export default function Beyond() {
 
           {/* Eyebrow */}
           <motion.p
-            className="text-xs font-mono font-bold tracking-[0.3em] uppercase text-azure-800 mb-6"
+            className="text-[14px] font-mono font-bold tracking-[0.3em] uppercase text-azure-800 mb-6"
             initial={{ opacity: 0, x: -20, scale: 0.88 }}
             animate={inView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: -20, scale: 0.88 }}
             transition={{ duration: 0.55, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
