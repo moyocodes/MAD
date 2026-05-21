@@ -13,9 +13,13 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          motion: ["framer-motion"],
+        manualChunks: (id) => {
+          if (id.includes("node_modules/react")) {
+            return "react";
+          }
+          if (id.includes("node_modules/framer-motion")) {
+            return "motion";
+          }
         },
       },
     },
