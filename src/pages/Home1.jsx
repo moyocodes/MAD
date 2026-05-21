@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Nav from "../components/home/Nav";
 import Hero from "../components/home/Hero";
 import WhatWeDo from "../components/home/WhatWeDo";
@@ -19,7 +19,7 @@ function injectCSS() {
   s.id = "_mad";
   s.textContent = `
  *{box-sizing:border-box;margin:0;padding:0}
-    html{overscroll-behavior:none;overflow-x:clip}
+    html{overscroll-behavior:none;overflow-x:clip;scroll-snap-type:y mandatory}
     body{background:#ffffff;color:#181817;overflow-x:clip;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
     .sh{animation:shimmer 1.8s linear infinite}
@@ -30,13 +30,12 @@ function injectCSS() {
     input,textarea{outline:none;font-family:inherit}
     button{font-family:inherit;cursor:pointer}
     a{text-decoration:none}
+    #hero,#products,#about,#contact{scroll-snap-align:start;scroll-snap-stop:always}
   `;
   document.head.appendChild(s);
 }
 
 export default function MADLandingPage() {
-  const contactContainerRef = useRef(null);
-
   useEffect(() => {
     injectCSS();
 
@@ -74,7 +73,7 @@ export default function MADLandingPage() {
           <Nav />
           <Hero />
           {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
-          <div style={{ position: "relative" }}>
+          <div style={{ position: "relative", scrollSnapAlign: "start", scrollSnapStop: "always" }}>
             <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
               <WhatWeDo />
             </div>
@@ -82,26 +81,9 @@ export default function MADLandingPage() {
               <Experience />
             </div>
           </div>
-          {/* ServicesInMotion sticky — context ends at Contact so Footer is never behind it */}
-          <div style={{ position: "relative", zIndex: 3 }}>
-            <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-              <ServicesInMotion />
-            </div>
-            {/* Beyond pinned, Contact slides over it then sticks for phone scroll */}
-            <div style={{ position: "relative", zIndex: 2 }}>
-              <Beyond />
-              <div
-                ref={contactContainerRef}
-                style={{ position: "relative", zIndex: 2, minHeight: "200vh" }}
-              >
-                {/* 200vh container gives the phone 100vh of scroll travel while Contact stays pinned */}
-
-                <div style={{ position: "sticky", top: 0 }}>
-                  <Contact scrollRef={contactContainerRef} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ServicesInMotion />
+          <Beyond />
+          <Contact />
           {/* Footer outside sticky context — renders cleanly on its own */}
           <Footer />
         </main>

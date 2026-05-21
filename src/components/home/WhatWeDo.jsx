@@ -39,7 +39,7 @@ function ProgressBar({ duration, running, onComplete }) {
 const ease = [0.16, 1, 0.3, 1];
 
 export default function WhatWeDo() {
-  const { cmsData, isEditMode, openPanel } = useCms();
+  const { cmsData } = useCms();
   const content = cmsData.whatWeDo;
   const WWD = content.services;
 
@@ -65,30 +65,6 @@ export default function WhatWeDo() {
 
   return (
     <section id="work" ref={rootRef} className="relative h-[100dvh]">
-      {isEditMode && (
-        <button
-          onClick={() => openPanel("whatWeDo")}
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 100,
-            background: "#0b457b",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "5px 12px",
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
-          }}
-        >
-          ✏ Edit
-        </button>
-      )}
       <div className="overflow-hidden h-full" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
           {/* ── Left full-height on desktop, 60dvh on mobile ── */}

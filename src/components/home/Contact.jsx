@@ -3,9 +3,6 @@ import {
   motion,
   AnimatePresence,
   useInView,
-  useScroll,
-  useTransform,
-  useSpring,
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useCms } from "@/context/CmsContext";
@@ -665,57 +662,16 @@ function PhoneShell() {
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export default function MadPhoneChatWithForm({ scrollRef }) {
-  const { cmsData, isEditMode, openPanel } = useCms();
-  const { brand, contact } = cmsData;
+export default function MadPhoneChatWithForm() {
+  const { cmsData } = useCms();
+  const { contact } = cmsData;
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: false, margin: "-80px" });
   const [formData, setFormData] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
-  const titleLines = contact.title.split("\n");
-
-  // Scroll-driven phone Y — tracks the 200vh outer container from Home1.jsx
-  const phoneTarget = scrollRef ?? sectionRef;
-  const { scrollYProgress } = useScroll({
-    target: phoneTarget,
-    offset: ["start start", "end end"],
-  });
-  const phoneRawY = useTransform(scrollYProgress, [0, 0.4, 1], [55, 0, -110]);
-  const phoneSmoothY = useSpring(phoneRawY, {
-    stiffness: 90,
-    damping: 20,
-    restDelta: 0.001,
-  });
-
-  // Words that cycle in the "Talk to" heading inside the left form panel
-  const MAD_TEXTS = ["Not sure what comes next?", "Talk to MAD"];
 
   return (
-    <section id="contact" ref={sectionRef} className="relative">
-      {isEditMode && (
-        <button
-          onClick={() => openPanel("contact")}
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 100,
-            background: "#0b457b",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "5px 12px",
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,.25)",
-          }}
-        >
-          ✏ Edit
-        </button>
-      )}
+    <section id="contact" ref={sectionRef} className="relative" style={{ minHeight: "100dvh" }}>
       <style>{`
         @keyframes madBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes dotPulse {
@@ -914,6 +870,20 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
               <Button
                 onClick={() => {
                   if (formData.name && formData.email) {
+                    const gf = contact.gform ?? {};
+                    if (gf.url && !gf.url.includes("YOUR_FORM_ID")) {
+                      const body = new URLSearchParams({
+                        [gf.entryName]:  formData.name,
+                        [gf.entryEmail]: formData.email,
+                        [gf.entryMsg]:   formData.msg,
+                      });
+                      fetch(gf.url, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: body.toString(),
+                      });
+                    }
                     setSent(true);
                     setTimeout(() => setSent(false), 5000);
                   }
@@ -925,10 +895,10 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
               <p className="text-xs text-azure-700/40 text-center">
                 {contact.emailPrefix}{" "}
                 <a
-                  href={`mailto:contact@mindfullyarticulated.com`}
+                  href={`mailto:${contact.email ?? "contact@mindfullyarticulated.com"}`}
                   className="text-azure-500 font-semibold hover:text-azure-600 transition-colors"
                 >
-          contact@mindfullyarticulated.com
+                  {contact.email ?? "contact@mindfullyarticulated.com"}
                 </a>
               </p>
             </motion.div>
@@ -1150,10 +1120,10 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
             }
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
           >
-            <motion.div style={{ position: "relative", y: phoneSmoothY }}>
+            <div style={{ position: "relative" }}>
               <PhoneShell />
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 rounded-full bg-azure-900/40 blur-xl pointer-events-none opacity-40" />
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Phone — Mobile */}
@@ -1171,9 +1141,7 @@ export default function MadPhoneChatWithForm({ scrollRef }) {
                 delay: 0.12,
               }}
             >
-              <motion.div style={{ y: phoneSmoothY }}>
-                <PhoneShell />
-              </motion.div>
+              <PhoneShell />
             </motion.div>
           </div>
         </div>

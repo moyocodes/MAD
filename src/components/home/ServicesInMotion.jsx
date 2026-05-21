@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { homeCms } from "@/data/homeCms";
+import { useCms } from "@/context/CmsContext";
 
-const content = homeCms.servicesInMotion;
 
 function Chip({ label }) {
   return (
@@ -1236,10 +1235,6 @@ export const STAGE_SETS = {
   brand: [C3S1, C3S2, C3S3],
 };
 
-export const CARDS = content.cards.map((card) => ({
-  ...card,
-  stages: STAGE_SETS[card.stageSet] ?? STAGE_SETS.product,
-}));
 
 const S1 = 2000,
   S2 = 2000,
@@ -1282,7 +1277,7 @@ export function SvcCard({ config, startDelay, isActive }) {
     };
   }, [runCycle, startDelay]);
 
-  const { stages, title, sub } = config;
+  const { stages } = config;
   const [S1c, S2c, S3c] = stages;
 
   return (
@@ -1291,11 +1286,8 @@ export function SvcCard({ config, startDelay, isActive }) {
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",
-        gap: 12,
         position: "relative",
         width: "min(560px,calc(100vw - 24px))",
-        paddingBottom: 8,
-        paddingRight: 8,
       }}
     >
       <div
@@ -1425,37 +1417,17 @@ export function SvcCard({ config, startDelay, isActive }) {
           />
         </div>
       </div>
-      <motion.div
-        animate={{ opacity: isActive ? 1 : 0.4, y: isActive ? 0 : 3 }}
-        transition={{ duration: 0.3 }}
-        style={{ paddingLeft: 2 }}
-      >
-        <div
-          className="text-dark-900"
-          style={{
-            fontSize: 17,
-            lineHeight: 1.2,
-            marginBottom: 3,
-            fontWeight: 700,
-          }}
-        >
-          {title}
-        </div>
-        <div
-          className="text-dark-900/[52%]"
-          style={{
-            fontSize: 11,
-            lineHeight: 1.55,
-          }}
-        >
-          {sub}
-        </div>
-      </motion.div>
     </div>
   );
 }
 
 export default function ServicesInMotion() {
+  const { cmsData } = useCms();
+  const content = cmsData.servicesInMotion;
+  const CARDS = (content.cards ?? []).map((card) => ({
+    ...card,
+    stages: STAGE_SETS[card.stageSet] ?? STAGE_SETS.product,
+  }));
   const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0); // mirror for use inside event listeners
@@ -1509,11 +1481,11 @@ export default function ServicesInMotion() {
           e.preventDefault();
           if (cooldown) return;
           wheelAcc += e.deltaY;
-          if (wheelAcc > 40) {
+          if (wheelAcc > 65) {
             setActive((a) => Math.min(max, a + 1));
             wheelAcc = 0;
             cooldown = true;
-            setTimeout(() => { cooldown = false; }, 320);
+            setTimeout(() => { cooldown = false; }, 480);
           }
         }
         // cur === max → fall through, browser scrolls page naturally
@@ -1523,11 +1495,11 @@ export default function ServicesInMotion() {
           e.preventDefault();
           if (cooldown) return;
           wheelAcc += e.deltaY; // deltaY is negative here
-          if (wheelAcc < -40) {
+          if (wheelAcc < -65) {
             setActive((a) => Math.max(0, a - 1));
             wheelAcc = 0;
             cooldown = true;
-            setTimeout(() => { cooldown = false; }, 320);
+            setTimeout(() => { cooldown = false; }, 480);
           }
         }
         // cur === 0 → fall through, browser scrolls page naturally
@@ -1567,6 +1539,7 @@ export default function ServicesInMotion() {
 
   return (
     <section
+      id="services"
       ref={wrapRef}
       style={{
         position: "relative",
@@ -1579,8 +1552,10 @@ export default function ServicesInMotion() {
         // Each card needs ~300px of scroll runway so the jail can swallow those
         // wheel events while the sticky panel fully covers the viewport.
         // Without this, Beyond bleeds through the moment the section sticks.
-        height: `calc(100vh + ${(max + 1) * 300}px)`,
+        height: `calc(100vh + ${(max + 1) * 180}px)`,
         background: "linear-gradient(160deg, #daf0ff 0%, #c6e6ff 55%, #b8ddf8 100%)",
+        scrollSnapAlign: "start",
+        scrollSnapStop: "always",
       }}
     >
       <div

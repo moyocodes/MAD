@@ -5,16 +5,26 @@ export default function Footer() {
   const f = cmsData.footer;
   const cols = f.columns ?? [];
 
+  const scrollTo = (href, e) => {
+    if (!href.startsWith("#") || href === "#") return;
+    e.preventDefault();
+    const id = href.slice(1);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
-    <footer className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 relative bg-azure-800">
+    <footer
+      className="pt-16 sm:pt-20 px-4 sm:px-8 pb-14 relative bg-azure-800"
+      style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
+    >
       <div
         style={{ maxWidth: 1100, margin: "0 auto", marginBottom: 64 }}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 md:gap-16"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-12 md:gap-16"
       >
         {/* Brand column */}
         <div>
-          <img src="/ma.png" alt="MAD" style={{ height: 130, width: "auto", opacity: 0.9 }} />
-          <p className="text-white/55 text-[15px] mt-5 leading-relaxed max-w-[260px] font-normal">
+          <img src="/bgwhi.png" alt="MAD" style={{ height: 70, width: "auto" }} />
+          <p className="text-white/80 text-[15px] mt-5 leading-relaxed max-w-[260px] font-normal">
             {f.description}
           </p>
           <div className="flex gap-[10px] mt-[22px]">
@@ -23,7 +33,7 @@ export default function Footer() {
                 key={s.label}
                 href={s.href}
                 aria-label={s.label}
-                className="w-9 h-9 rounded-[9px] flex items-center justify-center text-[11px] font-extrabold no-underline transition-[background,color] duration-200 text-azure-500/55 bg-azure-500/[8%]"
+                className="w-9 h-9 rounded-[9px] flex items-center justify-center text-[11px] font-extrabold no-underline transition-[background,color] duration-200 text-white bg-white/[12%]"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#1980c2";
                   e.currentTarget.style.color = "#fff";
@@ -42,15 +52,16 @@ export default function Footer() {
         {/* CMS-driven nav columns */}
         {cols.map((col) => (
           <div key={col.title}>
-            <h5 className="text-[10.5px] tracking-[0.2em] uppercase mb-[22px] font-extrabold text-azure-500/50">
+            <h5 className="text-[10.5px] tracking-[0.2em] uppercase mb-[22px] font-extrabold text-white/50">
               {col.title}
             </h5>
             {(col.links ?? []).map(([label, href]) => (
               <a
                 key={label}
                 href={href}
-                className="block text-[16px] mb-[14px] no-underline font-medium leading-[1.3] text-white/50 transition-colors duration-200"
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#1980c2")}
+                onClick={(e) => scrollTo(href, e)}
+                className="block text-[16px] mb-[14px] no-underline font-medium leading-[1.3] text-white/80 transition-colors duration-200"
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#5ab8f5")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "")}
               >
                 {label}
@@ -62,7 +73,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div
-        className="border-t border-azure-500/10 pt-7 flex flex-wrap gap-3 justify-between items-center"
+        className="border-t border-white/10 pt-7 flex flex-wrap gap-3 justify-between items-center"
         style={{ maxWidth: 1100, margin: "0 auto" }}
       >
         {isEditMode && (
@@ -73,7 +84,7 @@ export default function Footer() {
             ✏ Edit Footer
           </button>
         )}
-        <p className="text-[14px] text-white/40 font-medium">{f.copyright}</p>
+        <p className="text-[14px] text-white/65 font-medium">{f.copyright}</p>
       </div>
     </footer>
   );

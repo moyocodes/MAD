@@ -2667,44 +2667,76 @@ function LaptopFrame({ stage, badge }) {
   );
 }
 
-// ─── Reusable bullet row ──────────────────────────────────────────────────────
-function BulletRow({ text, isActive }) {
+// ─── Icon sets per panel ──────────────────────────────────────────────────────
+const NEED_ICONS = [
+  // unstructured billing
+  { el: <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></> },
+  // difficulty tracking
+  { el: <><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></> },
+  // lack of visibility
+  { el: <><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></> },
+  // fragmented tools
+  { el: <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/> },
+];
+
+const APPROACH_ICONS = [
+  // simplified workflows
+  { el: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/> },
+  // clean intuitive UX
+  { el: <><path d="M12 3l1.45 4.45L18 9l-4.55 1.55L12 15l-1.45-4.45L6 9l4.55-1.55L12 3z"/><path d="M19 15l.73 2.27L22 18l-2.27.73L19 21l-.73-2.27L16 18l2.27-.73L19 15z"/><path d="M5 17l.6 1.8L7.4 19l-1.8.6L5 21.4l-.6-1.8L2.6 19l1.8-.6L5 17z"/></> },
+  // scalability
+  { el: <><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></> },
+  // aligned across business, design, tech
+  { el: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></> },
+];
+
+const SOLUTION_ICONS = [
+  // create & manage invoices
+  { el: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></> },
+  // real-time tracking
+  { el: <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></> },
+  // clear financial records
+  { el: <><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></> },
+  // financial visibility
+  { el: <><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></> },
+];
+
+// ─── Icon row ─────────────────────────────────────────────────────────────────
+function IconRow({ icon, text, isActive }) {
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: isActive ? 1 : 0.78 }}
+      animate={{ height: "auto", opacity: isActive ? 1 : 0.52 }}
       exit={{ height: 0, opacity: 0 }}
       transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       style={{ overflow: "hidden" }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 6,
-          marginBottom: 5,
-        }}
-      >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
         <div
           style={{
-            width: isActive ? 14 : 7,
-            height: 1.5,
-            borderRadius: 99,
-            marginTop: 7,
-            flexShrink: 0,
-            background: isActive ? "#F26522" : "rgba(242,101,34,.28)",
-            transition: "width 0.28s, background 0.28s",
-          }}
-        />
-        <span
-          className={isActive ? "text-[#181817]" : "text-[#555]"}
-          style={{
-            fontSize: 10,
-            // color: isActive ? "#181817" : "#555",
-            fontWeight: isActive ? 700 : 400,
-            lineHeight: 1.5,
+            width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+            background: isActive ? "rgba(242,101,34,.13)" : "rgba(0,0,0,.04)",
+            border: `1px solid ${isActive ? "rgba(242,101,34,.32)" : "rgba(0,0,0,.07)"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "background .28s, border-color .28s",
+            boxShadow: isActive ? "0 2px 8px rgba(242,101,34,.15)" : "none",
           }}
         >
+          <svg
+            width="13" height="13" viewBox="0 0 24 24" fill="none"
+            stroke={isActive ? "#F26522" : "#bbb"}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{ transition: "stroke .28s" }}
+          >
+            {icon.el}
+          </svg>
+        </div>
+        <span style={{
+          fontSize: 10, lineHeight: 1.45,
+          fontWeight: isActive ? 700 : 400,
+          color: isActive ? "#181817" : "#999",
+          transition: "color .2s",
+        }}>
           {text}
         </span>
       </div>
@@ -2786,7 +2818,7 @@ function NeedApproachPanel({
       {needItems.map((text, i) => (
         <AnimatePresence key={i}>
           {activeNeedIdx >= 0 && i <= activeNeedIdx && (
-            <BulletRow text={text} isActive={i === activeNeedIdx} />
+            <IconRow icon={NEED_ICONS[i] ?? NEED_ICONS[0]} text={text} isActive={i === activeNeedIdx} />
           )}
         </AnimatePresence>
       ))}
@@ -2815,7 +2847,7 @@ function NeedApproachPanel({
       {approachItems.map((text, i) => (
         <AnimatePresence key={i}>
           {activeApproachIdx >= 0 && i <= activeApproachIdx && (
-            <BulletRow text={text} isActive={i === activeApproachIdx} />
+            <IconRow icon={APPROACH_ICONS[i] ?? APPROACH_ICONS[0]} text={text} isActive={i === activeApproachIdx} />
           )}
         </AnimatePresence>
       ))}
@@ -2858,7 +2890,7 @@ function SolutionPanel({ activeSolutionIdx, solutionBullets, outcome }) {
           {activeSolutionIdx >= 0 &&
             i <= activeSolutionIdx &&
             i < solutionBullets.length && (
-              <BulletRow text={text} isActive={i === activeSolutionIdx} />
+              <IconRow icon={SOLUTION_ICONS[i] ?? SOLUTION_ICONS[0]} text={text} isActive={i === activeSolutionIdx} />
             )}
         </AnimatePresence>
       ))}
@@ -2968,17 +3000,18 @@ export default function Experience() {
           onClick={() => openPanel("experience")}
           style={{
             position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 100,
-            background: "#0b457b",
+            bottom: 24,
+            left: 20,
+            zIndex: 400,
+            background: "rgba(11,69,123,.92)",
+            backdropFilter: "blur(10px)",
             color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "5px 12px",
-            fontSize: 9,
+            border: "1px solid rgba(255,255,255,.18)",
+            borderRadius: 99,
+            padding: "10px 20px",
+            fontSize: 11,
             fontWeight: 800,
-            letterSpacing: ".15em",
+            letterSpacing: ".12em",
             textTransform: "uppercase",
             cursor: "pointer",
             boxShadow: "0 2px 8px rgba(0,0,0,.25)",
@@ -2996,7 +3029,7 @@ export default function Experience() {
       >
         <style>{`@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}`}</style>
 
-        <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="w-full max-w-[1200px] mx-auto px-4 py-4 md:px-8">
           {/* ── Headline row ── */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-3 gap-4">
             <motion.div style={{ opacity: entryOp, y: headlineY }}>
@@ -3030,7 +3063,6 @@ export default function Experience() {
                   inView={hasEntered}
                   // delay={0.1}
                 />
-                <span>{content.productSuffix}</span>
               </h2>
               <TypingTexts
                 text={content.productTypedsub[0]
@@ -3080,7 +3112,7 @@ export default function Experience() {
           </div>
 
           {/* ── 3-column: Need+Approach | Laptop | Solution ── */}
-          <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3 pt-10">
+          <div className="grid grid-cols-2 md:grid-cols-[195px_1fr_195px] items-start gap-3 pt-4">
             {/* LEFT — Need + Approach: below laptop on mobile, left on desktop */}
             <motion.div
               style={{ opacity: entryOp, x: leftX }}

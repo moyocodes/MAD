@@ -3,26 +3,18 @@ import { motion, useInView } from "framer-motion";
 import { useCms } from "@/context/CmsContext";
 
 export default function Beyond() {
-  const { cmsData, isEditMode, openPanel } = useCms();
+  const { cmsData } = useCms();
   const content = cmsData.beyond;
   const ref = useRef(null);
-  const inView = useInView(ref, { once: false, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-20px" });
 
   return (
-    // Outer container gives scroll runway so the sticky panel holds for ~1 extra
-    // viewport of scrolling before the next section slides over it.
-    <div style={{ position: "relative", height: "200vh" }}>
-      <section
-        id="about"
-        ref={ref}
-        className="relative overflow-hidden flex items-center bg-azure-200"
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          width: "100%",
-        }}
-      >
+    <section
+      id="about"
+      ref={ref}
+      className="relative overflow-hidden flex items-center bg-azure-200"
+      style={{ height: "100vh", width: "100%" }}
+    >
         {/* Blobs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <motion.div
@@ -72,21 +64,6 @@ export default function Beyond() {
           transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
           style={{ transformOrigin: "right" }}
         />
-
-        {isEditMode && (
-          <button
-            onClick={() => openPanel("beyond")}
-            style={{
-              position: "absolute", top: 12, right: 12, zIndex: 100,
-              background: "#0b457b", color: "#fff", border: "none",
-              borderRadius: 6, padding: "5px 12px", fontSize: 9,
-              fontWeight: 800, letterSpacing: ".15em", textTransform: "uppercase",
-              cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.25)",
-            }}
-          >
-            ✏ Edit
-          </button>
-        )}
 
         {/* Content */}
         <div className="relative z-10 max-w-3xl mx-auto w-full px-6 md:px-14 py-16 md:py-24">
@@ -161,7 +138,6 @@ export default function Beyond() {
             </motion.button>
           </motion.div>
         </div>
-      </section>
-    </div>
+    </section>
   );
 }

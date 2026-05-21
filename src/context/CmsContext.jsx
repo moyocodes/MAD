@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { homeCms } from "@/data/homeCms";
 
-const STORAGE_KEY = "mad_cms_v1";
+const STORAGE_KEY = "mad_cms_v2";
 const CmsContext = createContext(null);
 
 function setNestedValue(obj, path, value) {

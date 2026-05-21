@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useCms } from "@/context/CmsContext";
 
 export default function Hero() {
-  const { cmsData, isEditMode, openPanel } = useCms();
+  const { cmsData } = useCms();
   const { brand, hero } = cmsData;
   const SLIDES = hero.slides;
   const rafRef = useRef(null);
@@ -55,8 +55,6 @@ export default function Hero() {
   }, []);
 
   const s = SLIDES[slide];
-  const ns = SLIDES[(slide + 1) % SLIDES.length];
-  const cardOut = 0;
 
   const scrollTo = (id) =>
     document
@@ -66,10 +64,6 @@ export default function Hero() {
   return (
     <div id="hero" className="relative flex flex-col h-[100dvh]">
       <style>{`
-        @keyframes dotPulse {
-          0%,100% { transform: scale(1); opacity: 1; }
-          50%      { transform: scale(1.5); opacity: .6; }
-        }
         @keyframes shimmerSlide {
           0%   { transform: translateX(-100%); }
           100% { transform: translateX(200%); }
@@ -80,31 +74,6 @@ export default function Hero() {
         }
         .mq { animation: marquee 18s linear infinite; }
       `}</style>
-
-      {isEditMode && (
-        <button
-          onClick={() => openPanel("hero")}
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 200,
-            background: "#0b457b",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "5px 12px",
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: ".15em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,.3)",
-          }}
-        >
-          ✏ Edit
-        </button>
-      )}
 
       {/* ── Top 80%: slideshow ── */}
       <div className="relative overflow-hidden" style={{ height: "80%" }}>
@@ -138,52 +107,45 @@ export default function Hero() {
             {/* Pantone card */}
             <div
               className="absolute"
-              style={{ top: "55%", left: "50%", width: "min(276px,86%)" }}
+              style={{ bottom: "4rem", left: "50%", width: "min(276px,86%)" }}
             >
-              {[
-                { data: s, op: 1 - cardOut, ty: cardOut * -20 },
-                { data: ns, op: cardOut, ty: (1 - cardOut) * 20 },
-              ].map(({ data, op, ty }, i) => (
-                <div
-                  key={i}
-                  className="absolute bg-white rounded-[10px] border-color-[#fffffff] border-[2px] overflow-hidden w-[350px]"
-                  style={{
-                    transform: `translate(-50%, calc(-50% + ${ty}px))`,
-                    opacity: op,
-                    boxShadow:
-                      "0 20px 60px rgba(5,28,46,.28), 0 4px 12px rgba(5,28,46,.12), 0 0 0 0.5px rgba(255,255,255,.18)",
-                  }}
-                >
-                  <img
-                    src={data.cardImg}
-                    alt=""
-                    className="w-full h-[350px] object-cover block"
+              <div
+                className="absolute bg-white rounded-[8px] sm:rounded-[10px] border-[2px] overflow-hidden w-[140px] sm:w-[220px] md:w-[280px] lg:w-[350px]"
+                style={{
+                  transform: "translate(-50%, -100%)",
+                  boxShadow:
+                    "0 20px 60px rgba(5,28,46,.28), 0 4px 12px rgba(5,28,46,.12), 0 0 0 0.5px rgba(255,255,255,.18)",
+                }}
+              >
+                <img
+                  src={s.cardImg}
+                  alt=""
+                  className="w-full h-[140px] sm:h-[220px] md:h-[280px] lg:h-[350px] object-cover block"
+                />
+                <div className="absolute top-0 left-0 right-0 h-[70px] sm:h-[110px] md:h-[140px] lg:h-[175px] overflow-hidden pointer-events-none">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(105deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%)",
+                      animation: "shimmerSlide 3.2s ease-in-out infinite",
+                    }}
                   />
-                  <div className="absolute top-0 left-0 right-0 h-[175px] overflow-hidden pointer-events-none">
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(105deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%)",
-                        animation: "shimmerSlide 3.2s ease-in-out infinite",
-                      }}
-                    />
+                </div>
+                <div className="px-2 pt-[8px] pb-2 sm:px-4 sm:pt-[14px] sm:pb-4 flex items-start justify-between">
+                  <div className="text-[9px] sm:text-[13px] font-black mb-[4px] sm:mb-[6px] tracking-[-0.3px] text-[#0f1a2e]">
+                    {s.card}
                   </div>
-                  <div className="px-4 pt-[14px] pb-4 flex items-start justify-between">
-                    <div className="text-[13px] font-black mb-[6px] tracking-[-0.3px] text-[#0f1a2e]">
-                      {data.card}
+                  <div className="text-right">
+                    <div className="text-[4.5px] sm:text-[6.5px] font-bold text-[#aaa] tracking-[0.22em] uppercase mb-[1px]">
+                      {brand.serviceByLabel}
                     </div>
-                    <div className="text-right">
-                      <div className="text-[6.5px] font-bold text-[#aaa] tracking-[0.22em] uppercase mb-[1px]">
-                        {brand.serviceByLabel}
-                      </div>
-                      <div className="text-[9.5px] font-black tracking-[0.1em] uppercase text-[#0f1a2e]">
-                        {brand.name}™
-                      </div>
+                    <div className="text-[7px] sm:text-[9.5px] font-black tracking-[0.1em] uppercase text-[#0f1a2e]">
+                      {brand.name}™
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 
@@ -212,9 +174,9 @@ export default function Hero() {
 
             {/* Notification toast */}
             <div
-              className="absolute z-[80] pointer-events-none backdrop-blur-[20px] rounded-xl top-[82px] right-6 bg-[rgba(238,247,253,.92)] border-[0.5px] border-azure-500/[18%] px-[14px] py-3"
+              className="absolute z-[80] pointer-events-none backdrop-blur-[20px] rounded-xl top-[82px] right-6 bg-[rgba(238,247,253,.92)] border-[0.5px] border-azure-500/[18%] px-[10px] py-2 sm:px-[14px] sm:py-3"
               style={{
-                width: "min(300px, calc(58vw - 20px))",
+                width: "min(240px, calc(58vw - 16px))",
                 transform: notif
                   ? "translateY(0) scale(1)"
                   : "translateY(-16px) scale(.96)",
@@ -225,17 +187,17 @@ export default function Hero() {
                   "0 8px 32px rgba(5,28,46,.12), 0 1px 0 rgba(255,255,255,.6) inset",
               }}
             >
-              <div className="flex items-center gap-[10px]">
-                <div className="w-[30px] h-[30px] rounded-[7px] bg-azure-500 flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(25,128,194,.35)]">
-                  <span className="text-[6.5px] font-black tracking-[0.5px] text-white">
+              <div className="flex items-center gap-[7px] sm:gap-[10px]">
+                <div className="w-[22px] h-[22px] sm:w-[30px] sm:h-[30px] rounded-[6px] sm:rounded-[7px] bg-azure-500 flex items-center justify-center shrink-0 shadow-[0_2px_8px_rgba(25,128,194,.35)]">
+                  <span className="text-[4.5px] sm:text-[6.5px] font-black tracking-[0.5px] text-white">
                     {brand.name}
                   </span>
                 </div>
                 <div>
-                  <div className="text-[7px] font-bold text-[#1468a0] tracking-[0.14em] uppercase mb-[2px]">
+                  <div className="text-[6px] sm:text-[7px] font-bold text-[#1468a0] tracking-[0.14em] uppercase mb-[1px] sm:mb-[2px]">
                     New update
                   </div>
-                  <span className="text-[11px] font-semibold text-[#0c447c] leading-[1.45]">
+                  <span className="text-[9px] sm:text-[11px] font-semibold text-[#0c447c] leading-[1.45]">
                     {notifMsg}
                   </span>
                 </div>
@@ -292,32 +254,20 @@ export default function Hero() {
 
       {/* ── Bottom 20%: Trusted by ── */}
       <div
-        className="flex flex-col items-center px-40 py-6 shrink-0 bg-white"
+        className="flex flex-col items-center px-10 md:px-40 py-6 shrink-0 bg-white"
         style={{ height: "20%" }}
       >
         <p className="text-[9px] tracking-[0.28em] uppercase font-bold text-dark/50 shrink-0 whitespace-nowrap mb-4">
-          Trusted by
+          {hero.trustedBy.label}
         </p>
         <div className="overflow-hidden flex-1 w-full">
           <div className="mq flex items-center gap-[48px] w-max">
-            {[
-              "/log1.png",
-              "/log2.png",
-              "/log3.png",
-              "/log4.png",
-              "/log5.png",
-              "/log1.png",
-              "/log2.png",
-              "/log3.png",
-              "/log4.png",
-              "/log5.png",
-            ].map((src, i) => (
+            {[...hero.trustedBy.logos, ...hero.trustedBy.logos].map((src, i) => (
               <img
                 key={i}
                 src={src}
                 alt=""
                 className="h-[56px] w-auto object-contain shrink-0"
-                style={{ opacity: 1.4 }}
               />
             ))}
           </div>

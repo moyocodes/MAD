@@ -39,10 +39,9 @@ export default function Nav() {
 
   const NAV_TARGETS = {
     Work: "work",
-  
-    OurProducts: "products",
-      Services: "services",
-    contact: "contact",
+    "Our Products": "products",
+    Services: "services",
+    Contact: "contact",
   };
   const scrollTo = (id) => {
     setMenuOpen(false);
@@ -235,9 +234,25 @@ export default function Nav() {
   return (
     <>
       <AnimatePresence mode="wait">
-
+          <style>{`
+            @media (max-width: 767px) {
+              .mad-nav-pill {
+                left: 12px !important;
+                right: 12px !important;
+                top: 10px !important;
+                width: auto !important;
+                min-width: 0 !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 16px !important;
+                height: 52px !important;
+                gap: 10px !important;
+              }
+            }
+          `}</style>
           <motion.nav
             key="pill"
+            className="mad-nav-pill"
             initial={{ scaleY: 0.45, opacity: 0, y: -18 }}
             animate={{ scaleY: 1, opacity: 1, y: 0 }}
             exit={{ scaleY: 0.45, opacity: 0, y: -18 }}
@@ -414,8 +429,8 @@ export default function Nav() {
                     }}
                   >
                     <span
+                      className="font-mono"
                       style={{
-                        fontFamily: "monospace",
                         fontSize: 9,
                         fontWeight: 700,
                         color: "#1980c2",

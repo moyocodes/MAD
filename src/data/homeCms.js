@@ -42,18 +42,6 @@ export const homeCms = {
         sub: "Brand systems that speak before you do.",
       },
     ],
-    thumbs: [
-      { src: "/flier/image.png", x: -38, y: -28, r: -2.5 },
-      { src: "/flier/image2.png", x: -18, y: -32, r: 1.5 },
-      { src: "/flier/image3.png", x: 40, y: 20, r: -2 },
-      { src: "/flier/image4.png", x: 34, y: -32, r: 2 },
-      { src: "/flier/image5.png", x: -36, y: 18, r: 2.5 },
-      { src: "/flier/image6.png", x: -16, y: 19, r: -1.5 },
-      { src: "/flier/image7.png", x: 17, y: 18, r: 1 },
-      { src: "/flier/image8.png", x: -36, y: 18, r: 2.5 },
-      { src: "/flier/image9.png", x: 0, y: 0, r: 0 },
-      { src: "/flier/image10.png", x: 0, y: 0, r: 0 },
-    ],
     notifications: [
       "New inquiry from Kova Group",
       "TruBilling shipped ✓ — Product launch confirmed",
@@ -63,12 +51,6 @@ export const homeCms = {
       "Meridian campaign went live today",
     ],
     cta: "Work With Us",
-    collapse: {
-      kicker: "Making A Difference",
-      headline: "Structure changes",
-      headlineAccent: "everything.",
-      viewWork: "View Our Work",
-    },
     trustedBy: {
       label: "Trusted by",
       logos: ["/log1.png", "/log2.png", "/log3.png", "/log4.png", "/log5.png"],
@@ -259,6 +241,13 @@ export const homeCms = {
     successTitle: "Message received",
     successBody: "We'll be in touch within 24 hours.",
     emailPrefix: "Or email us at",
+    email: "contact@mindfullyarticulated.com",
+    gform: {
+      url: "https://docs.google.com/forms/d/e/1FAIpQLSeMOLJqst5NIGDs8MhhvvkPV8g-WFUtchB5jcUVdObAsZc6yw/formResponse",
+      entryName:  "entry.1976205921",
+      entryEmail: "entry.547150526",
+      entryMsg:   "entry.998174518",
+    },
     ai: {
       name: "MAD AI",
       status: "Strategic Partner · Online",
@@ -320,33 +309,25 @@ export const homeCms = {
       "Product, marketing & design firm creating systems that help organizations grow stronger and perform over time.",
     social: [
       { label: "Instagram", href: "#", iconClass: "fa fa-instagram" },
-      { label: "Twitter", href: "#", iconClass: "fa fa-twitter" },
       { label: "LinkedIn", href: "#", iconClass: "fa fa-linkedin" },
     ],
     columns: [
       {
-        title: "Services",
+        title: "Navigate",
         links: [
-          ["Product & Digital", "#"],
-          ["Marketing & Comms", "#"],
-          ["Brand & Design", "#"],
-        ],
-      },
-      {
-        title: "Company",
-        links: [
-          ["About MAD", "#"],
-          ["Our Work", "#"],
-          ["Contact", "#"],
-          ["Careers", "#"],
+          ["Home", "#hero"],
+          ["What We Do", "#work"],
+          ["Our Products", "#products"],
+          ["Services", "#services"],
+          ["Contact", "#contact"],
         ],
       },
       {
         title: "Get In Touch",
         links: [
-          ["LinkedIn", "#"],
+          ["contact@mindfullyarticulated.com", "mailto:contact@mindfullyarticulated.com"],
           ["Instagram", "#"],
-          ["hello@madesign.studio", "mailto:hello@madesign.studio"],
+          ["LinkedIn", "#"],
         ],
       },
     ],

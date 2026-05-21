@@ -104,6 +104,22 @@ function Divider() {
   return <div style={{ borderTop: "1px solid rgba(11,69,123,.1)", margin: "4px 0 16px" }} />;
 }
 
+function AddBtn({ onClick, label = "+ Add" }) {
+  return (
+    <button onClick={onClick} style={{ width: "100%", padding: "8px 0", borderRadius: 8, border: "1.5px dashed rgba(11,69,123,.28)", background: "transparent", color: "rgba(11,69,123,.6)", fontSize: 11, fontWeight: 700, cursor: "pointer", marginBottom: 14 }}>
+      {label}
+    </button>
+  );
+}
+
+function DelBtn({ onClick }) {
+  return (
+    <button onClick={onClick} style={{ flexShrink: 0, width: 28, height: 28, border: "1px solid rgba(194,65,29,.3)", borderRadius: 6, background: "transparent", color: "rgba(194,65,29,.7)", fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+      ×
+    </button>
+  );
+}
+
 function Tabs({ tabs, active, onSelect }) {
   return (
     <div style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap" }}>
@@ -138,19 +154,12 @@ function NavForm({ cmsData, updateCms }) {
       <Divider />
       <Label>Nav Links</Label>
       {(n.links ?? []).map((link, i) => (
-        <input
-          key={i}
-          type="text"
-          value={link}
-          onChange={(e) => {
-            const next = [...n.links];
-            next[i] = e.target.value;
-            updateCms("nav.links", next);
-          }}
-          style={{ ...inputBase, marginBottom: 6 }}
-        />
+        <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+          <input type="text" value={link} onChange={(e) => { const next=[...n.links]; next[i]=e.target.value; updateCms("nav.links",next); }} style={{ ...inputBase, flex: 1 }} />
+          <DelBtn onClick={() => updateCms("nav.links", n.links.filter((_,j)=>j!==i))} />
+        </div>
       ))}
-      <div style={{ marginBottom: 14 }} />
+      <AddBtn label="+ Add Link" onClick={() => updateCms("nav.links", [...(n.links??[]), "New Link"])} />
       <TextField label="CTA Button Text" value={n.cta} onChange={(v) => updateCms("nav.cta", v)} />
     </>
   );
@@ -159,10 +168,23 @@ function NavForm({ cmsData, updateCms }) {
 function HeroForm({ cmsData, updateCms }) {
   const [tab, setTab] = useState(0);
   const h = cmsData.hero;
-  const TABS = ["Slide 1", "Slide 2", "Slide 3", "Thumbs", "General"];
+  const slides = h.slides ?? [];
+  const logos = h.trustedBy?.logos ?? [];
+  const slideCount = slides.length;
+  const TABS = [...slides.map((_, i) => `Slide ${i + 1}`), "General"];
 
-  if (tab < 3) {
-    const s = h.slides[tab];
+  const addSlide = () => {
+    const next = [...slides, { left: "", right: "", cardImg: "", card: "New", h1: "Headline", sub: "Subtext" }];
+    updateCms("hero.slides", next);
+    setTab(next.length - 1);
+  };
+  const removeSlide = (i) => {
+    updateCms("hero.slides", slides.filter((_,j)=>j!==i));
+    setTab(Math.max(0, i - 1));
+  };
+
+  if (tab < slideCount) {
+    const s = slides[tab];
     const base = `hero.slides.${tab}`;
     return (
       <>
@@ -173,25 +195,13 @@ function HeroForm({ cmsData, updateCms }) {
         <TextField label="Card Label" value={s.card} onChange={(v) => updateCms(`${base}.card`, v)} />
         <TextArea label="Heading (\\n = line break)" value={s.h1} onChange={(v) => updateCms(`${base}.h1`, v)} rows={2} />
         <TextField label="Subtext" value={s.sub} onChange={(v) => updateCms(`${base}.sub`, v)} />
-      </>
-    );
-  }
-
-  if (tab === 3) {
-    return (
-      <>
-        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
-        {(h.thumbs ?? []).map((t, i) => (
-          <ImageField
-            key={i}
-            label={`Thumb ${i + 1}`}
-            value={t.src}
-            onChange={(v) => {
-              const next = h.thumbs.map((th, j) => j === i ? { ...th, src: v } : th);
-              updateCms("hero.thumbs", next);
-            }}
-          />
-        ))}
+        <Divider />
+        <AddBtn label="+ Add Slide" onClick={addSlide} />
+        {slides.length > 1 && (
+          <button onClick={() => removeSlide(tab)} style={{ width:"100%",padding:"8px 0",borderRadius:8,border:"1.5px solid rgba(194,65,29,.3)",background:"transparent",color:"rgba(194,65,29,.7)",fontSize:11,fontWeight:700,cursor:"pointer" }}>
+            Remove this slide
+          </button>
+        )}
       </>
     );
   }
@@ -202,34 +212,18 @@ function HeroForm({ cmsData, updateCms }) {
       <TextField label="CTA Button" value={h.cta} onChange={(v) => updateCms("hero.cta", v)} />
       <div style={{ marginBottom: 14 }}>
         <Label>Notifications (one per line)</Label>
-        <textarea
-          value={(h.notifications ?? []).join("\n")}
-          onChange={(e) => updateCms("hero.notifications", e.target.value.split("\n"))}
-          rows={5}
-          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
-        />
+        <textarea value={(h.notifications ?? []).join("\n")} onChange={(e) => updateCms("hero.notifications", e.target.value.split("\n"))} rows={5} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
       </div>
-      <Divider />
-      <Label>Collapse Overlay Text</Label>
-      <TextField label="Kicker" value={h.collapse?.kicker ?? ""} onChange={(v) => updateCms("hero.collapse.kicker", v)} />
-      <TextField label="Headline" value={h.collapse?.headline ?? ""} onChange={(v) => updateCms("hero.collapse.headline", v)} />
-      <TextField label="Headline Accent" value={h.collapse?.headlineAccent ?? ""} onChange={(v) => updateCms("hero.collapse.headlineAccent", v)} />
-      <TextField label="View Work Button" value={h.collapse?.viewWork ?? ""} onChange={(v) => updateCms("hero.collapse.viewWork", v)} />
       <Divider />
       <Label>Trusted By</Label>
       <TextField label="Label" value={h.trustedBy?.label ?? ""} onChange={(v) => updateCms("hero.trustedBy.label", v)} />
-      {(h.trustedBy?.logos ?? []).map((src, i) => (
-        <ImageField
-          key={i}
-          label={`Logo ${i + 1}`}
-          value={src}
-          onChange={(v) => {
-            const next = [...(h.trustedBy?.logos ?? [])];
-            next[i] = v;
-            updateCms("hero.trustedBy.logos", next);
-          }}
-        />
+      {logos.map((src, i) => (
+        <div key={i} style={{ position: "relative" }}>
+          <ImageField label={`Logo ${i + 1}`} value={src} onChange={(v) => { const next=[...logos]; next[i]=v; updateCms("hero.trustedBy.logos",next); }} />
+          <DelBtn onClick={() => updateCms("hero.trustedBy.logos", logos.filter((_,j)=>j!==i))} />
+        </div>
       ))}
+      <AddBtn label="+ Add Logo" onClick={() => updateCms("hero.trustedBy.logos", [...logos, ""])} />
     </>
   );
 }
@@ -237,7 +231,18 @@ function HeroForm({ cmsData, updateCms }) {
 function WhatWeDoForm({ cmsData, updateCms }) {
   const [tab, setTab] = useState(0);
   const w = cmsData.whatWeDo;
-  const TABS = ["General", "Service 1", "Service 2", "Service 3"];
+  const services = w.services ?? [];
+  const TABS = ["General", ...services.map((_, i) => `Service ${i + 1}`)];
+
+  const addService = () => {
+    const next = [...services, { tag: `0${services.length + 1}`, label: "New Service", tagline: "", wide: "", top: "" }];
+    updateCms("whatWeDo.services", next);
+    setTab(next.length);
+  };
+  const removeService = (i) => {
+    updateCms("whatWeDo.services", services.filter((_,j)=>j!==i));
+    setTab(Math.max(1, i));
+  };
 
   if (tab === 0) {
     return (
@@ -247,12 +252,14 @@ function WhatWeDoForm({ cmsData, updateCms }) {
         <TextArea label="Headline" value={w.headline} onChange={(v) => updateCms("whatWeDo.headline", v)} rows={2} />
         <TextArea label="Body" value={w.body} onChange={(v) => updateCms("whatWeDo.body", v)} rows={3} />
         <TextField label="CTA" value={w.cta} onChange={(v) => updateCms("whatWeDo.cta", v)} />
+        <Divider />
+        <AddBtn label="+ Add Service" onClick={addService} />
       </>
     );
   }
 
   const idx = tab - 1;
-  const s = w.services[idx];
+  const s = services[idx];
   const base = `whatWeDo.services.${idx}`;
   return (
     <>
@@ -261,6 +268,13 @@ function WhatWeDoForm({ cmsData, updateCms }) {
       <TextArea label="Tagline" value={s.tagline} onChange={(v) => updateCms(`${base}.tagline`, v)} rows={2} />
       <ImageField label="Wide Image" value={s.wide} onChange={(v) => updateCms(`${base}.wide`, v)} />
       <ImageField label="Top Image" value={s.top} onChange={(v) => updateCms(`${base}.top`, v)} />
+      <Divider />
+      <AddBtn label="+ Add Service" onClick={addService} />
+      {services.length > 1 && (
+        <button onClick={() => removeService(idx)} style={{ width:"100%",padding:"8px 0",borderRadius:8,border:"1.5px solid rgba(194,65,29,.3)",background:"transparent",color:"rgba(194,65,29,.7)",fontSize:11,fontWeight:700,cursor:"pointer" }}>
+          Remove this service
+        </button>
+      )}
     </>
   );
 }
@@ -272,13 +286,43 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   const stageImgs = s.stageImages ?? {};
   const TABS = ["General", ...cards.map((_, i) => `Card ${i + 1}`)];
 
+  const addCard = () => {
+    const newCard = {
+      id: `c${Date.now()}`,
+      title: "New Card",
+      sub: "Card subtitle.",
+      stageSet: "product",
+    };
+    const next = [...cards, newCard];
+    updateCms("servicesInMotion.cards", next);
+    setTab(next.length); // jump to new card tab
+  };
+
+  const removeCard = (idx) => {
+    const next = cards.filter((_, i) => i !== idx);
+    updateCms("servicesInMotion.cards", next);
+    setTab(Math.max(1, idx)); // stay near same position
+  };
+
   if (tab === 0) {
     return (
       <>
         <Tabs tabs={TABS} active={tab} onSelect={setTab} />
         <TextField label="Eyebrow" value={s.eyebrow} onChange={(v) => updateCms("servicesInMotion.eyebrow", v)} />
         <TextField label="Title" value={s.title} onChange={(v) => updateCms("servicesInMotion.title", v)} />
+        <TextField label="Title Accent Word" value={s.titleAccent ?? ""} onChange={(v) => updateCms("servicesInMotion.titleAccent", v)} />
         <TextField label="CTA Button" value={s.cta} onChange={(v) => updateCms("servicesInMotion.cta", v)} />
+        <Divider />
+        <button
+          onClick={addCard}
+          style={{
+            width: "100%", padding: "9px 0", borderRadius: 8, border: "1.5px dashed rgba(11,69,123,.3)",
+            background: "transparent", color: "rgba(11,69,123,.6)", fontSize: 11,
+            fontWeight: 700, cursor: "pointer",
+          }}
+        >
+          + Add Card
+        </button>
       </>
     );
   }
@@ -292,68 +336,95 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
       <Tabs tabs={TABS} active={tab} onSelect={setTab} />
       <TextField label="Title" value={card.title} onChange={(v) => updateCms(`${base}.title`, v)} />
       <TextArea label="Subtitle" value={card.sub} onChange={(v) => updateCms(`${base}.sub`, v)} rows={2} />
+      <div style={{ marginBottom: 14 }}>
+        <Label>Stage Set (image key)</Label>
+        <select
+          value={card.stageSet ?? "product"}
+          onChange={(e) => updateCms(`${base}.stageSet`, e.target.value)}
+          style={{ ...inputBase }}
+        >
+          {["product", "marketing", "brand", "strategy", "motion", "ux"].map((k) => (
+            <option key={k} value={k}>{k}</option>
+          ))}
+        </select>
+      </div>
       {imgKey && (
         <ImageField
-          label="Stage Image"
-          value={stageImgs[imgKey]}
+          label={`Stage Image (${imgKey})`}
+          value={stageImgs[imgKey] ?? ""}
           onChange={(v) => updateCms(`servicesInMotion.stageImages.${imgKey}`, v)}
         />
       )}
+      <Divider />
+      <button
+        onClick={() => removeCard(cIdx)}
+        style={{
+          width: "100%", padding: "9px 0", borderRadius: 8, border: "1.5px solid rgba(194,65,29,.3)",
+          background: "transparent", color: "rgba(194,65,29,.7)", fontSize: 11,
+          fontWeight: 700, cursor: "pointer",
+        }}
+      >
+        Remove this card
+      </button>
     </>
   );
 }
 
 function ExperienceForm({ cmsData, updateCms }) {
+  const [tab, setTab] = useState(0);
   const e = cmsData.experience;
+  const TABS = ["General", "Lists"];
+
+  if (tab === 0) {
+    return (
+      <>
+        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+        <TextField label="Eyebrow" value={e.eyebrow} onChange={(v) => updateCms("experience.eyebrow", v)} />
+        <Divider />
+        <Label>Product Name</Label>
+        <TextField label="Prefix (coloured)" value={e.productPrefix} onChange={(v) => updateCms("experience.productPrefix", v)} />
+        <div style={{ marginBottom: 14 }}>
+          <Label>Typed Words (one per line)</Label>
+          <textarea
+            value={(e.productTyped ?? []).join("\n")}
+            onChange={(ev) => updateCms("experience.productTyped", ev.target.value.split("\n"))}
+            rows={3}
+            style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+          />
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <Label>Sub-heading (one per line)</Label>
+          <textarea
+            value={(e.productTypedsub ?? []).join("\n")}
+            onChange={(ev) => updateCms("experience.productTypedsub", ev.target.value.split("\n"))}
+            rows={3}
+            style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
+          />
+        </div>
+        <TextField label="Dashboard URL (shown in UI)" value={e.dashboardUrl ?? ""} onChange={(v) => updateCms("experience.dashboardUrl", v)} />
+        <Divider />
+        <TextField label="CTA Button" value={e.cta} onChange={(v) => updateCms("experience.cta", v)} />
+        <TextField label="Badge Text" value={e.badge} onChange={(v) => updateCms("experience.badge", v)} />
+        <TextArea label="Outcome" value={e.outcome} onChange={(v) => updateCms("experience.outcome", v)} rows={2} />
+      </>
+    );
+  }
+
   return (
     <>
-      <TextField label="Eyebrow" value={e.eyebrow} onChange={(v) => updateCms("experience.eyebrow", v)} />
-      <Divider />
-      <Label>Product Name</Label>
-      <TextField label="Prefix (coloured)" value={e.productPrefix} onChange={(v) => updateCms("experience.productPrefix", v)} />
-      <div style={{ marginBottom: 14 }}>
-        <Label>Typed Words (one per line)</Label>
-        <textarea
-          value={(e.productTyped ?? []).join("\n")}
-          onChange={(ev) => updateCms("experience.productTyped", ev.target.value.split("\n"))}
-          rows={3}
-          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
-        />
-      </div>
-      <TextField label="Suffix" value={e.productSuffix} onChange={(v) => updateCms("experience.productSuffix", v)} />
-      <Divider />
-      <TextArea label="Intro Paragraph" value={e.intro} onChange={(v) => updateCms("experience.intro", v)} rows={4} />
-      <TextField label="CTA Button" value={e.cta} onChange={(v) => updateCms("experience.cta", v)} />
-      <TextField label="Badge Text" value={e.badge} onChange={(v) => updateCms("experience.badge", v)} />
-      <Divider />
+      <Tabs tabs={TABS} active={tab} onSelect={setTab} />
       <div style={{ marginBottom: 14 }}>
         <Label>The Need (one per line)</Label>
-        <textarea
-          value={(e.needs ?? []).join("\n")}
-          onChange={(ev) => updateCms("experience.needs", ev.target.value.split("\n"))}
-          rows={4}
-          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
-        />
+        <textarea value={(e.needs ?? []).join("\n")} onChange={(ev) => updateCms("experience.needs", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
       </div>
       <div style={{ marginBottom: 14 }}>
         <Label>Our Approach (one per line)</Label>
-        <textarea
-          value={(e.approach ?? []).join("\n")}
-          onChange={(ev) => updateCms("experience.approach", ev.target.value.split("\n"))}
-          rows={4}
-          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
-        />
+        <textarea value={(e.approach ?? []).join("\n")} onChange={(ev) => updateCms("experience.approach", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
       </div>
       <div style={{ marginBottom: 14 }}>
         <Label>The Solution (one per line)</Label>
-        <textarea
-          value={(e.solutions ?? []).join("\n")}
-          onChange={(ev) => updateCms("experience.solutions", ev.target.value.split("\n"))}
-          rows={4}
-          style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }}
-        />
+        <textarea value={(e.solutions ?? []).join("\n")} onChange={(ev) => updateCms("experience.solutions", ev.target.value.split("\n"))} rows={4} style={{ ...inputBase, resize: "vertical", fontFamily: "monospace", fontSize: 10 }} />
       </div>
-      <TextArea label="Outcome" value={e.outcome} onChange={(v) => updateCms("experience.outcome", v)} rows={2} />
     </>
   );
 }
@@ -372,12 +443,57 @@ function BeyondForm({ cmsData, updateCms }) {
 }
 
 function ContactForm({ cmsData, updateCms }) {
+  const [tab, setTab] = useState(0);
   const c = cmsData.contact;
+  const principles = c.principles ?? [];
+  const TABS = ["General", "Fields", "Principles"];
+
+  if (tab === 0) {
+    return (
+      <>
+        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+        <TextField label="Eyebrow" value={c.eyebrow ?? ""} onChange={(v) => updateCms("contact.eyebrow", v)} />
+        <TextArea label="Title (\\n = line break)" value={c.title} onChange={(v) => updateCms("contact.title", v)} rows={2} />
+        <TextArea label="Body" value={c.body} onChange={(v) => updateCms("contact.body", v)} rows={3} />
+        <TextArea label="Sub-body" value={c.subbody ?? ""} onChange={(v) => updateCms("contact.subbody", v)} rows={2} />
+        <TextField label="Submit Button" value={c.submit} onChange={(v) => updateCms("contact.submit", v)} />
+        <TextField label="Contact email" value={c.email ?? ""} onChange={(v) => updateCms("contact.email", v)} />
+        <Divider />
+        <Label>Google Form (prefill POST)</Label>
+        <TextArea label="Form URL" value={c.gform?.url ?? ""} onChange={(v) => updateCms("contact.gform.url", v)} rows={2} placeholder="https://docs.google.com/forms/d/e/…/formResponse" />
+        <TextField label="Entry — Name" value={c.gform?.entryName ?? ""} onChange={(v) => updateCms("contact.gform.entryName", v)} placeholder="entry.000000001" />
+        <TextField label="Entry — Email" value={c.gform?.entryEmail ?? ""} onChange={(v) => updateCms("contact.gform.entryEmail", v)} placeholder="entry.000000002" />
+        <TextField label="Entry — Message" value={c.gform?.entryMsg ?? ""} onChange={(v) => updateCms("contact.gform.entryMsg", v)} placeholder="entry.000000003" />
+      </>
+    );
+  }
+
+  if (tab === 1) {
+    return (
+      <>
+        <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+        <TextField label="Name placeholder" value={c.fields?.name ?? ""} onChange={(v) => updateCms("contact.fields.name", v)} />
+        <TextField label="Email placeholder" value={c.fields?.email ?? ""} onChange={(v) => updateCms("contact.fields.email", v)} />
+        <TextField label="Message placeholder" value={c.fields?.message ?? ""} onChange={(v) => updateCms("contact.fields.message", v)} />
+      </>
+    );
+  }
+
   return (
     <>
-      <TextArea label="Title (\\n = line break)" value={c.title} onChange={(v) => updateCms("contact.title", v)} rows={2} />
-      <TextArea label="Body" value={c.body} onChange={(v) => updateCms("contact.body", v)} rows={3} />
-      <TextField label="Submit Button" value={c.submit} onChange={(v) => updateCms("contact.submit", v)} />
+      <Tabs tabs={TABS} active={tab} onSelect={setTab} />
+      <Label>Principles (number · title · description)</Label>
+      {principles.map(([num, title, sub], i) => (
+        <div key={i} style={{ marginBottom: 14, padding: "10px 12px", background: "rgba(11,69,123,.05)", borderRadius: 8, position: "relative" }}>
+          <div style={{ display: "flex", gap: 6, marginBottom: 6, alignItems: "center" }}>
+            <input type="text" value={num} onChange={(e) => { const n=principles.map((p,j)=>j===i?[e.target.value,p[1],p[2]]:p); updateCms("contact.principles",n); }} placeholder="#" style={{ ...inputBase, flex:1 }} />
+            <input type="text" value={title} onChange={(e) => { const n=principles.map((p,j)=>j===i?[p[0],e.target.value,p[2]]:p); updateCms("contact.principles",n); }} placeholder="Title" style={{ ...inputBase, flex:3 }} />
+            <DelBtn onClick={() => updateCms("contact.principles", principles.filter((_,j)=>j!==i))} />
+          </div>
+          <textarea value={sub} onChange={(e) => { const n=principles.map((p,j)=>j===i?[p[0],p[1],e.target.value]:p); updateCms("contact.principles",n); }} rows={2} placeholder="Description" style={{ ...inputBase, resize:"vertical" }} />
+        </div>
+      ))}
+      <AddBtn label="+ Add Principle" onClick={() => updateCms("contact.principles", [...principles, [`0${principles.length+1}`, "New Principle", "Description here."]])} />
     </>
   );
 }
@@ -386,7 +502,18 @@ function FooterForm({ cmsData, updateCms }) {
   const [tab, setTab] = useState(0);
   const f = cmsData.footer;
   const cols = f.columns ?? [];
-  const TABS = ["General", ...cols.map((c) => c.title)];
+  const social = f.social ?? [];
+  const TABS = ["General", ...cols.map((c) => c.title || "Column")];
+
+  const addColumn = () => {
+    const next = [...cols, { title: "New Column", links: [] }];
+    updateCms("footer.columns", next);
+    setTab(next.length);
+  };
+  const removeColumn = (i) => {
+    updateCms("footer.columns", cols.filter((_,j)=>j!==i));
+    setTab(Math.max(1, i));
+  };
 
   if (tab === 0) {
     return (
@@ -394,6 +521,18 @@ function FooterForm({ cmsData, updateCms }) {
         <Tabs tabs={TABS} active={tab} onSelect={setTab} />
         <TextArea label="Description" value={f.description} onChange={(v) => updateCms("footer.description", v)} rows={3} />
         <TextField label="Copyright" value={f.copyright} onChange={(v) => updateCms("footer.copyright", v)} />
+        <Divider />
+        <Label>Social Links</Label>
+        {social.map((s, i) => (
+          <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8, alignItems: "center" }}>
+            <input type="text" value={s.label} onChange={(e) => { const n=[...social]; n[i]={...s,label:e.target.value}; updateCms("footer.social",n); }} placeholder="Label" style={{ ...inputBase, flex:2 }} />
+            <input type="text" value={s.href} onChange={(e) => { const n=[...social]; n[i]={...s,href:e.target.value}; updateCms("footer.social",n); }} placeholder="URL" style={{ ...inputBase, flex:3, fontFamily:"monospace", fontSize:10 }} />
+            <DelBtn onClick={() => updateCms("footer.social", social.filter((_,j)=>j!==i))} />
+          </div>
+        ))}
+        <AddBtn label="+ Add Social" onClick={() => updateCms("footer.social", [...social, { label: "Platform", href: "#", iconClass: "fa fa-link" }])} />
+        <Divider />
+        <AddBtn label="+ Add Column" onClick={addColumn} />
       </>
     );
   }
@@ -401,36 +540,28 @@ function FooterForm({ cmsData, updateCms }) {
   const cIdx = tab - 1;
   const col = cols[cIdx] ?? { title: "", links: [] };
   const base = `footer.columns.${cIdx}`;
+  const links = col.links ?? [];
   return (
     <>
       <Tabs tabs={TABS} active={tab} onSelect={setTab} />
       <TextField label="Column Title" value={col.title} onChange={(v) => updateCms(`${base}.title`, v)} />
       <Divider />
       <Label>Links (label + URL)</Label>
-      {(col.links ?? []).map(([label, href], i) => (
-        <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-          <input
-            type="text"
-            value={label}
-            onChange={(e) => {
-              const next = col.links.map((link, j) => j === i ? [e.target.value, link[1]] : link);
-              updateCms(`${base}.links`, next);
-            }}
-            placeholder="Label"
-            style={{ ...inputBase, flex: 2 }}
-          />
-          <input
-            type="text"
-            value={href}
-            onChange={(e) => {
-              const next = col.links.map((link, j) => j === i ? [link[0], e.target.value] : link);
-              updateCms(`${base}.links`, next);
-            }}
-            placeholder="URL"
-            style={{ ...inputBase, flex: 3, fontFamily: "monospace", fontSize: 10 }}
-          />
+      {links.map(([label, href], i) => (
+        <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8, alignItems: "center" }}>
+          <input type="text" value={label} onChange={(e) => { const next=links.map((lk,j)=>j===i?[e.target.value,lk[1]]:lk); updateCms(`${base}.links`,next); }} placeholder="Label" style={{ ...inputBase, flex:2 }} />
+          <input type="text" value={href} onChange={(e) => { const next=links.map((lk,j)=>j===i?[lk[0],e.target.value]:lk); updateCms(`${base}.links`,next); }} placeholder="URL" style={{ ...inputBase, flex:3, fontFamily:"monospace", fontSize:10 }} />
+          <DelBtn onClick={() => updateCms(`${base}.links`, links.filter((_,j)=>j!==i))} />
         </div>
       ))}
+      <AddBtn label="+ Add Link" onClick={() => updateCms(`${base}.links`, [...links, ["New Link", "#"]])} />
+      <Divider />
+      <AddBtn label="+ Add Column" onClick={addColumn} />
+      {cols.length > 1 && (
+        <button onClick={() => removeColumn(cIdx)} style={{ width:"100%",padding:"8px 0",borderRadius:8,border:"1.5px solid rgba(194,65,29,.3)",background:"transparent",color:"rgba(194,65,29,.7)",fontSize:11,fontWeight:700,cursor:"pointer" }}>
+          Remove this column
+        </button>
+      )}
     </>
   );
 }
