@@ -243,10 +243,10 @@ export const homeCms = {
     emailPrefix: "Or email us at",
     email: "contact@mindfullyarticulated.com",
     gform: {
-      url: "https://docs.google.com/forms/d/e/1FAIpQLSeMOLJqst5NIGDs8MhhvvkPV8g-WFUtchB5jcUVdObAsZc6yw/formResponse",
-      entryName:  "entry.1976205921",
-      entryEmail: "entry.547150526",
-      entryMsg:   "entry.998174518",
+      url: "https://docs.google.com/forms/d/e/1FAIpQLScXJImaoWDkZRZy6YGl4fhO2_8q-ufBWUO-cxwCXh8on8rW8w/formResponse",
+      entryName: "entry.1835461984",
+      entryEmail: "entry.459953531",
+      entryMsg: "entry.124908731",
     },
     ai: {
       name: "MAD AI",
@@ -325,7 +325,10 @@ export const homeCms = {
       {
         title: "Get In Touch",
         links: [
-          ["contact@mindfullyarticulated.com", "mailto:contact@mindfullyarticulated.com"],
+          [
+            "contact@mindfullyarticulated.com",
+            "mailto:contact@mindfullyarticulated.com",
+          ],
           ["Instagram", "#"],
           ["LinkedIn", "#"],
         ],
