@@ -1184,7 +1184,7 @@ function TruBillingDashboard({ stage }) {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 6.5, fontWeight: 700, color: "#1c1a18", lineHeight: 1 }}>Segun Adesola</div>
-            <div style={{ fontSize: 5, color: "#aaa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>segun@trubilling.com</div>
+            <div style={{ fontSize: 5, color: "#aaa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>hello@mindfullyarticulated.com</div>
           </div>
           <span style={{ fontSize: 8, color: "#bbb" }}>···</span>
         </div>
@@ -1281,16 +1281,131 @@ const ICON_MAP = {
   bell:          <><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></>,
 };
 
+// ─── Solution-specific coloured icons ────────────────────────────────────────
+const SOLUTION_ICONS = {
+  fileText: (
+    <svg width="28" height="30" viewBox="0 0 36 38" fill="none">
+      {/* Receipt body */}
+      <rect x="2" y="2" width="26" height="32" rx="3" fill="#f0fdf4" stroke="#86efac" strokeWidth="1.5"/>
+      {/* Header band */}
+      <rect x="2" y="2" width="26" height="8" rx="3" fill="#dcfce7"/>
+      <rect x="2" y="7" width="26" height="3" fill="#dcfce7"/>
+      {/* Category dots + lines */}
+      <circle cx="7" cy="17" r="2.5" fill="#4ade80"/>
+      <line x1="12" y1="17" x2="25" y2="17" stroke="#d1fae5" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="7" cy="23" r="2.5" fill="#f59e0b"/>
+      <line x1="12" y1="23" x2="22" y2="23" stroke="#fef3c7" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="7" cy="29" r="2.5" fill="#60a5fa"/>
+      <line x1="12" y1="29" x2="24" y2="29" stroke="#dbeafe" strokeWidth="2" strokeLinecap="round"/>
+      {/* Green check badge */}
+      <circle cx="29" cy="6" r="6" fill="#22c55e"/>
+      <polyline points="26,6 28,8 32,4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  ),
+  clock: (
+    <svg width="30" height="28" viewBox="0 0 38 34" fill="none">
+      {/* Quote doc */}
+      <rect x="1" y="4" width="14" height="18" rx="2.5" fill="#eff6ff" stroke="#93c5fd" strokeWidth="1.3"/>
+      <line x1="4" y1="10" x2="12" y2="10" stroke="#bfdbfe" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="4" y1="13.5" x2="11" y2="13.5" stroke="#bfdbfe" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="4" y1="17" x2="9" y2="17" stroke="#bfdbfe" strokeWidth="1.5" strokeLinecap="round"/>
+      <text x="8" y="9" textAnchor="middle" fontSize="4" fontWeight="700" fill="#3b82f6">Q</text>
+      {/* Arrow */}
+      <path d="M16 13 L22 13" stroke="#C2411D" strokeWidth="1.8" strokeLinecap="round"/>
+      <polyline points="20,10 23,13 20,16" stroke="#C2411D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      {/* Invoice doc */}
+      <rect x="23" y="4" width="14" height="18" rx="2.5" fill="#fff7ed" stroke="#fdba74" strokeWidth="1.3"/>
+      <line x1="26" y1="10" x2="34" y2="10" stroke="#fed7aa" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="26" y1="13.5" x2="33" y2="13.5" stroke="#fed7aa" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="26" y1="17" x2="31" y2="17" stroke="#fed7aa" strokeWidth="1.5" strokeLinecap="round"/>
+      <text x="30" y="9" textAnchor="middle" fontSize="3.5" fontWeight="700" fill="#f97316">INV</text>
+      {/* Check bottom */}
+      <circle cx="19" cy="28" r="5" fill="#22c55e"/>
+      <polyline points="16.5,28 18.5,30 22,25.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  ),
+  database: (
+    <svg width="30" height="30" viewBox="0 0 38 38" fill="none">
+      {/* 2×2 product tiles */}
+      {/* TL */}
+      <rect x="1" y="1" width="16" height="16" rx="3" fill="#f5f3ff" stroke="#c4b5fd" strokeWidth="1.3"/>
+      <rect x="3" y="3" width="12" height="7" rx="1.5" fill="#ddd6fe"/>
+      <line x1="3" y1="12" x2="13" y2="12" stroke="#e9d5ff" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="3" y1="15" x2="9" y2="15" stroke="#e9d5ff" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* TR */}
+      <rect x="21" y="1" width="16" height="16" rx="3" fill="#fff7ed" stroke="#fdba74" strokeWidth="1.3"/>
+      <rect x="23" y="3" width="12" height="7" rx="1.5" fill="#fed7aa"/>
+      <line x1="23" y1="12" x2="33" y2="12" stroke="#fde68a" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="23" y1="15" x2="29" y2="15" stroke="#fde68a" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* BL */}
+      <rect x="1" y="21" width="16" height="16" rx="3" fill="#f0fdf4" stroke="#86efac" strokeWidth="1.3"/>
+      <rect x="3" y="23" width="12" height="7" rx="1.5" fill="#bbf7d0"/>
+      <line x1="3" y1="32" x2="13" y2="32" stroke="#d1fae5" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="3" y1="35" x2="9" y2="35" stroke="#d1fae5" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* BR */}
+      <rect x="21" y="21" width="16" height="16" rx="3" fill="#eff6ff" stroke="#93c5fd" strokeWidth="1.3"/>
+      <rect x="23" y="23" width="12" height="7" rx="1.5" fill="#bfdbfe"/>
+      <line x1="23" y1="32" x2="33" y2="32" stroke="#dbeafe" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="23" y1="35" x2="29" y2="35" stroke="#dbeafe" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Plus in center */}
+      <circle cx="19" cy="19" r="5" fill="#7c3aed"/>
+      <line x1="19" y1="16.5" x2="19" y2="21.5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="16.5" y1="19" x2="21.5" y2="19" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+  barChart: (
+    <svg width="30" height="28" viewBox="0 0 38 34" fill="none">
+      {/* Baseline */}
+      <line x1="3" y1="29" x2="35" y2="29" stroke="#e5e7eb" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Bars — rising */}
+      <rect x="4" y="22" width="5" height="7" rx="1.5" fill="#bbf7d0"/>
+      <rect x="11" y="16" width="5" height="13" rx="1.5" fill="#4ade80"/>
+      <rect x="18" y="11" width="5" height="18" rx="1.5" fill="#22c55e"/>
+      <rect x="25" y="5" width="5" height="24" rx="1.5" fill="#16a34a"/>
+      {/* Trend line */}
+      <path d="M6.5 21 C13 15 19 10 27.5 4" stroke="#15803d" strokeWidth="1.3" strokeLinecap="round" fill="none" strokeDasharray="2 1.5"/>
+      {/* Live pulse dot */}
+      <circle cx="32" cy="4" r="4" fill="#fef2f2"/>
+      <circle cx="32" cy="4" r="2.5" fill="#ef4444"/>
+    </svg>
+  ),
+};
+
 // ─── Icon row (icon + text) — Solution panel ─────────────────────────────────
 function IconRow({ iconKey, text, isActive }) {
-  const svgEl = ICON_MAP[iconKey] ?? ICON_MAP.alertCircle;
+  const solIcon = SOLUTION_ICONS[iconKey];
+  const fallbackEl = ICON_MAP[iconKey] ?? ICON_MAP.alertCircle;
   return (
-    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: isActive ? 1 : 0.78 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: "hidden" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-        <div style={{ width: 24, height: 24, borderRadius: 7, flexShrink: 0, background: isActive ? "rgba(242,101,34,.13)" : "rgba(0,0,0,.05)", border: `1px solid ${isActive ? "rgba(242,101,34,.32)" : "rgba(0,0,0,.1)"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background .28s, border-color .28s", boxShadow: isActive ? "0 2px 8px rgba(242,101,34,.15)" : "none" }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={isActive ? "#F26522" : "#888"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke .28s" }}>{svgEl}</svg>
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: isActive ? 1 : 0.72 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      style={{ overflow: "hidden" }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+          background: isActive ? "#fff" : "#f5f5f2",
+          border: `1px solid ${isActive ? "rgba(242,101,34,.28)" : "rgba(0,0,0,.08)"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background .28s, border-color .28s, box-shadow .28s",
+          boxShadow: isActive ? "0 3px 12px rgba(242,101,34,.14)" : "none",
+        }}>
+          {solIcon
+            ? <div style={{ opacity: isActive ? 1 : 0.5, transition: "opacity .28s" }}>{solIcon}</div>
+            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isActive ? "#F26522" : "#aaa"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke .28s" }}>{fallbackEl}</svg>
+          }
         </div>
-        <span style={{ fontSize: 9.5, lineHeight: 1.4, fontWeight: isActive ? 700 : 500, color: isActive ? "#181817" : "#666", transition: "color .2s" }}>{text}</span>
+        <div style={{ flex: 1 }}>
+          <span style={{ fontSize: 9.5, lineHeight: 1.4, fontWeight: isActive ? 700 : 500, color: isActive ? "#181817" : "#777", transition: "color .2s", display: "block" }}>{text}</span>
+          {isActive && (
+            <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 2 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#22c55e" }} />
+              <span style={{ fontSize: 7, color: "#22c55e", fontWeight: 600 }}>Active</span>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
@@ -1308,52 +1423,100 @@ function PanelSectionHead({ title, icon }) {
 }
 
 // ─── Inline SVG icons for the Need icon grid ─────────────────────────────────
-function XlsIcon() {
+function ScatteredDocsIcon() {
   return (
-    <svg width="28" height="32" viewBox="0 0 40 46" fill="none">
-      <rect x="2" y="2" width="28" height="36" rx="3" fill="#fff" stroke="#c0d0e0" strokeWidth="2" />
-      <rect x="2" y="2" width="16" height="12" rx="3" fill="#e8f0f8" stroke="#c0d0e0" strokeWidth="2" />
-      <rect x="4" y="16" width="24" height="3" rx="1" fill="#c0d0e0" />
-      <rect x="4" y="22" width="24" height="3" rx="1" fill="#c0d0e0" />
-      <rect x="4" y="28" width="16" height="3" rx="1" fill="#c0d0e0" />
-      <rect x="0" y="0" width="16" height="14" rx="3" fill="#22a04a" />
-      <text x="8" y="11" textAnchor="middle" fontSize="8" fontWeight="900" fill="#fff">XLS</text>
+    <svg width="34" height="34" viewBox="0 0 44 44" fill="none">
+      {/* Back doc — blue, rotated */}
+      <g transform="rotate(-11 22 22)">
+        <rect x="8" y="5" width="20" height="26" rx="3" fill="#bfdbfe" stroke="#93c5fd" strokeWidth="1.5"/>
+        <line x1="12" y1="13" x2="25" y2="13" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round"/>
+        <line x1="12" y1="17" x2="22" y2="17" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round"/>
+      </g>
+      {/* Mid doc — amber, rotated other way */}
+      <g transform="rotate(9 22 22)">
+        <rect x="10" y="8" width="20" height="26" rx="3" fill="#fde68a" stroke="#fbbf24" strokeWidth="1.5"/>
+        <line x1="14" y1="16" x2="27" y2="16" stroke="#fbbf24" strokeWidth="1.2" strokeLinecap="round"/>
+        <line x1="14" y1="20" x2="24" y2="20" stroke="#fbbf24" strokeWidth="1.2" strokeLinecap="round"/>
+      </g>
+      {/* Front doc — white */}
+      <rect x="10" y="10" width="22" height="28" rx="3" fill="#fff" stroke="#e5e7eb" strokeWidth="1.5"/>
+      <rect x="10" y="10" width="22" height="7" rx="3" fill="#f9fafb"/>
+      <line x1="14" y1="23" x2="28" y2="23" stroke="#e5e7eb" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="14" y1="27" x2="26" y2="27" stroke="#e5e7eb" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="14" y1="31" x2="23" y2="31" stroke="#e5e7eb" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   );
 }
-function ChatIcon() {
+
+function UnpaidBillIcon() {
   return (
-    <svg width="30" height="28" viewBox="0 0 38 34" fill="none">
-      <rect x="1" y="1" width="30" height="22" rx="5" fill="#fff" stroke="#333" strokeWidth="2.5" />
-      <line x1="7" y1="8" x2="25" y2="8" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="7" y1="14" x2="20" y2="14" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M6 23 L4 31 L13 26" fill="#fff" stroke="#333" strokeWidth="2" strokeLinejoin="round" />
+    <svg width="34" height="32" viewBox="0 0 44 42" fill="none">
+      {/* Receipt body */}
+      <rect x="3" y="4" width="28" height="34" rx="3" fill="#fff" stroke="#e5e7eb" strokeWidth="1.5"/>
+      {/* Receipt header */}
+      <rect x="3" y="4" width="28" height="9" rx="3" fill="#fef3f2"/>
+      <rect x="3" y="10" width="28" height="3" fill="#fef3f2"/>
+      {/* Dollar lines in header */}
+      <line x1="9" y1="9" x2="27" y2="9" stroke="#fca5a5" strokeWidth="1.2" strokeLinecap="round"/>
+      {/* Content lines */}
+      <line x1="8" y1="19" x2="27" y2="19" stroke="#f0f0f0" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="8" y1="24" x2="23" y2="24" stroke="#f0f0f0" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="8" y1="29" x2="25" y2="29" stroke="#f0f0f0" strokeWidth="2" strokeLinecap="round"/>
+      {/* Overdue amount badge */}
+      <rect x="14" y="33" width="16" height="5" rx="1" fill="#fef3f2"/>
+      <line x1="15" y1="35.5" x2="29" y2="35.5" stroke="#fca5a5" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Red X badge — top right */}
+      <circle cx="35" cy="8" r="7" fill="#fee2e2" stroke="#fca5a5" strokeWidth="1"/>
+      <line x1="32" y1="5" x2="38" y2="11" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="38" y1="5" x2="32" y2="11" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
 }
-function LedgerIcon() {
+
+function NoVisibilityIcon() {
   return (
-    <svg width="30" height="26" viewBox="0 0 38 32" fill="none">
-      <path d="M19 4 C14 2 6 2 2 4 L2 28 C6 26 14 26 19 28 C24 26 32 26 36 28 L36 4 C32 2 24 2 19 4Z" fill="#fff" stroke="#333" strokeWidth="2.2" />
-      <line x1="19" y1="4" x2="19" y2="28" stroke="#333" strokeWidth="2" strokeLinecap="round" />
-      {[10, 15, 20].map((y) => (
-        <g key={y}>
-          <line x1="7" y1={y} x2="16" y2={y} stroke="#bbb" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="22" y1={y} x2="31" y2={y} stroke="#bbb" strokeWidth="1.8" strokeLinecap="round" />
-        </g>
-      ))}
+    <svg width="34" height="30" viewBox="0 0 44 38" fill="none">
+      {/* Baseline */}
+      <line x1="4" y1="32" x2="40" y2="32" stroke="#e5e7eb" strokeWidth="2" strokeLinecap="round"/>
+      {/* Bar 1 */}
+      <rect x="5" y="20" width="7" height="12" rx="2" fill="#bfdbfe"/>
+      {/* Bar 2 — hidden/dashed */}
+      <rect x="14" y="10" width="7" height="22" rx="2" fill="#fef9f8" stroke="#C2411D" strokeWidth="1.2" strokeDasharray="2.5 1.8"/>
+      <ellipse cx="17.5" cy="21" rx="4.5" ry="2.8" stroke="#C2411D" strokeWidth="1.2" fill="none"/>
+      <line x1="14.5" y1="18" x2="20.5" y2="24" stroke="#C2411D" strokeWidth="1.2" strokeLinecap="round"/>
+      {/* Bar 3 */}
+      <rect x="23" y="16" width="7" height="16" rx="2" fill="#bfdbfe"/>
+      {/* Bar 4 */}
+      <rect x="32" y="8" width="7" height="24" rx="2" fill="#93c5fd"/>
     </svg>
   );
 }
-function ClipboardIcon() {
+
+function FragmentedAppsIcon() {
   return (
-    <svg width="26" height="30" viewBox="0 0 34 38" fill="none">
-      <rect x="3" y="5" width="28" height="30" rx="3" fill="#fff" stroke="#333" strokeWidth="2.2" />
-      <rect x="11" y="1" width="12" height="7" rx="2" fill="#fff" stroke="#333" strokeWidth="2" />
-      <line x1="9" y1="15" x2="25" y2="15" stroke="#bbb" strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="9" y1="21" x2="25" y2="21" stroke="#bbb" strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="9" y1="27" x2="19" y2="27" stroke="#bbb" strokeWidth="1.8" strokeLinecap="round" />
-      <rect x="20" y="22" width="8" height="8" rx="2" fill="#e8e8e4" stroke="#bbb" strokeWidth="1.5" />
+    <svg width="34" height="34" viewBox="0 0 44 44" fill="none">
+      {/* Tile TL — green */}
+      <rect x="2" y="2" width="18" height="18" rx="3" fill="#d1fae5" stroke="#6ee7b7" strokeWidth="1.5"/>
+      <circle cx="11" cy="11" r="4" fill="#34d399" opacity="0.6"/>
+      <line x1="7" y1="11" x2="15" y2="11" stroke="#059669" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Tile TR — blue */}
+      <rect x="24" y="2" width="18" height="18" rx="3" fill="#dbeafe" stroke="#93c5fd" strokeWidth="1.5"/>
+      <rect x="27" y="7" width="12" height="2" rx="1" fill="#93c5fd"/>
+      <rect x="27" y="11" width="9" height="2" rx="1" fill="#93c5fd"/>
+      <rect x="27" y="15" width="10" height="2" rx="1" fill="#93c5fd"/>
+      {/* Tile BL — amber */}
+      <rect x="2" y="24" width="18" height="18" rx="3" fill="#fef3c7" stroke="#fcd34d" strokeWidth="1.5"/>
+      <rect x="5" y="27" width="12" height="3" rx="1.5" fill="#fcd34d"/>
+      <rect x="5" y="32" width="8" height="3" rx="1.5" fill="#fcd34d"/>
+      {/* Tile BR — red (broken) */}
+      <rect x="24" y="24" width="18" height="18" rx="3" fill="#fee2e2" stroke="#fca5a5" strokeWidth="1.5"/>
+      <line x1="28" y1="28" x2="38" y2="38" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="38" y1="28" x2="28" y2="38" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+      {/* Broken connection lines between tiles */}
+      <line x1="20" y1="11" x2="22" y2="11" stroke="#C2411D" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+      <line x1="11" y1="22" x2="11" y2="24" stroke="#C2411D" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+      <line x1="33" y1="20" x2="33" y2="22" stroke="#C2411D" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
+      <line x1="22" y1="33" x2="24" y2="33" stroke="#C2411D" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="1.5 1.5"/>
     </svg>
   );
 }
@@ -1361,15 +1524,15 @@ function ClipboardIcon() {
 // ─── LEFT panel: Need (problem text + icon grid) + Approach (ProjectCard) ─────
 function NeedApproachPanel() {
   const needIcons = [
-    { Icon: XlsIcon, label: "Scattered records" },
-    { Icon: ChatIcon, label: "Untracked payments" },
-    { Icon: LedgerIcon, label: "Missed inventory" },
-    { Icon: ClipboardIcon, label: "Manual processes" },
+    { Icon: ScatteredDocsIcon, label: "Scattered records" },
+    { Icon: UnpaidBillIcon, label: "Unpaid invoices" },
+    { Icon: NoVisibilityIcon, label: "No visibility" },
+    { Icon: FragmentedAppsIcon, label: "Fragmented tools" },
   ];
 
   return (
     <div
-      className="rounded-xl md:rounded-[14px]"
+      className="rounded-xl md:rounded-[14px] w-full md:w-[190px]"
       style={{
         padding: "8px 11px",
         background: "rgba(255,255,255,0.96)",
@@ -1377,9 +1540,15 @@ function NeedApproachPanel() {
         border: "0.5px solid rgba(255,255,255,0.9)",
         boxShadow: "0 8px 32px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9)",
         animation: "floatUp 5s ease-in-out infinite",
-        width: 190,
       }}
     >
+      <style>{`
+        @keyframes needIconIn{from{opacity:0;transform:scale(0.7) translateY(6px)}to{opacity:1;transform:none}}
+        @keyframes progressFill{from{width:0%}to{width:50%}}
+        @keyframes cardRowIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+        @keyframes reminderPop{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:none}}
+      `}</style>
+
       {/* ── NEED section ── */}
       <PanelSectionHead
         title="Need"
@@ -1399,10 +1568,11 @@ function NeedApproachPanel() {
 
       {/* 2×2 icon grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 14 }}>
-        {needIcons.map(({ Icon, label }) => (
+        {needIcons.map(({ Icon, label }, i) => (
           <motion.div
             key={label}
-            whileHover={{ scale: 1.04 }}
+            whileHover={{ scale: 1.06, y: -2 }}
+            transition={{ type: "spring", stiffness: 400, damping: 18 }}
             style={{
               background: "#f5f5f2",
               borderRadius: 10,
@@ -1412,6 +1582,7 @@ function NeedApproachPanel() {
               justifyContent: "center",
               padding: "10px 6px",
               cursor: "default",
+              animation: `needIconIn 0.42s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.09}s both`,
             }}
           >
             <Icon />
@@ -1432,34 +1603,63 @@ function NeedApproachPanel() {
         }
       />
 
-      {/* ProjectCard embedded */}
-      <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid #eee", background: "#fafaf8" }}>
-        {/* Mini card — inline rather than full ProjectCardPage to avoid height issues */}
-        <div style={{ padding: "10px 10px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-          <div style={{ width: 26, height: 26, borderRadius: "50%", background: TB, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 3px 8px ${TB}44` }}>
-            <span style={{ fontSize: 8, fontWeight: 900, color: "#fff", letterSpacing: -0.3 }}>tru</span>
+      {/* ProjectCard */}
+      <div style={{ borderRadius: 11, overflow: "hidden", border: "1px solid rgba(0,0,0,.08)", background: "#fff", boxShadow: "0 2px 12px rgba(0,0,0,.06)" }}>
+        {/* Header band */}
+        <div style={{ background: `linear-gradient(135deg, ${TB} 0%, #e85d20 100%)`, padding: "9px 10px 8px", display: "flex", alignItems: "center", gap: 7 }}>
+          <div style={{ width: 24, height: 24, borderRadius: "50%", background: "rgba(255,255,255,.18)", border: "1.5px solid rgba(255,255,255,.35)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ fontSize: 7, fontWeight: 900, color: "#fff", letterSpacing: -0.3 }}>tru</span>
           </div>
-          <div style={{ fontSize: 9.5, fontWeight: 700, color: "#1c1a18", textAlign: "center", lineHeight: 1.3 }}>Website Build Project</div>
-          <div style={{ width: "100%" }}>
-            <div style={{ fontSize: 7, color: "#aaa", marginBottom: 2 }}>Payment type</div>
-            <div style={{ border: "0.5px solid #ddd", borderRadius: 5, padding: "2px 5px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff" }}>
-              <span style={{ fontSize: 8, color: "#333" }}>Installment</span>
-              <svg width="5" height="5" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 8.5, fontWeight: 800, color: "#fff", lineHeight: 1.2 }}>Website Build Project</div>
+            <div style={{ fontSize: 6, color: "rgba(255,255,255,.7)", marginTop: 1 }}>Design + Development</div>
+          </div>
+          <div style={{ background: "rgba(255,255,255,.18)", borderRadius: 4, padding: "2px 5px" }}>
+            <span style={{ fontSize: 6, fontWeight: 700, color: "#fff" }}>Active</span>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "8px 10px 9px", display: "flex", flexDirection: "column", gap: 7 }}>
+          {/* Amount + progress */}
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4, gap: 4 }}>
+              <span style={{ fontSize: 6.5, color: "#aaa", fontWeight: 500, flexShrink: 0 }}>Total value</span>
+              <span style={{ fontSize: "clamp(8px, 2.8vw, 10.5px)", fontWeight: 900, color: "#1c1a18", letterSpacing: -0.3, whiteSpace: "nowrap" }}>₦320,000</span>
+            </div>
+            {/* Progress bar */}
+            <div style={{ height: 3, borderRadius: 99, background: "#f0f0ee", overflow: "hidden" }}>
+              <div style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg, ${TB}, #f59e0b)`, animation: "progressFill 1.2s cubic-bezier(0.22,1,0.36,1) 0.5s both" }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2.5 }}>
+              <span style={{ fontSize: 5.5, color: "#aaa" }}>50% collected</span>
+              <span style={{ fontSize: 5.5, color: "#aaa", whiteSpace: "nowrap" }}>₦160,000 remaining</span>
             </div>
           </div>
-          <div style={{ width: "100%", borderTop: "0.5px solid #eee", paddingTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
-            {[{ label: "First Payment", badge: "Received", bg: "#22c55e" }, { label: "Second Payment", badge: "Due", bg: "#ef4444" }].map(({ label, badge, bg }) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 7, color: "#333" }}>{label}</span>
-                <span style={{ fontSize: 6.5, fontWeight: 700, color: "#fff", background: bg, borderRadius: 3, padding: "1px 4px", whiteSpace: "nowrap" }}>{badge}</span>
+
+          {/* Payment rows */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, borderTop: "0.5px solid #f0f0ee", paddingTop: 6 }}>
+            {[
+              { label: "First Payment", amount: "₦160,000", badge: "Received", dot: "#22c55e", pillBg: "#f0fdf4", pillColor: "#15803d" },
+              { label: "Second Payment", amount: "₦160,000", badge: "Due 30 Jan", dot: "#ef4444", pillBg: "#fef2f2", pillColor: "#b91c1c" },
+            ].map(({ label, amount, badge, dot, pillBg, pillColor }, i) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", animation: `cardRowIn 0.35s ease ${0.65 + i * 0.12}s both` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, flex: 1 }}>
+                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: dot, flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 6.5, fontWeight: 600, color: "#333", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</div>
+                    <div style={{ fontSize: 6, color: "#aaa" }}>{amount}</div>
+                  </div>
+                </div>
+                <span style={{ fontSize: 5.5, fontWeight: 700, color: pillColor, background: pillBg, borderRadius: 20, padding: "2px 5px", whiteSpace: "nowrap", border: `0.5px solid ${dot}44`, flexShrink: 0 }}>{badge}</span>
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, background: "#fff5ef", border: "0.5px solid rgba(194,65,29,.3)", borderRadius: 20, padding: "2px 8px", color: TB, fontSize: 6, fontWeight: 600 }}>
-            <div style={{ width: 9, height: 9, borderRadius: "50%", background: TB, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <svg width="5" height="5" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-            </div>
-            Reminder Sent
+
+          {/* Reminder tag */}
+          <div style={{ display: "flex", alignItems: "center", gap: 3, background: "#fff8f5", border: `0.5px solid rgba(194,65,29,.22)`, borderRadius: 20, padding: "3px 8px", alignSelf: "flex-start", animation: "reminderPop 0.38s cubic-bezier(0.22,1,0.36,1) 0.95s both" }}>
+            <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke={TB} strokeWidth="2.5" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span style={{ fontSize: 6, color: TB, fontWeight: 700 }}>Reminder sent</span>
           </div>
         </div>
       </div>
@@ -1471,7 +1671,7 @@ function NeedApproachPanel() {
 function SolutionPanel({ activeSolutionIdx, solutionBullets, outcome }) {
   return (
     <div
-      className="rounded-xl md:rounded-[14px]"
+      className="rounded-xl md:rounded-[14px] w-full md:w-[190px]"
       style={{
         padding: "12px 11px",
         background: "rgba(255,255,255,0.96)",

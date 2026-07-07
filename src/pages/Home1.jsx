@@ -7,10 +7,6 @@ import Experience from "../components/home/Experience";
 import Beyond from "../components/home/Beyond";
 import Contact from "../components/home/Contact";
 import Footer from "../components/home/Footer";
-import { CmsProvider } from "../context/CmsContext";
-import { ThemeProvider } from "../context/ThemeContext";
-import AdminBar from "../components/cms/AdminBar";
-import CmsPanel from "../components/cms/CmsPanel";
 
 function injectCSS() {
   if (typeof document === "undefined" || document.getElementById("_mad"))
@@ -60,36 +56,30 @@ export default function MADLandingPage() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <CmsProvider>
-        <main
-          data-page="home"
-          style={{
-            background:
-              "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
-            minHeight: "100vh",
-          }}
-        >
-          <Nav />
-          <Hero />
-          {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
-          <div style={{ position: "relative", scrollSnapAlign: "start", scrollSnapStop: "always" }}>
-            <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-              <WhatWeDo />
-            </div>
-            <div style={{ position: "relative", zIndex: 2 }}>
-              <Experience />
-            </div>
-          </div>
-          <ServicesInMotion />
-          <Beyond />
-          <Contact />
-          {/* Footer outside sticky context — renders cleanly on its own */}
-          <Footer />
-        </main>
-        <AdminBar />
-        <CmsPanel />
-      </CmsProvider>
-    </ThemeProvider>
+    <main
+      data-page="home"
+      style={{
+        background:
+          "linear-gradient(180deg, #e0eef8 0%, #d4e8f4 12%, #dceef8 25%, #e6f2fb 40%, #eef7fc 58%, #f4fafb 75%, #f8fbfc 100%)",
+        minHeight: "100vh",
+      }}
+    >
+      <Nav />
+      <Hero />
+      {/* Containing block — WhatWeDo sticky range ends when Experience ends */}
+      <div id="what-we-do-block" style={{ position: "relative", scrollSnapAlign: "start", scrollSnapStop: "always" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
+          <WhatWeDo />
+        </div>
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <Experience />
+        </div>
+      </div>
+      <ServicesInMotion />
+      <Beyond />
+      <Contact />
+      {/* Footer outside sticky context — renders cleanly on its own */}
+      <Footer />
+    </main>
   );
 }

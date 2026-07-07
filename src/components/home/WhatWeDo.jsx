@@ -259,7 +259,7 @@ export default function WhatWeDo() {
                     <div className="flex-1">
                       {i === cur ? (
                         <ProgressBar
-                          duration={5500}
+                          duration={content.slideDuration ?? 5500}
                           running={!paused}
                           onComplete={next}
                           key={`pb-${cur}`}

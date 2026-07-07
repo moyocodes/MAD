@@ -31,7 +31,7 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    const DUR = 3000;
+    const DUR = hero.slideDuration ?? 6000;
     const tick = (ts) => {
       if (!lastTs.current) lastTs.current = ts;
       const dt = ts - lastTs.current;
@@ -91,7 +91,7 @@ export default function Hero() {
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{
                   opacity: i === slide ? 1 : 0,
-                  transition: "opacity .05s",
+                  transition: "opacity .6s",
                 }}
               />
             ))}
@@ -159,7 +159,7 @@ export default function Hero() {
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{
                   opacity: i === slide ? 1 : 0,
-                  transition: "opacity .05s",
+                  transition: "opacity .6s",
                 }}
               />
             ))}

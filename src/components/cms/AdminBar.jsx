@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import { useCms } from "@/context/CmsContext";
 
 const SECTION_MAP = [
@@ -34,6 +35,8 @@ const PIN = "1234";
 export default function AdminBar() {
   const { isEditMode, setIsEditMode, resetCms, openPanel } = useCms();
   const activeSection = useActiveSection();
+  const { pathname } = useLocation();
+  const isGuard = pathname === "/guard";
   const [showPin, setShowPin] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
@@ -136,7 +139,7 @@ export default function AdminBar() {
                 🔒 Lock
               </button>
             </motion.div>
-          ) : (
+          ) : isGuard ? (
             <motion.button
               key="locked"
               initial={{ opacity: 0, scale: 0.88, y: 10 }}
@@ -156,7 +159,7 @@ export default function AdminBar() {
             >
               🔐 Admin
             </motion.button>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
 

@@ -2372,7 +2372,7 @@ function TruBillingDashboard({ stage }) {
                 whiteSpace: "nowrap",
               }}
             >
-              segun@trubilling.com
+              hello@mindfullyarticulated.com
             </div>
           </div>
           <span style={{ fontSize: 8, color: "#bbb" }}>···</span>

@@ -15,7 +15,12 @@ export default function Nav() {
     const fn = () => {
       const y = window.scrollY;
       setSolid(y > 20);
-     
+
+      const whatWeDoBlock = document.getElementById("what-we-do-block");
+      if (whatWeDoBlock) {
+        const rect = whatWeDoBlock.getBoundingClientRect();
+        setHidden(rect.top <= 0 && rect.bottom > 0);
+      }
     };
     fn();
     window.addEventListener("scroll", fn, { passive: true });
@@ -254,7 +259,11 @@ export default function Nav() {
             key="pill"
             className="mad-nav-pill"
             initial={{ scaleY: 0.45, opacity: 0, y: -18 }}
-            animate={{ scaleY: 1, opacity: 1, y: 0 }}
+            animate={
+              hidden
+                ? { scaleY: 0.45, opacity: 0, y: -18 }
+                : { scaleY: 1, opacity: 1, y: 0 }
+            }
             exit={{ scaleY: 0.45, opacity: 0, y: -18 }}
             transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
             style={{
@@ -281,6 +290,7 @@ export default function Nav() {
               boxShadow:
                 "0 4px 32px rgba(11,69,123,.13), 0 1px 4px rgba(0,0,0,.06)",
               transformOrigin: "top center",
+              pointerEvents: hidden ? "none" : "auto",
             }}
           >
             {inner()}

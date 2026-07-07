@@ -283,7 +283,6 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   const [tab, setTab] = useState(0);
   const s = cmsData.servicesInMotion;
   const cards = s.cards ?? [];
-  const stageImgs = s.stageImages ?? {};
   const TABS = ["General", ...cards.map((_, i) => `Card ${i + 1}`)];
 
   const addCard = () => {
@@ -291,7 +290,9 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
       id: `c${Date.now()}`,
       title: "New Card",
       sub: "Card subtitle.",
-      stageSet: "product",
+      request: "",
+      wide: "",
+      top: "",
     };
     const next = [...cards, newCard];
     updateCms("servicesInMotion.cards", next);
@@ -330,31 +331,14 @@ function ServicesInMotionForm({ cmsData, updateCms }) {
   const cIdx = tab - 1;
   const card = cards[cIdx] ?? {};
   const base = `servicesInMotion.cards.${cIdx}`;
-  const imgKey = card.stageSet;
   return (
     <>
       <Tabs tabs={TABS} active={tab} onSelect={setTab} />
       <TextField label="Title" value={card.title} onChange={(v) => updateCms(`${base}.title`, v)} />
       <TextArea label="Subtitle" value={card.sub} onChange={(v) => updateCms(`${base}.sub`, v)} rows={2} />
-      <div style={{ marginBottom: 14 }}>
-        <Label>Stage Set (image key)</Label>
-        <select
-          value={card.stageSet ?? "product"}
-          onChange={(e) => updateCms(`${base}.stageSet`, e.target.value)}
-          style={{ ...inputBase }}
-        >
-          {["product", "marketing", "brand", "strategy", "motion", "ux"].map((k) => (
-            <option key={k} value={k}>{k}</option>
-          ))}
-        </select>
-      </div>
-      {imgKey && (
-        <ImageField
-          label={`Stage Image (${imgKey})`}
-          value={stageImgs[imgKey] ?? ""}
-          onChange={(v) => updateCms(`servicesInMotion.stageImages.${imgKey}`, v)}
-        />
-      )}
+      <TextArea label="Speech-bubble text (stage 1)" value={card.request ?? ""} onChange={(v) => updateCms(`${base}.request`, v)} rows={2} />
+      <ImageField label="Wide Image (stage 1 background)" value={card.wide ?? ""} onChange={(v) => updateCms(`${base}.wide`, v)} />
+      <ImageField label="Top Image (stage 3 showcase)" value={card.top ?? ""} onChange={(v) => updateCms(`${base}.top`, v)} />
       <Divider />
       <button
         onClick={() => removeCard(cIdx)}

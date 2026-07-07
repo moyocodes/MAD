@@ -4,76 +4,6 @@ import { useCms } from "@/context/CmsContext";
 
 
 
-function Shimmer({ delay = 0, style = {} }) {
-  return (
-    <div
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        background: "linear-gradient(135deg,#dbeeff,#c0d8f0)",
-        ...style,
-      }}
-    >
-      <div
-        className="sh"
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)",
-          animationDelay: `${delay}s`,
-        }}
-      />
-    </div>
-  );
-}
-
-function Browser({ children }) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 24,
-        left: 12,
-        right: 12,
-        bottom: 0,
-        background: "#f8f8f6",
-        border: "1px solid rgb(0 0 0 / 9%)",
-        borderRadius: "10px 10px 0 0",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          height: 24,
-          background: "#e8e8e6",
-          borderBottom: "1px solid rgb(0 0 0 / 7%)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 8px",
-          gap: 5,
-        }}
-      >
-        {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-          <div
-            key={c}
-            style={{ width: 7, height: 7, borderRadius: "50%", background: c }}
-          />
-        ))}
-        <div
-          style={{
-            flex: 1,
-            height: 12,
-            borderRadius: 3,
-            background: "#d8d8d6",
-            margin: "0 6px",
-          }}
-        />
-      </div>
-      {children}
-    </div>
-  );
-}
 
 function ReqBubble({ text }) {
   return (
@@ -119,110 +49,30 @@ function ReqBubble({ text }) {
   );
 }
 
-function C1S1() {
+function GenericStage1({ card }) {
+  const src = card.wide;
   return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <Browser>
-        <div style={{ padding: 6 }}>
-          <Shimmer
-            style={{ height: 100, borderRadius: 5, position: "relative" }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                padding: 12,
-              }}
-            >
-              <div
-                className="bg-azure-500/70"
-                style={{
-                  height: 10,
-                  width: "55%",
-                  borderRadius: 2,
-                  marginBottom: 6,
-                }}
-              />
-              <div
-                className="bg-azure-500/40"
-                style={{
-                  height: 7,
-                  width: "35%",
-                  borderRadius: 2,
-                  marginBottom: 10,
-                }}
-              />
-              <div
-                className="bg-azure-500/80"
-                style={{
-                  height: 20,
-                  width: 56,
-                  borderRadius: 3,
-                }}
-              />
-            </div>
-          </Shimmer>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
-            gap: 5,
-            padding: "0 6px",
-          }}
-        >
-          {[0, 0.35, 0.7].map((d, i) => (
-            <div
-              key={i}
-              className="bg-white"
-              style={{
-                borderRadius: 5,
-                overflow: "hidden",
-                border: "1px solid rgba(240,240,240,.6)",
-              }}
-            >
-              <Shimmer delay={d} style={{ height: 40 }} />
-              <div style={{ padding: 5 }}>
-                <div
-                  style={{
-                    height: 5,
-                    width: "80%",
-                    borderRadius: 2,
-                    background: "#f0f0f0",
-                    marginBottom: 4,
-                  }}
-                />
-                <div
-                  className="bg-azure-500/50"
-                  style={{
-                    height: 5,
-                    width: "40%",
-                    borderRadius: 2,
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Browser>
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+      {src && (
+        <img
+          src={src}
+          alt=""
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      )}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
+          background: "linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,.1) 55%,transparent)",
         }}
       />
-
-      <ReqBubble text="Build a clean e-commerce storefront with hero carousel and product grid." />
+      <ReqBubble text={card.request || "Let's build something great."} />
     </div>
   );
 }
 
-function C1S2() {
+function GenericStage2({ card }) {
   return (
     <div
       style={{
@@ -236,7 +86,6 @@ function C1S2() {
     >
       <style>{`
         @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-        @keyframes popInRight{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
       `}</style>
       <div
         style={{
@@ -251,888 +100,337 @@ function C1S2() {
         }}
       >
         <div style={{ display: "flex", gap: 4 }}>
-          {["#ff5f57","#febc2e","#28c840"].map((c) => (
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
             <div key={c} style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />
           ))}
         </div>
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 10 }}>
-          {["✦ Move","⬜ Frame","✏ Pen","T Text"].map((t) => (
-            <span key={t} style={{ fontSize: 6, color: "rgba(255,255,255,.35)" }}>{t}</span>
-          ))}
-        </div>
-        <span style={{ fontSize: 6, color: "#1980c2", background: "rgba(25,128,194,.18)", padding: "2px 6px", borderRadius: 3 }}>
-          STRKT · Draft
-        </span>
-      </div>
-      <div style={{ flex: 1, display: "flex", overflow: "hidden", position: "relative" }}>
-        <div style={{ flex: 1, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "hidden" }}>
-          <div
-            style={{
-              animation: "slideDown 0.45s ease both",
-              animationDelay: "0.05s",
-              background: "#252535",
-              borderRadius: 4,
-              border: "1px solid rgba(255,255,255,.1)",
-              height: 22,
-              display: "flex",
-              alignItems: "center",
-              padding: "0 8px",
-              justifyContent: "space-between",
-            }}
-          >
-            <span style={{ fontSize: 7, color: "rgba(255,255,255,.7)", fontWeight: 700 }}>STRKT</span>
-            <div style={{ display: "flex", gap: 8 }}>
-              {["Shop","Drops","About"].map((n) => (
-                <span key={n} style={{ fontSize: 5.5, color: "rgba(255,255,255,.3)" }}>{n}</span>
-              ))}
-            </div>
-          </div>
-          <div
-            style={{
-              animation: "slideDown 0.45s ease both",
-              animationDelay: "0.22s",
-              background: "linear-gradient(135deg,#0f1a2c,#1a3050)",
-              borderRadius: 4,
-              border: "1px solid rgba(25,128,194,.25)",
-              height: 72,
-              display: "flex",
-              alignItems: "center",
-              padding: "0 10px",
-              gap: 8,
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 9, color: "#fff", lineHeight: 1.3, marginBottom: 3 }}>Wear what<br/>you mean.</div>
-              <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.4)", marginBottom: 5 }}>Limited drops, weekly.</div>
-              <div style={{ fontSize: 5.5, background: "#1980c2", color: "#fff", display: "inline-block", padding: "2px 6px", borderRadius: 2 }}>Shop now →</div>
-            </div>
-            <div style={{ width: 36, height: 50, borderRadius: 3, background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.12)", flexShrink: 0 }} />
-            <div style={{ position: "absolute", inset: -1, borderRadius: 4, border: "1.5px solid #1980c2", pointerEvents: "none" }} />
-          </div>
-          <div
-            style={{
-              animation: "slideDown 0.45s ease both",
-              animationDelay: "0.42s",
-              display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
-              gap: 5,
-            }}
-          >
-            {[
-              ["Cargo Tee","$48","#0f2a4a","#1a3a5c"],
-              ["Wide Hoodie","$90","#1a2030","#253040"],
-              ["Track Pant","$72","#0a1520","#152030"],
-            ].map(([nm, pr, f, t]) => (
-              <div
-                key={nm}
-                style={{
-                  borderRadius: 4,
-                  overflow: "hidden",
-                  background: "#252535",
-                  border: "1px solid rgba(255,255,255,.07)",
-                }}
-              >
-                <div style={{ height: 30, background: `linear-gradient(135deg,${f},${t})` }} />
-                <div style={{ padding: 4 }}>
-                  <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.4)" }}>{nm}</div>
-                  <div style={{ fontSize: 7, color: "#1980c2", fontWeight: 700 }}>{pr}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
+        <span
           style={{
-            animation: "popInRight 0.4s ease both",
-            animationDelay: "0.1s",
-            width: 80,
-            background: "#252535",
-            borderLeft: "1px solid rgba(255,255,255,.07)",
-            display: "flex",
-            flexDirection: "column",
-            padding: "8px 0",
-            flexShrink: 0,
+            fontSize: 6.5,
+            color: "#1980c2",
+            background: "rgba(25,128,194,.18)",
+            padding: "2px 6px",
+            borderRadius: 3,
+            marginLeft: "auto",
           }}
         >
-          <div style={{ fontSize: 6, color: "rgba(255,255,255,.35)", padding: "0 8px", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            Components
-          </div>
-          {[
-            ["Hero Section", true],
-            ["Product Grid", false],
-            ["Nav Bar", false],
-          ].map(([label, active]) => (
-            <div
-              key={label}
-              style={{
-                padding: "5px 8px",
-                fontSize: 6,
-                color: active ? "#fff" : "rgba(255,255,255,.38)",
-                background: active ? "rgba(25,128,194,.22)" : "transparent",
-                borderLeft: active ? "2px solid #1980c2" : "2px solid transparent",
-                cursor: "default",
-              }}
-            >
-              {label}
-            </div>
-          ))}
-        </div>
+          {card.title} · Building
+        </span>
       </div>
+      <div style={{ flex: 1, padding: 14, display: "flex", flexDirection: "column", gap: 8, justifyContent: "center" }}>
+        {[
+          { w: "60%", h: 12, delay: "0.05s" },
+          { w: "92%", h: 60, delay: "0.22s" },
+          { w: "40%", h: 12, delay: "0.4s" },
+          { w: "75%", h: 12, delay: "0.55s" },
+        ].map((b, i) => (
+          <div
+            key={i}
+            style={{
+              width: b.w,
+              height: b.h,
+              borderRadius: 5,
+              background: i === 1 ? "linear-gradient(135deg,#0f1a2c,#1a3050)" : "rgba(255,255,255,.08)",
+              border: i === 1 ? "1px solid rgba(25,128,194,.3)" : "none",
+              animation: "slideDown 0.45s ease both",
+              animationDelay: b.delay,
+            }}
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          height: 26,
+          background: "#252535",
+          borderTop: "1px solid rgba(255,255,255,.07)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#38bdf8" }} />
+        <span style={{ fontSize: 6.5, color: "rgba(255,255,255,.4)" }}>Assembling components…</span>
+      </div>
+    </div>
+  );
+}
+
+function GenericStage3({ card }) {
+  const src = card.top;
+  return (
+    <div style={{ position: "absolute", inset: 0 }}>
+      <img
+        src={src}
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        style={{
+          position: "absolute",
+          bottom: 18,
+          left: 14,
+          right: 14,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: "#38bdf8",
+            marginBottom: 3,
+          }}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Stage 2 "in progress" demos ─────────────────────────────────────────────
+// A neutral GenericStage2 (above) is the fallback for any card. These are
+// bespoke, on-brand demos for the current line-up of services — keyed off
+// card.story so a new card with no matching story still renders fine.
+
+function StoryFrame({ chip, children }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: "#1e1e2e",
+        display: "flex",
+        flexDirection: "column",
+        fontFamily: "monospace",
+      }}
+    >
       <div
         style={{
           height: 28,
           background: "#252535",
-          borderTop: "1px solid rgba(255,255,255,.07)",
+          borderBottom: "1px solid rgba(255,255,255,.07)",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
-          gap: 20,
+          padding: "0 10px",
+          gap: 6,
           flexShrink: 0,
         }}
       >
-        {[["98","Perf"],["1.2s","Load"],["4.9★","Rating"]].map(([v, l]) => (
-          <div key={l} style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: "#1980c2" }}>{v}</div>
-            <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.3)" }}>{l}</div>
-          </div>
-        ))}
-      </div>
-    
-    </div>
-  );
-}
-
-function C1S3() {
-  return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <img
-        src="/web.png"
-        alt=""
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
-        }}
-   />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-        style={{
-          position: "absolute",
-          bottom: 18,
-          left: 14,
-          right: 14,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-        
-        <div
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: "#38bdf8",
-            marginBottom: 3,
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-}
-
-function C2S1() {
-  return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <div className="bg-white" style={{ position: "absolute", inset: 0 }}>
-        <div
-          style={{
-            height: 38,
-            display: "flex",
-            alignItems: "center",
-            padding: "0 12px",
-            gap: 8,
-            borderBottom: "1px solid rgba(229,229,229,.5)",
-          }}
-        >
-          <span
-            style={{
-              fontSize: 14,
-              color: "#262626",
-              flex: 1,
-              fontFamily: "serif",
-            }}
-          >
-            Instagram
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "10px 12px",
-            gap: 10,
-            borderBottom: "1px solid #f5f5f5",
-          }}
-        >
-          <div
-            className="text-white"
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg,#fb923c,#db2777)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 900,
-              fontSize: 13,
-              flexShrink: 0,
-            }}
-          >
-            M
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 10, color: "#262626" }}>mad.studio</div>
-            <div style={{ fontSize: 8.5, color: "#8e8e8e" }}>
-              @mad.studio · Creative Agency
-            </div>
-          </div>
-          <div
-            className="bg-azure-500 text-white"
-            style={{
-              fontSize: 8,
-              padding: "4px 12px",
-              borderRadius: 5,
-            }}
-          >
-            Follow
-          </div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
-            gap: 1,
-            padding: 1,
-          }}
-        >
-          {[
-            ["#1980c2", "Brand"],
-            ["#181817", "Launch"],
-            ["#3da0e4", "Web"],
-            ["#f0f0ee", "MAD"],
-            ["#0f4f7a", "Identity"],
-            ["#e8e8e4", "Campaign"],
-          ].map(([bg, lbl], i) => (
-            <div
-              key={i}
-              style={{
-                background: bg,
-                aspectRatio: "1",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color:
-                  bg === "#f0f0ee" || bg === "#e8e8e4" ? "#181817" : "#ffffff",
-                fontSize: 7.5,
-                fontWeight: 900,
-              }}
-            >
-              {lbl}
-            </div>
+        <div style={{ display: "flex", gap: 4 }}>
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+            <div key={c} style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />
           ))}
         </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
-        }}
-      />
-     
-      <ReqBubble text="Create a social media content calendar for our spring product launch." />
-    </div>
-  );
-}
-
-function C2S2() {
-  return (
-    <div
-      className="bg-white"
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          height: 36,
-          display: "flex",
-          alignItems: "center",
-          padding: "0 12px",
-          borderBottom: "1px solid rgba(229,229,229,.5)",
-          background: "#f8f8f8",
-        }}
-      >
         <span
           style={{
-            fontSize: 13,
-            color: "#262626",
-            flex: 1,
-            fontFamily: "serif",
+            fontSize: 6.5,
+            color: "#1980c2",
+            background: "rgba(25,128,194,.18)",
+            padding: "2px 6px",
+            borderRadius: 3,
+            marginLeft: "auto",
           }}
         >
-          Instagram
+          {chip}
         </span>
       </div>
-      <div style={{ borderBottom: "1px solid #f5f5f5" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "8px 12px",
-            gap: 8,
-          }}
-        >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg,#fb923c,#db2777)",
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ fontSize: 9, color: "#262626", flex: 1 }}>
-            mad.studio
-          </span>
-        </div>
-        <div
-          style={{
-            height: 140,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "linear-gradient(135deg,#1980c2,#0f4f7a)",
-            position: "relative",
-          }}
-        >
-          <div
-            className="text-white"
-            style={{
-              fontSize: 17,
-              textAlign: "center",
-              lineHeight: 1.25,
-              padding: "0 10px",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            Your brand,
-            <br />
-            everywhere.
+      <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>{children}</div>
+    </div>
+  );
+}
+
+function WebsiteBuildStage({ card }) {
+  return (
+    <StoryFrame chip={`${card.title} · Draft`}>
+      <style>{`@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}`}</style>
+      <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ height: 20, borderRadius: 4, background: "#fff", display: "flex", alignItems: "center", padding: "0 8px", gap: 6, animation: "slideDown .4s ease both" }}>
+          <span style={{ fontSize: 7, fontWeight: 900, color: "#181817" }}>MAD</span>
+          <div style={{ flex: 1, display: "flex", gap: 6, justifyContent: "center" }}>
+            {["Home", "Work", "About"].map((t) => <span key={t} style={{ fontSize: 5.5, color: "#aaa" }}>{t}</span>)}
           </div>
         </div>
-        <div
-          style={{
-            padding: "5px 12px 3px",
-            fontSize: 8,
-            color: "#262626",
-            lineHeight: 1.55,
-          }}
-        >
-          <strong>mad.studio</strong> Campaigns that connect — content built to
-          reach the right people.
+        <div style={{ height: 68, borderRadius: 5, background: "linear-gradient(135deg,#0f1a2c,#1a3050)", display: "flex", alignItems: "center", padding: "0 10px", animation: "slideDown .45s ease both", animationDelay: ".2s" }}>
+          <div>
+            <div style={{ fontSize: 9, color: "#fff", marginBottom: 3 }}>Built for launch.</div>
+            <div style={{ fontSize: 5.5, background: "#1980c2", color: "#fff", display: "inline-block", padding: "2px 6px", borderRadius: 2 }}>Get started →</div>
+          </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 4,
-            flexWrap: "wrap",
-            padding: "0 12px 8px",
-          }}
-        >
-          {["#branding", "#marketing", "#springdrop", "#growth"].map((t) => (
-            <span key={t} className="text-azure-500" style={{ fontSize: 7.5 }}>
-              {t}
-            </span>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 5, animation: "slideDown .45s ease both", animationDelay: ".4s" }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} style={{ height: 34, borderRadius: 4, background: "#252535", border: "1px solid rgba(255,255,255,.07)" }} />
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", gap: 8, padding: "8px 12px" }}>
-        {[
-          ["Total Reach", "248K", "+38%"],
-          ["Conv.", "3.2K", "+52%"],
-        ].map(([l, v, d]) => (
-          <div
-            key={l}
-            style={{
-              flex: 1,
-              borderRadius: 5,
-              padding: 8,
-              background: "#f8f8f8",
-            }}
-          >
-            <div style={{ fontSize: 6.5, color: "#aaa" }}>{l}</div>
-            <div
-              className="text-dark-900"
-              style={{ fontSize: 13, fontWeight: 700 }}
-            >
-              {v}
+    </StoryFrame>
+  );
+}
+
+function AppBuildStage({ card }) {
+  return (
+    <StoryFrame chip={`${card.title} · Preview`}>
+      <div style={{ display: "flex", justifyContent: "center", padding: "8px 0", height: "100%" }}>
+        <div style={{ width: 96, height: "100%", borderRadius: 12, border: "2px solid rgba(255,255,255,.15)", background: "#12121e", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <div style={{ height: 14, display: "flex", justifyContent: "center", alignItems: "flex-end", paddingBottom: 2 }}>
+            <div style={{ width: 28, height: 4, borderRadius: 2, background: "rgba(255,255,255,.2)" }} />
+          </div>
+          <div style={{ flex: 1, padding: "6px 8px", display: "flex", flexDirection: "column", gap: 5 }}>
+            {["92%", "70%", "84%"].map((w, i) => (
+              <div key={i} style={{ height: i === 0 ? 30 : 12, width: w, borderRadius: 4, background: i === 0 ? "linear-gradient(135deg,#1980c2,#0f4f7a)" : "rgba(255,255,255,.08)", animation: "slideDown .4s ease both", animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
+          <div style={{ height: 22, borderTop: "1px solid rgba(255,255,255,.08)", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} style={{ width: 8, height: 8, borderRadius: 2, background: i === 0 ? "#1980c2" : "rgba(255,255,255,.18)" }} />
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}`}</style>
+    </StoryFrame>
+  );
+}
+
+function SocialBuildStage({ card }) {
+  const days = ["M", "T", "W", "T", "F", "S", "S"];
+  return (
+    <StoryFrame chip={`${card.title} · Calendar`}>
+      <div style={{ padding: 10 }}>
+        <div style={{ fontSize: 6, color: "rgba(255,255,255,.4)", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>This week</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+          {days.map((d, i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.35)", marginBottom: 3 }}>{d}</div>
+              <div
+                style={{
+                  height: [30, 44, 24, 50, 34, 18, 18][i],
+                  borderRadius: 4,
+                  background: [1, 3, 4].includes(i) ? "linear-gradient(135deg,#db2777,#fb923c)" : "rgba(255,255,255,.08)",
+                }}
+              />
             </div>
-            <div style={{ fontSize: 7.5, color: "#22c55e" }}>↑ {d}</div>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          {[["Reach", "12.4K"], ["Engagement", "6.8%"]].map(([l, v]) => (
+            <div key={l} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6 }}>
+              <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.35)" }}>{l}</div>
+              <div style={{ fontSize: 9, color: "#fff", fontWeight: 700 }}>{v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </StoryFrame>
+  );
+}
+
+function PrintBuildStage({ card }) {
+  const swatches = [
+    ["#1980c2", "Azure"],
+    ["#181817", "Onyx"],
+    ["#ffffff", "White"],
+    ["#fb923c", "Ember"],
+  ];
+  return (
+    <StoryFrame chip={`${card.title} · Palette`}>
+      <div style={{ padding: 10 }}>
+        <div style={{ display: "flex", borderRadius: 5, overflow: "hidden", height: 46, marginBottom: 8 }}>
+          {swatches.map(([bg, l]) => (
+            <div key={l} style={{ background: bg, flex: 1, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 4, fontSize: 5, fontWeight: 700, color: bg === "#ffffff" ? "#aaa" : "rgba(255,255,255,.7)" }}>
+              {l}
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+          <div style={{ height: 54, borderRadius: 5, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13, color: "#181817" }}>MAD</div>
+          <div style={{ height: 54, borderRadius: 5, background: "#181817", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13, color: "#fff" }}>MAD</div>
+        </div>
+      </div>
+    </StoryFrame>
+  );
+}
+
+function BizDevBuildStage({ card }) {
+  const cols = [
+    { label: "Leads", n: 8, color: "rgba(255,255,255,.15)" },
+    { label: "Proposal", n: 4, color: "rgba(25,128,194,.35)" },
+    { label: "Won", n: 3, color: "#1980c2" },
+  ];
+  return (
+    <StoryFrame chip={`${card.title} · Pipeline`}>
+      <div style={{ padding: 10, display: "flex", gap: 6, height: "100%" }}>
+        {cols.map((c) => (
+          <div key={c.label} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6, display: "flex", flexDirection: "column", gap: 5 }}>
+            <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.4)" }}>{c.label} · {c.n}</div>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} style={{ height: 16, borderRadius: 3, background: c.color }} />
+            ))}
           </div>
         ))}
       </div>
-      <div
-        className="text-white bg-black/75 flex items-center gap-[5px]"
-        style={{
-          position: "absolute",
-          bottom: 14,
-          right: 12,
-          backdropFilter: "blur(8px)",
-          fontSize: 7.5,
-          padding: "4px 10px",
-          borderRadius: 99,
-        }}
-      >
-        <div
-          style={{
-            width: 5,
-            height: 5,
-            borderRadius: "50%",
-            background: "#38bdf8",
-          }}
-        />
-        Campaign live
-      </div>
-  
-    </div>
+    </StoryFrame>
   );
 }
 
-function C2S3() {
+function PrBuildStage({ card }) {
   return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <img
-        src="/soc.png"
-        alt=""
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
-        }}
-      />
- 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-        style={{
-          position: "absolute",
-          bottom: 18,
-          left: 14,
-          right: 14,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-       
-        <div
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: "#38bdf8",
-            marginBottom: 3,
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-}
-
-function C3S1() {
-  return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <div style={{ position: "absolute", inset: 0, background: "#f8f7f5" }}>
-        <div
-          className="bg-white"
-          style={{
-            height: 32,
-            display: "flex",
-            alignItems: "center",
-            padding: "0 12px",
-            borderBottom: "1px solid #f0f0f0",
-          }}
-        >
-          <span className="text-dark-900" style={{ fontSize: 10 }}>
-            M<span className="text-azure-500">A</span>D Brand Studio
-          </span>
+    <StoryFrame chip={`${card.title} · Coverage`}>
+      <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ borderRadius: 5, background: "#fff", padding: 8 }}>
+          <div style={{ fontSize: 5, color: "#aaa", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.08em" }}>Featured in</div>
+          <div style={{ fontSize: 9, fontWeight: 800, color: "#181817", fontFamily: "serif" }}>The Business Journal</div>
+          <div style={{ fontSize: 6, color: "#666", marginTop: 3 }}>“{card.title} done right — a case study.”</div>
         </div>
-        <div
-          className="bg-white"
-          style={{
-            height: 24,
-            display: "flex",
-            borderBottom: "1px solid #f0f0f0",
-          }}
-        >
-          {["Colours", "Typography", "Components"].map((t, i) => (
-            <div
-              key={t}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "0 10px",
-                fontSize: 7.5,
-                borderBottom: `2px solid ${i === 0 ? "#1980c2" : "transparent"}`,
-                color: i === 0 ? "#1980c2" : "#aaa",
-              }}
-            >
-              {t}
-            </div>
-          ))}
-        </div>
-        <div style={{ padding: 10 }}>
-          <div
-            style={{
-              display: "flex",
-              borderRadius: 6,
-              overflow: "hidden",
-              height: 52,
-              marginBottom: 8,
-              boxShadow: "0 2px 8px rgba(0,0,0,.1)",
-            }}
-          >
-            {[
-              ["#1980c2", "Azure", "rgba(255,255,255,.7)"],
-              ["#181817", "Onyx", "rgba(255,255,255,.7)"],
-              ["#ffffff", "White", "#aaa"],
-              ["#0f4f7a", "Deep", "rgba(255,255,255,.7)"],
-              ["#3da0e4", "Sky", "rgba(255,255,255,.7)"],
-            ].map(([bg, l, c]) => (
-              <div
-                key={l}
-                style={{
-                  background: bg,
-                  color: c,
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "center",
-                  paddingBottom: 5,
-                  fontSize: 5.5,
-                  fontWeight: 700,
-                }}
-              >
-                {l}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.58),rgba(0,0,0,.84))",
-        }}
-      />
-
-      <ReqBubble text="Design a bold brand identity system with logo, type, and a colour palette." />
-    </div>
-  );
-}
-
-function C3S2() {
-  const swatches = [
-    { color: "#1980c2", name: "Azure Blue",  hex: "#1980c2", role: "Primary",   delay: "0.05s" },
-    { color: "#181817", name: "Onyx",        hex: "#181817", role: "Dark",      delay: "0.28s" },
-    { color: "#ffffff", name: "White",       hex: "#ffffff", role: "Light",     delay: "0.50s" },
-    { color: "#0f4f7a", name: "Deep Navy",   hex: "#0f4f7a", role: "Accent",    delay: "0.72s" },
-    { color: "#3da0e4", name: "Sky",         hex: "#3da0e4", role: "Highlight", delay: "0.94s" },
-  ];
-
-  const logoVariants = [
-    { bg: "#1980c2", color: "#ffffff", label: "MAD", delay: "0.15s" },
-    { bg: "#ffffff", color: "#181817", label: "MAD", delay: "0.35s" },
-    { bg: "#181817", color: "#ffffff", label: "MAD", delay: "0.55s" },
-  ];
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-        background: "#f8f7f5",
-        fontFamily: "monospace",
-      }}
-    >
-      <style>{`
-        @keyframes popIn{from{opacity:0;transform:scale(0.6)}to{opacity:1;transform:scale(1)}}
-        @keyframes colorSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
-        @keyframes cursorPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-      `}</style>
-      <div
-        style={{
-          height: 30,
-          background: "#fff",
-          borderBottom: "1px solid #ebebeb",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 12px",
-          gap: 10,
-          flexShrink: 0,
-        }}
-      >
-        <span style={{ fontSize: 8.5, color: "#181817", fontWeight: 700 }}>
-          M<span style={{ color: "#1980c2" }}>A</span>D Brand Studio
-        </span>
-        <div style={{ flex: 1 }} />
-        <div style={{ display: "flex", gap: 0 }}>
-          {["Colours", "Typography", "Components"].map((t, i) => (
-            <div
-              key={t}
-              style={{
-                fontSize: 7,
-                padding: "0 8px",
-                height: 30,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: i === 0 ? "2px solid #1980c2" : "2px solid transparent",
-                color: i === 0 ? "#1980c2" : "#aaa",
-              }}
-            >
-              {t}
+        <div style={{ display: "flex", gap: 6 }}>
+          {["Reach", "Mentions", "Sentiment"].map((l, i) => (
+            <div key={l} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6, textAlign: "center" }}>
+              <div style={{ fontSize: 8, color: "#1980c2", fontWeight: 700 }}>{["240K", "18", "92%"][i]}</div>
+              <div style={{ fontSize: 5, color: "rgba(255,255,255,.35)" }}>{l}</div>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        <div style={{ flex: 1, padding: 12, display: "flex", flexDirection: "column", gap: 10, overflow: "hidden" }}>
-          <div style={{ fontSize: 7, color: "#aaa", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            Colour Palette
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-            {swatches.map((s, i) => (
-              <div
-                key={s.hex}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  animation: `colorSlide 0.38s cubic-bezier(0.22,1,0.36,1) both`,
-                  animationDelay: s.delay,
-                }}
-              >
-                <div style={{ position: "relative", flexShrink: 0 }}>
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 5,
-                      background: s.color,
-                      border: s.color === "#ffffff" ? "1px solid #ddd" : "none",
-                      animation: i === 0 ? "popIn 0.35s cubic-bezier(0.22,1,0.36,1) both" : undefined,
-                      animationDelay: i === 0 ? s.delay : undefined,
-                    }}
-                  />
-                  {i === 0 && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: -3,
-                        borderRadius: 8,
-                        border: "1.5px solid #1980c2",
-                        animation: "cursorPulse 1.4s ease-in-out infinite",
-                      }}
-                    />
-                  )}
-                </div>
-                <div>
-                  <div style={{ fontSize: 7.5, color: "#181817", lineHeight: 1.2 }}>{s.name}</div>
-                  <div style={{ fontSize: 6, color: "#bbb" }}>{s.hex} · {s.role}</div>
-                </div>
-                {i === 0 && (
-                  <div
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: 6,
-                      background: "rgba(25,128,194,.12)",
-                      color: "#1980c2",
-                      padding: "2px 6px",
-                      borderRadius: 99,
-                    }}
-                  >
-                    selected
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
-          style={{
-            width: 110,
-            borderLeft: "1px solid #ebebeb",
-            padding: 10,
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            background: "#fff",
-          }}
-        >
-          <div style={{ fontSize: 7, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 2 }}>
-            Logo Variants
-          </div>
-          {logoVariants.map((v, i) => (
-            <div
-              key={i}
-              style={{
-                background: v.bg,
-                color: v.color,
-                borderRadius: 4,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "8px 0",
-                fontSize: 11,
-                fontWeight: 900,
-                letterSpacing: "0.04em",
-                border: v.bg === "#ffffff" ? "1px solid #eee" : "none",
-                animation: `popIn 0.38s cubic-bezier(0.22,1,0.36,1) both`,
-                animationDelay: v.delay,
-                fontFamily: "sans-serif",
-              }}
-            >
-              {v.label}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: 14,
-          right: 12,
-          display: "flex",
-          alignItems: "center",
-          gap: 5,
-          fontSize: 7.5,
-          padding: "4px 10px",
-          borderRadius: 99,
-          background: "#181817",
-          color: "#fff",
-          zIndex: 10,
-        }}
-      >
-        <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#38bdf8" }} />
-        Brand system building…
-      </div>
- 
-    </div>
+    </StoryFrame>
   );
 }
 
-function C3S3() {
-  return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <img
-        src="/brandd.png"
-        alt=""
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.08) 55%,transparent)",
-        }}
-      />
-    
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-        style={{
-          position: "absolute",
-          bottom: 18,
-          left: 14,
-          right: 14,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-      
-        <div
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: "#38bdf8",
-            marginBottom: 3,
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-}
-
-export const STAGE_SETS = {
-  product: [C1S1, C1S2, C1S3],
-  marketing: [C2S1, C2S2, C2S3],
-  brand: [C3S1, C3S2, C3S3],
+const STORY_STAGES = {
+  website: WebsiteBuildStage,
+  app: AppBuildStage,
+  social: SocialBuildStage,
+  print: PrintBuildStage,
+  bizdev: BizDevBuildStage,
+  pr: PrBuildStage,
 };
-
 
 const S1 = 2000,
   S2 = 2000,
-  S3 = 90000;
+  S3 = 3000;
 const LOOP = S1 + S2 + S3;
 
 export function SvcCard({ config, startDelay, isActive }) {
+  const Stage2 = STORY_STAGES[config.story] ?? GenericStage2;
   const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
   const rafRef = useRef(null);
@@ -1167,9 +465,6 @@ export function SvcCard({ config, startDelay, isActive }) {
       cancelAnimationFrame(rafRef.current);
     };
   }, [runCycle, startDelay]);
-
-  const { stages } = config;
-  const [S1c, S2c, S3c] = stages;
 
   return (
     <div
@@ -1228,10 +523,10 @@ export function SvcCard({ config, startDelay, isActive }) {
               style={{ position: "absolute", inset: 0 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, y: -14, scale: 0.97 }}
               transition={{ duration: 0.45 }}
             >
-              <S1c />
+              <GenericStage1 card={config} />
             </motion.div>
           )}
           {stage === 1 && (
@@ -1243,19 +538,19 @@ export function SvcCard({ config, startDelay, isActive }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.45 }}
             >
-              <S2c />
+              <Stage2 card={config} />
             </motion.div>
           )}
           {stage === 2 && (
             <motion.div
               key="s3"
               style={{ position: "absolute", inset: 0 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.55 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <S3c />
+              <GenericStage3 card={config} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -1325,10 +620,7 @@ export function SvcCard({ config, startDelay, isActive }) {
 export default function ServicesInMotion() {
   const { cmsData } = useCms();
   const content = cmsData.servicesInMotion;
-  const CARDS = (content.cards ?? []).map((card) => ({
-    ...card,
-    stages: STAGE_SETS[card.stageSet] ?? STAGE_SETS.product,
-  }));
+  const CARDS = content.cards ?? [];
   const wrapRef = useRef(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0); // mirror for use inside event listeners
@@ -1377,8 +669,8 @@ export default function ServicesInMotion() {
       const cur = activeRef.current;
 
       if (e.deltaY > 0) {
-        // Scrolling down — jail if not yet on last card
-        if (cur < max) {
+        // Scrolling down — jail until 2nd-to-last card; release on last two
+        if (cur < max - 1) {
           e.preventDefault();
           if (cooldown) return;
           wheelAcc += e.deltaY;
@@ -1389,7 +681,7 @@ export default function ServicesInMotion() {
             setTimeout(() => { cooldown = false; }, 480);
           }
         }
-        // cur === max → fall through, browser scrolls page naturally
+        // cur >= max - 1 → fall through, browser scrolls page naturally
       } else {
         // Scrolling up — jail if not yet on first card
         if (cur > 0) {
@@ -1428,8 +720,8 @@ export default function ServicesInMotion() {
     touchStartY.current = null;
 
     if (Math.abs(dy) > Math.abs(dx)) {
-      // Vertical swipe
-      if (dy > 40) setActive((a) => Math.min(max, a + 1));
+      // Vertical swipe — only advance if not already on last two cards
+      if (dy > 40 && activeRef.current < max - 1) setActive((a) => Math.min(max, a + 1));
       else if (dy < -40) setActive((a) => Math.max(0, a - 1));
     } else {
       // Horizontal swipe — existing card navigation
@@ -1626,7 +918,7 @@ export default function ServicesInMotion() {
                 key={c.id}
                 config={c}
                 isActive={i === active}
-                startDelay={i * 600}
+                startDelay={i * 4000}
               />
             ))}
           </motion.div>

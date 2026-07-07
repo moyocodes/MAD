@@ -1,0 +1,51 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('esbuild'\\)\")",
+      "Bash(npx --no-install eslint src/data/homeCms.js)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(node -e \"require\\('playwright'\\)\")",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(npx --no-install -c 'echo $\\(npm root -g\\)')",
+      "Bash(NODE_PATH=$\\(npx --no-install -c 'echo $\\(npm root -g\\)' 2>/dev/null\\) npx --yes playwright install chromium --with-deps)",
+      "Read(//tmp/**)",
+      "Bash(npx --yes playwright install chromium)",
+      "Read(//Users/tizetimoyosore/Library/Caches/ms-playwright/**)",
+      "Bash(npm ls *)",
+      "Bash(node --experimental-vm-modules -e ' *)",
+      "Bash(npx --yes -p playwright node /private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad/verify.mjs)",
+      "Bash(npm init *)",
+      "Bash(node verify.mjs)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(rm -rf /private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad/node_modules /private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad/package*.json)",
+      "Bash(lsof -i :5173-5180 -sTCP:LISTEN)",
+      "Bash(npx --no-install eslint src/App.jsx src/context/CmsContext.jsx)",
+      "Bash(git stash *)",
+      "Bash(npx --no-install eslint src/context/CmsContext.jsx)",
+      "Bash(lsof -i :5173 -sTCP:LISTEN)",
+      "Bash(mkdir -p /private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad)",
+      "Bash(npm install *)",
+      "Bash(npx eslint *)",
+      "Bash(curl -s http://localhost:5190/)",
+      "Bash(lsof -ti:5190)",
+      "Bash(node -e ' *)",
+      "Read(//private/tmp/**)",
+      "Bash(npm run *)",
+      "Bash(chromium-cli --help)",
+      "Bash(node -e \"require.resolve\\('playwright'\\)\")",
+      "Bash(NODE_PATH=/Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/node_modules node /private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/3553db1c-4c54-453d-819e-3cbe276ad81a/scratchpad/test_nav.mjs)",
+      "Bash(cat /Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/node_modules/playwright/package.json | grep -E '\"main\"|\"exports\"' )",
+      "Read(//Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/node_modules/playwright/**)",
+      "Read(//Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/**)",
+      "Bash(npx playwright *)",
+      "Bash(node run_test.mjs)",
+      "Bash(kill %1)",
+      "Bash(rm -f /Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/run_test.mjs)"
+    ],
+    "additionalDirectories": [
+      "/private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad/node_modules"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useCms } from "../context/CmsContext";
 
 function injectCSS() {
   if (typeof document === "undefined" || document.getElementById("_mad"))
@@ -37,8 +38,8 @@ function Nav() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
   const isPill = solid && !hidden;
-
-  const links = ["Work", "Services", "About", "Journal"];
+  const { cmsData } = useCms();
+  const links = cmsData.nav.links;
 
   const Hamburger = ({ light, open }) => (
     <button
@@ -92,7 +93,7 @@ function Nav() {
 
   const inner = (light) => (
     <>
-      <img src="/ma.png" alt="MAD" className="h-40 w-36" />
+      <img src={cmsData.brand.logo} alt={cmsData.brand.name} className="h-40 w-36" />
       <div className="hidden md:flex gap-7">
         {links.map((l) => (
           <a
@@ -120,7 +121,7 @@ function Nav() {
         className="hidden md:block text-[11px] font-bold tracking-[0.12em] uppercase border-none rounded-full px-5 py-2"
         style={{ background: "#1980c2", color: "#fff" }}
       >
-        Work With Us
+        {cmsData.nav.cta}
       </button>
       <Hamburger light={light} open={menuOpen} />
     </>
@@ -5093,6 +5094,8 @@ function Contact() {
 
 /* ── FOOTER ── */
 function Footer() {
+  const { cmsData } = useCms();
+  const { footer, brand } = cmsData;
   return (
     <footer
       style={{
@@ -5114,8 +5117,8 @@ function Footer() {
       >
         <div>
           <img
-            src="/ma.png"
-            alt="MAD"
+            src={brand.logo}
+            alt={brand.name}
             style={{ height: 80, width: "auto", opacity: 0.9 }}
           />
           <p
@@ -5127,16 +5130,11 @@ function Footer() {
               maxWidth: 260,
             }}
           >
-            Product, marketing, and design firm creating systems that help
-            organizations grow stronger, operate better, and perform over time.
+            {footer.description}
           </p>
         </div>
-        {[
-          ["Services", ["Product & Digital", "Marketing", "Brand & Design"]],
-          ["Company", ["About", "Our Work", "Journal"]],
-          ["Connect", ["LinkedIn", "Instagram", "hello@mad.co"]],
-        ].map(([col, links]) => (
-          <div key={col}>
+        {footer.columns.map(({ title, links }) => (
+          <div key={title}>
             <h5
               className="text-dark-400/50"
               style={{
@@ -5147,12 +5145,12 @@ function Footer() {
                 fontWeight: 700,
               }}
             >
-              {col}
+              {title}
             </h5>
-            {links.map((l) => (
+            {links.map(([label, href]) => (
               <a
-                key={l}
-                href="#"
+                key={label}
+                href={href || "#"}
                 className="text-dark-500/55"
                 style={{
                   display: "block",
@@ -5163,7 +5161,7 @@ function Footer() {
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#181817")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "")}
               >
-                {l}
+                {label}
               </a>
             ))}
           </div>
@@ -5180,7 +5178,7 @@ function Footer() {
         }}
       >
         <p className="text-dark-400/40" style={{ fontSize: 11 }}>
-          © 2025 MAD. All rights reserved.
+          {footer.copyright}
         </p>
         <p className="text-dark-400/35 italic" style={{ fontSize: 11 }}>
           Structure changes everything.

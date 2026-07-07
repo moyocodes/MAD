@@ -1,0 +1,33 @@
+image: node:20-alpine
+
+definitions:
+  caches:
+    node: node_modules
+
+pipelines:
+  branches:
+    Main:
+      - step:
+          name: Build
+          caches:
+            - node
+          script:
+            - npm ci
+            - npm run build
+          artifacts:
+            - dist/**
+
+      - step:
+          name: Deploy to Digital Ocean App Platform
+          deployment: production
+          script:
+            # Triggers a DO App Platform deploy via API.
+            # Add DO_APP_ID and DO_API_TOKEN in Bitbucket → Repository settings → Repository variables.
+            - apk add --no-cache curl
+            - |
+              curl -s -X POST \
+                -H "Authorization: Bearer $DO_API_TOKEN" \
+                -H "Content-Type: application/json" \
+                https://api.digitalocean.com/v2/apps/$DO_APP_ID/deployments \
+                | grep -o '"id":"[^"]*"' | head -1
+            - echo "Deploy triggered. Check https://cloud.digitalocean.com/apps/$DO_APP_ID"

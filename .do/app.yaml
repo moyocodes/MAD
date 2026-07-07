@@ -1,0 +1,22 @@
+# Digital Ocean App Platform spec
+# Connect this repo in the DO dashboard and it will pick up this file automatically.
+# Docs: https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+
+name: mindfullyarticulated
+
+static_sites:
+  - name: mad-website
+    source_dir: /
+    github:
+      # ── Update these two lines to match your Bitbucket repo ──
+      repo: plainmadraven/mad-website
+      branch: Main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    output_dir: dist
+    # Handles /guard and any future routes without 404
+    catchall_document: index.html
+    # Serve index.html for all unknown paths (SPA routing)
+    routes:
+      - path: /
+    envs: []

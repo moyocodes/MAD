@@ -1,9 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useInView,
-} from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useCms } from "@/context/CmsContext";
 import { homeCms } from "@/data/homeCms";
@@ -484,7 +480,7 @@ function ChatScreen() {
                   <button
                     key={svc.id}
                     onClick={() => pickService(svc)}
-                    className="bg-sky-500/10 border border-sky-500/25 rounded-xl px-3 py-2 text-[10.5px] text-sky-300 font-semibold text-left cursor-pointer hover:bg-sky-500/20 transition-colors active:scale-[.98]"
+                    className="bg-sky-500/10 border border-sky-500/25 rounded-xl px-3 py-2 text-[10.5px] text-sky-300 font-semibold text-center cursor-pointer hover:bg-sky-500/20 transition-colors active:scale-[.98]"
                   >
                     {svc.icon} {svc.label}
                   </button>
@@ -694,7 +690,12 @@ export default function MadPhoneChatWithForm() {
   };
 
   return (
-    <section id="contact" ref={sectionRef} className="relative" style={{ minHeight: "100dvh" }}>
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="relative"
+      style={{ minHeight: "100dvh" }}
+    >
       <style>{`
         @keyframes madBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes dotPulse {
@@ -755,7 +756,7 @@ export default function MadPhoneChatWithForm() {
         }
       `}</style>
 
-      <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-start">
+      <div className="contact-grid w-full grid grid-cols-1 md:grid-cols-2 md:items-center">
         {/* ── LEFT — form column ── */}
         <div className="order-2 md:order-1 bg-white md:bg-gradient-to-br md:from-white md:via-azure-50 md:to-azure-100/70 flex flex-col justify-center px-8 md:px-14 py-16 md:py-24 relative overflow-hidden md:min-h-screen">
           <div
@@ -780,28 +781,26 @@ export default function MadPhoneChatWithForm() {
               }}
             >
               <p className="text-[10px] font-semibold pt-0 tracking-[0.22em] uppercase text-azure-400/60 mb-2">
-              CONTACT
+                CONTACT
               </p>
-               <motion.h3
-              className="text-lg md:text-2xl leading-tight tracking-tight text-azure-700/80"
-              initial={{ opacity: 0, y: 18 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-              transition={{
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-                delay: 0.12,
-              }}
-            >
-              <TypingText
-                texts={["Not sure what comes next?", "Talk to MAD."]}
-                inView={inView}
-                delay={0.1}
-                className="text-azure-700/80 "
-              />
-            </motion.h3>
+              <motion.h3
+                className="text-lg md:text-2xl leading-tight tracking-tight text-azure-700/80"
+                initial={{ opacity: 0, y: 18 }}
+                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                transition={{
+                  duration: 0.65,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: 0.12,
+                }}
+              >
+                <TypingText
+                  texts={["Not sure what comes next?", "Talk to MAD."]}
+                  inView={inView}
+                  delay={0.1}
+                  className="text-azure-700/80 "
+                />
+              </motion.h3>
             </motion.div>
-
-         
 
             <motion.p
               className="text-sm md:text-base text-azure-700/80 leading-relaxed mb-5"
@@ -903,9 +902,18 @@ export default function MadPhoneChatWithForm() {
                 target="gform_iframe"
                 style={{ display: "none" }}
               >
-                <input type="hidden" name={contact.gform?.entryName ?? "entry_name"} />
-                <input type="hidden" name={contact.gform?.entryEmail ?? "entry_email"} />
-                <input type="hidden" name={contact.gform?.entryMsg ?? "entry_msg"} />
+                <input
+                  type="hidden"
+                  name={contact.gform?.entryName ?? "entry_name"}
+                />
+                <input
+                  type="hidden"
+                  name={contact.gform?.entryEmail ?? "entry_email"}
+                />
+                <input
+                  type="hidden"
+                  name={contact.gform?.entryMsg ?? "entry_msg"}
+                />
               </form>
               <Button
                 onClick={handleSubmit}

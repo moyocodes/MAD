@@ -1,8 +1,18 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { homeCms } from "@/data/homeCms";
 
-const STORAGE_KEY = "mad_cms_v2";
+// The in-browser CMS editor (AdminBar/CmsPanel) is disabled for now — see
+// App.jsx. localStorage persistence is intentionally not used here: it used
+// to let saved edits silently shadow homeCms.js, so file edits stopped
+// showing up. homeCms.js is now always the single source of truth.
 const CmsContext = createContext(null);
+
+// One-time cleanup: purge old snapshots from browsers that already saved
+// them, so no stale copy of the content lingers around.
+try {
+  localStorage.removeItem("mad_cms_v2");
+  localStorage.removeItem("mad_edit_mode");
+} catch {}
 
 function setNestedValue(obj, path, value) {
   const keys = path.split(".");
@@ -17,26 +27,15 @@ function setNestedValue(obj, path, value) {
 }
 
 export function CmsProvider({ children }) {
-  const [cmsData, setCmsData] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return homeCms;
-  });
+  const [cmsData, setCmsData] = useState(homeCms);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
 
   const updateCms = useCallback((path, value) => {
-    setCmsData((prev) => {
-      const next = setNestedValue(prev, path, value);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-      return next;
-    });
+    setCmsData((prev) => setNestedValue(prev, path, value));
   }, []);
 
   const resetCms = useCallback(() => {
-    try { localStorage.removeItem(STORAGE_KEY); } catch {}
     setCmsData(homeCms);
   }, []);
 
