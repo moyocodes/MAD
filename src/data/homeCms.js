@@ -137,8 +137,6 @@ export const homeCms = {
     cta: "Start a Project →", // ✏️ Button text
 
     // ✏️ Add/remove cards freely — the section adapts to however many are listed.
-    // story ⚠️ picks the stage-2 demo: website, app, social, print, bizdev, pr
-    //         (leave unset on a new card for a generic placeholder demo)
     cards: [
       {
         id: "c1",
@@ -146,7 +144,6 @@ export const homeCms = {
         sub: "Where ideas become experiences.", // ✏️ sub
         request:
           "Build a clean, modern website that converts visitors into clients.", // ✏️ Speech-bubble line in stage 1
-        story: "website",
         wide: "/Web dev 1.jpg", // 🖼️ Stage 1 background image
         top: "/Web dev 2.jpg", // 🖼️ Stage 3 showcase image
       },
@@ -155,25 +152,22 @@ export const homeCms = {
         title: "App development",
         sub: "Built for the way people move.",
         request: "Design a mobile app that people actually want to use.",
-        story: "app",
         wide: "/App dev 2.jpg",
         top: "/App dev 1.jpg",
       },
-      // {
-      //   id: "c3",
-      //   title: "Social media management",
-      //   sub: "Attention, engineered.",
-      //   request: "Create a content calendar that keeps our audience engaged.",
-      //   story: "social",
-      //   wide: "/SM mgt 1.jpg",
-      //   top: "/SM mgt 2.jpg",
-      // },
+      {
+        id: "c3",
+        title: "Social media management",
+        sub: "Attention, engineered.",
+        request: "Create a content calendar that keeps our audience engaged.",
+        wide: "/SM mgt 1.jpg",
+        top: "/SM mgt 2.jpg",
+      },
       {
         id: "c4",
         title: "Design and print",
         sub: "Brands made tangible.",
         request: "Design a brand kit and print collateral that stands out.",
-        story: "print",
         wide: "/Design a print 2.jpg",
         top: "/Design a print 1.jpg",
       },
@@ -182,7 +176,6 @@ export const homeCms = {
         title: "Business development",
         sub: "Growth, by design.",
         request: "Help us find and close the right growth opportunities.",
-        story: "bizdev",
         wide: "/Buis dev 1.jpg",
         top: "/Buis dev 2.png",
       },
@@ -191,7 +184,6 @@ export const homeCms = {
         title: "Public relations",
         sub: "Influence with intention.",
         request: "Get our story in front of the press and the right audiences.",
-        story: "pr",
         wide: "/PR 1.jpg",
         top: "/PR 2.jpg",
       },

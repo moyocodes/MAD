@@ -72,91 +72,6 @@ function GenericStage1({ card }) {
   );
 }
 
-function GenericStage2({ card }) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: "#1e1e2e",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "monospace",
-      }}
-    >
-      <style>{`
-        @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-      `}</style>
-      <div
-        style={{
-          height: 28,
-          background: "#252535",
-          borderBottom: "1px solid rgba(255,255,255,.07)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 10px",
-          gap: 6,
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: "flex", gap: 4 }}>
-          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-            <div key={c} style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />
-          ))}
-        </div>
-        <span
-          style={{
-            fontSize: 6.5,
-            color: "#1980c2",
-            background: "rgba(25,128,194,.18)",
-            padding: "2px 6px",
-            borderRadius: 3,
-            marginLeft: "auto",
-          }}
-        >
-          {card.title} · Building
-        </span>
-      </div>
-      <div style={{ flex: 1, padding: 14, display: "flex", flexDirection: "column", gap: 8, justifyContent: "center" }}>
-        {[
-          { w: "60%", h: 12, delay: "0.05s" },
-          { w: "92%", h: 60, delay: "0.22s" },
-          { w: "40%", h: 12, delay: "0.4s" },
-          { w: "75%", h: 12, delay: "0.55s" },
-        ].map((b, i) => (
-          <div
-            key={i}
-            style={{
-              width: b.w,
-              height: b.h,
-              borderRadius: 5,
-              background: i === 1 ? "linear-gradient(135deg,#0f1a2c,#1a3050)" : "rgba(255,255,255,.08)",
-              border: i === 1 ? "1px solid rgba(25,128,194,.3)" : "none",
-              animation: "slideDown 0.45s ease both",
-              animationDelay: b.delay,
-            }}
-          />
-        ))}
-      </div>
-      <div
-        style={{
-          height: 26,
-          background: "#252535",
-          borderTop: "1px solid rgba(255,255,255,.07)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#38bdf8" }} />
-        <span style={{ fontSize: 6.5, color: "rgba(255,255,255,.4)" }}>Assembling components…</span>
-      </div>
-    </div>
-  );
-}
-
 function GenericStage3({ card }) {
   const src = card.top;
   return (
@@ -208,229 +123,11 @@ function GenericStage3({ card }) {
   );
 }
 
-// ─── Stage 2 "in progress" demos ─────────────────────────────────────────────
-// A neutral GenericStage2 (above) is the fallback for any card. These are
-// bespoke, on-brand demos for the current line-up of services — keyed off
-// card.story so a new card with no matching story still renders fine.
-
-function StoryFrame({ chip, children }) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: "#1e1e2e",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "monospace",
-      }}
-    >
-      <div
-        style={{
-          height: 28,
-          background: "#252535",
-          borderBottom: "1px solid rgba(255,255,255,.07)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 10px",
-          gap: 6,
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: "flex", gap: 4 }}>
-          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-            <div key={c} style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />
-          ))}
-        </div>
-        <span
-          style={{
-            fontSize: 6.5,
-            color: "#1980c2",
-            background: "rgba(25,128,194,.18)",
-            padding: "2px 6px",
-            borderRadius: 3,
-            marginLeft: "auto",
-          }}
-        >
-          {chip}
-        </span>
-      </div>
-      <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>{children}</div>
-    </div>
-  );
-}
-
-function WebsiteBuildStage({ card }) {
-  return (
-    <StoryFrame chip={`${card.title} · Draft`}>
-      <style>{`@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}`}</style>
-      <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ height: 20, borderRadius: 4, background: "#fff", display: "flex", alignItems: "center", padding: "0 8px", gap: 6, animation: "slideDown .4s ease both" }}>
-          <span style={{ fontSize: 7, fontWeight: 900, color: "#181817" }}>MAD</span>
-          <div style={{ flex: 1, display: "flex", gap: 6, justifyContent: "center" }}>
-            {["Home", "Work", "About"].map((t) => <span key={t} style={{ fontSize: 5.5, color: "#aaa" }}>{t}</span>)}
-          </div>
-        </div>
-        <div style={{ height: 68, borderRadius: 5, background: "linear-gradient(135deg,#0f1a2c,#1a3050)", display: "flex", alignItems: "center", padding: "0 10px", animation: "slideDown .45s ease both", animationDelay: ".2s" }}>
-          <div>
-            <div style={{ fontSize: 9, color: "#fff", marginBottom: 3 }}>Built for launch.</div>
-            <div style={{ fontSize: 5.5, background: "#1980c2", color: "#fff", display: "inline-block", padding: "2px 6px", borderRadius: 2 }}>Get started →</div>
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 5, animation: "slideDown .45s ease both", animationDelay: ".4s" }}>
-          {[0, 1, 2].map((i) => (
-            <div key={i} style={{ height: 34, borderRadius: 4, background: "#252535", border: "1px solid rgba(255,255,255,.07)" }} />
-          ))}
-        </div>
-      </div>
-    </StoryFrame>
-  );
-}
-
-function AppBuildStage({ card }) {
-  return (
-    <StoryFrame chip={`${card.title} · Preview`}>
-      <div style={{ display: "flex", justifyContent: "center", padding: "8px 0", height: "100%" }}>
-        <div style={{ width: 96, height: "100%", borderRadius: 12, border: "2px solid rgba(255,255,255,.15)", background: "#12121e", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          <div style={{ height: 14, display: "flex", justifyContent: "center", alignItems: "flex-end", paddingBottom: 2 }}>
-            <div style={{ width: 28, height: 4, borderRadius: 2, background: "rgba(255,255,255,.2)" }} />
-          </div>
-          <div style={{ flex: 1, padding: "6px 8px", display: "flex", flexDirection: "column", gap: 5 }}>
-            {["92%", "70%", "84%"].map((w, i) => (
-              <div key={i} style={{ height: i === 0 ? 30 : 12, width: w, borderRadius: 4, background: i === 0 ? "linear-gradient(135deg,#1980c2,#0f4f7a)" : "rgba(255,255,255,.08)", animation: "slideDown .4s ease both", animationDelay: `${i * 0.15}s` }} />
-            ))}
-          </div>
-          <div style={{ height: 22, borderTop: "1px solid rgba(255,255,255,.08)", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} style={{ width: 8, height: 8, borderRadius: 2, background: i === 0 ? "#1980c2" : "rgba(255,255,255,.18)" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-      <style>{`@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}`}</style>
-    </StoryFrame>
-  );
-}
-
-function SocialBuildStage({ card }) {
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
-  return (
-    <StoryFrame chip={`${card.title} · Calendar`}>
-      <div style={{ padding: 10 }}>
-        <div style={{ fontSize: 6, color: "rgba(255,255,255,.4)", marginBottom: 6, letterSpacing: "0.1em", textTransform: "uppercase" }}>This week</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
-          {days.map((d, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.35)", marginBottom: 3 }}>{d}</div>
-              <div
-                style={{
-                  height: [30, 44, 24, 50, 34, 18, 18][i],
-                  borderRadius: 4,
-                  background: [1, 3, 4].includes(i) ? "linear-gradient(135deg,#db2777,#fb923c)" : "rgba(255,255,255,.08)",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-          {[["Reach", "12.4K"], ["Engagement", "6.8%"]].map(([l, v]) => (
-            <div key={l} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6 }}>
-              <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.35)" }}>{l}</div>
-              <div style={{ fontSize: 9, color: "#fff", fontWeight: 700 }}>{v}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </StoryFrame>
-  );
-}
-
-function PrintBuildStage({ card }) {
-  const swatches = [
-    ["#1980c2", "Azure"],
-    ["#181817", "Onyx"],
-    ["#ffffff", "White"],
-    ["#fb923c", "Ember"],
-  ];
-  return (
-    <StoryFrame chip={`${card.title} · Palette`}>
-      <div style={{ padding: 10 }}>
-        <div style={{ display: "flex", borderRadius: 5, overflow: "hidden", height: 46, marginBottom: 8 }}>
-          {swatches.map(([bg, l]) => (
-            <div key={l} style={{ background: bg, flex: 1, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 4, fontSize: 5, fontWeight: 700, color: bg === "#ffffff" ? "#aaa" : "rgba(255,255,255,.7)" }}>
-              {l}
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-          <div style={{ height: 54, borderRadius: 5, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13, color: "#181817" }}>MAD</div>
-          <div style={{ height: 54, borderRadius: 5, background: "#181817", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13, color: "#fff" }}>MAD</div>
-        </div>
-      </div>
-    </StoryFrame>
-  );
-}
-
-function BizDevBuildStage({ card }) {
-  const cols = [
-    { label: "Leads", n: 8, color: "rgba(255,255,255,.15)" },
-    { label: "Proposal", n: 4, color: "rgba(25,128,194,.35)" },
-    { label: "Won", n: 3, color: "#1980c2" },
-  ];
-  return (
-    <StoryFrame chip={`${card.title} · Pipeline`}>
-      <div style={{ padding: 10, display: "flex", gap: 6, height: "100%" }}>
-        {cols.map((c) => (
-          <div key={c.label} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6, display: "flex", flexDirection: "column", gap: 5 }}>
-            <div style={{ fontSize: 5.5, color: "rgba(255,255,255,.4)" }}>{c.label} · {c.n}</div>
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} style={{ height: 16, borderRadius: 3, background: c.color }} />
-            ))}
-          </div>
-        ))}
-      </div>
-    </StoryFrame>
-  );
-}
-
-function PrBuildStage({ card }) {
-  return (
-    <StoryFrame chip={`${card.title} · Coverage`}>
-      <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ borderRadius: 5, background: "#fff", padding: 8 }}>
-          <div style={{ fontSize: 5, color: "#aaa", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.08em" }}>Featured in</div>
-          <div style={{ fontSize: 9, fontWeight: 800, color: "#181817", fontFamily: "serif" }}>The Business Journal</div>
-          <div style={{ fontSize: 6, color: "#666", marginTop: 3 }}>“{card.title} done right — a case study.”</div>
-        </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          {["Reach", "Mentions", "Sentiment"].map((l, i) => (
-            <div key={l} style={{ flex: 1, background: "#252535", borderRadius: 5, padding: 6, textAlign: "center" }}>
-              <div style={{ fontSize: 8, color: "#1980c2", fontWeight: 700 }}>{["240K", "18", "92%"][i]}</div>
-              <div style={{ fontSize: 5, color: "rgba(255,255,255,.35)" }}>{l}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </StoryFrame>
-  );
-}
-
-const STORY_STAGES = {
-  website: WebsiteBuildStage,
-  app: AppBuildStage,
-  social: SocialBuildStage,
-  print: PrintBuildStage,
-  bizdev: BizDevBuildStage,
-  pr: PrBuildStage,
-};
-
 const S1 = 2000,
-  S2 = 2000,
   S3 = 3000;
-const LOOP = S1 + S2 + S3;
+const LOOP = S1 + S3;
 
 export function SvcCard({ config, startDelay, isActive }) {
-  const Stage2 = STORY_STAGES[config.story] ?? GenericStage2;
   const [stage, setStage] = useState(0);
   const fillRef = useRef(null);
   const rafRef = useRef(null);
@@ -447,9 +144,8 @@ export function SvcCard({ config, startDelay, isActive }) {
     const tick = (ts) => {
       if (!t0) t0 = ts;
       const el = ts - t0;
-      if (pf) pf.style.width = `${Math.min(100, (el / (S1 + S2)) * 100)}%`;
+      if (pf) pf.style.width = `${Math.min(100, (el / LOOP) * 100)}%`;
       if (el < S1) setStage(0);
-      else if (el < S1 + S2) setStage(1);
       else setStage(2);
       if (el < LOOP) rafRef.current = requestAnimationFrame(tick);
       else timerRef.current = setTimeout(runCycle, 600);
@@ -529,18 +225,6 @@ export function SvcCard({ config, startDelay, isActive }) {
               <GenericStage1 card={config} />
             </motion.div>
           )}
-          {stage === 1 && (
-            <motion.div
-              key="s2"
-              style={{ position: "absolute", inset: 0 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.45 }}
-            >
-              <Stage2 card={config} />
-            </motion.div>
-          )}
           {stage === 2 && (
             <motion.div
               key="s3"
@@ -566,7 +250,7 @@ export function SvcCard({ config, startDelay, isActive }) {
             zIndex: 30,
           }}
         >
-          {[0, 1, 2].map((i) => (
+          {[0, 2].map((i) => (
             <motion.div
               key={i}
               animate={{
