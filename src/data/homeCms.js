@@ -144,7 +144,8 @@ export const homeCms = {
         id: "c1",
         title: "Website development", // ✏️ title
         sub: "Where ideas become experiences.", // ✏️ sub
-        request: "Build a clean, modern website that converts visitors into clients.", // ✏️ Speech-bubble line in stage 1
+        request:
+          "Build a clean, modern website that converts visitors into clients.", // ✏️ Speech-bubble line in stage 1
         story: "website",
         wide: "/Web dev 1.png", // 🖼️ Stage 1 background image
         top: "/Web dev 2.png", // 🖼️ Stage 3 showcase image
@@ -158,15 +159,15 @@ export const homeCms = {
         wide: "/App dev 2.png",
         top: "/App dev 1.png",
       },
-      {
-        id: "c3",
-        title: "Social media management",
-        sub: "Attention, engineered.",
-        request: "Create a content calendar that keeps our audience engaged.",
-        story: "social",
-        wide: "/SM mgt 1.png",
-        top: "/SM mgt 2.png",
-      },
+      // {
+      //   id: "c3",
+      //   title: "Social media management",
+      //   sub: "Attention, engineered.",
+      //   request: "Create a content calendar that keeps our audience engaged.",
+      //   story: "social",
+      //   wide: "/SM mgt 1.png",
+      //   top: "/SM mgt 2.png",
+      // },
       {
         id: "c4",
         title: "Design and print",
@@ -402,8 +403,9 @@ export const homeCms = {
       "Product, marketing & design firm creating systems that help organizations grow stronger and perform over time.", // ✏️ Tagline under the logo
 
     social: [
-      { label: "Instagram", href: "#", iconClass: "fa fa-instagram" }, // ✏️ href = your Instagram URL
-      { label: "LinkedIn", href: "#", iconClass: "fa fa-linkedin" }, // ✏️ href = your LinkedIn URL
+        { label: "X", href: "https://x.com/Madesignsltd", iconClass: "fa fa-twitter" }, // ✏️ href = your X URL
+      { label: "Instagram", href: "https://www.instagram.com/madesignsltd/", iconClass: "fa fa-instagram" }, // ✏️ href = your Instagram URL
+      { label: "LinkedIn", href: "https://www.linkedin.com/company/101036897", iconClass: "fa fa-linkedin" }, // ✏️ href = your LinkedIn URL
     ],
 
     // ✏️ Footer link columns — each column has a title and a list of [label, url] pairs
@@ -425,8 +427,9 @@ export const homeCms = {
             "contact@mindfullyarticulated.com",
             "mailto:contact@mindfullyarticulated.com",
           ],
-          ["Instagram", "#"],
-          ["LinkedIn", "#"],
+          ["X", "https://x.com/Madesignsltd"],
+          ["Instagram", "https://www.instagram.com/madesignsltd/"],
+          ["LinkedIn", "https://www.linkedin.com/company/101036897"],
         ],
       },
     ],
