@@ -39,26 +39,26 @@ export const homeCms = {
         sub: "We design and build systems that drive focus.", // ✏️ Subheading
         card: "Product & Digital", // ✏️ Service label on the card
         left: "/structure 2.jpg", // 🖼️ Left image
-        right: "/Structure 1.png", // 🖼️ Right image
-        cardImg: "/products & digital.png", // 🖼️ Card image
+        right: "/Structure 1.jpg", // 🖼️ Right image
+        cardImg: "/products & digital.jpg", // 🖼️ Card image
       },
       {
         // Slide 2 ✏️
         h1: "Communication\nthat connects.",
         sub: "Campaigns that reach the right people.",
         card: "Marketing & Comms",
-        cardImg: "/marketing & comms.png", // 🖼️ Left image
-        right: "/Coms 1.png", // 🖼️ Right image
-        left: "/Hero comm replacement.png", // 🖼️ Card image
+        cardImg: "/marketing & comms.jpg", // 🖼️ Left image
+        right: "/Coms 1.jpg", // 🖼️ Right image
+        left: "/Hero comm replacement.jpg", // 🖼️ Card image
       },
       {
         // Slide 3 ✏️
         h1: "Identities built\nfor clarity.",
         sub: "Brand systems that speak before you do.",
         card: "Brand & Design",
-        cardImg: "/brand & design.png", // 🖼️ Left image
-        left: "/identity 2.png", // 🖼️ Right image
-        right: "/Identity 1.png", // 🖼️ Card image
+        cardImg: "/brand & design.jpg", // 🖼️ Left image
+        left: "/identity 2.jpg", // 🖼️ Right image
+        right: "/Identity 1.jpg", // 🖼️ Card image
       },
     ],
 
@@ -106,24 +106,24 @@ export const homeCms = {
         tag: "01",
         label: "Product & Digital Solutions", // ✏️ Service name
         tagline: "Websites, apps & platforms built to scale with confidence.", // ✏️ One-liner
-        wide: "/Prod & Dig 2.png", // 🖼️ Wide background image
-        top: "/juu.png", // 🖼️ Top card image
+        wide: "/Prod & Dig 2.jpg", // 🖼️ Wide background image
+        top: "/juu.jpg", // 🖼️ Top card image
       },
       {
         tag: "02",
         label: "Marketing & Communication",
         tagline:
           "Campaigns that build relevance and connect brands with the right audience.",
-        wide: "/Marketing 2.png", // 🖼️ Wide background image
-        top: "/Marketing 1.png", // 🖼️ Top card image
+        wide: "/Marketing 2.jpg", // 🖼️ Wide background image
+        top: "/Marketing 1.jpg", // 🖼️ Top card image
       },
       {
         tag: "03",
         label: "Brand & Design Systems",
         tagline:
           "Brand systems with clarity, consistency, and credibility at every touchpoint.",
-        wide: "/Brand a design 1.png", // 🖼️ Wide background image
-        top: "/Brand a design 2.png", // 🖼️ Top card image
+        wide: "/Brand a design 1.jpg", // 🖼️ Wide background image
+        top: "/Brand a design 2.jpg", // 🖼️ Top card image
       },
     ],
   },
@@ -147,8 +147,8 @@ export const homeCms = {
         request:
           "Build a clean, modern website that converts visitors into clients.", // ✏️ Speech-bubble line in stage 1
         story: "website",
-        wide: "/Web dev 1.png", // 🖼️ Stage 1 background image
-        top: "/Web dev 2.png", // 🖼️ Stage 3 showcase image
+        wide: "/Web dev 1.jpg", // 🖼️ Stage 1 background image
+        top: "/Web dev 2.jpg", // 🖼️ Stage 3 showcase image
       },
       {
         id: "c2",
@@ -156,8 +156,8 @@ export const homeCms = {
         sub: "Built for the way people move.",
         request: "Design a mobile app that people actually want to use.",
         story: "app",
-        wide: "/App dev 2.png",
-        top: "/App dev 1.png",
+        wide: "/App dev 2.jpg",
+        top: "/App dev 1.jpg",
       },
       // {
       //   id: "c3",
@@ -165,8 +165,8 @@ export const homeCms = {
       //   sub: "Attention, engineered.",
       //   request: "Create a content calendar that keeps our audience engaged.",
       //   story: "social",
-      //   wide: "/SM mgt 1.png",
-      //   top: "/SM mgt 2.png",
+      //   wide: "/SM mgt 1.jpg",
+      //   top: "/SM mgt 2.jpg",
       // },
       {
         id: "c4",
@@ -174,8 +174,8 @@ export const homeCms = {
         sub: "Brands made tangible.",
         request: "Design a brand kit and print collateral that stands out.",
         story: "print",
-        wide: "/Design a print 2.png",
-        top: "/Design a print 1.png",
+        wide: "/Design a print 2.jpg",
+        top: "/Design a print 1.jpg",
       },
       {
         id: "c5",
@@ -183,7 +183,7 @@ export const homeCms = {
         sub: "Growth, by design.",
         request: "Help us find and close the right growth opportunities.",
         story: "bizdev",
-        wide: "/Buis dev 1.png",
+        wide: "/Buis dev 1.jpg",
         top: "/Buis dev 2.png",
       },
       {
@@ -192,8 +192,8 @@ export const homeCms = {
         sub: "Influence with intention.",
         request: "Get our story in front of the press and the right audiences.",
         story: "pr",
-        wide: "/PR 1.png",
-        top: "/PR 2.png",
+        wide: "/PR 1.jpg",
+        top: "/PR 2.jpg",
       },
     ],
   },
@@ -218,7 +218,7 @@ export const homeCms = {
       "TruBilling is a financial management platform designed to help small and growing businesses manage billing, track payments, and maintain financial clarity in one structured system. The goal was to simplify how businesses handle day-to-day financial operations without overwhelming them with complexity.", // ✏️ Project description paragraph
 
     dashboardUrl: "trubilling.com/dashboard", // ✏️ URL shown on the mock browser bar
-    screenImage: "/image.png", // 🖼️ Screenshot shown in the browser mockup
+    screenImage: "/image.jpg", // 🖼️ Screenshot shown in the browser mockup
     screenImageAlt: "TruBilling", // ✏️ Alt text for the screenshot
 
     video:

@@ -3802,7 +3802,7 @@ function LaptopFrame({ inView }) {
           }}
         >
           <img
-            src="/image.png"
+            src="/image.jpg"
             alt="TruBilling"
             style={{
               width: "100%",

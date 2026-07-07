@@ -42,7 +42,9 @@
       "Bash(npx playwright *)",
       "Bash(node run_test.mjs)",
       "Bash(kill %1)",
-      "Bash(rm -f /Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/run_test.mjs)"
+      "Bash(rm -f /Users/tizetimoyosore/.npm/_npx/420ff84f11983ee5/run_test.mjs)",
+      "Bash(sips --help)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha \"Coms 1.png\")"
     ],
     "additionalDirectories": [
       "/private/tmp/claude-501/-Users-tizetimoyosore-Desktop-moyo-mad-website/e68f15a7-3776-42d6-9d7a-2a934bb44f57/scratchpad/node_modules"
